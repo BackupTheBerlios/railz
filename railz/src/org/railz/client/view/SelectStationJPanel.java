@@ -370,7 +370,8 @@ public class SelectStationJPanel extends javax.swing.JPanel {
 	TrainModel train = (TrainModel)world.get(KEY.TRAINS, this.trainID,
 		modelRoot.getPlayerPrincipal());
 	Schedule schedule = (Schedule)world.get(KEY.TRAIN_SCHEDULES,
-		train.getScheduleIterator().getScheduleId());
+		train.getScheduleIterator().getScheduleKey().index,
+		train.getScheduleIterator().getScheduleKey().principal);
 	stationMapJPanel.setStationSchedule(schedule);
 
         TrainOrdersModel order = schedule.getOrder(selectedOrderNumber);

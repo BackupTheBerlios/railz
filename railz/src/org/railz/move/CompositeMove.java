@@ -156,7 +156,7 @@ public class CompositeMove implements Move {
         }
     }
 
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (o instanceof CompositeMove) {
             CompositeMove test = (CompositeMove)o;
 
@@ -176,7 +176,7 @@ public class CompositeMove implements Move {
         }
     }
 
-    public final String toString() {
+    public String toString() {
         String s = "";
 
         for (int i = 0; i < moves.length; i++) {

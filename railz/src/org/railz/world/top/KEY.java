@@ -44,7 +44,7 @@ public class KEY implements FreerailsSerializable {
 
     /** The cargo waiting at stations or carried by trains. */
     public static final KEY CARGO_BUNDLES = new KEY(true);
-    public static final KEY TRAIN_SCHEDULES = new KEY(true);
+    public static final KEY TRAIN_SCHEDULES = new KEY(false);
     public static final KEY PLAYERS = new KEY(true);
     public static final KEY BUILDING_TYPES = new KEY(true);
     public static final KEY STATISTICS = new KEY(false);

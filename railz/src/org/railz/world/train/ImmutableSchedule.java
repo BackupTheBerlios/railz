@@ -21,7 +21,7 @@
   */
 package org.railz.world.train;
 
-import java.util.Arrays;
+import java.util.*;
 
 import org.railz.world.top.ObjectKey;
 import org.railz.world.common.FreerailsSerializable;
@@ -31,77 +31,37 @@ import org.railz.world.common.FreerailsSerializable;
  *
  */
 public class ImmutableSchedule implements Schedule, FreerailsSerializable {
-    private final TrainOrdersModel[] orders;
-    private final int nextScheduledOrder;
-    private final boolean hasPriorityOrders;
+    protected TrainOrdersModel[] orders;
+    protected int firstId;
 
     /**
-     * @param gotoStation index in the orders array of the next station to go
-     * to.
      * @param orders Array of TrainOrdersModel representing stations to go to.
      */
-    public ImmutableSchedule(TrainOrdersModel[] orders, int gotoStation,
-        boolean hasPriorityOrders) {
-        this.orders = (TrainOrdersModel[])orders.clone();
-        this.nextScheduledOrder = gotoStation;
-        this.hasPriorityOrders = hasPriorityOrders;
-    }
-
-    public TrainOrdersModel getOrder(int i) {
-        return orders[i];
-    }
-
-    public int getOrderToGoto() {
-        return hasPriorityOrders ? 0 : nextScheduledOrder;
-    }
-
-    public ObjectKey getStationToGoto() {
-        int orderToGoto = getOrderToGoto();
-
-        if (-1 == orderToGoto) {
-            return null;
-        } else {
-            return orders[orderToGoto].getStationNumber();
-        }
-    }
-
-    public int[] getWagonsToAdd() {
-        return orders[getOrderToGoto()].consist;
-    }
-
-    public boolean hasPriorityOrders() {
-        return hasPriorityOrders;
+    public ImmutableSchedule(TrainOrdersModel[] orders) {
+	this.orders = new TrainOrdersModel[orders.length];
+	for (int i = 0; i < orders.length; i++) {
+	    this.orders[i] = orders[i];
+	}
     }
 
     public int getNumOrders() {
         return orders.length;
     }
 
-    public int getNextScheduledOrder() {
-        return this.nextScheduledOrder;
-    }
-
-    public boolean stopsAtStation(ObjectKey station) {
-        for (int i = 0; i < this.getNumOrders(); i++) {
-            TrainOrdersModel order = this.getOrder(i);
-
-            if (order.getStationNumber().equals(station)) {
-                return true;
-            }
-        }
-
-        return false;
+    public TrainOrdersModel getOrder(int i) {
+	return orders[i];
     }
 
     public boolean equals(Object o) {
         if (o instanceof ImmutableSchedule) {
             ImmutableSchedule test = (ImmutableSchedule)o;
-
-            return this.hasPriorityOrders == test.hasPriorityOrders &&
-            this.nextScheduledOrder == test.nextScheduledOrder &&
-            Arrays.equals(this.orders, test.orders);
-        } else {
-            return false;
+	    return Arrays.equals(orders, test.orders);
         }
+	return false;
+    }
+
+    public int hashCode() {
+	/* probably a very bad hash! */
+	return orders.length;
     }
 }

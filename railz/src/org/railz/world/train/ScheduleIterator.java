@@ -24,16 +24,16 @@ import org.railz.world.top.*;
  */
 public class ScheduleIterator implements FreerailsSerializable {
     private int currentOrder;
-    private int scheduleId;
+    private ObjectKey scheduleKey;
     private TrainOrdersModel priorityOrder;
 
     public String toString() {
-	return "currentOrder = " + currentOrder + ", scheduleId = " +
-	    scheduleId + ", priorityOrder = " + priorityOrder;
+	return "currentOrder = " + currentOrder + ", scheduleKey = " +
+	    scheduleKey + ", priorityOrder = " + priorityOrder;
     }
 
-    public ScheduleIterator(int scheduleId, int currentOrder) {
-	this.scheduleId = scheduleId;
+    public ScheduleIterator(ObjectKey scheduleKey, int currentOrder) {
+	this.scheduleKey = scheduleKey;
 	this.currentOrder = currentOrder;
     }
 
@@ -55,21 +55,21 @@ public class ScheduleIterator implements FreerailsSerializable {
 	if (priorityOrder != null) {
 	    return priorityOrder;
 	}
-	Schedule s = (Schedule) w.get(KEY.TRAIN_SCHEDULES, scheduleId,
-		Player.AUTHORITATIVE);
+	Schedule s = (Schedule) w.get(KEY.TRAIN_SCHEDULES, scheduleKey.index,
+		scheduleKey.principal);
 	return s.getOrder(currentOrder);
     }
 
     public ScheduleIterator(ScheduleIterator i) {
 	currentOrder = i.currentOrder;
-	scheduleId = i.scheduleId;
+	scheduleKey = i.scheduleKey;
 	priorityOrder = i.priorityOrder;
     }
 
     public ScheduleIterator(ScheduleIterator i, TrainOrdersModel
 	    priorityOrder) {
 	currentOrder = i.currentOrder;
-	scheduleId = i.scheduleId;
+	scheduleKey = i.scheduleKey;
 	this.priorityOrder = priorityOrder;
     }
 
@@ -77,17 +77,40 @@ public class ScheduleIterator implements FreerailsSerializable {
 	if (priorityOrder != null) {
 	    return new ScheduleIterator(this, null);
 	} else {
-	    Schedule s = (Schedule) w.get(KEY.TRAIN_SCHEDULES, scheduleId,
-		    Player.AUTHORITATIVE);
+	    Schedule s = (Schedule) w.get(KEY.TRAIN_SCHEDULES,
+		    scheduleKey.index, scheduleKey.principal);
 	    if (s.getNumOrders() <= currentOrder + 1) {
-		return new ScheduleIterator(scheduleId, 0);
+		return new ScheduleIterator(scheduleKey, 0);
 	    }
-	    return new ScheduleIterator(scheduleId, currentOrder + 1);
+	    return new ScheduleIterator(scheduleKey, currentOrder + 1);
 	}
     }
 
-    public int getScheduleId() {
-	return scheduleId;
+    /**
+     * Used to update the iterator when the underlying schedule is changed
+     */
+    public ScheduleIterator prevIndex(Schedule s) {
+	int index = currentOrder < 0 ? s.getNumOrders() - 1 : currentOrder -
+	    1;
+	ScheduleIterator si = new ScheduleIterator(this, priorityOrder);
+	si.currentOrder = index;
+	return si;
+    }
+
+    /**
+     * Used to update the iterator when the underlying schedule is changed
+     */
+    public ScheduleIterator nextIndex(Schedule s) {
+	int index = currentOrder + 1;
+	if (index >= s.getNumOrders())
+	    index = 0;
+	ScheduleIterator si = new ScheduleIterator(this, priorityOrder);
+	si.currentOrder = index;
+	return si;
+    }
+
+    public ObjectKey getScheduleKey() {
+	return scheduleKey;
     }
 
     public boolean equals(Object o) {
@@ -97,12 +120,12 @@ public class ScheduleIterator implements FreerailsSerializable {
 	ScheduleIterator i = (ScheduleIterator) o;
 
 	return currentOrder == i.currentOrder &&
-	    scheduleId == i.scheduleId &&
+	    scheduleKey.equals(i.scheduleKey) &&
 	    (priorityOrder == null) ? (i.priorityOrder == null) :
 	    (priorityOrder.equals(i.priorityOrder));
     }
 
     public int hashCode() {
-	return currentOrder ^ scheduleId;
+	return currentOrder ^ scheduleKey.index;
     }
 }

@@ -42,9 +42,8 @@ public class AddTrainMoveTest extends AbstractMoveTestCase {
 		ObjectKey(KEY.STATIONS, testPlayer.getPrincipal(), 0),
 		new int[] {1, 2, 3}, true, true, true);
 	
-        ImmutableSchedule schedule = new ImmutableSchedule(new TrainOrdersModel[] {
-                    orders, orders, orders
-                }, 1, true);
+        ImmutableSchedule schedule = new ImmutableSchedule
+	    (new TrainOrdersModel[] { orders, orders, orders });
         long price = 100;
 	AddTrainMove move = AddTrainMove.generateMove(getWorld(), 0, train,
 		price, schedule, testPlayer.getPrincipal());

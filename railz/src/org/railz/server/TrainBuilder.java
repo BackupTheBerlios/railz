@@ -76,7 +76,9 @@ class TrainBuilder {
             int cargoBundleNumber = world.size(KEY.CARGO_BUNDLES);
             Move addCargoBundleMove = new AddCargoBundleMove(cargoBundleNumber,
                     cb);
-            int scheduleNumber = world.size(KEY.TRAIN_SCHEDULES);
+	    ObjectKey scheduleKey = new ObjectKey 
+		(KEY.TRAIN_SCHEDULES,
+		 tp, world.size(KEY.TRAIN_SCHEDULES, tp));
 
 	    GameTime now = (GameTime) world.get(ITEM.TIME,
 		    Player.AUTHORITATIVE);
@@ -102,8 +104,8 @@ class TrainBuilder {
                 s.addOrder(orders);
             }
 
-	    train = new TrainModel(train, new ScheduleIterator(scheduleNumber,
-			0), now);
+	    train = new TrainModel(train,
+		    new ScheduleIterator(scheduleKey, 0), now);
 
             ImmutableSchedule is = s.toImmutableSchedule();
 

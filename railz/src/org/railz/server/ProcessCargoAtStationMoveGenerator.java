@@ -65,7 +65,7 @@ public class ProcessCargoAtStationMoveGenerator {
 		    batch.getCargoType(), Player.AUTHORITATIVE);
 	    System.out.println("age adjusted value (" + elapsedTime + ") = " +
 		    ct.getAgeAdjustedValue(elapsedTime));
-            amount += cargoBundle.getAmount(batch) * Math.log(dist) *
+            amount += cargoBundle.getAmount(batch) * Math.log(1 + dist) *
 		ct.getAgeAdjustedValue(elapsedTime);
         }
 	System.out.println("amount for cargo is " + amount);

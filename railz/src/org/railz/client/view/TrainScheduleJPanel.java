@@ -36,16 +36,12 @@ import org.railz.client.common.PortablePopupAdapter;
 import org.railz.client.renderer.TrainImages;
 import org.railz.client.renderer.ViewLists;
 import org.railz.client.model.ModelRoot;
-import org.railz.move.ChangeTrainScheduleMove;
-import org.railz.move.Move;
+import org.railz.move.*;
 import org.railz.util.Resources;
 import org.railz.world.cargo.CargoType;
-import org.railz.world.player.FreerailsPrincipal;
-import org.railz.world.top.KEY;
-import org.railz.world.top.ObjectKey;
-import org.railz.world.top.NonNullElements;
-import org.railz.world.top.ReadOnlyWorld;
-import org.railz.world.top.WorldListListener;
+import org.railz.world.common.*;
+import org.railz.world.player.*;
+import org.railz.world.top.*;
 import org.railz.world.train.*;
 
 /**
@@ -291,41 +287,63 @@ WorldListListener, ListCellRenderer {
     }//GEN-LAST:event_noChangeJMenuItemActionPerformed
     
     private void priorityOrdersJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_priorityOrdersJButtonActionPerformed
-        MutableSchedule s = getSchedule();
-        s.setPriorityOrders(new TrainOrdersModel(new ObjectKey(KEY.STATIONS,
+	TrainOrdersModel tom = new TrainOrdersModel(new ObjectKey(KEY.STATIONS,
 			modelRoot.getPlayerPrincipal(), 0), null, false, true,
-		    true));
-        sendUpdateMove(s);
+		    true);
+	ScheduleIterator si = new ScheduleIterator(scheduleIterator, tom);
+	TrainModel train = (TrainModel) w.get(KEY.TRAINS, trainNumber,
+		modelRoot.getPlayerPrincipal());
+	Move m = ChangeTrainMove.generateMove(trainNumber,
+		modelRoot.getPlayerPrincipal(), train, si,
+		(GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE));
+	modelRoot.getReceiver().processMove(m);
     }//GEN-LAST:event_priorityOrdersJButtonActionPerformed
     
     private void addStationJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStationJButtonActionPerformed
-        MutableSchedule s = getSchedule();
-        s.addOrder(new TrainOrdersModel(new ObjectKey(KEY.STATIONS,
-			modelRoot.getPlayerPrincipal(), 0), null, false, true,
-		    true));
-        sendUpdateMove(s);
+	TrainModel tm = (TrainModel) w.get(KEY.TRAINS, trainNumber,
+		modelRoot.getPlayerPrincipal());
+	Schedule s = (Schedule) w.get(KEY.TRAIN_SCHEDULES,
+		tm.getScheduleIterator().getScheduleKey().index,
+	       	tm.getScheduleIterator().getScheduleKey().principal);
+        TrainOrdersModel order = new TrainOrdersModel
+	    (new ObjectKey(KEY.STATIONS, modelRoot.getPlayerPrincipal(), 0),
+	     null, false, true, true);
+        sendAddStationMove(s.getNumOrders(), order);
     }//GEN-LAST:event_addStationJButtonActionPerformed
     
     private void removeStationJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeStationJMenuItemActionPerformed
-        MutableSchedule s = getSchedule();
-        int i = orders.getSelectedIndex();
-        s.removeOrder(i);
-        sendUpdateMove(s);
+	sendRemoveStationMove(orders.getSelectedIndex());
     }//GEN-LAST:event_removeStationJMenuItemActionPerformed
     
     private void gotoStationJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gotoStationJMenuItemActionPerformed
         MutableSchedule s = getSchedule();
         int i = orders.getSelectedIndex();
-        s.setOrderToGoto(i);
-        sendUpdateMove(s);
+
+	ScheduleIterator si = new ScheduleIterator
+	    (scheduleIterator.getScheduleKey(), i);
+	Move m = ChangeTrainMove.generateMove(trainNumber,
+		modelRoot.getPlayerPrincipal(), (TrainModel) 
+		w.get(KEY.TRAINS, trainNumber,
+		    modelRoot.getPlayerPrincipal()),
+		si, (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE));
+	modelRoot.getReceiver().processMove(m);
     }//GEN-LAST:event_gotoStationJMenuItemActionPerformed
     
     private void pushDownJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pushDownJMenuItemActionPerformed
-        MutableSchedule s = getSchedule();
+	TrainModel train = (TrainModel)w.get(KEY.TRAINS, trainNumber,
+		modelRoot.getPlayerPrincipal());
+        ImmutableSchedule immutableSchedule = (ImmutableSchedule)w.get
+	    (KEY.TRAIN_SCHEDULES,
+	     train.getScheduleIterator().getScheduleKey().index,
+	     train.getScheduleIterator().getScheduleKey().principal);
         int i = orders.getSelectedIndex();
-        s.pushDown(i);
-        sendUpdateMove(s);
-        orders.setSelectedIndex(i+1);
+	TrainOrdersModel tom = immutableSchedule.getOrder(i);
+	sendRemoveStationMove(i);
+	if (i + 1 > immutableSchedule.getNumOrders()) {
+	    sendAddStationMove(0, tom);
+	} else {
+	    sendAddStationMove(i + 1, tom);
+	}
     }//GEN-LAST:event_pushDownJMenuItemActionPerformed
     
     private PortablePopupAdapter ordersPopupAdapter = new PortablePopupAdapter()
@@ -340,9 +358,9 @@ WorldListListener, ListCellRenderer {
 	    }
 	    if(-1 != i) {
 		TrainOrdersModel order = s.getOrder(i);
-		pullUpJMenuItem.setEnabled(s.canPullUp(i));
-		pushDownJMenuItem.setEnabled(s.canPushDown(i));
-		gotoStationJMenuItem.setEnabled(s.canSetGotoStation(i));
+		pullUpJMenuItem.setEnabled(i > 0);
+		pushDownJMenuItem.setEnabled(s.getNumOrders() > i + 1);
+		gotoStationJMenuItem.setEnabled(true);
 		removeWagonsJMenu.setEnabled(order.orderHasWagons());
 		waitJMenu.setEnabled(order.orderHasWagons());
 		addWagonJMenu.setEnabled(order.hasLessThanMaxiumNumberOfWagons());
@@ -354,12 +372,20 @@ WorldListListener, ListCellRenderer {
     };
     
     private void pullUpJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pullUpJMenuItemActionPerformed
-        // Add your handling code here:
-        MutableSchedule s = getSchedule();
+	TrainModel train = (TrainModel)w.get(KEY.TRAINS, trainNumber,
+		modelRoot.getPlayerPrincipal());
+        ImmutableSchedule immutableSchedule = (ImmutableSchedule)w.get
+	    (KEY.TRAIN_SCHEDULES,
+	     train.getScheduleIterator().getScheduleKey().index,
+	     train.getScheduleIterator().getScheduleKey().principal);
         int i = orders.getSelectedIndex();
-        s.pullUp(i);
-        sendUpdateMove(s);
-        orders.setSelectedIndex(i-1);
+	TrainOrdersModel tom = immutableSchedule.getOrder(i);
+	sendRemoveStationMove(i);
+	if (i == 0) {
+	    sendAddStationMove(0, tom);
+	} else {
+	    sendAddStationMove(i - 1, tom);
+	}
     }//GEN-LAST:event_pullUpJMenuItemActionPerformed
     
     public void setup(ModelRoot mr, GUIRoot gr) {
@@ -414,17 +440,20 @@ WorldListListener, ListCellRenderer {
 
     private void enableButtons(){
         MutableSchedule s  = getSchedule();
-        addStationJButton.setEnabled(s.canAddOrder());
+        addStationJButton.setEnabled(true);
         
         //Only one set of prority orders are allowed.
-        priorityOrdersJButton.setEnabled(!s.hasPriorityOrders());
+        priorityOrdersJButton.setEnabled(!scheduleIterator.hasPriorityOrder());
 	editOrderJPopupMenu.setEnabled(true);
     }
     
     MutableSchedule getSchedule(){
 	TrainModel train = (TrainModel)w.get(KEY.TRAINS, trainNumber,
 		modelRoot.getPlayerPrincipal());
-        ImmutableSchedule immutableSchedule = (ImmutableSchedule)w.get(KEY.TRAIN_SCHEDULES, train.getScheduleIterator().getScheduleId());
+        ImmutableSchedule immutableSchedule = (ImmutableSchedule)w.get
+	    (KEY.TRAIN_SCHEDULES,
+	     train.getScheduleIterator().getScheduleKey().index,
+	     train.getScheduleIterator().getScheduleKey().principal);
         return new MutableSchedule(immutableSchedule);
     }
     
@@ -466,8 +495,7 @@ WorldListListener, ListCellRenderer {
 		    modelRoot.getPlayerPrincipal(), stationIndex),
 		oldOrders.getConsist(), oldOrders.getWaitUntilFull(),
 		oldOrders.loadTrain, oldOrders.unloadTrain);
-        s.setOrder(orderNumber, newOrders);
-        sendUpdateMove(s);
+        sendUpdateStationMove(orderNumber, newOrders);
     }
     
     private void noChange(){
@@ -477,8 +505,7 @@ WorldListListener, ListCellRenderer {
         oldOrders = s.getOrder(orderNumber);
 	newOrders = new TrainOrdersModel(oldOrders.getStationNumber(), null,
 		false, oldOrders.loadTrain, oldOrders.unloadTrain);
-        s.setOrder(orderNumber, newOrders);
-        sendUpdateMove(s);
+	sendUpdateStationMove(orderNumber, newOrders);
     }
     
     private void setWaitUntilFull(boolean b){
@@ -489,8 +516,7 @@ WorldListListener, ListCellRenderer {
 	newOrders = new TrainOrdersModel(oldOrders.getStationNumber(),
 		oldOrders.consist, b, oldOrders.loadTrain,
 		oldOrders.unloadTrain);
-        s.setOrder(orderNumber, newOrders);
-        sendUpdateMove(s);
+        sendUpdateStationMove(orderNumber, newOrders);
     }
     
     private void  addWagon(int wagonTypeNumber){
@@ -515,8 +541,7 @@ WorldListListener, ListCellRenderer {
 	newOrders = new TrainOrdersModel(oldOrders.getStationNumber(),
 		newConsist, oldOrders.getWaitUntilFull(), oldOrders.loadTrain,
 		oldOrders.unloadTrain);
-        s.setOrder(orderNumber, newOrders);
-        sendUpdateMove(s);
+        sendUpdateStationMove(orderNumber, newOrders);
     }
     
     private void removeAllWagons(){
@@ -526,8 +551,7 @@ WorldListListener, ListCellRenderer {
         oldOrders = s.getOrder(orderNumber);
 	newOrders = new TrainOrdersModel(oldOrders.getStationNumber(), new
 		int[0], false, oldOrders.loadTrain, oldOrders.unloadTrain);
-        s.setOrder(orderNumber, newOrders);
-        sendUpdateMove(s);
+        sendUpdateStationMove(orderNumber, newOrders);
     }
     
     private void removeLastWagon(){
@@ -547,23 +571,47 @@ WorldListListener, ListCellRenderer {
 	newOrders = new TrainOrdersModel(oldOrders.getStationNumber(),
 		newConsist, oldOrders.waitUntilFull, oldOrders.loadTrain,
 		oldOrders.unloadTrain);
-        s.setOrder(orderNumber, newOrders);
-        sendUpdateMove(s);
+        sendUpdateStationMove(orderNumber, newOrders);
     }
     
-    void sendUpdateMove(MutableSchedule mutableSchedule ){
-	TrainModel train = (TrainModel)w.get(KEY.TRAINS, this.trainNumber,
+    void sendUpdateStationMove(int aStationIndex, TrainOrdersModel aOrder) {
+	Move m = AddRemoveScheduleStationMove.generateChangeMove
+	    (new ObjectKey(KEY.TRAIN_SCHEDULES, 
+			   scheduleIterator.getScheduleKey().principal,
+			   scheduleIterator.getScheduleKey().index),
+	     aStationIndex, aOrder, w);
+	modelRoot.getReceiver().processMove(m);
+    }
+
+    void sendRemoveStationMove(int aStationIndex) {
+	TrainModel train = (TrainModel)w.get(KEY.TRAINS, trainNumber,
 		modelRoot.getPlayerPrincipal());
-        ScheduleIterator si = train.getScheduleIterator();
-        ImmutableSchedule before = (ImmutableSchedule)w.get(KEY.TRAIN_SCHEDULES, si.getScheduleId());
-        ImmutableSchedule after = mutableSchedule.toImmutableSchedule();
-        Move m = new ChangeTrainScheduleMove(si.getScheduleId(), before, after);
-        modelRoot.getReceiver().processMove(m);
+	Move m = AddRemoveScheduleStationMove.generateRemoveMove
+	   (new ObjectKey(KEY.TRAIN_SCHEDULES,
+			  train.getScheduleIterator().getScheduleKey().principal,
+			  train.getScheduleIterator().getScheduleKey().index),
+	    aStationIndex, w); 
+	modelRoot.getReceiver().processMove(m);
     }
-    
+
+   void sendAddStationMove(int aStationIndex, TrainOrdersModel aOrder) {
+	TrainModel train = (TrainModel)w.get(KEY.TRAINS, trainNumber,
+		modelRoot.getPlayerPrincipal());
+       Move m = AddRemoveScheduleStationMove.generateAddMove
+	   (new ObjectKey(KEY.TRAIN_SCHEDULES,
+			  train.getScheduleIterator().getScheduleKey().principal,
+			  train.getScheduleIterator().getScheduleKey().index),
+	    aStationIndex, w, aOrder);
+       modelRoot.getReceiver().processMove(m);
+   } 
+
     public void listUpdated(KEY key, int index, FreerailsPrincipal p) {
-        if(KEY.TRAIN_SCHEDULES == key &&
-	       	scheduleIterator.getScheduleId() == index){
+        if ((KEY.TRAIN_SCHEDULES == key &&
+	       	scheduleIterator.getScheduleKey().index == index &&
+		scheduleIterator.getScheduleKey().principal.equals(p)) || 
+	    (KEY.TRAINS == key && 
+	     trainNumber == index &&
+	     modelRoot.getPlayerPrincipal().equals(p))) {
             listModel.fireRefresh();
             enableButtons();
         }

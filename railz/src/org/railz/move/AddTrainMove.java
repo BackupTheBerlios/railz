@@ -23,8 +23,7 @@ package org.railz.move;
 
 import org.railz.world.accounts.AddItemTransaction;
 import org.railz.world.common.GameTime;
-import org.railz.world.top.KEY;
-import org.railz.world.top.ITEM;
+import org.railz.world.top.*;
 import org.railz.world.top.ReadOnlyWorld;
 import org.railz.world.train.*;
 import org.railz.world.player.*;
@@ -43,10 +42,11 @@ public class AddTrainMove extends CompositeMove {
     public static AddTrainMove generateMove(ReadOnlyWorld w, int i, TrainModel
 	    train, long price, ImmutableSchedule s, FreerailsPrincipal p) {
 	GameTime now = (GameTime) w.get(ITEM.TIME, p);
-	int scheduleId = w.size(KEY.TRAIN_SCHEDULES, Player.AUTHORITATIVE);
-	train = new TrainModel(train, new ScheduleIterator(scheduleId, 0), now);
+	ObjectKey scheduleKey = new ObjectKey(KEY.TRAIN_SCHEDULES,
+		p, w.size(KEY.TRAIN_SCHEDULES, p));
+	train = new TrainModel(train, new ScheduleIterator(scheduleKey, 0), now);
         Move m2 = new AddItemToListMove(KEY.TRAIN_SCHEDULES,
-                scheduleId, s);
+                scheduleKey.index, s, scheduleKey.principal);
         Move m = new AddItemToListMove(KEY.TRAINS, i, train, p);
 	AddItemTransaction t = new AddItemTransaction(now,
 		AddItemTransaction.ROLLING_STOCK, 0, 1, -price);

@@ -24,14 +24,13 @@ package org.railz.move;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import org.railz.world.station.StationModel;
-import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.*;
 import org.railz.world.top.KEY;
 import org.railz.world.top.ObjectKey;
 import org.railz.world.top.NonNullElements;
 import org.railz.world.top.ReadOnlyWorld;
 import org.railz.world.top.WorldIterator;
-import org.railz.world.train.ImmutableSchedule;
-import org.railz.world.train.MutableSchedule;
+import org.railz.world.train.*;
 
 /**
  * This Move removes a station from the station list and from the map.
@@ -39,6 +38,14 @@ import org.railz.world.train.MutableSchedule;
  *
  */
 public class RemoveStationMove extends CompositeMove implements TrackMove {
+    private static boolean stopsAtStation(Schedule s, ObjectKey station) {
+	for (int i = 0; i < s.getNumOrders(); i++) {
+	    if (s.getOrder(i).getStationNumber().equals(station))
+		return true;
+	}
+	return false;
+    }
+
     private RemoveStationMove(ArrayList moves) {
         super(moves);
     }
@@ -74,19 +81,22 @@ public class RemoveStationMove extends CompositeMove implements TrackMove {
                 station2remove, p));
 
         //Now update any train schedules that include this station.
-        WorldIterator schedules = new NonNullElements(KEY.TRAIN_SCHEDULES, w);
+        WorldIterator schedules = new NonNullElements(KEY.TRAIN_SCHEDULES, w,
+		p);
 
         while (schedules.next()) {
             ImmutableSchedule schedule = (ImmutableSchedule)schedules.getElement();
 
 	    ObjectKey stationKey = new ObjectKey(KEY.STATIONS, p,
 		    stationIndex);
-            if (schedule.stopsAtStation(stationKey)) {
+            if (stopsAtStation(schedule, stationKey)) {
                 MutableSchedule mutableSchedule = new MutableSchedule(schedule);
                 mutableSchedule.removeAllStopsAtStation(stationKey);
 
-                Move changeScheduleMove = new ChangeTrainScheduleMove(schedules.getIndex(),
-                        schedule, mutableSchedule.toImmutableSchedule());
+                Move changeScheduleMove = new ChangeTrainScheduleMove
+		    (KEY.TRAIN_SCHEDULES, schedules.getIndex(),
+                        schedule, mutableSchedule.toImmutableSchedule(),
+			p);
                 moves.add(changeScheduleMove);
             }
         }

@@ -28,12 +28,11 @@ import org.railz.world.top.ObjectKey;
  *
  */
 public interface Schedule {
-    public static final int MAXIMUM_NUMBER_OF_ORDER = 6;
-
+    /**
+     * @param i The id of the order to retrieve
+     * @return a train order
+     */
     TrainOrdersModel getOrder(int i);
-
-    /** Returns the wagons to add at the next scheduled stop. */
-    int[] getWagonsToAdd();
 
     /**
      * Returns number of non priority orders + number of priority orders.
