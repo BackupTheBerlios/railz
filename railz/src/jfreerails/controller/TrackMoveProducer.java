@@ -145,12 +145,16 @@ final public class TrackMoveProducer {
         TrackTile before = w.getTile(point.x, point.y).getTrackTile();
 	TrackTile after = TrackTile.createTrackTile(w,
 		before.getTrackConfiguration(), trackRule);
+	if (before.equals(after))
+	    return MoveStatus.moveFailed("Can't upgrade track with identical"
+		    + " type");
 
         Move move = UpgradeTrackMove.generateMove(before, after, point,
 		principal);
+	MoveStatus ms = moveTester.tryDoMove(move);
         moveTester.processMove(transactionsGenerator.addTransactions(move));
 
-        return moveTester.tryDoMove(move);
+        return ms;
     }
 
     public int getTrackBuilderMode() {
