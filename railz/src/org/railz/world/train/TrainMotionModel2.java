@@ -17,6 +17,7 @@
 package org.railz.world.train;
 
 import java.awt.Point;
+import java.io.*;
 import java.util.HashMap;
 
 import org.railz.world.common.*;
@@ -56,6 +57,7 @@ public final class TrainMotionModel2 implements FreerailsSerializable {
 
     /**
      * True if this train holds locks for all tracks it is on
+     * TODO mark as transient
      */
     private boolean hasLock = false;
     
@@ -170,14 +172,20 @@ public final class TrainMotionModel2 implements FreerailsSerializable {
 	TrainMotionModel2 tmm = (TrainMotionModel2) o;
 	return t0 == tmm.t0 &&
 	    speed == tmm.speed &&
-	    hasLock == tmm.hasLock &&
-	    trainPath == null ? tmm.trainPath == null :
-	    trainPath.equals(tmm.trainPath) &&
-	    pathToDestination == null ? tmm.pathToDestination == null :
-	    pathToDestination.equals(tmm.pathToDestination);
+	    //hasLock == tmm.hasLock &&
+	    (trainPath == null ? tmm.trainPath == null :
+	    trainPath.equals(tmm.trainPath)) &&
+	    (pathToDestination == null ? tmm.pathToDestination == null :
+	    pathToDestination.equals(tmm.pathToDestination));
     }
 
     public int hashCode() {
 	return t0;
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException,
+    ClassNotFoundException {
+	in.defaultReadObject();
+	hasLock = false;
     }
 }

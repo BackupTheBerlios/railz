@@ -76,11 +76,19 @@ public class TrainModel implements FreerailsSerializable {
     private int priority;
 
     public String toString() {
+	String s = "";
+	for (int i = 0; i < wagonTypes.length; i++)
+	    s += wagonTypes[i] + ", ";
+
 	return "TrainModel " + super.toString() +
 	    ": stateLastChanged = " + stateLastChanged + 
 	    ", scheduleIterator = " + scheduleIterator +
 	    ", state = " + state + ", isBlocked=" + isBlocked +
-	    ", TMM: " + trainMotionModel;
+	    ", TMM: " + trainMotionModel +
+	    ", engineType=" + engineType +
+	    ", wagons=" + s + 
+	    ", cargoBundleNo=" + cargoBundleNumber + 
+	    ", priority=" + priority;
     }
 
     /**
@@ -245,6 +253,8 @@ public class TrainModel implements FreerailsSerializable {
 		isBlocked == test.isBlocked &&
 		priority == test.priority;
 
+	    if (b == false) {
+	    }
             return b;
         } else {
             return false;

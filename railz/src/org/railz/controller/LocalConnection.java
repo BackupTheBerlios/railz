@@ -63,8 +63,6 @@ public class LocalConnection implements ConnectionToServer {
 
     public void processMove(Move move) {
         if (sendMoves) {
-            /* XXX HACK HACK HACK */
-            /* until issues with world object mutability are resolved */
             Move m = (Move)defensiveCopy(move);
             peer.sendMove(m);
         }
@@ -162,7 +160,7 @@ public class LocalConnection implements ConnectionToServer {
         assert peer.world != null;
 
         /* create a copy of the world */
-        return (World)defensiveCopy(peer.world);
+	return (World)defensiveCopy(peer.world);
     }
 
     public void open() {

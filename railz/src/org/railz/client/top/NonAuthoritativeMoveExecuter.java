@@ -116,7 +116,11 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
          * synchronize access to this list of unverified moves
          */
         private LinkedList pendingMoves = new LinkedList();
+
+	/** rejected but not yet undone moves */
         private ArrayList rejectedMoves = new ArrayList();
+
+	/** moves approved by server but not yet committed */
         private LinkedList approvedMoves = new LinkedList();
         private UncommittedMoveReceiver moveReceiver;
 
@@ -124,13 +128,18 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
             int n = 0;
             MoveStatus ms;
 
+	    synchronized (pendingMoves) {
+		while (!pendingMoves.isEmpty()) {
+		    Move m = (Move) pendingMoves.removeLast();
+		    ms = m.undoMove(world, m.getPrincipal());
+		    assert ms == MoveStatus.MOVE_OK;
+		}
+	    }
+
             for (int i = rejectedMoves.size() - 1; i >= 0; i--) {
                 // attempt to undo moves starting with the last one
                 RejectedMove rm = (RejectedMove)rejectedMoves.get(i);
 
-                // our attempt to undo may fail due to a
-                // pre-committed move which is yet to be
-                // rejected
                 Move attempted = rm.getAttemptedMove();
 
 		ms = attempted.tryUndoMove(world, attempted.getPrincipal());
@@ -157,16 +166,22 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
         /**
          * Called when a move is accepted or rejected by the server
          */
-        private synchronized void moveCommitted(Move move) {
+        private void moveCommitted(Move move) {
             MoveStatus ms;
 
-            if (!pendingMoves.isEmpty()) {
-                Move pendingMove = (Move)pendingMoves.getFirst();
+	    Move pendingMove = null;
+	    synchronized (pendingMoves) {
+		if (!pendingMoves.isEmpty()) {
+		    pendingMove = (Move)pendingMoves.removeFirst();
+		}
+	    }
 
+	    if (pendingMove != null) {
                 if (move instanceof RejectedMove) {
                     /* moves are rejected in order hence only the first can
                      * match*/
-                    if (((RejectedMove)move).getAttemptedMove().equals(pendingMove)) {
+                    if (((RejectedMove)move).getAttemptedMove()
+			    .equals(pendingMove)) {
 			if (debug)
 			    System.err.println("Logging rejected move " +
 				    ((RejectedMove) move).getAttemptedMove());
@@ -174,9 +189,9 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
                          * rejected moves and remove it from the list of pending
                          * moves */
                         rejectedMoves.add(move);
-                        pendingMoves.removeFirst();
 
                         do {
+			    // undo all rejected moves
                             if (!undoMoves()) {
 				assert false;
                                 break;
@@ -201,16 +216,21 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
 
                         return;
                     }
+		    // rejected move was submitted  by another client.
                 } else if (move.equals(pendingMove)) {
 		    if (debug)
 			System.err.println("Precommitted move acknowledged "
 				+ "by server:" + move);
                     // move succeeded and we have already executed it
-                    pendingMoves.removeFirst();
-
                     return;
                 }
+		// move succeeded but was submitted  by another client
             }
+
+	    // Replace our pending move
+	    synchronized (pendingMoves) {
+		pendingMoves.addFirst(pendingMove);
+	    }
 
             /* move must be from another client */
             if (!(move instanceof RejectedMove)) {
@@ -256,10 +276,12 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
 	    }
         }
 
-        public synchronized void undoLastMove() {
+        public void undoLastMove() {
             if (moveReceiver != null) {
                 try {
-                    pendingMoves.removeLast();
+		    synchronized (pendingMoves) {
+			pendingMoves.removeLast();
+		    }
                 } catch (NoSuchElementException e) {
                     // ignore
                 }
@@ -271,14 +293,16 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
         /**
          * pre-commits a move sent from the client
          */
-        public synchronized void processMove(Move move) {
+        public void processMove(Move move) {
             if (moveReceiver != null) {
                 MoveStatus ms;
 
 		ms = move.doMove(world, move.getPrincipal());
 
                 if (ms == MoveStatus.MOVE_OK) {
-                    pendingMoves.add(move);
+		    synchronized (pendingMoves) {
+			pendingMoves.add(move);
+		    }
                     // send it to the client-side listeners
                     forwardMove(move, ms);
                     // send it to the server
@@ -287,7 +311,7 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
             }
         }
 
-        public synchronized void addMoveReceiver(UncommittedMoveReceiver mr) {
+        public void addMoveReceiver(UncommittedMoveReceiver mr) {
             if (moveReceiver == null) {
                 moveReceiver = mr;
             }

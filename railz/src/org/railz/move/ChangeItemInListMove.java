@@ -103,7 +103,7 @@ public abstract class ChangeItemInListMove implements ListMove {
         } else {
             if (!from.equals(item2change)) {
                 return MoveStatus.moveFailed("Expected " + from.toString() +
-                    " but found " + to.toString());
+                    " but found " + item2change.toString());
             } else {
                 return MoveStatus.MOVE_OK;
             }

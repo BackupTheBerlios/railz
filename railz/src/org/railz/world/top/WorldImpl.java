@@ -17,10 +17,7 @@
 package org.railz.world.top;
 
 import java.awt.Point;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import org.railz.world.common.FreerailsSerializable;
 import org.railz.world.player.FreerailsPrincipal;
@@ -312,6 +309,16 @@ public class WorldImpl implements World {
         throw new ArrayIndexOutOfBoundsException("No matching principal for " +
             p.toString());
     }
+
+    private synchronized void writeObject(ObjectOutputStream out) throws
+	IOException {
+	    out.defaultWriteObject();
+	}
+
+    private synchronized void readObject(ObjectInputStream in) throws
+	IOException, ClassNotFoundException {
+	    in.defaultReadObject();
+	}
 
     public World defensiveCopy() {
         try {
