@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
-!=Project-Id-Version\: PACKAGE VERSION\nReport-Msgid-Bugs-To\: \nPOT-Creation-Date\: 2004-04-04 12\:01+0100\nPO-Revision-Date\: YEAR-MO-DA HO\:MI+ZONE\nLast-Translator\: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team\: LANGUAGE <LL@li.org>\nMIME-Version\: 1.0\nContent-Type\: text/plain; charset\=UTF-8\nContent-Transfer-Encoding\: 8bit\n
+!=Project-Id-Version\: PACKAGE VERSION\nReport-Msgid-Bugs-To\: \nPOT-Creation-Date\: 2004-04-04 13\:34+0100\nPO-Revision-Date\: YEAR-MO-DA HO\:MI+ZONE\nLast-Translator\: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team\: LANGUAGE <LL@li.org>\nMIME-Version\: 1.0\nContent-Type\: text/plain; charset\=UTF-8\nContent-Transfer-Encoding\: 8bit\n
 
 #: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/model/DebugModel.java:34
 !Client\ move\ debug=
@@ -93,7 +93,7 @@
 !Train\ Maintenance=
 
 #: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/BalanceSheetJPanel.java:294
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:154
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:161
 !Track\ Maintenance=
 
 #: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/BalanceSheetJPanel.java:310
@@ -145,11 +145,11 @@
 !Assets\ less\ Liabilities=
 
 #: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/BalanceSheetJPanel.java:585
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:102
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:109
 !Previous\ Year=
 
 #: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/BalanceSheetJPanel.java:595
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:112
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:119
 !Next\ Year=
 
 #: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/DebugMenu.java:31
@@ -173,49 +173,55 @@
 #: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/DisplayMenu.java:79
 !Balance\ Sheet=
 
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:93
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:100
 !Profit\ and\ Loss=
 
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:130
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:137
 !Income\ Tax\ @=
 
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:163
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:170
 !Rolling\ Stock\ Maintenance=
 
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:172
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:179
 !Interest\ Payable=
 
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:201
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:208
 !Profit\ Before\ Tax=
 
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:223
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:230
 !Total\ Profit=
 
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:231
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:238
 !Revenue=
 
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:240
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:247
 !Freight\ Haulage=
 
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:248
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:255
 !Passenger\ Ticket\ Sales=
 
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:255
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:262
 !Expenses=
 
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:263
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:271
 !Fuel=
 
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:270
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:279
 !Gross\ Profit=
 
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:278
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:287
 !Operating\ Expenses=
 
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:413
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:356
+!Total\ Revenue=
+
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:371
+!Total\ Expenses=
+
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:483
 !Year\ to\ date=
 
-#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:414
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:484
 !Profit\ and\ Loss\ Statement\ -\ =
 
 #: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/ClientOptionsJPanel.java:64

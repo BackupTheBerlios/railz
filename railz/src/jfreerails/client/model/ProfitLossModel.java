@@ -36,11 +36,13 @@ public class ProfitLossModel {
      */
     public final long freightRevenue;
     public final long passengerRevenue;
+    public final long totalRevenue;
     public final long fuelExpenses;
     public final long grossProfit;
     public final long trackMaintenanceExpense;
     public final long rollingStockMaintenanceExpense;
     public final long interestPayableExpense;
+    public final long totalExpenses;
     public final long profitBeforeTax;
     public final long incomeTax;
     public final long profitAfterTax;
@@ -128,11 +130,14 @@ public class ProfitLossModel {
 	freightRevenue = _freightRevenue;
 	passengerRevenue = 0;
 	fuelExpenses = 0;
-	grossProfit = freightRevenue + passengerRevenue - fuelExpenses;
+	totalRevenue = freightRevenue + passengerRevenue;
+	grossProfit = totalRevenue - fuelExpenses;
 	trackMaintenanceExpense = _trackMaintenanceExpense;
 	rollingStockMaintenanceExpense = _rollingStockMaintenanceExpense;
 	profitBeforeTax = grossProfit - trackMaintenanceExpense -
 	    rollingStockMaintenanceExpense - interestPayableExpense;
+	totalExpenses = fuelExpenses + trackMaintenanceExpense +
+	    rollingStockMaintenanceExpense + interestPayableExpense;
 	incomeTax = profitBeforeTax > 0 ? profitBeforeTax *
 	    incomeTaxRatePercent / 100 : 0;
 	profitAfterTax = profitBeforeTax - incomeTax;
