@@ -14,6 +14,7 @@ import javax.swing.JMenuItem;
 import jfreerails.client.common.PortablePopupAdapter;
 import jfreerails.client.renderer.TrainImages;
 import jfreerails.client.renderer.ViewLists;
+import jfreerails.client.model.ModelRoot;
 import jfreerails.move.ChangeTrainScheduleMove;
 import jfreerails.move.Move;
 import jfreerails.world.cargo.CargoType;
@@ -31,7 +32,8 @@ import jfreerails.world.train.TrainOrdersModel;
  * @author  Luke Lindsay
  */
 public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldListListener {
-    
+    private ModelRoot modelRoot;
+
     private ReadOnlyWorld w;
     
     private ViewLists vl;
@@ -41,8 +43,6 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
     private int scheduleID = -1;
     
     private TrainOrdersListModel listModel;
-    
-    private CallBacks callbacks = CallBacks.NULL_INSTANCE;
     
     /** Creates new form TrainScheduleJPanel */
     public TrainScheduleJPanel() {
@@ -341,11 +341,11 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
         orders.setSelectedIndex(i-1);
     }//GEN-LAST:event_pullUpJMenuItemActionPerformed
     
-    public void setup(ReadOnlyWorld w, ViewLists vl, CallBacks cb) {
-        this.w =w;
-        this.vl = vl;
+    public void setup(ModelRoot mr) {
+	modelRoot = mr;
+        this.w = mr.getWorld();
+        this.vl = mr.getViewLists();
         trainOrderJPanel1.setup(w, vl, null);
-        this.callbacks = cb;
         
         //This actionListener is fired by the select station popup when a stion is selected.
         ActionListener actionListener =  new ActionListener(){
@@ -511,7 +511,7 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
         ImmutableSchedule before = (ImmutableSchedule)w.get(KEY.TRAIN_SCHEDULES, scheduleID);
         ImmutableSchedule after = mutableSchedule.toImmutableSchedule();
         Move m = new ChangeTrainScheduleMove(scheduleID, before, after);
-        this.callbacks.processMove(m);
+        modelRoot.getReceiver().processMove(m);
     }
     
     public void listUpdated(KEY key, int index) {

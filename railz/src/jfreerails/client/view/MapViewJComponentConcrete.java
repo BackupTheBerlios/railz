@@ -13,14 +13,18 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.StringTokenizer;
 import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 
 import jfreerails.controller.MoveReceiver;
+import jfreerails.client.model.CursorEvent;
+import jfreerails.client.model.CursorEventListener;
+import jfreerails.client.model.ModelRoot;
 import jfreerails.client.top.UserInputOnMapController;
-import jfreerails.client.top.GUIComponentFactoryImpl;
 import jfreerails.client.top.StationTypesPopup;
 import jfreerails.client.common.FPSCounter;
 import jfreerails.client.common.Stats;
@@ -35,14 +39,16 @@ import jfreerails.world.top.ReadOnlyWorld;
  */
 final public class MapViewJComponentConcrete extends MapViewJComponent
     implements CursorEventListener {
+	private ModelRoot modelRoot;
 	private MoveReceiver moveReceiver;
 	private StationPlacementCursor stationPlacementCursor;
 	private UserInputOnMapController userInputOnMapController;
 	private StationTypesPopup stationTypesPopup;
 	private static final Font USER_MESSAGE_FONT = new Font("Arial", 0, 12);
-	private GUIComponentFactoryImpl guiComponentFactory;
+	private GUIRoot guiRoot;
     
 	private Stats paintStats = new Stats("MapViewJComponent paint");
+	private boolean frameRate;
 
 	/** The length of the array is the number of lines.  
 	 * This is necessary since Graphics.drawString(..)  doesn't know about
@@ -79,6 +85,13 @@ final public class MapViewJComponentConcrete extends MapViewJComponent
 	    } catch (java.awt.AWTException e) {
 	    }
 	}
+
+	private ActionListener frameRateListener = new ActionListener() {
+	    public void actionPerformed(ActionEvent e) {
+		frameRate = modelRoot.getDebugModel().
+		    getFrameRateDebugModel().isSelected();
+	    }
+	};
 
 	/**
 	 * Implements a MouseListener for FreerailsCursor-movement (left
@@ -220,8 +233,12 @@ final public class MapViewJComponentConcrete extends MapViewJComponent
 		}
 	    }
 	    paintStats.exit();
-	    myGraphics.translate(visRect.x, visRect.y);
-	    fpsCounter.updateFPSCounter(myGraphics);
+	    
+	    if (frameRate) {
+		myGraphics.translate(visRect.x, visRect.y);
+		fpsCounter.updateFPSCounter(myGraphics);
+	    }
+	    
 	    /* dispose of the graphics context */	
 	    myGraphics.dispose();
 	}
@@ -236,11 +253,11 @@ final public class MapViewJComponentConcrete extends MapViewJComponent
 	    stationTypesPopup = new StationTypesPopup();
 	}
 
-	public void setup(GUIComponentFactoryImpl gcf, ModelRoot mr) {
+	public void setup(GUIRoot gr, ModelRoot mr) {
 	    DetailMapView mv = new DetailMapView(mr.getWorld(),
 		    mr.getViewLists());
 	    super.setMapView(mv);
-	    guiComponentFactory = gcf;
+	    guiRoot = gr;
 	    this.setBorder(null);
 	    this.removeKeyListener(this.mapCursor);
 	    this.mapCursor = new FreerailsCursor(mv);
@@ -250,14 +267,25 @@ final public class MapViewJComponentConcrete extends MapViewJComponent
 	    moveReceiver = new MapViewMoveReceiver(mv);
 	    mr.getMoveChainFork().addSplitMoveReceiver(moveReceiver);
 	    mr.setCursor(mapCursor);
-	    gcf.getDialogueBoxController().setDefaultFocusOwner(this);
+	    gr.getDialogueBoxController().setDefaultFocusOwner(this);
 	    stationPlacementCursor = new StationPlacementCursor(mr,
 		    mv.getStationRadius(), this);
 	    stationTypesPopup.setup(mr, mv.getStationRadius());
-	    userInputOnMapController.setup(gcf, this, stationTypesPopup);
+	    userInputOnMapController.setup(gr, this, stationTypesPopup);
 	    mr.setUserMessageLogger(this);
-	    gcf.setMapViewJComponent(this);
+	    gr.setMapViewJComponent(this);
 	    setIgnoreRepaint(true);
+
+	    if (modelRoot != null) {
+		modelRoot.getDebugModel().getFrameRateDebugModel().
+		    removeActionListener(frameRateListener);
+	    }
+
+	    modelRoot = mr;
+	    frameRate = modelRoot.getDebugModel().getFrameRateDebugModel().
+		isSelected();
+	    modelRoot.getDebugModel().getFrameRateDebugModel().
+		addActionListener(frameRateListener);
 	}
 
 	public void setup(MapRenderer mv) {

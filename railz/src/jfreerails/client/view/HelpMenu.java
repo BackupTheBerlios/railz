@@ -3,20 +3,18 @@ package jfreerails.client.view;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import jfreerails.client.top.GUIComponentFactoryImpl;
-
 public class HelpMenu extends JMenu {
-    GUIComponentFactoryImpl guiComponentFactory;
+    GUIRoot guiRoot;
 
-    public HelpMenu (GUIComponentFactoryImpl gcf) {
+    public HelpMenu (GUIRoot gr) {
         super("Help");
-	guiComponentFactory = gcf;
+	guiRoot = gr;
 
         JMenuItem about = new JMenuItem("About");
         about.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
 		    DialogueBoxController dbc =
-		    guiComponentFactory.getDialogueBoxController();
+		    guiRoot.getDialogueBoxController();
 		    if (dbc != null)
 			dbc.showAbout();
                 }
@@ -26,7 +24,7 @@ public class HelpMenu extends JMenu {
         how2play.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
 		    DialogueBoxController dbc =
-			guiComponentFactory.getDialogueBoxController();
+			guiRoot.getDialogueBoxController();
 			if (dbc != null)
 			    dbc.showHow2Play();
                 }
@@ -36,7 +34,7 @@ public class HelpMenu extends JMenu {
         showControls.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
 		    DialogueBoxController dbc =
-			guiComponentFactory.getDialogueBoxController();
+			guiRoot.getDialogueBoxController();
 		    if (dbc != null)
 			dbc.showGameControls();
                 }

@@ -11,8 +11,8 @@ import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.JRadioButtonMenuItem;
 import jfreerails.client.common.ActionAdapter;
-import jfreerails.client.view.ModelRoot;
-import jfreerails.client.view.TrackBuildModel;
+import jfreerails.client.model.ModelRoot;
+import jfreerails.client.model.TrackBuildModel;
 import jfreerails.world.top.ReadOnlyWorld;
 
 

@@ -3,7 +3,7 @@
  */
 
 /*
- * $Id: TrainsJTabPane.java,v 1.2 2004/03/07 00:55:11 rtuck99 Exp $
+ * $Id: TrainsJTabPane.java,v 1.3 2004/03/09 08:53:01 rtuck99 Exp $
  */
 
 package jfreerails.client.view;
@@ -12,6 +12,9 @@ import java.awt.Point;
 
 import javax.swing.JTabbedPane;
 
+import jfreerails.client.model.CursorEventListener;
+import jfreerails.client.model.CursorEvent;
+import jfreerails.client.model.ModelRoot;
 import jfreerails.client.renderer.ViewLists;
 import jfreerails.world.top.ReadOnlyWorld;
 
@@ -49,7 +52,7 @@ public class TrainsJTabPane extends JTabbedPane implements CursorEventListener {
 
 	terrainInfoPanel.setup(world, vl);
 	stationInfoPanel.setup(modelRoot);
-	trainSchedulePanel.setup(world, vl, modelRoot, modelRoot);
+	trainSchedulePanel.setup(world, vl, modelRoot);
  	buildJPane.setup(vl, modelRoot);
         modelRoot.getCursor().addCursorEventListener(this);
         

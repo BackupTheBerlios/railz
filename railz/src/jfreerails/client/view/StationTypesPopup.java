@@ -12,9 +12,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+
 import jfreerails.client.renderer.StationRadiusRenderer;
-import jfreerails.client.view.ModelRoot;
-import jfreerails.client.view.StationBuildModel;
+import jfreerails.client.model.ModelRoot;
+import jfreerails.client.model.StationBuildModel;
 
 
 /**

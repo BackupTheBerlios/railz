@@ -2,8 +2,10 @@ package jfreerails.client.top;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+
+import jfreerails.client.view.GUIRoot;
 import jfreerails.client.renderer.ViewLists;
-import jfreerails.client.view.ModelRoot;
+import jfreerails.client.model.ModelRoot;
 import jfreerails.controller.AddPlayerCommand;
 import jfreerails.controller.AddPlayerResponseCommand;
 import jfreerails.controller.ConnectionListener;
@@ -51,15 +53,15 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
     MoveReceiver moveReceiver;
     World world;
     private FreerailsProgressMonitor progressMonitor;
-    private GUIComponentFactoryImpl guiComponentFactory;
+    private GUIRoot guiRoot;
 
-    public ConnectionAdapter(ModelRoot mr, GUIComponentFactoryImpl gcf, Player
+    public ConnectionAdapter(ModelRoot mr, GUIRoot gr, Player
 	    player, FreerailsProgressMonitor pm, GUIClient gc) {
         modelRoot = mr;
         this.player = player;
         this.progressMonitor = pm;
         guiClient = gc;
-	guiComponentFactory = gcf;
+	guiRoot = gr;
     }
 
     /**
@@ -190,7 +192,7 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
         }
 
         /* start a new game loop */
-	gameLoop = new GameLoop(guiComponentFactory.getScreenHandler(),
+	gameLoop = new GameLoop(guiRoot.getScreenHandler(),
 		moveExecuter);
 
         /* attempt to authenticate the player */
@@ -207,7 +209,7 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
 
             modelRoot.setWorld(world);
 	    ViewLists viewLists = new ViewListsImpl(modelRoot,
-		    guiComponentFactory, progressMonitor);
+		    guiRoot, progressMonitor);
 
             if (!viewLists.validate(world)) {
                 modelRoot.getUserMessageLogger().println("Couldn't validate " +

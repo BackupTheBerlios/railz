@@ -5,21 +5,19 @@ import java.awt.event.ActionEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import jfreerails.client.top.GUIComponentFactoryImpl;
-
 public class DisplayMenu extends JMenu {
-    private GUIComponentFactoryImpl guiComponentFactory;
+    private GUIRoot guiRoot;
 
-    public DisplayMenu(GUIComponentFactoryImpl gcf) {
+    public DisplayMenu(GUIRoot gcf) {
         super("Display");
-	guiComponentFactory = gcf;
+	guiRoot = gcf;
         setMnemonic(68);
 
         JMenuItem trainOrdersJMenuItem = new JMenuItem("Train Orders");
         trainOrdersJMenuItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
 		    DialogueBoxController dbc =
-		    guiComponentFactory.getDialogueBoxController();
+		    guiRoot.getDialogueBoxController();
 		    if (dbc != null)
 			dbc.showTrainOrders();
                 }
@@ -29,7 +27,7 @@ public class DisplayMenu extends JMenu {
         stationInfoJMenuItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
 		    DialogueBoxController dbc =
-		    guiComponentFactory.getDialogueBoxController();
+		    guiRoot.getDialogueBoxController();
 		    if (dbc != null)
 			dbc.showStationInfo(0);
                 }
@@ -39,7 +37,7 @@ public class DisplayMenu extends JMenu {
         trainListJMenuItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
 		    DialogueBoxController dbc =
-		    guiComponentFactory.getDialogueBoxController();
+		    guiRoot.getDialogueBoxController();
 		    if (dbc != null)
 			dbc.showTrainList();
                 }

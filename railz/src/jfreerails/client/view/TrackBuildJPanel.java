@@ -17,6 +17,8 @@ import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.JToggleButton;
 
+import jfreerails.client.model.TrackBuildModel;
+import jfreerails.client.model.ModelRoot;
 import jfreerails.client.renderer.ViewLists;
 
 /**

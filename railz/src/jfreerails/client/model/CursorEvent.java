@@ -1,10 +1,9 @@
-
 /*
 * CursorEvent.java
 *
 * Created on 08 August 2001, 20:10
 */
-package jfreerails.client.view;
+package jfreerails.client.model;
 
 /** The cursor on the map fires these events when the
 * cursor moves or a key is pressed.  The object
@@ -14,7 +13,6 @@ package jfreerails.client.view;
 * @author Luke Lindsay
 * @version 1.0
 */
-
 
 final public class CursorEvent extends java.util.EventObject {
 

@@ -11,26 +11,26 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputAdapter;
 
+import jfreerails.client.model.ModelRoot;
 import jfreerails.client.renderer.BlankMapRenderer;
 import jfreerails.client.renderer.MapRenderer;
 import jfreerails.client.renderer.ZoomedOutMapRenderer;
-import jfreerails.client.top.GUIComponentFactoryImpl;
 
 public class OverviewMapJComponent extends JPanel {
-    private GUIComponentFactoryImpl guiComponentFactory;
+    private GUIRoot guiRoot;
     private MapViewMoveReceiver moveReceiver;
     MainMapAndOverviewMapMediator mediator;
 
 	protected MapRenderer mapView=new BlankMapRenderer(0.4F);
 
-	public OverviewMapJComponent(GUIComponentFactoryImpl gcf) {
+	public OverviewMapJComponent(GUIRoot gr) {
 	    this.setPreferredSize(mapView.getMapSizeInPixels());
-	    guiComponentFactory = gcf;
-	    mediator = guiComponentFactory.getMapMediator();
+	    guiRoot = gr;
+	    mediator = guiRoot.getMapMediator();
 	    addComponentListener(componentListener);
 	    addMouseMotionListener(mouseAdapter);
 	    addMouseListener(mouseAdapter);
-	    guiComponentFactory.getMapMediator().setOverviewMap(this);
+	    guiRoot.getMapMediator().setOverviewMap(this);
 	}	
 
 	public void setup(ModelRoot mr){
@@ -49,7 +49,7 @@ public class OverviewMapJComponent extends JPanel {
 	    if(null!=this.getParent()){									
 		this.getParent().validate();
 	    }			
-	    guiComponentFactory.getMapMediator().setOverviewMap(this);
+	    guiRoot.getMapMediator().setOverviewMap(this);
 	}
 
 	protected void paintComponent(java.awt.Graphics g) {
@@ -58,7 +58,7 @@ public class OverviewMapJComponent extends JPanel {
 		// draw the overview map
 		mapView.paintRect(g2, r);
 		// draw the rectangle
-		Rectangle mainMapVisRect = guiComponentFactory.
+		Rectangle mainMapVisRect = guiRoot.
 		    getMapMediator().getMapVisibleRectangle();
 		g2.setColor(Color.WHITE);
 		g2.drawRect(mainMapVisRect.x, mainMapVisRect.y,
@@ -71,10 +71,10 @@ public class OverviewMapJComponent extends JPanel {
     
 	private ComponentListener componentListener = new ComponentAdapter() {
 	    public void componentResized(java.awt.event.ComponentEvent evt) {
-		guiComponentFactory.getMapMediator().updateObservedRect();
+		guiRoot.getMapMediator().updateObservedRect();
 	    }
 	    public void componentShown(java.awt.event.ComponentEvent evt) {
-		guiComponentFactory.getMapMediator().updateObservedRect();
+		guiRoot.getMapMediator().updateObservedRect();
 	    }
 	};
 	

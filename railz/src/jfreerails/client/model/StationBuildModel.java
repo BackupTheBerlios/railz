@@ -1,7 +1,4 @@
-/**
- * provides the models for the TrackMoveProducer build mode
- */
-package jfreerails.client.view;
+package jfreerails.client.model;
 
 import java.awt.Point;
 import java.awt.event.ActionEvent;

@@ -1,4 +1,4 @@
-package jfreerails.client.view;
+package jfreerails.client.model;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import jfreerails.client.common.UserMessageLogger;
 import jfreerails.client.renderer.ViewLists;
+import jfreerails.client.view.DialogueBoxController;
 import jfreerails.controller.MoveChainFork;
 import jfreerails.controller.ServerControlInterface;
 import jfreerails.controller.StationBuilder;
@@ -24,10 +25,11 @@ import jfreerails.world.top.WorldListListener;
 /**
  * Central point for accessing control models and common UI-independent services
  */
-public final class ModelRoot implements CallBacks {
+public final class ModelRoot {
     private TrackBuildModel trackBuildModel;
     private TrackMoveProducer trackMoveProducer;
     private StationBuildModel stationBuildModel;
+    private DebugModel debugModel = new DebugModel();
     private  UntriedMoveReceiver moveReceiver;
     private  MoveChainFork moveFork;
     private MapCursor cursor = null;
@@ -197,7 +199,7 @@ public final class ModelRoot implements CallBacks {
 	moveFork.removeListListener(l);
      }
 
-    public void processMove(Move m) {
-	moveReceiver.processMove(m);
+    public DebugModel getDebugModel() {
+	return debugModel;
     }
 }

@@ -1,4 +1,4 @@
-package jfreerails.client.view;
+package jfreerails.client.model;
 
 import java.awt.event.ActionEvent;
 import javax.swing.Action;

@@ -8,7 +8,8 @@ import javax.swing.JFrame;
 import jfreerails.client.common.ScreenHandler;
 import jfreerails.client.common.SynchronizedEventQueue;
 import jfreerails.client.common.UpdatedComponent;
-import jfreerails.client.view.ModelRoot;
+import jfreerails.client.view.GUIRoot;
+import jfreerails.client.model.ModelRoot;
 import jfreerails.controller.ConnectionToServer;
 import jfreerails.controller.InetConnection;
 import jfreerails.controller.LocalConnection;
@@ -40,11 +41,11 @@ public class GUIClient extends Client {
 	
         modelRoot.setMoveFork(getMoveChainFork());
 
-	/* create the GUIComponentFactory */
-	GUIComponentFactoryImpl gUIComponentFactory = new
-	    GUIComponentFactoryImpl(modelRoot);
+	/* create the GUIRoot */
+	GUIRoot guiRoot = new
+	    GUIRoot(modelRoot);
 
-	setReceiver(new ConnectionAdapter(mr, gUIComponentFactory, player, pm,
+	setReceiver(new ConnectionAdapter(mr, guiRoot, player, pm,
 		    this));
         modelRoot.setMoveReceiver(getReceiver());
         getReceiver().setMoveReceiver(getMoveChainFork());
@@ -53,9 +54,9 @@ public class GUIClient extends Client {
         //since the ViewListsImpl creates images that are compatible with
         //the current display settings and the screen handler may change the
         //display settings.
-	gUIComponentFactory.setScreenHandler(new
-		ScreenHandler(gUIComponentFactory.getClientJFrame(),
-		    (UpdatedComponent) gUIComponentFactory.getClientJFrame(),
+	guiRoot.setScreenHandler(new
+		ScreenHandler(guiRoot.getClientJFrame(),
+		    (UpdatedComponent) guiRoot.getClientJFrame(),
 		    mode, dm));
 
         try {

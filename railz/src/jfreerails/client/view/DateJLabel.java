@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
 
+import jfreerails.client.model.ModelRoot;
 import jfreerails.client.renderer.ViewLists;
 import jfreerails.world.common.GameCalendar;
 import jfreerails.world.common.GameTime;

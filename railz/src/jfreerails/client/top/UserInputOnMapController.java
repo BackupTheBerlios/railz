@@ -3,12 +3,13 @@ package jfreerails.client.top;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
-import jfreerails.client.view.CursorEvent;
-import jfreerails.client.view.CursorEventListener;
+import jfreerails.client.model.CursorEvent;
+import jfreerails.client.model.CursorEventListener;
+import jfreerails.client.model.MapCursor;
+import jfreerails.client.model.ModelRoot;
 import jfreerails.client.view.DialogueBoxController;
-import jfreerails.client.view.MapCursor;
 import jfreerails.client.view.MapViewJComponent;
-import jfreerails.client.view.ModelRoot;
+import jfreerails.client.view.GUIRoot;
 import jfreerails.controller.TrackMoveProducer;
 import jfreerails.controller.UncommittedMoveReceiver;
 import jfreerails.move.MoveStatus;
@@ -51,10 +52,10 @@ public class UserInputOnMapController implements CursorEventListener {
         }
     }
 
-    public void setup(GUIComponentFactoryImpl gcf,
+    public void setup(GUIRoot gr,
 	    MapViewJComponent mv, StationTypesPopup stp) {
         trackMoveExecutor = modelRoot.getReceiver();
-        this.dialogueBoxController = gcf.getDialogueBoxController();
+        this.dialogueBoxController = gr.getDialogueBoxController();
         this.mapView = mv;
 
         this.trackBuilder = modelRoot.getTrackMoveProducer();

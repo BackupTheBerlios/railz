@@ -46,7 +46,7 @@ public final class FPSCounter {
         g.setColor(Color.WHITE);
         g.fillRect(50, 50, 50, 20);
         g.setColor(Color.BLACK);
-        g.drawString("f" + frameCount, 50, 65);
+        g.drawString(fPSstr, 50, 65);
     }
 }
 

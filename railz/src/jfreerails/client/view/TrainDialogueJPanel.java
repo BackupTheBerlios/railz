@@ -11,6 +11,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.NoSuchElementException;
 
+import jfreerails.client.model.ModelRoot;
 import jfreerails.world.train.MutableSchedule;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.WorldListListener;
@@ -154,10 +155,10 @@ WorldListListener {
     }//GEN-LAST:event_nextJButtonActionPerformed
     
     public void setup(jfreerails.world.top.ReadOnlyWorld w,
-	    jfreerails.client.renderer.ViewLists vl, CallBacks cb, ModelRoot
+	    jfreerails.client.renderer.ViewLists vl, ModelRoot
 	    mr) {
 	wi = new NonNullElements(KEY.TRAINS, w);
-        newTrainScheduleJPanel1.setup(w, vl, cb);
+        newTrainScheduleJPanel1.setup(mr);
         trainDetailsJPanel1.setup(w, vl, null);
         this.w = w;
 	modelRoot = mr;

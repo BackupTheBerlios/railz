@@ -20,8 +20,8 @@ import javax.swing.JInternalFrame;
 import javax.swing.border.LineBorder;
 
 import jfreerails.client.common.ScreenHandler;
+import jfreerails.client.model.ModelRoot;
 import jfreerails.client.renderer.ViewLists;
-import jfreerails.client.top.GUIComponentFactoryImpl;
 import jfreerails.controller.MoveChainFork;
 import jfreerails.controller.UntriedMoveReceiver;
 import jfreerails.move.ChangeProductionAtEngineShopMove;
@@ -42,7 +42,7 @@ import jfreerails.world.track.FreerailsTile;
  * @author  lindsal8
  */
 public class DialogueBoxController {
-    private GUIComponentFactoryImpl guiComponentFactory;
+    private GUIRoot guiRoot;
     private Component dialog;
     private JFrame frame;
     private JButton closeButton = new JButton("Close");
@@ -78,15 +78,9 @@ public class DialogueBoxController {
         }
     };
     
-    private CallBacks callbacks = new CallBacks() {
-        public void processMove(Move m) {
-            moveReceiver.processMove(m);
-        }
-    };
-    
     public DialogueBoxController(JFrame frame, ModelRoot mr,
-	    GUIComponentFactoryImpl gcf) {
-	guiComponentFactory = gcf;
+	    GUIRoot gr) {
+	guiRoot = gr;
         modelRoot = mr;
 	this.frame = frame;
         closeButton.addActionListener(closeCurrentDialogue);
@@ -171,7 +165,7 @@ public class DialogueBoxController {
         });
         
         trainDialogueJPanel = new TrainDialogueJPanel();
-        trainDialogueJPanel.setup(world, viewLists, callbacks, modelRoot);
+        trainDialogueJPanel.setup(world, viewLists, modelRoot);
         trainDialogueJPanel.setTrainDetailsButtonActionListener( new ActionListener() {            
             public void actionPerformed(ActionEvent arg0) {
                 closeContent();
@@ -291,7 +285,7 @@ public class DialogueBoxController {
         }
         
         contentPanel.setBorder(defaultBorder);
-	switch (guiComponentFactory.getScreenHandler().getMode()) {
+	switch (guiRoot.getScreenHandler().getMode()) {
 	    case ScreenHandler.FULL_SCREEN:
 		JInternalFrame jif = new JInternalFrame("JFreerails Dialog",
 			true);

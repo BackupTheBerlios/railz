@@ -21,12 +21,14 @@ import jfreerails.client.view.MapViewJComponent;
 import jfreerails.client.view.MapViewJComponentConcrete;
 import jfreerails.client.view.CashJLabel;
 import jfreerails.client.view.DateJLabel;
+import jfreerails.client.view.GUIRoot;
 import jfreerails.client.view.HelpMenu;
 import jfreerails.client.view.DisplayMenu;
-import jfreerails.client.view.ModelRoot;
 import jfreerails.client.view.GameMenu;
+import jfreerails.client.view.DebugMenu;
 import jfreerails.client.view.OverviewMapJComponent;
 import jfreerails.client.view.TrainsJTabPane;
+import jfreerails.client.model.ModelRoot;
 import jfreerails.world.top.KEY;
 import jfreerails.world.player.Player;
 import jfreerails.world.player.PlayerPrincipal;
@@ -37,16 +39,22 @@ import jfreerails.world.player.PlayerPrincipal;
  */
 public class ClientJFrame extends javax.swing.JFrame implements
 UpdatedComponent {
+    private boolean debugMenuEnabled = 
+	(System.getProperty("DEBUG") != null);
     
-    private GUIComponentFactoryImpl gUIComponentFactory;
+    private GUIRoot guiRoot;
     private ModelRoot modelRoot;
     private MapViewJComponentConcrete mapViewJComponent;
     
-    public ClientJFrame(GUIComponentFactoryImpl gcf, ModelRoot mr) {
+    public ClientJFrame(GUIRoot gr, ModelRoot mr) {
 	modelRoot = mr;
-	gUIComponentFactory = gcf;
+	guiRoot = gr;
 	mapViewJComponent = new MapViewJComponentConcrete();
 	initComponents();
+	if (debugMenuEnabled) {
+	    jMenuBar1.add(new DebugMenu(modelRoot));
+	}
+
 	jSplitPane1.revalidate();
 	jSplitPane1.resetToPreferredSizes();
 
@@ -70,14 +78,14 @@ UpdatedComponent {
      */
     public void setup() {
         mainMapView.setViewportView(mapViewJComponent);
-        mapViewJComponent.setup(gUIComponentFactory, modelRoot);
+        mapViewJComponent.setup(guiRoot, modelRoot);
 	((OverviewMapJComponent) mapOverview).setup(modelRoot);
         ((DateJLabel) datejLabel).setup(modelRoot);
         ((CashJLabel) cashjLabel).setup(modelRoot);
         ((TrainsJTabPane) trainsJTabPane1).setup(modelRoot);
 	((BuildMenu) buildMenu).setup(modelRoot);
 	setTitle("JFreerails Client");
-	gUIComponentFactory.getMapMediator().setMainMap
+	guiRoot.getMapMediator().setMainMap
 	    (mainMapView.getViewport(), mapViewJComponent);
     }
     
@@ -110,7 +118,7 @@ UpdatedComponent {
 
         jSplitPane1 = new javax.swing.JSplitPane();
         rhsjPanel = new javax.swing.JPanel();
-        mapOverview = new OverviewMapJComponent(gUIComponentFactory);
+        mapOverview = new OverviewMapJComponent(guiRoot);
         trainsJTabPane1 = new TrainsJTabPane();
         lhsjPanel = new javax.swing.JPanel();
         mainMapView = new javax.swing.JScrollPane();
@@ -118,10 +126,10 @@ UpdatedComponent {
         datejLabel = new DateJLabel();
         cashjLabel = new CashJLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        gameMenu = new GameMenu(modelRoot, gUIComponentFactory);
+        gameMenu = new GameMenu(modelRoot, guiRoot);
         buildMenu = new BuildMenu();
-        displayMenu = new DisplayMenu(gUIComponentFactory);
-        helpMenu = new HelpMenu(gUIComponentFactory);
+        displayMenu = new DisplayMenu(guiRoot);
+        helpMenu = new HelpMenu(guiRoot);
 
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
@@ -200,6 +208,8 @@ UpdatedComponent {
         System.exit(0);
     }//GEN-LAST:event_exitForm
     
+    private javax.swing.JMenu debugMenu;
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu buildMenu;
     private javax.swing.JLabel cashjLabel;

@@ -12,6 +12,8 @@ import java.awt.Insets;
 import javax.swing.Action;
 import javax.swing.JButton;
 
+import jfreerails.client.model.ModelRoot;
+import jfreerails.client.model.StationBuildModel;
 import jfreerails.client.renderer.ViewLists;
 
 /**

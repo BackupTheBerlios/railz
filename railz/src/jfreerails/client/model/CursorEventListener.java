@@ -1,17 +1,10 @@
-
-/*
-* Interface.java
-*
-* Created on 08 August 2001, 20:25
-*/
-package jfreerails.client.view;
+package jfreerails.client.model;
 
 /**
+* Created on 08 August 2001, 20:25
 *
 * @author  Luke Lindsay
 */
-
-
 public interface CursorEventListener extends java.util.EventListener {
 
      void cursorOneTileMove( CursorEvent ce );

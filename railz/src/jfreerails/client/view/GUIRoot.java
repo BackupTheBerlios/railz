@@ -1,4 +1,4 @@
-package jfreerails.client.top;
+package jfreerails.client.view;
 
 import java.awt.Rectangle;
 import javax.swing.JFrame;
@@ -7,17 +7,10 @@ import javax.swing.JTabbedPane;
 import jfreerails.client.common.ScreenHandler;
 import jfreerails.client.renderer.ViewLists;
 import jfreerails.client.renderer.ZoomedOutMapRenderer;
-import jfreerails.client.view.DetailMapView;
-import jfreerails.client.view.DialogueBoxController;
-import jfreerails.client.view.MainMapAndOverviewMapMediator;
-import jfreerails.client.view.MapCursor;
-import jfreerails.client.view.MapViewJComponentConcrete;
-import jfreerails.client.view.MapViewMoveReceiver;
-import jfreerails.client.view.ModelRoot;
-import jfreerails.client.view.ModelRootListener;
-import jfreerails.client.view.OverviewMapJComponent;
-import jfreerails.client.view.ServerControlModel;
-import jfreerails.client.view.StationPlacementCursor;
+import jfreerails.client.top.ClientJFrame;
+import jfreerails.client.model.UserMessageGenerator;
+import jfreerails.client.model.ModelRoot;
+import jfreerails.client.model.ModelRootListener;
 import jfreerails.controller.MoveChainFork;
 import jfreerails.controller.MoveReceiver;
 import jfreerails.controller.StationBuilder;
@@ -27,7 +20,7 @@ import jfreerails.world.top.ReadOnlyWorld;
 /**
  * A central point for coordinating GUI components.
  */
-public class GUIComponentFactoryImpl implements ModelRootListener {
+public class GUIRoot implements ModelRootListener {
     private ModelRoot modelRoot;
 
     private DialogueBoxController dialogueBoxController;
@@ -39,7 +32,7 @@ public class GUIComponentFactoryImpl implements ModelRootListener {
     private MainMapAndOverviewMapMediator mediator;
     private ScreenHandler screenHandler;
 
-    public GUIComponentFactoryImpl(ModelRoot mr) {
+    public GUIRoot(ModelRoot mr) {
         modelRoot = mr;
 
         modelRoot.addModelRootListener(this);

@@ -3,7 +3,7 @@ package jfreerails.client.top;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
-import jfreerails.client.view.ModelRoot;
+import jfreerails.client.model.ModelRoot;
 import jfreerails.controller.MoveReceiver;
 import jfreerails.controller.UncommittedMoveReceiver;
 import jfreerails.move.Move;

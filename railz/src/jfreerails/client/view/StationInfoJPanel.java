@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
+import jfreerails.client.model.ModelRoot;
 import jfreerails.controller.MoveReceiver;
 import jfreerails.move.AddItemToListMove;
 import jfreerails.move.ListMove;

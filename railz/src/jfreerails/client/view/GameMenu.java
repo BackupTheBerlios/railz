@@ -13,15 +13,16 @@ import javax.swing.event.MenuEvent;
 import java.util.Enumeration;
 
 import jfreerails.client.common.ActionAdapter;
-import jfreerails.client.top.GUIComponentFactoryImpl;
+import jfreerails.client.model.ModelRoot;
+import jfreerails.client.model.ServerControlModel;
 
 public class GameMenu extends JMenu {
     private ServerControlModel sc;
-    private GUIComponentFactoryImpl guiComponentFactory;
+    private GUIRoot guiRoot;
 
-    public GameMenu (ModelRoot mr, GUIComponentFactoryImpl gcf) {
+    public GameMenu (ModelRoot mr, GUIRoot gr) {
 	super ("Game");
-	guiComponentFactory = gcf;
+	guiRoot = gr;
 	sc = mr.getServerControls();
 
 	setMnemonic(71);
@@ -67,7 +68,7 @@ public class GameMenu extends JMenu {
 	newspaperJMenuItem.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 		    DialogueBoxController dbc =
-			guiComponentFactory.getDialogueBoxController();
+			guiRoot.getDialogueBoxController();
 		    if (dbc != null)
 			dbc.showNewspaper("Headline");
 		//glassPanel.setVisible(true);

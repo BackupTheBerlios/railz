@@ -1,4 +1,4 @@
-package jfreerails.client.view;
+package jfreerails.client.model;
 
 public interface ModelRootListener {
     /**
