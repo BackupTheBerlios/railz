@@ -43,6 +43,10 @@ class CalcCargoSupplyRateAtStation {
     CalcCargoSupplyRateAtStation(ReadOnlyWorld world, int X, int Y) {
 	w = world;
 	supplyDemandViewer = new SupplyDemandViewer(world);
+	FreerailsTile ft = world.getTile(X, Y);
+	BuildingType bt = (BuildingType) world.get(KEY.BUILDING_TYPES,
+		ft.getBuildingTile().getType(), Player.AUTHORITATIVE);
+	supplyDemandViewer.setLocation(X, Y, bt.getStationRadius());
     }
 
     int[] scanAdjacentTiles() {
