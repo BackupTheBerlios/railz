@@ -19,7 +19,7 @@
  */
 
 /*
- * $Id: TrainsJTabPane.java,v 1.4 2005/01/26 00:46:40 rtuck99 Exp $
+ * $Id: TrainsJTabPane.java,v 1.5 2005/01/28 22:51:13 rtuck99 Exp $
  */
 
 package org.railz.client.view;
@@ -57,11 +57,24 @@ public class TrainsJTabPane extends JTabbedPane implements CursorEventListener {
     }
     
     public void setup(ModelRoot modelRoot, GUIRoot gr) {	
+	world = modelRoot.getWorld();
+	ViewLists vl = modelRoot.getViewLists();
+
+	if (trainSchedulePanel != null) {
+	    // we've already been initialised
+	    removeChangeListener(tabListener);
+
+	    remove(trainSchedulePanel);
+	    remove(terrainInfoPanel);
+	    remove(stationInfoPanel);
+	    remove(buildJPane);
+	    viewModeButtonModel.removeChangeListener(viewModeListener);
+	    modelRoot.getCursor().removeCursorEventListener(this);
+	}
+
 	trainSchedulePanel = new TrainDialogueJPanel(modelRoot, gr);
 	terrainInfoPanel = new TerrainInfoJPanel(modelRoot, gr);
 	stationInfoPanel = new StationInfoJPanel(gr);
-	world = modelRoot.getWorld();
-	ViewLists vl = modelRoot.getViewLists();
 	
 	addTab(null, vl.getImageIcon("terrain_info"), terrainInfoPanel, 
 		"Terrain Info");
@@ -90,7 +103,6 @@ public class TrainsJTabPane extends JTabbedPane implements CursorEventListener {
 
  	buildJPane.setup(vl, modelRoot);
         modelRoot.getCursor().addCursorEventListener(this);
-	viewModeButtonModel.setSelected(true);
     }
 
     /** Sets the track build mode whenever the View or Build tabs are clicked
