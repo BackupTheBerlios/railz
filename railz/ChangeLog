@@ -1,6 +1,7 @@
 May 14, 2004:
 -------------
 Fix for bug 34 - buildings no longer appear on mini map
+Fix for bug 31 - terrain info doesn't show building title
 May 13, 2004:
 -------------
 Fix for bug 33 - harbours should be placed next to sea

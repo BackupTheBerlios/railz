@@ -146,6 +146,7 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
 	    bt = (BuildingType) w.get(KEY.BUILDING_TYPES,
 		    tile.getBuildingTile().getType(), Player.AUTHORITATIVE);
       
+	    row += "<b>" + bt.getName() + "</b><br>";
 	    cargosProduced = bt.getProduction().length;
 	    cargosConsumed = bt.getConsumption().length;
 	    cargosConverted = bt.getConversion().length;
