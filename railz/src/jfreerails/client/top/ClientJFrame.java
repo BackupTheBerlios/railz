@@ -45,6 +45,7 @@ UpdatedComponent {
     private GUIRoot guiRoot;
     private ModelRoot modelRoot;
     private MapViewJComponentConcrete mapViewJComponent;
+    private int frameCount = 0;
     
     public ClientJFrame(GUIRoot gr, ModelRoot mr) {
 	modelRoot = mr;
@@ -91,17 +92,31 @@ UpdatedComponent {
     
     public void doFrameUpdate(Graphics g) {
 	Container cp = getContentPane();
-	g.translate(cp.getX(), cp.getY());
-	g.translate(jSplitPane1.getX(), jSplitPane1.getY());
-	g.translate(lhsjPanel.getX(), lhsjPanel.getY());
-	g.translate(mainMapView.getX(), mainMapView.getY());
+	g.translate(cp.getX() + jSplitPane1.getX() +
+	       	lhsjPanel.getX() + mainMapView.getX(),
+	       	cp.getY() + jSplitPane1.getY() +
+	       	lhsjPanel.getY() + mainMapView.getY());
 	JViewport vp = mainMapView.getViewport();
 	Point vpLocation = vp.getLocation();
 	g.setClip(vpLocation.x, vpLocation.y, vp.getWidth(), vp.getHeight() );
 	g.translate(vpLocation.x, vpLocation.y);
 	mapViewJComponent.doFrameUpdate(g);
-	RepaintManager repaintManager = RepaintManager.currentManager(mainMapView);
+
+	RepaintManager repaintManager = RepaintManager.currentManager
+	    (mainMapView);
 	repaintManager.markCompletelyClean(mainMapView);
+	if (frameCount % 4 == 0) {
+	    g.translate(- vpLocation.x - mainMapView.getX() +
+		    statusjPanel.getX(),
+		    - vpLocation.y - mainMapView.getY() +
+		   statusjPanel.getY());
+	    g.setClip(0, 0, statusjPanel.getWidth(), statusjPanel.getHeight());
+	    statusjPanel.paint(g);
+	    RepaintManager.currentManager(statusjPanel).
+		markCompletelyClean(statusjPanel);
+	}
+	if (++frameCount == 4)
+	    frameCount = 0;
     }
 
     public boolean disDoubleBuffered() {

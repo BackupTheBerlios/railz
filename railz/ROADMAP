@@ -6,6 +6,7 @@ Full multiplayer support - ownership of all appropriate game world objects.
 Ability to place new trains on map
 Profit and loss
 I18N infrastructure
+Move to bugzilla bug database
 
 Optional 0.4 features
 =====================
@@ -18,6 +19,7 @@ Sound??
 
 Development features for 0.5 or later
 =====================================
+Rename classe heirarchy from jfreerails.xx.xx.xx
 Rationalisation of package structure (split into client, server and common
 		packages)
 Rationalisation of train movement and timer
