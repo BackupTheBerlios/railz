@@ -256,8 +256,10 @@ public class ServerGameEngine implements GameModel, Runnable,
 	    buildTrains();
 
 	    //Check whether we have just started a new year..
-	    GameTime time = (GameTime)world.get(ITEM.TIME);
-	    GameCalendar calendar = (GameCalendar)world.get(ITEM.CALENDAR);
+	    GameTime time = (GameTime)world.get(ITEM.TIME,
+		    Player.AUTHORITATIVE);
+	    GameCalendar calendar = (GameCalendar)world.get(ITEM.CALENDAR,
+		    Player.AUTHORITATIVE);
 	    int currentYear = calendar.getCalendar(time).get(Calendar.YEAR);
 	    int currentMonth = calendar.getCalendar(time).get(Calendar.MONTH);
 

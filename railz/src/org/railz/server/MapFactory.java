@@ -28,6 +28,7 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
 import org.railz.util.FreerailsProgressMonitor;
+import org.railz.world.player.*;
 import org.railz.world.terrain.TerrainType;
 import org.railz.world.top.KEY;
 import org.railz.world.top.WorldImpl;
@@ -59,8 +60,10 @@ public class MapFactory {
 
         HashMap rgb2TerrainType = new HashMap();
 
-        for (int i = 0; i < w.size(KEY.TERRAIN_TYPES); i++) {
-            TerrainType tilemodel = (TerrainType)w.get(KEY.TERRAIN_TYPES, i);
+	for (int i = 0; i < w.size(KEY.TERRAIN_TYPES, Player.AUTHORITATIVE);
+		i++) {
+            TerrainType tilemodel = (TerrainType)w.get(KEY.TERRAIN_TYPES, i,
+		    Player.AUTHORITATIVE);
             rgb2TerrainType.put(new Integer(tilemodel.getRGB()), new Integer(i));
         }
 

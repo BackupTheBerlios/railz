@@ -46,22 +46,12 @@ public class WorldView implements World {
 	world.set(item, element, p);
     }
 
-    public void set(ITEM item, FreerailsSerializable element) {
-	world.set(item, element, Player.AUTHORITATIVE);
-    }
-
     public void set(KEY key, int index, FreerailsSerializable element,
 	    FreerailsPrincipal p) {
 	if (key.isPrivate && ! viewer.equals(p))
 	    return;
 
 	world.set(key, index, element, p);
-    }
-
-    public void set(KEY key, int index, FreerailsSerializable element) {
-	if (key.isPrivate && ! viewer.equals(Player.AUTHORITATIVE))
-	    return;
-	world.set(key, index, element, Player.AUTHORITATIVE);
     }
 
     public int add(KEY key, FreerailsSerializable element, FreerailsPrincipal
@@ -71,40 +61,18 @@ public class WorldView implements World {
 	return world.add(key, element, p);
     }
 
-    public int add(KEY key, FreerailsSerializable element) {
-	if (key.isPrivate && ! viewer.equals(Player.AUTHORITATIVE))
-	    return -1;
-	return world.add(key, element, Player.AUTHORITATIVE);
-    }
-
     public FreerailsSerializable removeLast(KEY key, FreerailsPrincipal p) {
 	if (key.isPrivate && ! viewer.equals(p))
 	    return null;
 	return world.removeLast(key, p);
     }
 
-    public FreerailsSerializable removeLast(KEY key) {
-	if (key.isPrivate && ! viewer.equals(Player.AUTHORITATIVE))
-	    return null;
-	return world.removeLast(key, Player.AUTHORITATIVE);
-    }
-
     public void setTile(int x, int y, FreerailsTile tile) {
 	world.setTile(x, y, tile);
     }
 
-    public FreerailsSerializable get(ITEM item) {
-	return world.get(item, Player.AUTHORITATIVE);
-    }
-
     public FreerailsSerializable get(ITEM item, FreerailsPrincipal p) {
 	return world.get(item, p);
-    }
-
-    public FreerailsSerializable get(KEY key, int index) {
-	if (key.isPrivate && ! viewer.equals(Player.AUTHORITATIVE))
-	    return null;
-	return world.get(key, index, Player.AUTHORITATIVE);
     }
 
     public FreerailsSerializable get(KEY key, int index, FreerailsPrincipal p)
@@ -113,12 +81,6 @@ public class WorldView implements World {
 		return null;
 	    return world.get(key, index, p);
 	}
-
-    public int size(KEY key) {
-	if (key.isPrivate && ! viewer.equals(Player.AUTHORITATIVE))
-	    return 0;
-	return world.size(key, Player.AUTHORITATIVE);
-    }
 
     public int size(KEY key, FreerailsPrincipal p) {
 	if (key.isPrivate && ! viewer.equals(p))
@@ -144,12 +106,6 @@ public class WorldView implements World {
 
     public boolean boundsContain(int x, int y) {
 	return world.boundsContain(x, y);
-    }
-
-    public boolean boundsContain(KEY k, int index) {
-	if (k.isPrivate && ! viewer.equals(Player.AUTHORITATIVE))
-	    return false;
-	return world.boundsContain(k, index, Player.AUTHORITATIVE);
     }
 
     public boolean boundsContain(KEY k, int index, FreerailsPrincipal p) {

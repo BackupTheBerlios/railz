@@ -66,8 +66,9 @@ class WorldFactory {
         pm.setValue(++progess);
 
         //Set the time..
-        w.set(ITEM.CALENDAR, new GameCalendar(30, 1840, 0));
-        w.set(ITEM.TIME, new GameTime(0));
+        w.set(ITEM.CALENDAR, new GameCalendar(30, 1840, 0),
+		Player.AUTHORITATIVE);
+        w.set(ITEM.TIME, new GameTime(0), Player.AUTHORITATIVE);
 
         try {
             java.net.URL url = mrf.getURLForReading

@@ -41,28 +41,11 @@ public interface World extends ReadOnlyWorld {
         FreerailsPrincipal principal);
 
     /**
-     * Replaces the element mapped to the specified item with the specified
-     * element.
-     *
-     * @deprecated in favour of set(ITEM, FreerailsSerializable, FreerailsPrincipal)
-    */
-    void set(ITEM item, FreerailsSerializable element);
-
-    /**
      * Replaces the element at the specified position in the specified list
      * with the specified element.
      */
     void set(KEY key, int index, FreerailsSerializable element,
         FreerailsPrincipal principal);
-
-    /**
-     * Replaces the element at the specified position in the specified list
-     * with the specified element.
-     *
-     * @deprecated in favour of set(KEY, int, FreerailsSerializable,
-     * Prinicipal)
-     */
-    void set(KEY key, int index, FreerailsSerializable element);
 
     /**
      * Appends the specified element to the end of the specifed list and
@@ -71,24 +54,9 @@ public interface World extends ReadOnlyWorld {
     int add(KEY key, FreerailsSerializable element, FreerailsPrincipal principal);
 
     /**
-     * Appends the specified element to the end of the specifed list and
-     * returns the index that can be used to retrieve it.
-     *
-     * @deprecated in favour of add(KEY, FreerailsSerializable, FreerailsPrincipal)
-     */
-    int add(KEY key, FreerailsSerializable element);
-
-    /**
      * Removes the last element from the specified list.
      */
     FreerailsSerializable removeLast(KEY key, FreerailsPrincipal principal);
-
-    /**
-     * Removes the last element from the specified list.
-     *
-     * @deprecated in favour of removeLast(KEY, FreerailsPrincipal)
-     */
-    FreerailsSerializable removeLast(KEY key);
 
     /**
      * Replaces the tile at the specified position on the map with the

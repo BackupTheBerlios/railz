@@ -135,25 +135,9 @@ public final class WorldOverlay implements World {
 
     /**
      * Returns the element mapped to the specified item.
-     * @deprecated in favour of get(ITEM, FreerailsPrincipal)
-     */
-    public FreerailsSerializable get(ITEM item) {
-	return world.get(item, Player.AUTHORITATIVE);
-    }
-
-    /**
-     * Returns the element mapped to the specified item.
      */
     public FreerailsSerializable get(ITEM item, FreerailsPrincipal p) {
 	return world.get(item, p);
-    }
-
-    /**
-     * Returns the element at the specified position in the specified list.
-     * @deprecated in favour of get(KEY, int, FreerailsPrincipal)
-     */
-    public FreerailsSerializable get(KEY key, int index) {
-	return get(key, index, Player.AUTHORITATIVE);
     }
 
     /**
@@ -166,14 +150,6 @@ public final class WorldOverlay implements World {
 	    return (FreerailsSerializable) ll.getLast();
 
 	return world.get(key, index, p);
-    }
-
-    /**
-     * Returns the number of elements in the specified list.
-     * @deprecated in favour of size(KEY, FreerailsPrincipal)
-     */
-    public int size(KEY key) {
-	return size(key, Player.AUTHORITATIVE);
     }
 
     /**
@@ -221,13 +197,6 @@ public final class WorldOverlay implements World {
 	return world.boundsContain(x, y);
     }
 
-    /**
-     * @deprecated in favour of boundsContain(KEY, int, FreerailsPrincipal)
-     */
-    public boolean boundsContain(KEY k, int index) {
-	return boundsContain(k, index, Player.AUTHORITATIVE);
-    }
-
     public boolean boundsContain(KEY k, int index, FreerailsPrincipal p) {
 	return (index >= 0 && index < size(k, p));
     }
@@ -238,16 +207,6 @@ public final class WorldOverlay implements World {
      */
     public void set(ITEM item, FreerailsSerializable element,
         FreerailsPrincipal principal) {
-	assert false;
-    }
-
-    /**
-     * Replaces the element mapped to the specified item with the specified
-     * element.
-     *
-     * @deprecated in favour of set(ITEM, FreerailsSerializable, FreerailsPrincipal)
-    */
-    public void set(ITEM item, FreerailsSerializable element) {
 	assert false;
     }
 
@@ -269,17 +228,6 @@ public final class WorldOverlay implements World {
     }
 
     /**
-     * Replaces the element at the specified position in the specified list
-     * with the specified element.
-     *
-     * @deprecated in favour of set(KEY, int, FreerailsSerializable,
-     * Prinicipal)
-     */
-    public void set(KEY key, int index, FreerailsSerializable element) {
-	set(key, index, Player.AUTHORITATIVE);
-    }
-
-    /**
      * Appends the specified element to the end of the specifed list and
      * returns the index that can be used to retrieve it.
      */
@@ -291,16 +239,6 @@ public final class WorldOverlay implements World {
     }
 
     /**
-     * Appends the specified element to the end of the specifed list and
-     * returns the index that can be used to retrieve it.
-     *
-     * @deprecated in favour of add(KEY, FreerailsSerializable, FreerailsPrincipal)
-     */
-    public int add(KEY key, FreerailsSerializable element) {
-	return add(key, element, Player.AUTHORITATIVE);
-    }
-
-    /**
      * Removes the last element from the specified list.
      */
     public FreerailsSerializable removeLast(KEY key, FreerailsPrincipal
@@ -309,15 +247,6 @@ public final class WorldOverlay implements World {
 	FreerailsSerializable fs = get(key, sz - 1, principal);
 	set(key, sz - 1, null, principal);
 	return fs;
-    }
-
-    /**
-     * Removes the last element from the specified list.
-     *
-     * @deprecated in favour of removeLast(KEY, FreerailsPrincipal)
-     */
-    public FreerailsSerializable removeLast(KEY key) {
-	return removeLast(key, Player.AUTHORITATIVE);
     }
 
     /**
