@@ -161,6 +161,7 @@ public final class AuthoritativeTrainMover {
 	 * to be the head of the train */
 	TrainPath pathToNextStation = pathFinder.findPath(arriveStationCoords,
 		    departStationCoords);
+	assert pathToNextStation != null;
 	if (pathToNextStation == null) {
 	    /* Couldn't find a path to the next station */
 	    return;

@@ -31,6 +31,9 @@ public class TrainPathExplorer implements PathExplorer {
 
     private byte initialDirection;
 
+    /**
+     * Direction of last returned tile, or 0 if no tile returned
+     */
     private byte direction;
 
     public PathExplorer getCopy() {
@@ -85,6 +88,7 @@ public class TrainPathExplorer implements PathExplorer {
 	this.y = y;
 	this.initialDirection = initialDirection;
 	direction = initialDirection;
+	world = w;
     }
 
     private TrainPathExplorer (TrainPathExplorer pe, int x, int y) {
@@ -100,15 +104,22 @@ public class TrainPathExplorer implements PathExplorer {
     }
 
     private byte getNextDirection() {
-	byte newDirection = direction;
 	byte trackConfig = world.getTile(x, y).getTrackConfiguration();
+	byte newDirection = direction;
+	byte dirty = initialDirection;
 	do {
-	    CompassPoints.rotateClockwise(direction);
+	    if (newDirection == 0) {
+	       	newDirection = initialDirection;
+		dirty = 0;
+	    } else {
+		dirty |= newDirection;
+		newDirection = CompassPoints.rotateClockwise(newDirection);
+	    }
 	    if ((newDirection & trackConfig) != 0 &&
-		    newDirection != initialDirection) {
+		    ((newDirection & dirty) == 0)) {
 		return newDirection;
 	    }
-	} while ((newDirection != initialDirection));
+	} while ((newDirection & dirty) == 0);
 	return 0;
     }
 
@@ -125,6 +136,6 @@ public class TrainPathExplorer implements PathExplorer {
     }
 
     public byte getDirection() {
-	return direction;
+	return CompassPoints.invert(initialDirection);
     }
 }

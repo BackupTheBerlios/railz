@@ -294,6 +294,7 @@ public final class TrainPath implements FreerailsSerializable {
     }
 
     public ArrayList getMapCoordArray() {
+	System.out.println("getting map coords for " + this);
 	ArrayList mapCoords = new ArrayList();
 	IntLine il;
 	ListIterator i = segments.listIterator(0);
@@ -318,7 +319,9 @@ public final class TrainPath implements FreerailsSerializable {
 	    dy = CompassPoints.getUnitDeltaY(direction);
 	    TrackTile.deltasToTileCoords(p2); 
 	    
+	    System.out.println("p2=" + p2);
 	    while (!p2.equals(p)) {
+		System.out.println("p=" + p);
 		p.translate(dx, dy);
 		mapCoords.add(new Point(p));
 		oldP.setLocation(p);

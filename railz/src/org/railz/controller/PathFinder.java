@@ -18,6 +18,7 @@ package org.railz.controller;
 
 import java.awt.*;
 import java.util.*;
+import java.util.logging.*;
 
 import org.railz.world.track.*;
 /**
@@ -34,6 +35,8 @@ public final class PathFinder {
     private int minCost;
     private PathExplorer startExplorer;
     
+    private static Logger logger = Logger.getLogger("global");
+
     private class ExplorerList extends LinkedList {
 	private int cost = 0;
 
@@ -52,6 +55,11 @@ public final class PathFinder {
 
 	public int getCost() {
 	    return cost;
+	}
+
+	public void clear() {
+	    super.clear();
+	    cost = 0;
 	}
     }
 
@@ -72,6 +80,7 @@ public final class PathFinder {
 	    int minCost, int maxCost) {
 	this.minCost = minCost;
 	this.maxCost = maxCost;
+	start = new Point(initialExplorer.getX(), initialExplorer.getY());
 	startExplorer = initialExplorer;
 	target = new Point(destX, destY);
     }
@@ -82,6 +91,9 @@ public final class PathFinder {
      * link is at the starting point, and the last contains the destination.
      */
     public LinkedList explore() {
+	logger.log(Level.FINE, "exploring from " + start + " to " + target);
+	logger.log(Level.FINE, "best minCost=" + minCost + ", maxCost=" +
+	       maxCost);
 	currentPath = new ExplorerList();
 	bestPath = new LinkedList();
 	bestCost = maxCost;
@@ -93,16 +105,13 @@ public final class PathFinder {
 	PathExplorer pe = startExplorer;
 	Point currentPos = new Point();
 	exploredTiles.clear();
-	currentPath.clear();
 	do {
-	    exploredTiles.add(new Point(pe.getX(), pe.getY()));
-
 	    currentPath.add(pe);
 
 	    pe = pe.exploreNewTile();
 
 	    if (pe == null) {
-		if (currentPath.size() == 0) {
+		if (currentPath.size() == 1) {
 		    // we have already explored all tiles
 		    break;
 		} else {
@@ -144,6 +153,8 @@ public final class PathFinder {
 		} while (i.hasNext());
 		if (cost < bestCost) {
 		    /* this is the new best route */
+		    logger.log(Level.FINE, "Found new route cost " + 
+			    cost);
 		    bestCost = cost;
 		    bestPath.clear();
 		    i = currentPath.iterator();
@@ -151,7 +162,15 @@ public final class PathFinder {
 			bestPath.add(((PathExplorer) i.next()).getCopy());
 		    } while (i.hasNext());
 		}
+		// remove the current tile, and continue searching with
+		// the previous tile.
+		currentPath.removeLast();
+		pe = (PathExplorer) currentPath.removeLast();
+		continue;
 	    }
+
+	    exploredTiles.add(new Point(pe.getX(), pe.getY()));
+
 	} while (bestCost > minCost);
 
 	return bestPath;

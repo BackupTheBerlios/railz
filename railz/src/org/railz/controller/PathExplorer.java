@@ -50,8 +50,8 @@ public interface PathExplorer {
     public PathExplorer getCopy();
 
     /**
-     * @return the direction between this tile and the tile last returned by
-     * exploreNewTile().
+     * @return the direction from the tile traversed to reach
+     * this tile (the parent tile), to this tile.
      */
     public byte getDirection();
 }

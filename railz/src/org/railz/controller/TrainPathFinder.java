@@ -20,6 +20,7 @@ import java.awt.Point;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.logging.*;
 
 import org.railz.world.common.*;
 import org.railz.world.top.*;
@@ -28,6 +29,7 @@ import org.railz.world.train.*;
 
 public class TrainPathFinder {
     private ReadOnlyWorld world;
+    private static Logger logger = Logger.getLogger("global");
 
     public TrainPathFinder(ReadOnlyWorld w) {
 	world = w;
@@ -70,6 +72,8 @@ public class TrainPathFinder {
      * @return the found path, or null if no path could be found.
      */
     public TrainPath findPath(Point start, Point dest) {
+	logger.log(Level.FINE, "Finding path from " + start + " to " + dest);
+
 	Point target = new Point(dest);
 	TrackTile.deltasToTileCoords(target);
 	Point startCentre = new Point (start);
@@ -97,19 +101,30 @@ public class TrainPathFinder {
 	 * target tile and the start tile */
 	Point oldp = new Point();
 	Point newp = new Point();
-	byte oldDirection;
-	PathExplorer p = (PathExplorer) bestPath.removeFirst();
+	byte oldDirection = 0;
+	PathExplorer p;
 	LinkedList intLines = new LinkedList();
 	boolean firstP = true;
+	p = (PathExplorer) bestPath.removeFirst();
 	while (!bestPath.isEmpty()) {
-	    oldp.x = p.getX();
-	    oldp.y = p.getY();
-	    oldDirection = p.getDirection();
-	    do {
+	    newp.x = oldp.x = p.getX();
+	    newp.y = oldp.y = p.getY();
+	    if (!bestPath.isEmpty()) {
 		p = (PathExplorer) bestPath.removeFirst();
 		newp.x = p.getX();
 		newp.y = p.getY();
-	    } while (p.getDirection() == oldDirection);
+		oldDirection = p.getDirection();
+		while (!bestPath.isEmpty()) {
+		    pe = (PathExplorer) bestPath.removeFirst();
+		    if (oldDirection != pe.getDirection()) {
+			bestPath.addFirst(pe);
+			break;
+		    }
+		    p = pe;
+		    newp.x = pe.getX();
+		    newp.y = pe.getY();
+		}
+	    }
 	    if (firstP) {
 		oldp.x = startCentre.x;
 		oldp.y = startCentre.y;
@@ -124,6 +139,7 @@ public class TrainPathFinder {
 	fixUpPathEnds(intLines, start, dest);
 	TrainPath retVal = new TrainPath((IntLine[]) intLines.toArray(new
 		    IntLine[intLines.size()]));
+	logger.log(Level.FINER, "Found path " + retVal);
 	return retVal;
     }
 }
