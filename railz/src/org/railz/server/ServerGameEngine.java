@@ -123,8 +123,10 @@ public class ServerGameEngine implements GameModel, Runnable,
      * Starts a game with the specified world state
      * @param serverAutomata Vector of ServerAutomaton representing internal
      * clients of this game.
-     * @param p an IdentityProvider which correlates a ConnectionToServer
-     * object with a Principal.
+     * @param scenario a scenario which this game is going to have as an
+     * objective.
+     * @param w a {@link org.railz.world.top.WorldImpl} containing the world
+     * state.
      */
     private ServerGameEngine(WorldImpl w,
         Vector serverAutomata, Scenario scenario) {

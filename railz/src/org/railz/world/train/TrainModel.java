@@ -107,7 +107,8 @@ public class TrainModel implements FreerailsSerializable {
      * Constructor for a new train.
      * @param engine type of the engine
      * @param wagons array of indexes into the WAGON_TYPES table
-     * @param p initial position of the train on the map.
+     * @param bundleId index into the CARGO_BUNDLES table
+     * @param creationDate time the train was created
      */
     public TrainModel(int engine, int[] wagons, int bundleId,
 	    GameTime creationDate) {

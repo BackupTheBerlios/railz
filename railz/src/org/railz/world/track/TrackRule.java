@@ -42,14 +42,14 @@ public class TrackRule implements FreerailsSerializable {
     private final boolean isTunnel;
 
     /**
-     * Array describing the allowed track configurations. true indicates the
-     * configuration is allowed.
+     * Array describing the allowed track configurations.
+     * True indicates the configuration is allowed.
      */
     private final boolean legalConfigurations[] = new boolean[256];
 
     private final int maxConsecutivePieces;
     /**
-     * @param the name of this track type.
+     * @param name the name of this track type.
      * @param isDoubleTrack whether this track is twin-track (permits travel
      * in both directions simultaneously)
      * @param maxConsecutivePieces this is the maximum number of consecutive

@@ -102,7 +102,7 @@ public class TrainPathFinder {
 
     /**
      * @param start start location measured in Deltas from map origin.
-     * @param target end location measured in Deltas from map origin.
+     * @param dest end location measured in Deltas from map origin.
      * TODO calculate cost from terrain and track layout.
      * TODO improve efficiency of this algorithm (discard paths when the
      * possible minimum is longer than current best, compare current best
@@ -289,12 +289,12 @@ public class TrainPathFinder {
 	}
 
 	/**
+	 * @param direction direction to explore
 	 * @param cost cost factor to traverse this tile
 	 * @param x x coord of tile in tiles
 	 * @param y y coord of tile in tiles
 	 * @param trackLayout CompassPoints mask representing layout of track
 	 * at this point
-	 * @param cost cost factor to traverse the tile.
 	 */
 	public PathElement(int x, int y, byte direction, byte trackLayout, int
 		cost) {
