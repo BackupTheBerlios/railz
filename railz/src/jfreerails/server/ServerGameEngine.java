@@ -45,6 +45,7 @@ import jfreerails.world.top.ITEM;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.NonNullElements;
 import jfreerails.world.top.World;
+import jfreerails.world.train.*;
 
 
 /**
@@ -354,6 +355,15 @@ public class ServerGameEngine implements GameModel, Runnable {
     public synchronized void saveGame(File filename) {
         try {
             System.out.print("Saving game..  ");
+	    NonNullElements i = new NonNullElements(KEY.PLAYERS, world,
+                    Player.AUTHORITATIVE);
+	    while (i.next()) {
+		NonNullElements j = new NonNullElements(KEY.TRAINS, world,
+			((Player) i.getElement()).getPrincipal());
+		while (j.next()) {
+		    ((TrainModel) j.getElement()).releaseAllLocks(world); 
+		}
+	    }
 
             FileOutputStream out = new
 		FileOutputStream(filename.getCanonicalPath());
@@ -367,7 +377,7 @@ public class ServerGameEngine implements GameModel, Runnable {
             /**
              * save player private data
              */
-            NonNullElements i = new NonNullElements(KEY.PLAYERS, world,
+            i = new NonNullElements(KEY.PLAYERS, world,
                     Player.AUTHORITATIVE);
 
             while (i.next()) {

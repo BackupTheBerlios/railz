@@ -384,6 +384,7 @@ WorldListListener, ListCellRenderer {
     }
     
     public void display(int trainNumber){
+	System.out.println("TrainScheduleJPanel display");
         this.trainNumber = trainNumber;
 	if (trainNumber >= 0) {
 	    TrainModel train = (TrainModel) w.get(KEY.TRAINS, trainNumber,
@@ -586,7 +587,7 @@ WorldListListener, ListCellRenderer {
 
     private SelectStationJPanel selectStationJPanel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addStationJButton;
+    javax.swing.JButton addStationJButton;
     private javax.swing.JMenu addWagonJMenu;
     private javax.swing.JMenu changeConsistJMenu;
     private javax.swing.JMenuItem changeStation;
@@ -599,7 +600,7 @@ WorldListListener, ListCellRenderer {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JMenuItem noChangeJMenuItem;
     private javax.swing.JList orders;
-    private javax.swing.JButton priorityOrdersJButton;
+    javax.swing.JButton priorityOrdersJButton;
     private javax.swing.JMenuItem pullUpJMenuItem;
     private javax.swing.JMenuItem pushDownJMenuItem;
     private javax.swing.JMenuItem removeAllJMenuItem;

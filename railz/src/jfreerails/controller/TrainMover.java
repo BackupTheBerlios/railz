@@ -19,10 +19,6 @@
 package jfreerails.controller;
 
 import java.awt.Point;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
 
 import jfreerails.world.common.*;
 import jfreerails.world.player.*;
@@ -69,15 +65,14 @@ public final class TrainMover {
 		TrainModel tm = (TrainModel) j.getElement();
 		if (tm.getPosition() == null) {
 		    setInitialPosition(tm, p, j.getIndex());
-		} else if (tm.getTrainMotionModel().getPathToDestination() ==
-			null) {
-		    setPathToDestination(tm);
+		}
+	       	if (tm.getTrainMotionModel().isLost()) {
 		    continue;
 		}
 		if (tm.getState() == TrainModel.STATE_RUNNABLE)
 		    updateTrainPosition(tm);
 		else if (! tm.getTrainMotionModel().isBlocked())
-		   releaseAllLocks(tm);
+		   tm.releaseAllLocks(world);
 	    }
 	}
     }
@@ -111,10 +106,11 @@ public final class TrainMover {
 	TrainPath tp =
 	    tmm.getPathToDestination().truncateTail(distanceToTarget);
 	if (! tmm.isBlocked())
-	   releaseAllLocks(tm);
+	   tm.releaseAllLocks(world);
 	TrainPath pos = tm.getPosition();
 	TrainPath removed = pos.moveHeadTo(tp);
-	if (! acquireAllLocks(tm)) {
+	if (! tm.acquireAllLocks(world)) {
+	    System.out.println ("Couldn't acquire lock!");
 	    tmm.getPathToDestination().append(tp);
 	    pos.moveTailTo(removed);
 	    tmm.block();
@@ -122,30 +118,6 @@ public final class TrainMover {
 	}
 	/* increment the pathTraversedSinceLastSync */
 	tmm.getPathTraversedSinceLastSync().prepend(removed);
-    }
-
-    /**
-     * @return the state the train should be set to
-     */
-    private int setPathToDestination(TrainModel tm) {
-	final Point head = new Point();
-	Point stationCoords = new Point();
-	ScheduleIterator si = tm.getScheduleIterator();
-	TrainOrdersModel tom = si.getCurrentOrder(world);
-	if (tom == null) {
-	    /* no orders */
-	    return TrainModel.STATE_STOPPED;
-	}
-	ObjectKey stationKey = tom.getStationNumber();
-	StationModel station = (StationModel) world.get(stationKey.key,
-		stationKey.index, stationKey.principal);
-	tm.getPosition().getHead(head);
-	stationCoords.x = station.getStationX();
-	stationCoords.y = station.getStationY();
-	stationCoords = TrackTile.tileCoordsToDeltas(stationCoords);
-	TrainPath tp = pathFinder.findPath(stationCoords, head);
-	tm.getTrainMotionModel().setPathToDestination(tp);
-	return TrainModel.STATE_RUNNABLE;
     }
 
     private void setInitialPosition(TrainModel tm, FreerailsPrincipal
@@ -177,6 +149,10 @@ public final class TrainMover {
 	 * to be the head of the train */
 	TrainPath pathToNextStation = pathFinder.findPath(arriveStationCoords,
 		    departStationCoords);
+	if (pathToNextStation == null) {
+	    /* Couldn't find a path to the next station */
+	    return;
+	}
 	TrainPath currentPos = new TrainPath(pathToNextStation);
 	currentPos.reverse();
 	int trainLength = tm.getLength();
@@ -192,50 +168,8 @@ public final class TrainMover {
 	TrainPath pathTraversedSinceLastSync = new TrainPath(new IntLine[] 
 		{new IntLine(tail.x, tail.y,
 		    tail.x, tail.y) });
-	TrainMotionModel tmm = tm.getTrainMotionModel();
-	GameTime now = (GameTime) world.get(ITEM.TIME, trainPrincipal);
-	tmm.sync(now, pathTraversedSinceLastSync);
 
-	tmm.setPathToDestination(pathToNextStation);
 	tm.setPosition(currentPos);
-    }
-
-    private boolean acquireAllLocks(TrainModel tm) {
-	HashMap mapCoords = new HashMap();
-	tm.getPosition().getMapCoordsAndDirections(mapCoords);
-	final HashMap undoList = new HashMap();
-	undoList.clear();
-	Iterator i = mapCoords.entrySet().iterator();
-	while (i.hasNext()) {
-	    Entry e = (Entry) i.next();
-	    Point p = (Point) e.getKey();
-	    Byte b = (Byte) e.getValue();
-	    TrackTile tt = world.getTile(p).getTrackTile();
-	    if (!tt.getLock(b.byteValue())) {
-		i = undoList.entrySet().iterator();
-		while (i.hasNext()) {
-		    e = (Entry) i.next();
-		    tt = world.getTile((Point) e.getKey()).getTrackTile();
-		    tt.releaseLock(((Byte) e.getValue()).byteValue());
-		}
-		return false;
-	    }
-	    undoList.put(p, b);
-	}
-	tm.getTrainMotionModel().setBlocked(false);
-	return true;
-    }
-
-    private void releaseAllLocks(TrainModel tm) {
-	HashMap mapCoords = new HashMap();
-	tm.getPosition().getMapCoordsAndDirections(mapCoords);
-	Iterator i = mapCoords.entrySet().iterator();
-	while (i.hasNext()) {
-	    Entry e = (Entry) i.next();
-	    world.getTile((Point) e.getKey()).getTrackTile().releaseLock
-		(((Byte) e.getValue()).byteValue());
-	}
-	tm.getTrainMotionModel().setBlocked(true);
     }
 
     private static byte directionFromDelta(int dx, int dy) {

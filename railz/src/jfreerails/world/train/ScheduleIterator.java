@@ -60,6 +60,12 @@ public class ScheduleIterator implements FreerailsSerializable {
 	return s.getOrder(currentOrder);
     }
 
+    public ScheduleIterator(ScheduleIterator i) {
+	currentOrder = i.currentOrder;
+	scheduleId = i.scheduleId;
+	priorityOrder = i.priorityOrder;
+    }
+
     public ScheduleIterator(ScheduleIterator i, TrainOrdersModel
 	    priorityOrder) {
 	currentOrder = i.currentOrder;

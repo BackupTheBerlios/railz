@@ -38,7 +38,7 @@ public abstract class TrackTile implements FreerailsSerializable {
      */
     public static final int DELTAS_PER_TILE = 31;
 
-    private byte trackLayout;
+    protected byte trackLayout;
 
     /**
      * The trackLock is used to control access to track. In order to traverse

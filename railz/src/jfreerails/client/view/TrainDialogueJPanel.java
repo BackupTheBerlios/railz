@@ -23,12 +23,14 @@
 
 package jfreerails.client.view;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.NoSuchElementException;
 
 import jfreerails.client.model.ModelRoot;
+import jfreerails.util.*;
 import jfreerails.world.player.FreerailsPrincipal;
 import jfreerails.world.train.MutableSchedule;
 import jfreerails.world.top.*;
@@ -47,6 +49,7 @@ WorldListListener {
 
     private ReadOnlyWorld w;
     private ModelRoot modelRoot;
+    private GUIRoot guiRoot;
     
     /** Creates new form TrainDialogueJPanel */
     public TrainDialogueJPanel() {
@@ -172,6 +175,7 @@ WorldListListener {
     
     public void setup(ModelRoot mr, GUIRoot gr) {
 	modelRoot = mr;
+	guiRoot = gr;
         w = modelRoot.getWorld();
 	wi = new NonNullElements(KEY.TRAINS, w, mr.getPlayerPrincipal());
         newTrainScheduleJPanel1.setup(mr, gr);
@@ -183,6 +187,7 @@ WorldListListener {
      * Refreshes the component with the currently selected train
      */
     public void display(){
+	System.out.println("TrainDialogueJPanel display");
 	int tmp = wi.getIndex();
 	try {
 	    wi.reset(); // refresh the iterator code
@@ -246,6 +251,26 @@ WorldListListener {
         this.trainListJButton.addActionListener(l);
     }
     
+    public void showTrainList() {
+	trainListJPanel = new TrainListJPanel();
+	trainListJPanel.setup(modelRoot, null);
+	trainListJPanel.setShowTrainDetailsActionListener(trainListListener);
+	guiRoot.getDialogueBoxController().createDialog(trainListJPanel,
+		Resources.get("Select Train"));
+    }
+
+    private ActionListener trainListListener = new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+	    int selected = trainListJPanel.getSelectedTrainID();
+	    if (selected >= 0 && selected < w.size(KEY.TRAINS,
+			modelRoot.getPlayerPrincipal())) {
+		wi.gotoIndex(selected);
+		display();
+	    }
+	}
+    };
+
+    private TrainListJPanel trainListJPanel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private jfreerails.client.view.TrainScheduleJPanel newTrainScheduleJPanel1;

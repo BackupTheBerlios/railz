@@ -107,7 +107,7 @@ public class TrainOrdersModel implements FreerailsSerializable {
     }
 
     public boolean equals(Object obj) {
-        if (obj instanceof TrainOrdersModel) {
+        if (obj != null && obj instanceof TrainOrdersModel) {
             TrainOrdersModel test = (TrainOrdersModel)obj;
 
             return this.waitUntilFull == test.waitUntilFull &&

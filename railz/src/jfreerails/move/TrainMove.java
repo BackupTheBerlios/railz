@@ -82,15 +82,13 @@ public abstract class TrainMove implements Move {
 	Point head = new Point();
 	pathFromLastSync.getHead(head);
 	((TrainModel) w.get(KEY.TRAINS, trainKey.index, p))
-	    .getTrainMotionModel().sync(now, new
-		    TrainPath(new Point[]{head, head}));
+	    .sync(now);
 	return MoveStatus.MOVE_OK;
     }
 
     public MoveStatus undoMove(World w, FreerailsPrincipal p) {
 	((TrainModel) w.get(KEY.TRAINS, trainKey.index, p))
-	    .getTrainMotionModel().sync(timeOfLastSync,
-		    pathFromLastSync);
+	    .sync(timeOfLastSync);
 	return MoveStatus.MOVE_OK;
     }
 }

@@ -52,17 +52,9 @@ class CalcCargoSupplyRateAtStation {
     private int[] converts;
 
     CalcCargoSupplyRateAtStation(ReadOnlyWorld world, int X, int Y) {
-        this.w = world;
-        this.x = X;
-        this.y = Y;
-
-        if (x < 2) {
-            x = 2;
-        }
-
-        if (y < 2) {
-            y = 2;
-        }
+        w = world;
+        x = X;
+        y = Y;
 
         supplies = new Vector();
         populateSuppliesVector();
@@ -92,6 +84,7 @@ class CalcCargoSupplyRateAtStation {
     Vector scanAdjacentTiles() {
         //Find the station radius.
         FreerailsTile tile = w.getTile(this.x, this.y);
+	System.out.println("scanning tile " + x + ", " + y);
 	BuildingTile bTile = tile.getBuildingTile();
 	if (bTile == null)
 	    throw new IllegalStateException();
@@ -101,8 +94,16 @@ class CalcCargoSupplyRateAtStation {
 
         //Look at the terrain type of each tile and retrieve the cargo supplied.
         //The station radius determines how many tiles each side we look at. 		
-        for (int i = x - stationRadius; i <= (x + stationRadius); i++) {
-            for (int j = y - stationRadius; j <= (y + stationRadius); j++) {
+	int xmin = x < stationRadius ? 0 : x - stationRadius;
+	int xmax = x + stationRadius;
+	if (xmax >= w.getMapWidth())
+	    xmax = w.getMapWidth();
+	int ymin = y < stationRadius ? 0 : y - stationRadius;
+	int ymax = y + stationRadius;
+	if (ymax >= w.getMapHeight())
+	    ymax = w.getMapHeight();
+        for (int i = xmin; i <= xmax; i++) {
+            for (int j = ymin; j <= ymax; j++) {
                 incrementSupplyAndDemand(i, j);
             }
         }

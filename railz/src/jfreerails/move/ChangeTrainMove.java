@@ -21,8 +21,8 @@
   */
 package jfreerails.move;
 
-import jfreerails.world.common.FreerailsSerializable;
-import jfreerails.world.player.FreerailsPrincipal;
+import jfreerails.world.common.*;
+import jfreerails.world.player.*;
 import jfreerails.world.top.*;
 import jfreerails.world.train.*;
 
@@ -33,38 +33,84 @@ import jfreerails.world.train.*;
  *
  */
 public class ChangeTrainMove extends ChangeItemInListMove {
-    protected ChangeTrainMove(int index, TrainModel before,
-        TrainModel after, FreerailsPrincipal p) {
-        super(KEY.TRAINS, index, before, after, p);
+    private GameTime oldSyncTime;
+
+    private ChangeTrainMove(int id, TrainModel before, TrainModel
+	    after, FreerailsPrincipal p) {
+	super(KEY.TRAINS, id, before, after, p);
+	oldSyncTime = before.getTrainMotionModel().getTimeOfLastSync();
     }
 
+    /**
+     * Change trains scheduled stop
+     */
+    public static ChangeTrainMove generateMove(int id,
+	    FreerailsPrincipal p, TrainModel before, ScheduleIterator
+	    newScheduleIterator) {
+	System.out.println("ChangeTrainMove: New scheduled stop");
+	TrainModel after = new TrainModel(before, newScheduleIterator);
+	return  new ChangeTrainMove(id, before, after, p);
+    }
+
+    /**
+     * Change trains state
+     */
+    public static ChangeTrainMove generateMove(int id, FreerailsPrincipal p,
+	    TrainModel before, int newState, GameTime now) {
+	System.out.println("ChangeTrainMove: New state " + newState);
+	TrainModel after = new TrainModel(before, now, newState);
+	return new ChangeTrainMove(id, before, after, p);
+    }
+
+    /**
+     * Change path to destination.
+     */
+    public static ChangeTrainMove generateMove(int id, FreerailsPrincipal p,
+	    TrainModel before, TrainPath pathToDestination, GameTime now) {
+	System.out.println("ChangeTrainMove: New path to destination");
+	TrainModel after = new TrainModel(before, pathToDestination, now);
+	return new ChangeTrainMove(id, before, after, p);
+    }
+
+    /**
+     * Change engine and wagons
+     */
     public static ChangeTrainMove generateMove(int id, FreerailsPrincipal p,
 	    TrainModel before, int newEngine, int[] newWagons) {
+	System.out.println("ChangeTrainMove: New wagons");
         TrainModel after = before.getNewInstance(newEngine, newWagons);
 
         return new ChangeTrainMove(id, before, after, p);
     }
 
     public MoveStatus doMove(World w, FreerailsPrincipal p) {
-	TrainMotionModel oldModel = ((TrainModel) w.get(listKey, index,
-		    p)).getTrainMotionModel();
+	TrainModel tm = ((TrainModel) w.get(listKey, index, p));
+	if (!tm.getTrainMotionModel().isBlocked())
+	    tm.releaseAllLocks(w);
+	
 	MoveStatus ms = super.doMove(w, p);
 	if (ms != MoveStatus.MOVE_OK)
 	    return ms;
 
-	((TrainModel) w.get(listKey, index, p)).setTrainMotionModel(oldModel);
+	GameTime now = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
+	tm = ((TrainModel) w.get(listKey, index, p));
+	tm.sync(now);
+	System.out.println("done move " + this);
+	System.out.println(tm + ", motionmodel = " + tm.getTrainMotionModel());
 
 	return MoveStatus.MOVE_OK;
     }
 
     public MoveStatus undoMove(World w, FreerailsPrincipal p) {
-	TrainMotionModel oldModel = ((TrainModel) w.get(listKey, index,
-		    p)).getTrainMotionModel();
+	TrainModel tm = (TrainModel) w.get(listKey, index, p);
+	if (!tm.getTrainMotionModel().isBlocked())
+	    tm.releaseAllLocks(w);
+
 	MoveStatus ms = super.undoMove(w, p);
 	if (ms != MoveStatus.MOVE_OK)
 	    return ms;
 
-	((TrainModel) w.get(listKey, index, p)).setTrainMotionModel(oldModel);
+	((TrainModel) w.get(listKey, index, p)).sync(oldSyncTime);
 
 	return MoveStatus.MOVE_OK;
     }

@@ -45,21 +45,65 @@ public final class TrainMotionModel {
      */
     private TrainPath pathTraversedSinceLastSync; 
     
-    private GameTime timeOfLastSync;
+    private final GameTime timeOfLastSync;
 
-    public boolean isBlocked;
+    private boolean isBlocked;
 
     /**
      * Number of ticks during which this train has been blocked.
      */
     private int blockedFor;
     
+    /**
+     * copy constructor used for setting a new path to destination from a
+     * given TrainModel
+     */
+    TrainMotionModel(TrainMotionModel trainMotionModel, TrainModel trainModel,
+	    GameTime now) {
+	this(now, generateTrainPath(trainModel),
+		(trainModel.getPathToDestination() == null ? null : new
+		 TrainPath(trainModel.getPathToDestination())));
+	blockedFor = 0;
+	isBlocked = trainMotionModel == null ? true :
+	    trainMotionModel.isBlocked;
+	speed = trainMotionModel == null ? 0 : trainMotionModel.speed;
+    } 
+
+    /**
+     * copy constructor
+     */
+    TrainMotionModel(TrainMotionModel tmm) {
+	speed = tmm.speed;
+	pathToDestination = tmm.pathToDestination == null ? null :
+	    new TrainPath(tmm.pathToDestination);
+	pathTraversedSinceLastSync = tmm.pathTraversedSinceLastSync == null ?
+	    null : new TrainPath(tmm.pathTraversedSinceLastSync);
+	timeOfLastSync = tmm.timeOfLastSync;
+	blockedFor = tmm.blockedFor;
+	isBlocked = tmm.isBlocked;
+    }
+
     TrainMotionModel() {
-	pathTraversedSinceLastSync = null;
-	pathToDestination = null;
+	this((GameTime) null, (TrainPath) null, (TrainPath) null);
+    }
+
+    private TrainMotionModel (GameTime syncTime, TrainPath
+	    pathTraversedSinceLastSync, TrainPath pathToDestination) {
+	if (pathTraversedSinceLastSync != null)
+	    this.pathTraversedSinceLastSync = new
+	    TrainPath(pathTraversedSinceLastSync);
+	if (pathToDestination != null)
+	    this.pathToDestination = new TrainPath(pathToDestination);
 	speed = 0;
 	blockedFor = 0;
 	isBlocked = true;
+	timeOfLastSync = syncTime;
+    }
+
+    private static TrainPath generateTrainPath(TrainModel trainModel) {
+	Point p = new Point();
+	trainModel.getPosition().getHead(p);
+	return new TrainPath(new Point[] {p, p});
     }
 
     public int getBlockedFor() {
@@ -77,18 +121,8 @@ public final class TrainMotionModel {
 	return pathToDestination;
     }
 
-    public void setPathToDestination(TrainPath p) {
-	pathToDestination = p;
-    }
-
     public TrainPath getPathTraversedSinceLastSync() {
 	return pathTraversedSinceLastSync;
-    }
-
-    public void sync(GameTime now, TrainPath p) {
-	timeOfLastSync = now;
-	pathTraversedSinceLastSync = new TrainPath(p);
-	blockedFor = 0;
     }
 
     public boolean isBlocked() {
@@ -107,9 +141,16 @@ public final class TrainMotionModel {
 	return timeOfLastSync;
     }
 
+    /**
+     * @return true if the train could not find track while traversing its path
+     */
+    public boolean isLost() {
+	return pathToDestination == null;
+    }
+
     public String toString() {
 	return "TrainMotionModel: pathToDest = " + pathToDestination +
 	    ", pathSinceSync = " + pathTraversedSinceLastSync +
-	    ", timeOfSync = " + timeOfLastSync + ", isBlocked = " + isBlocked;
+	    ", timeOfSync = " + timeOfLastSync;
     }
 }

@@ -55,7 +55,8 @@ class AuthoritativeMoveExecuter implements UncommittedMoveReceiver {
         }
 
         if (status != MoveStatus.MOVE_OK) {
-	    System.err.println("forwarding rejected move " + move);
+	    System.err.println("Server rejected move because " + status +
+		    ": " + move);
             moveReceiver.processMove(new RejectedMove(move, status));
         } else {
             moveReceiver.processMove(move);

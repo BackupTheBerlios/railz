@@ -16,11 +16,16 @@
 
 package jfreerails.world.train;
 
+import java.awt.Point;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 
 import jfreerails.world.common.*;
+import jfreerails.world.top.*;
 import jfreerails.world.track.*;
 
 public class TrainModel implements FreerailsSerializable {
@@ -57,6 +62,11 @@ public class TrainModel implements FreerailsSerializable {
      */
     private TrainPath trainPath;
 
+    /**
+     * The path to the current destination, from the last good position
+     */
+    private TrainPath pathToDestination;
+
     private transient TrainMotionModel trainMotionModel;
 
     private int engineType = 0;
@@ -67,8 +77,58 @@ public class TrainModel implements FreerailsSerializable {
     private int state;
 
     public String toString() {
-	return "stateLastChanged = " + stateLastChanged + ", trainPath = " +
-	    trainPath + ", scheduleIterator = " + scheduleIterator;
+	return "TrainModel " + super.toString() +
+	    ": stateLastChanged = " + stateLastChanged + ", trainPath = " +
+	    trainPath + ", scheduleIterator = " + scheduleIterator +
+	    ", state = " + state + ", pathToDest = " + pathToDestination;
+    }
+
+    /**
+     * Constructor for a new train.
+     * @param engine type of the engine
+     * @param wagons array of indexes into the WAGON_TYPES table
+     * @param p initial position of the train on the map.
+     */
+    public TrainModel(int engine, int[] wagons, int bundleId,
+	    GameTime creationDate) {
+	this(engine, wagons, null, bundleId, creationDate,
+		STATE_UNLOADING, null, new TrainMotionModel(), creationDate,
+		null);
+    }
+
+    /**
+     * Copy constructor but with a new route to the destination
+     */
+    public TrainModel(TrainModel trainModel, TrainPath pathToDestination,
+	    GameTime now) {
+	this(trainModel.engineType, trainModel.wagonTypes,
+		trainModel.trainPath, trainModel.cargoBundleNumber,
+		trainModel.creationDate, trainModel.state,
+		trainModel.scheduleIterator, null,
+		trainModel.stateLastChanged, pathToDestination);
+	trainMotionModel = new TrainMotionModel(trainModel.trainMotionModel,
+	       	this, now);
+    }
+
+    /**
+     * Copy constructor with a new schedule
+     */
+    public TrainModel (TrainModel tm, ScheduleIterator si) {
+	this(tm.engineType, tm.wagonTypes, tm.trainPath, tm.cargoBundleNumber,
+		tm.creationDate, tm.state, si, tm.trainMotionModel,
+		tm.stateLastChanged, null);
+    }
+
+    /**
+     * copy constructor with new state
+     */
+    public TrainModel(TrainModel tm, GameTime now, int state) {
+	this(tm.engineType, tm.wagonTypes, tm.trainPath, tm.cargoBundleNumber,
+		tm.creationDate, state, tm.scheduleIterator,
+	       	(state == STATE_UNLOADING || state == STATE_LOADING) ? null :
+		new TrainMotionModel(tm.trainMotionModel), now,
+		(state == STATE_UNLOADING || state == STATE_LOADING) ? null :
+		tm.pathToDestination);
     }
 
     /**
@@ -79,7 +139,7 @@ public class TrainModel implements FreerailsSerializable {
         return new TrainModel(newEngine, newWagons, this.getPosition(),
 	    this.getCargoBundleNumber(),
 	    creationDate, state, scheduleIterator, trainMotionModel,
-	    stateLastChanged);
+	    stateLastChanged, pathToDestination);
     }
 
     /**
@@ -93,7 +153,7 @@ public class TrainModel implements FreerailsSerializable {
 	    int bundleId, GameTime creationDate,
 	    int state, ScheduleIterator
 	    scheduleIterator, TrainMotionModel motionModel, GameTime
-	    stateLastChanged) {
+	    stateLastChanged, TrainPath pathToDestination) {
 	engineType = engine;
 	wagonTypes = wagons;
 	trainPath = currentP;
@@ -101,20 +161,11 @@ public class TrainModel implements FreerailsSerializable {
 	this.creationDate = creationDate;
 	this.state = state;
 	this.stateLastChanged = stateLastChanged;
-	this.scheduleIterator = scheduleIterator;
-	trainMotionModel = motionModel;
-    }
-
-    /**
-     * Constructor for a new train.
-     * @param engine type of the engine
-     * @param wagons array of indexes into the WAGON_TYPES table
-     * @param p initial position of the train on the map.
-     */
-    public TrainModel(int engine, int[] wagons, int bundleId,
-	    GameTime creationDate) {
-	this(engine, wagons, null, bundleId, creationDate,
-		STATE_UNLOADING, null, new TrainMotionModel(), creationDate);
+	if (scheduleIterator != null)
+	    this.scheduleIterator = new ScheduleIterator(scheduleIterator);
+	this.pathToDestination = pathToDestination;
+	trainMotionModel = motionModel == null ? null : new
+	    TrainMotionModel(motionModel);
     }
 
     /**
@@ -185,19 +236,8 @@ public class TrainModel implements FreerailsSerializable {
 	return stateLastChanged;
     }
 
-    public void setState(int s, GameTime now) {
-	state = s;
-	stateLastChanged = now;
-    }
-
     public ScheduleIterator getScheduleIterator() {
 	return scheduleIterator;
-    }
-
-    public TrainModel (TrainModel tm, ScheduleIterator si) {
-	this(tm.engineType, tm.wagonTypes, tm.trainPath, tm.cargoBundleNumber,
-		tm.creationDate, tm.state, si, tm.trainMotionModel,
-		tm.stateLastChanged);
     }
 
     public void setTrainMotionModel(TrainMotionModel tmm) {
@@ -213,4 +253,58 @@ public class TrainModel implements FreerailsSerializable {
 	in.defaultReadObject();
 	trainMotionModel = new TrainMotionModel();
     }
+
+    /**
+     * Call this immediately after doing or undoing a move
+     */
+    public void sync(GameTime now) {
+	trainMotionModel = new TrainMotionModel(trainMotionModel, this, now);
+    }
+
+    TrainPath getPathToDestination() {
+	return pathToDestination;
+    }
+
+    public void releaseAllLocks(World world) {
+	HashMap mapCoords = new HashMap();
+	getPosition().getMapCoordsAndDirections(mapCoords);
+	Iterator i = mapCoords.entrySet().iterator();
+	while (i.hasNext()) {
+	    Entry e = (Entry) i.next();
+	    world.getTile((Point) e.getKey()).getTrackTile().releaseLock
+		(((Byte) e.getValue()).byteValue());
+	}
+	getTrainMotionModel().setBlocked(true);
+    }
+    
+    public boolean acquireAllLocks(World w) {
+	HashMap mapCoords = new HashMap();
+	getPosition().getMapCoordsAndDirections(mapCoords);
+	final HashMap undoList = new HashMap();
+	undoList.clear();
+	Iterator i = mapCoords.entrySet().iterator();
+	while (i.hasNext()) {
+	    Entry e = (Entry) i.next();
+	    Point p = (Point) e.getKey();
+	    Byte b = (Byte) e.getValue();
+	    TrackTile tt = w.getTile(p).getTrackTile();
+	    if (tt == null || !tt.getLock(b.byteValue())) {
+		/*
+		 * XXX TODO if we delete the track from under a train, we
+		 * should handle this correctly 
+		 */
+		i = undoList.entrySet().iterator();
+		while (i.hasNext()) {
+		    e = (Entry) i.next();
+		    tt = w.getTile((Point) e.getKey()).getTrackTile();
+		    tt.releaseLock(((Byte) e.getValue()).byteValue());
+		}
+		return false;
+	    }
+	    undoList.put(p, b);
+	}
+	getTrainMotionModel().setBlocked(false);
+	return true;
+    }
+
 }

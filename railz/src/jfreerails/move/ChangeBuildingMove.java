@@ -108,6 +108,7 @@ public class ChangeBuildingMove implements MapUpdateMove {
 
 	w.setTile(point.x, point.y, new FreerailsTile(w.getTile(point),
 		    newTile));
+	System.out.println("Did move " + this);
 	return MoveStatus.MOVE_OK;
     }
 
@@ -136,6 +137,12 @@ public class ChangeBuildingMove implements MapUpdateMove {
 
     public int hashCode() {
 	return point.hashCode();
+    }
+
+    public String toString() {
+	return "ChangeBuildingMove " + super.toString() + ": oldTile=" +
+	    oldTile + ", newTile=" + newTile + ", point=" + point + 
+	    ", principal=" + principal;
     }
 }
 

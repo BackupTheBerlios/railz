@@ -19,6 +19,7 @@ package jfreerails.server;
 import java.awt.Point;
 
 import jfreerails.move.*;
+import jfreerails.controller.*;
 import jfreerails.world.common.*;
 import jfreerails.world.building.*;
 import jfreerails.world.player.*;
@@ -46,11 +47,13 @@ class TrainController {
     private ReadOnlyWorld world;
     private AuthoritativeMoveExecuter moveReceiver;
     private DropOffAndPickupCargoMoveGenerator dopucmg;
+    private TrainPathFinder pathFinder;
 
     public TrainController(ReadOnlyWorld w, AuthoritativeMoveExecuter mr) {
 	world = w;
 	moveReceiver = mr;
 	dopucmg = new DropOffAndPickupCargoMoveGenerator(world, moveReceiver);
+	pathFinder = new TrainPathFinder(world);
     }
 
     public void updateTrains() {
@@ -70,6 +73,21 @@ class TrainController {
     private void updateTrain(TrainModel tm, GameTime now, FreerailsPrincipal
 	    p, int trainIndex) {
 	int state = tm.getState();
+	/* Is the train lost and we are trying to go somewhere ? */
+	if (tm.getTrainMotionModel().isLost() && state ==
+		TrainModel.STATE_RUNNABLE) {
+	    System.out.println("Train " + tm + " is lost");
+	   if (tm.getPosition() != null) {
+	       int newState = setPathToDestination(new ObjectKey(KEY.TRAINS, p,
+			   trainIndex), tm);
+	       if (newState != state)
+		   setState(trainIndex, p, newState);
+	       tm = (TrainModel) world.get(KEY.TRAINS, trainIndex, p);
+	   }
+	   if (tm.getTrainMotionModel().isLost())
+	       return;
+	}
+
 	TrainOrdersModel tom;
 	switch (state) {
 	    case TrainModel.STATE_LOADING:
@@ -185,8 +203,9 @@ class TrainController {
 		trainKey.principal);
 
 	// set the trains new destination
-	Move ctdm = ChangeTrainDestinationMove.generateMove(world,
-		trainKey, tm.getScheduleIterator().nextOrder(world));
+	Move ctdm = ChangeTrainMove.generateMove(trainKey.index,
+		trainKey.principal, tm,
+		tm.getScheduleIterator().nextOrder(world));
 	moveReceiver.processMove(ctdm);
     }
 
@@ -195,10 +214,9 @@ class TrainController {
 		p + " to state " + stateToString(newState) + " at " + 
 		world.get(ITEM.TIME, p));
 	TrainModel tm = (TrainModel) world.get(KEY.TRAINS, trainIndex, p);
-	ObjectKey key = new ObjectKey(KEY.TRAINS, p, trainIndex);
-	ChangeTrainStateMove m  = new ChangeTrainStateMove(world, key,
-		tm.getTrainMotionModel().getPathTraversedSinceLastSync(),
-		tm.getTrainMotionModel().getTimeOfLastSync(), newState);
+	ChangeTrainMove m  = ChangeTrainMove.generateMove(trainIndex, p, tm,
+		newState, (GameTime) world.get(ITEM.TIME,
+		    Player.AUTHORITATIVE));
 	moveReceiver.processMove(m);
     }
 
@@ -215,5 +233,36 @@ class TrainController {
 	    default:
 		throw new IllegalArgumentException();
 	}
+    }
+
+    private int setPathToDestination(ObjectKey trainKey, TrainModel tm) {
+	final Point head = new Point();
+	Point stationCoords = new Point();
+	ScheduleIterator si = tm.getScheduleIterator();
+	TrainOrdersModel tom = si.getCurrentOrder(world);
+	if (tom == null) {
+	    /* no orders */
+	    ChangeTrainMove ctm = ChangeTrainMove.generateMove(trainKey.index,
+		    trainKey.principal, tm, null, (GameTime)
+		    world.get(ITEM.TIME, Player.AUTHORITATIVE));
+	    moveReceiver.processMove(ctm);
+	    return TrainModel.STATE_STOPPED;
+	}
+	ObjectKey stationKey = tom.getStationNumber();
+	StationModel station = (StationModel) world.get(stationKey.key,
+		stationKey.index, stationKey.principal);
+	tm.getPosition().getHead(head);
+	stationCoords.x = station.getStationX();
+	stationCoords.y = station.getStationY();
+	stationCoords = TrackTile.tileCoordsToDeltas(stationCoords);
+	TrainPath tp = pathFinder.findPath(stationCoords, head);
+	ChangeTrainMove ctm = ChangeTrainMove.generateMove(trainKey.index,
+		trainKey.principal, tm, tp, (GameTime) world.get(ITEM.TIME,
+		    Player.AUTHORITATIVE));
+	moveReceiver.processMove(ctm);
+	assert ! ((TrainModel) world.get(KEY.TRAINS, trainKey.index,
+		    trainKey.principal)).getTrainMotionModel().isLost();
+
+	return TrainModel.STATE_RUNNABLE;
     }
 }

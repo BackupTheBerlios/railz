@@ -67,5 +67,4 @@ public class World2ListModelAdapter implements ListModel {
 		// TODO Auto-generated method stub
 
 	}
-
 }
