@@ -73,22 +73,37 @@ public class TrainPathFinder {
 	currentPosition.y = pe.y;
     }
 
-    private void fixUpPathEnds(TrainPath p, Point newStart, Point newEnd) {
-	Point oldStart = new Point();
-	Point oldEnd = new Point();
-	p.getHead(oldStart);
-	p.getTail(oldEnd);
+    private void fixUpPathEnds(LinkedList p, Point newStart, Point newEnd) {
+	IntLine oldStartSegment = (IntLine) p.getFirst();
+	IntLine oldEndSegment = (IntLine) p.getLast();
+	Point oldStart = new Point(oldStartSegment.x1, oldStartSegment.y1);
+	Point oldEnd = new Point(oldEndSegment.x2, oldEndSegment.y2);
 	IntLine newStartSegment = new IntLine(newStart, oldStart);
 	IntLine newEndSegment = new IntLine(oldEnd, newEnd);
-	p.prepend(new TrainPath(new IntLine[]{newStartSegment}));
-	p.append(new TrainPath(new IntLine[]{newEndSegment}));
+	/* If direction of old & new lines is 180deg out, then substitute
+	 * truncated path */
+	if (newStartSegment.getDirection() ==
+		CompassPoints.invert(oldStartSegment.getDirection())) {
+	    p.removeFirst();
+	    p.addFirst(new IntLine(newStart.x, newStart.y, oldStartSegment.x2,
+			    oldStartSegment.y2));
+	} else {
+	    p.addFirst(newStartSegment);
+	}
+	if (newEndSegment.getDirection() ==
+		CompassPoints.invert(oldEndSegment.getDirection())) {
+	    p.removeLast();
+	    p.addLast(new IntLine(oldEndSegment.x1, oldEndSegment.y1,
+			newEnd.x, newEnd.y));
+	} else {
+	    p.addLast(newEndSegment);
+	}
     }
 
     /**
      * @param start start location measured in Deltas from map origin.
      * @param target end location measured in Deltas from map origin.
      * TODO calculate cost from terrain and track layout.
-     * TODO fix so that initial move is from start point to centre of tile
      * TODO improve efficiency of this algorithm (discard paths when the
      * possible minimum is longer than current best, compare current best
      * against theoretical minimum and accept non-optimal solutions if they
@@ -236,9 +251,9 @@ public class TrainPathFinder {
 	    IntLine l = new IntLine(oldp.x, oldp.y, newp.x, newp.y);
 	    intLines.add(l);
 	}
+	fixUpPathEnds(intLines, start, dest);
 	TrainPath retVal = new TrainPath((IntLine[]) intLines.toArray(new
 		    IntLine[intLines.size()]));
-	fixUpPathEnds(retVal, start, dest);
 	System.out.println("Returning: " + retVal.toString());
 	return retVal;
     }
