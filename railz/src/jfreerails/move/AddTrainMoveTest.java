@@ -21,8 +21,8 @@
   */
 package jfreerails.move;
 
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ObjectKey;
+import jfreerails.world.common.*;
+import jfreerails.world.top.*;
 import jfreerails.world.train.ImmutableSchedule;
 import jfreerails.world.train.TrainModel;
 import jfreerails.world.train.TrainOrdersModel;
@@ -33,7 +33,10 @@ import jfreerails.world.train.TrainOrdersModel;
  */
 public class AddTrainMoveTest extends AbstractMoveTestCase {
     public void testMove() {
-        TrainModel train = new TrainModel(0, new int[] {0, 1, 0}, null, 0);
+	GameTime now = (GameTime) getWorld().get(ITEM.TIME,
+		testPlayer.getPrincipal());
+        TrainModel train = new TrainModel(0, new int[] {0, 1, 0}, null, 0, 0,
+		now);
 
 	TrainOrdersModel orders = new TrainOrdersModel(new
 		ObjectKey(KEY.STATIONS, testPlayer.getPrincipal(), 0),

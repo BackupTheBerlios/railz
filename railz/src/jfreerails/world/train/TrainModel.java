@@ -27,7 +27,7 @@ public class TrainModel implements FreerailsSerializable {
     int engineType = 0;
     final int[] wagonTypes;
     private int cargoBundleNumber;
-    private GameTime creationDate;
+    private final GameTime creationDate;
 
     /**
      * copy constructor with original schedule, cargo, position, but new
@@ -59,14 +59,6 @@ public class TrainModel implements FreerailsSerializable {
 	this.scheduleID = scheduleID;
 	cargoBundleNumber = bundleId;
 	this.creationDate = creationDate;
-    }
-
-    public TrainModel(int engine, int[] wagons, TrainPositionOnMap p,
-        int scheduleID) {
-        this.engineType = engine;
-        this.wagonTypes = wagons;
-        trainposition = p;
-        this.scheduleID = scheduleID;
     }
 
     public int getLength() {

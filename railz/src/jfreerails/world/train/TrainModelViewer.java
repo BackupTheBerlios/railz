@@ -52,7 +52,7 @@ public class TrainModelViewer implements FixedAsset {
 	    (trainModel.getCreationDate()).getTimeInMillis();
 	/* assume years are 365 days long for simplicity */
 	int elapsedYears = (int) 
-	    (creationMillis - nowMillis) / (1000 * 60 * 60 * 24 * 365);
+	    ((nowMillis - creationMillis) / (1000L * 60 * 60 * 24 * 365));
 	long initialPrice = ((EngineType)
 		    world.get(KEY.ENGINE_TYPES, trainModel.getEngineType(),
 			Player.AUTHORITATIVE)).getPrice();

@@ -19,10 +19,10 @@ package jfreerails.move;
 
 import junit.framework.TestCase;
 
+import jfreerails.world.common.*;
 import jfreerails.world.player.Player;
 import jfreerails.world.top.KEY;
-import jfreerails.world.top.World;
-import jfreerails.world.top.WorldImpl;
+import jfreerails.world.top.*;
 import jfreerails.world.train.TrainModel;
 import jfreerails.world.train.TrainPositionOnMap;
 
@@ -84,8 +84,9 @@ public class ChangeTrainPositionMoveTest extends TestCase {
 
 	w.add(KEY.PLAYERS, testPlayer, Player.AUTHORITATIVE);
 
+	GameTime now = (GameTime) w.get(ITEM.TIME, testPlayer.getPrincipal());
         TrainModel train1 = new TrainModel(0, new int[] {},
-                FIXTURE1_BEFORE_MOVE1, 0);
+                FIXTURE1_BEFORE_MOVE1, 0, 0, now);
         w.add(KEY.TRAINS, train1, testPlayer.getPrincipal());
     }
 

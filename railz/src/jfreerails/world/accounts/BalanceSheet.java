@@ -120,7 +120,6 @@ public class BalanceSheet implements FreerailsSerializable {
 	} else {
 	    overdraft = 0;
 	}
-	long rollingsStock = 0;
 	long trainMaintenance = 0;
 	long rollingStock = 0;
 	TrainModelViewer tmViewer = new TrainModelViewer(w);
@@ -175,7 +174,7 @@ public class BalanceSheet implements FreerailsSerializable {
 	long stock = 0;
 	long investedCapital = bav.getOutsideInvestment();
 	
-	return new BalanceSheet(year - 1, proForma, cash, rollingsStock,
+	return new BalanceSheet(year - 1, proForma, cash, rollingStock,
 		property, overdraft, interest, trackMaintenance,
 		trainMaintenance, tax, loans, bonds, stock, investedCapital);
     }
