@@ -19,10 +19,8 @@ package org.railz.server;
 import java.util.LinkedList;
 import org.railz.controller.MoveReceiver;
 import org.railz.controller.UncommittedMoveReceiver;
-import org.railz.move.RejectedMove;
-import org.railz.move.Move;
-import org.railz.move.MoveStatus;
-import org.railz.world.top.World;
+import org.railz.move.*;
+import org.railz.world.top.*;
 import org.railz.world.player.FreerailsPrincipal;
 import org.railz.world.player.Player;
 
@@ -80,7 +78,21 @@ class AuthoritativeMoveExecuter implements UncommittedMoveReceiver {
         MoveStatus ms;
 
 	synchronized (world) {
+	    org.railz.world.train.TrainPath tp = null, tp2 = null;
+	    org.railz.world.common.GameTime t = null;
+	    if (move instanceof ChangeTrainMove) {
+		t = (org.railz.world.common.GameTime) 
+		    world.get(ITEM.TIME, Player.AUTHORITATIVE);
+		tp = ((org.railz.world.train.TrainModel) ((ChangeTrainMove)
+			    move).getBefore()).getPosition(t);
+	    }
 	    ms = move.doMove(world, p);
+	    if (move instanceof ChangeTrainMove) {
+		tp2 = ((org.railz.world.train.TrainModel) ((ChangeTrainMove)
+			    move).getAfter()).getPosition(t);
+	System.out.println("tp=" + tp + ", tp2=" + tp2 + ", t=" + t);
+	    }
+
 	}
 
         forwardMove(move, ms);

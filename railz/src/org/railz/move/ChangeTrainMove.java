@@ -33,12 +33,12 @@ import org.railz.world.train.*;
  *
  */
 public class ChangeTrainMove extends ChangeItemInListMove {
-    private GameTime oldSyncTime;
-
     private ChangeTrainMove(int id, TrainModel before, TrainModel
 	    after, FreerailsPrincipal p) {
 	super(KEY.TRAINS, id, before, after, p);
-	oldSyncTime = before.getTrainMotionModel().getTimeOfLastSync();
+	System.out.println("creating ChangeTrainMove for train " + id + ": " +
+		getBefore() + ", " + ", " + getAfter());
+	Thread.currentThread().dumpStack();
     }
 
     /**
@@ -46,8 +46,8 @@ public class ChangeTrainMove extends ChangeItemInListMove {
      */
     public static ChangeTrainMove generateMove(int id,
 	    FreerailsPrincipal p, TrainModel before, ScheduleIterator
-	    newScheduleIterator) {
-	TrainModel after = new TrainModel(before, newScheduleIterator);
+	    newScheduleIterator, GameTime t) {
+	TrainModel after = new TrainModel(before, newScheduleIterator, t);
 	return  new ChangeTrainMove(id, before, after, p);
     }
 
@@ -60,6 +60,14 @@ public class ChangeTrainMove extends ChangeItemInListMove {
 	return new ChangeTrainMove(id, before, after, p);
     }
 
+    /**
+     * Change trains priority
+     */
+    public static ChangeTrainMove generatePriorityMove(int id,
+	    FreerailsPrincipal p, TrainModel before, int newPriority) {
+	TrainModel after = before.setPriority(newPriority);
+	return new ChangeTrainMove(id, before, after, p);
+    }
     /**
      * Change path to destination.
      */
@@ -79,33 +87,26 @@ public class ChangeTrainMove extends ChangeItemInListMove {
         return new ChangeTrainMove(id, before, after, p);
     }
 
-    public MoveStatus doMove(World w, FreerailsPrincipal p) {
-	TrainModel tm = ((TrainModel) w.get(listKey, index, p));
-	if (!tm.getTrainMotionModel().isBlocked())
-	    tm.releaseAllLocks(w);
-	
-	MoveStatus ms = super.doMove(w, p);
-	if (ms != MoveStatus.MOVE_OK)
-	    return ms;
+    /**
+     * Generate a move to set the trains position at a specific time.
+     */
+    public static ChangeTrainMove generateMove(int id, FreerailsPrincipal p,
+	    TrainPath tp, GameTime t, ReadOnlyWorld w) {
+	TrainModel tm = (TrainModel) w.get(KEY.TRAINS, id, p);
+	int speed = ((EngineType) w.get(KEY.ENGINE_TYPES, tm.getEngineType(),
+		Player.AUTHORITATIVE)).getMaxSpeed();
 
-	GameTime now = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
-	tm = ((TrainModel) w.get(listKey, index, p));
-	tm.sync(now);
-
-	return MoveStatus.MOVE_OK;
+	TrainModel newTm = tm.setPosition(tp, t, speed);
+	return new ChangeTrainMove(id, tm, newTm, p);
     }
 
-    public MoveStatus undoMove(World w, FreerailsPrincipal p) {
-	TrainModel tm = (TrainModel) w.get(listKey, index, p);
-	if (!tm.getTrainMotionModel().isBlocked())
-	    tm.releaseAllLocks(w);
+    public static ChangeTrainMove generateBlockedMove(ObjectKey ok,
+	    TrainModel tm, GameTime t, boolean blocked) {
+	TrainModel newTm = tm.setBlocked(blocked, t);
+	return new ChangeTrainMove(ok.index, tm, newTm, ok.principal);
+    }
 
-	MoveStatus ms = super.undoMove(w, p);
-	if (ms != MoveStatus.MOVE_OK)
-	    return ms;
-
-	((TrainModel) w.get(listKey, index, p)).sync(oldSyncTime);
-
-	return MoveStatus.MOVE_OK;
+    public MoveStatus doMove(World w, FreerailsPrincipal p) {
+	return super.doMove(w, p);
     }
 }

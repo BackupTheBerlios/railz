@@ -68,7 +68,6 @@ final public class ScreenHandler {
     private int oldWidth;
     private int oldHeight;
     private BufferStrategy bufferStrategy;
-    private GraphicsConfiguration graphicsConfig;
     private boolean runningOSX = "Mac OS X".equals
 	(System.getProperty("os.name"));
 
@@ -150,17 +149,6 @@ final public class ScreenHandler {
             });
 
 	currentMode = mode;
-	BufferStrategy bs = frame.getBufferStrategy();
-	System.out.println("Buffer capabilities:");
-	BufferCapabilities bc = bs.getCapabilities();
-	System.out.println("isFullScreenRequired = " + bc.isFullScreenRequired());
-	System.out.println("isPageFlipping = " + bc.isPageFlipping());
-	ImageCapabilities ic = bc.getBackBufferCapabilities();
-	System.out.println("isAccelerated = " + ic.isAccelerated());
-	System.out.println("isTrueVolatile = " + ic.isTrueVolatile());
-	isVolatile = ic.isTrueVolatile();
-	bufferStrategy = bs;
-	graphicsConfig = frame.getGraphicsConfiguration();
     }
 
     private static DisplayMode getBestDisplayMode(GraphicsDevice device) {
@@ -213,6 +201,21 @@ final public class ScreenHandler {
 	public void run() {
 	    if (isMinimised || ! frame.isVisible()) {
 		return;
+	    }
+	    if (bufferStrategy == null) {
+		frame.createBufferStrategy(2);
+		BufferStrategy bs = frame.getBufferStrategy();
+		System.out.println("Buffer capabilities:");
+		BufferCapabilities bc = bs.getCapabilities();
+		System.out.println("isFullScreenRequired = " + bc.isFullScreenRequired());
+		System.out.println("isPageFlipping = " + bc.isPageFlipping());
+		ImageCapabilities ic = bc.getBackBufferCapabilities();
+		System.out.println("isAccelerated = " + ic.isAccelerated());
+		System.out.println("isTrueVolatile = " + ic.isTrueVolatile());
+		System.out.println("isMultiBufferAvailable = " +
+			bc.isMultiBufferAvailable());
+		isVolatile = ic.isTrueVolatile();
+		bufferStrategy = bs;
 	    }
 
 	    bufferStrategy = frame.getBufferStrategy();

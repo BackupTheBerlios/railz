@@ -42,12 +42,12 @@ public class AddTrainMove extends CompositeMove {
 
     public static AddTrainMove generateMove(ReadOnlyWorld w, int i, TrainModel
 	    train, long price, ImmutableSchedule s, FreerailsPrincipal p) {
+	GameTime now = (GameTime) w.get(ITEM.TIME, p);
 	int scheduleId = w.size(KEY.TRAIN_SCHEDULES, Player.AUTHORITATIVE);
-	train = new TrainModel(train, new ScheduleIterator(scheduleId, 0));
+	train = new TrainModel(train, new ScheduleIterator(scheduleId, 0), now);
         Move m2 = new AddItemToListMove(KEY.TRAIN_SCHEDULES,
                 scheduleId, s);
         Move m = new AddItemToListMove(KEY.TRAINS, i, train, p);
-	GameTime now = (GameTime) w.get(ITEM.TIME, p);
 	AddItemTransaction t = new AddItemTransaction(now,
 		AddItemTransaction.ROLLING_STOCK, 0, 1, -price);
         AddTransactionMove transactionMove = new AddTransactionMove(0,

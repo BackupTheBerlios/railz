@@ -25,13 +25,11 @@ import java.util.NoSuchElementException;
 
 import org.railz.client.model.ModelRoot;
 import org.railz.controller.*;
-import org.railz.move.Move;
-import org.railz.move.MoveStatus;
-import org.railz.move.RejectedMove;
-import org.railz.move.TimeTickMove;
-import org.railz.move.UndoneMove;
-import org.railz.world.common.FreerailsSerializable;
-import org.railz.world.top.World;
+import org.railz.move.*;
+import org.railz.world.common.*;
+import org.railz.world.player.*;
+import org.railz.world.top.*;
+import org.railz.world.train.*;
 import org.railz.util.GameModel;
 import org.railz.util.SychronizedQueue;
 
@@ -61,7 +59,6 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
     private PendingQueue pendingQueue = new PendingQueue();
     private ModelRoot modelRoot;
     private MoveReceiver moveReceiver;
-    private final TrainMover trainMover;
     private World world;
     private final SychronizedQueue sychronizedQueue = new SychronizedQueue();
     static boolean debug = false;
@@ -73,7 +70,6 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
         world = w;
 	modelRoot.getDebugModel().getClientMoveDebugModel().
 	    getAction().addPropertyChangeListener(debugChangeListener);
-	trainMover = new TrainMover(world);
     }
 
     /**
@@ -87,7 +83,6 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
      * Executed once per TimeTick
      */
     private void timeTickElapsed() {
-	trainMover.moveTrains();
     }
 
     /**
@@ -222,7 +217,22 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
 		if (debug && !(move instanceof TimeTickMove)) {
 		    System.err.println("committing unknown move " + move);
 		}
+		GameTime t = (GameTime) world.get(ITEM.TIME,
+			Player.AUTHORITATIVE);
+		TrainPath tp1 = null, tp2 = null;
+		if (move instanceof ChangeTrainMove) {
+		    tp1 = ((TrainModel) world.get(KEY.TRAINS,
+				((ChangeTrainMove) move).getIndex(),
+				move.getPrincipal())).getPosition(t);
+		}
 		ms = move.doMove(world, move.getPrincipal());
+		if (move instanceof ChangeTrainMove) {
+		    tp2 = ((TrainModel) world.get
+			    (KEY.TRAINS, ((ChangeTrainMove) move).getIndex(),
+			     move.getPrincipal()))
+			.getPosition(t);
+		    System.out.println("before = " + tp1 + ", after = " + tp2);
+		}
 
                 if (ms != MoveStatus.MOVE_OK) {
                     if (debug) {

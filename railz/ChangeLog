@@ -1,3 +1,8 @@
+July 30, 2004:
+--------------
+Change to buffering setup.
+Addition of train priority code.
+Rework of train movement.
 July 19, 2004:
 --------------
 Implemented cargo ageing - cargo becomes less valuable over time and each cargo type has a different expiry after which time it is removed from the station.

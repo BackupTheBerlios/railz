@@ -16,11 +16,15 @@
 
 package org.railz.client.common;
 
+import java.util.*;
 
 /**
  * Statistics gathering class for coarse-level timing
  */
 public class Stats {
+    private Thread[] threads= new Thread[0];
+    private int[] counts= new int[0];
+
     int total = 0;
     int n = 0;
     String name;
@@ -38,6 +42,26 @@ public class Stats {
         }
 
         started = System.currentTimeMillis();
+	Thread t = Thread.currentThread();
+	int i;
+	for (i = 0; i < threads.length; i++) {
+	    if (threads[i] == t) {
+		counts[i]++;
+		return;
+	    }
+	}
+	if (i == threads.length) {
+	    Thread[] tThreads = new Thread[threads.length + 1];
+	    int[] tCounts = new int[threads.length + 1];
+	    for (i = 0; i < threads.length; i++) {
+		tThreads[i] = threads[i];
+		tCounts[i] = counts[i];
+	    }
+	    tThreads[threads.length] = t;
+	    tCounts[threads.length] = 1;
+	    threads = tThreads;
+	    counts = tCounts;
+	}
     }
 
     public void exit() {
@@ -50,6 +74,11 @@ public class Stats {
 
         if (n % 200 == 0) {
             System.out.println("Average time of " + name + ":" + (total / n));
+	    for (int i = 0; i < threads.length; i++) {
+		System.out.println("Thread " + i + " " + threads[i] + ": " +
+			counts[i]);
+		counts[i] = 0;
+	    }
             n = total = 0;
         }
     }

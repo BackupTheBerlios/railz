@@ -67,16 +67,6 @@ WorldListListener {
     private DetailsListCellRenderer trainDetailsRenderer = new
 	DetailsListCellRenderer();
    
-    private void disableAllComponents(Container c) {
-	Component components[] = c.getComponents();
-	for (int i = 0; i < components.length; i++) {
-	    if (components[i] instanceof Container) {
-		disableAllComponents((Container) components[i]);
-	    }
-	    components[i].setEnabled(false);
-	}
-    }
-
     private class DetailsListCellRenderer implements ListCellRenderer {
 	private TrainDetailsJPanel trainDetailsJPanel = new
 	    TrainDetailsJPanel();
@@ -207,8 +197,7 @@ WorldListListener {
         newTrainScheduleJPanel1.setup(mr, gr);
 	addComponentListener(componentListener);
 
-	trainDetailsRenderer.trainDetailsJPanel.setup(modelRoot, null);
-	disableAllComponents(trainDetailsRenderer.trainDetailsJPanel);
+	trainDetailsRenderer.trainDetailsJPanel.setup(modelRoot);
 	trainDetailsRenderer.trainViewJPanel = new TrainViewJPanel(modelRoot);
 
 	popupJButton = new PopupJButton(new World2ListModelAdapter(w,

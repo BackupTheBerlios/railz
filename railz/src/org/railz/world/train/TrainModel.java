@@ -21,16 +21,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import java.io.ObjectInputStream;
-import java.io.IOException;
+import java.io.*;
 
 import org.railz.world.common.*;
+import org.railz.world.player.*;
 import org.railz.world.top.*;
 import org.railz.world.track.*;
 
 public class TrainModel implements FreerailsSerializable {
     /**
-     * The time at which the state of the train was last changed.
+     * The time at which the state of the train was last changed. Used for
+     * determining delays at stations when loading/unloading etc.
      */
     private GameTime stateLastChanged;
 
@@ -52,35 +53,34 @@ public class TrainModel implements FreerailsSerializable {
      */
     public static final int STATE_UNLOADING = 3;
 
+    public static final int PRIORITY_SLOW = 1;
+    public static final int PRIORITY_NORMAL = 2;
+    public static final int PRIORITY_EXPRESS = 3;
+
     public static final int MAX_NUMBER_OF_WAGONS = 10;
     private ScheduleIterator scheduleIterator;
 
-    /**
-     * Describes the current position of the train. The head of the path
-     * coincides with the head of the train. The tail of the path coincides
-     * with the end of the train.
-     */
-    private TrainPath trainPath;
-
-    /**
-     * The path to the current destination, from the last good position
-     */
-    private TrainPath pathToDestination;
-
-    private transient TrainMotionModel trainMotionModel;
+    private TrainMotionModel2 trainMotionModel;
 
     private int engineType = 0;
-    private final int[] wagonTypes;
+    private int[] wagonTypes;
     private int cargoBundleNumber;
-    private final GameTime creationDate;
+    private GameTime creationDate;
+
+    /**
+     * Whether this train is blocked or not
+     */
+    private boolean isBlocked;
 
     private int state;
+    private int priority;
 
     public String toString() {
 	return "TrainModel " + super.toString() +
-	    ": stateLastChanged = " + stateLastChanged + ", trainPath = " +
-	    trainPath + ", scheduleIterator = " + scheduleIterator +
-	    ", state = " + state + ", pathToDest = " + pathToDestination;
+	    ": stateLastChanged = " + stateLastChanged + 
+	    ", scheduleIterator = " + scheduleIterator +
+	    ", state = " + state + ", isBlocked=" + isBlocked +
+	    ", TMM: " + trainMotionModel;
     }
 
     /**
@@ -91,9 +91,9 @@ public class TrainModel implements FreerailsSerializable {
      */
     public TrainModel(int engine, int[] wagons, int bundleId,
 	    GameTime creationDate) {
-	this(engine, wagons, null, bundleId, creationDate,
-		STATE_UNLOADING, null, new TrainMotionModel(), creationDate,
-		null);
+	this(engine, wagons, bundleId, creationDate,
+		STATE_UNLOADING, null, null, PRIORITY_NORMAL, false,
+		creationDate);
     }
 
     /**
@@ -102,33 +102,50 @@ public class TrainModel implements FreerailsSerializable {
     public TrainModel(TrainModel trainModel, TrainPath pathToDestination,
 	    GameTime now) {
 	this(trainModel.engineType, trainModel.wagonTypes,
-		trainModel.trainPath, trainModel.cargoBundleNumber,
+		trainModel.cargoBundleNumber,
 		trainModel.creationDate, trainModel.state,
 		trainModel.scheduleIterator, null,
-		trainModel.stateLastChanged, pathToDestination);
-	trainMotionModel = new TrainMotionModel(trainModel.trainMotionModel,
-	       	this, now);
+		trainModel.priority, trainModel.isBlocked,
+		trainModel.stateLastChanged);
+	TrainMotionModel2 tmm = trainModel.trainMotionModel == null ? null :
+	    new TrainMotionModel2(trainModel.trainMotionModel,
+		    pathToDestination, now);
+	trainMotionModel = tmm;
     }
 
     /**
      * Copy constructor with a new schedule
      */
-    public TrainModel (TrainModel tm, ScheduleIterator si) {
-	this(tm.engineType, tm.wagonTypes, tm.trainPath, tm.cargoBundleNumber,
-		tm.creationDate, tm.state, si, tm.trainMotionModel,
-		tm.stateLastChanged, null);
+    public TrainModel (TrainModel tm, ScheduleIterator si, GameTime t) {
+	this(tm.engineType, tm.wagonTypes, tm.cargoBundleNumber,
+		tm.creationDate, tm.state, si,
+		tm.trainMotionModel == null ? null :
+		tm.trainMotionModel.clearPathToDestination(t),
+		tm.priority, tm.isBlocked, tm.stateLastChanged);
+    }
+
+    /**
+     * @return a new TrainModel with the new priority
+     */
+    public TrainModel setPriority(int priority) {
+	return new TrainModel(engineType, wagonTypes,
+		cargoBundleNumber, creationDate, state, scheduleIterator,
+		trainMotionModel, priority, isBlocked, stateLastChanged);
+    }
+
+    public int getPriority() {
+	return priority;
     }
 
     /**
      * copy constructor with new state
      */
     public TrainModel(TrainModel tm, GameTime now, int state) {
-	this(tm.engineType, tm.wagonTypes, tm.trainPath, tm.cargoBundleNumber,
+	this(tm.engineType, tm.wagonTypes, tm.cargoBundleNumber,
 		tm.creationDate, state, tm.scheduleIterator,
-	       	(state == STATE_UNLOADING || state == STATE_LOADING) ? null :
-		new TrainMotionModel(tm.trainMotionModel), now,
-		(state == STATE_UNLOADING || state == STATE_LOADING) ? null :
-		tm.pathToDestination);
+		(tm.trainMotionModel == null ? null :
+	       	tm.trainMotionModel.clearPathToDestination(now)), tm.priority,
+		false, now);
     }
 
     /**
@@ -136,10 +153,9 @@ public class TrainModel implements FreerailsSerializable {
      * engine and wagons
      */
     public TrainModel getNewInstance(int newEngine, int[] newWagons) {
-        return new TrainModel(newEngine, newWagons, this.getPosition(),
-	    this.getCargoBundleNumber(),
+        return new TrainModel(newEngine, newWagons, this.getCargoBundleNumber(),
 	    creationDate, state, scheduleIterator, trainMotionModel,
-	    stateLastChanged, pathToDestination);
+	    priority, isBlocked, stateLastChanged);
     }
 
     /**
@@ -149,23 +165,23 @@ public class TrainModel implements FreerailsSerializable {
 	return creationDate;
     }
 
-    private TrainModel(int engine, int[] wagons, TrainPath currentP,
+    private TrainModel(int engine, int[] wagons,
 	    int bundleId, GameTime creationDate,
 	    int state, ScheduleIterator
-	    scheduleIterator, TrainMotionModel motionModel, GameTime
-	    stateLastChanged, TrainPath pathToDestination) {
+	    scheduleIterator, TrainMotionModel2 motionModel, int priority,
+	    boolean isBlocked, GameTime stateLastChanged) {
 	engineType = engine;
 	wagonTypes = wagons;
-	trainPath = currentP;
 	cargoBundleNumber = bundleId;
 	this.creationDate = creationDate;
 	this.state = state;
-	this.stateLastChanged = stateLastChanged;
 	if (scheduleIterator != null)
 	    this.scheduleIterator = new ScheduleIterator(scheduleIterator);
-	this.pathToDestination = pathToDestination;
+	this.priority = priority;
+	this.isBlocked = isBlocked;
 	trainMotionModel = motionModel == null ? null : new
-	    TrainMotionModel(motionModel);
+	    TrainMotionModel2(motionModel);
+	this.stateLastChanged = stateLastChanged;
     }
 
     /**
@@ -191,14 +207,6 @@ public class TrainModel implements FreerailsSerializable {
         return wagonTypes[i];
     }
 
-    public TrainPath getPosition() {
-        return trainPath;
-    }
-
-    public void setPosition(TrainPath s) {
-        trainPath = s;
-    }
-
     /**
      * @return an index into the ENGINE_TYPES database
      */
@@ -215,12 +223,15 @@ public class TrainModel implements FreerailsSerializable {
             TrainModel test = (TrainModel)obj;
             boolean b = this.cargoBundleNumber == test.cargoBundleNumber &&
                 this.engineType == test.engineType &&
-                null == this.trainPath ? null == test.trainPath :
-		    this.trainPath.equals(test.trainPath) &&
                 Arrays.equals(this.wagonTypes, test.wagonTypes) &&
 		(scheduleIterator != null ?
 		this.scheduleIterator.equals(test.scheduleIterator) :
-		test.scheduleIterator == null);
+		test.scheduleIterator == null) &&
+		stateLastChanged == null ? test.stateLastChanged == null :
+		stateLastChanged.equals(test.stateLastChanged) &&
+		state == test.state &&
+		isBlocked == test.isBlocked &&
+		priority == test.priority;
 
             return b;
         } else {
@@ -240,71 +251,60 @@ public class TrainModel implements FreerailsSerializable {
 	return scheduleIterator;
     }
 
-    public void setTrainMotionModel(TrainMotionModel tmm) {
-	trainMotionModel = tmm;
+    public TrainMotionModel2 getTrainMotionModel() {
+	return trainMotionModel;
     }
 
-    public TrainMotionModel getTrainMotionModel() {
-	return trainMotionModel;
+    public boolean isBlocked() {
+	return isBlocked;
+    }
+
+    public TrainModel setBlocked(boolean blocked, GameTime now) {
+	return new TrainModel(engineType, wagonTypes, cargoBundleNumber,
+		creationDate, state, scheduleIterator,
+	       trainMotionModel == null ? null :
+	       trainMotionModel.clearPathToDestination(now),
+       	       priority, blocked, stateLastChanged);
+    }
+	    
+    public TrainPath getPosition(GameTime t) {
+	return trainMotionModel == null ? null :
+	    trainMotionModel.getPosition(t);
+    }
+
+    public TrainModel setPosition(TrainPath position, GameTime t, int
+	    maxSpeed) {
+	return new TrainModel(engineType, wagonTypes, cargoBundleNumber,
+		creationDate, state, scheduleIterator, new
+		TrainMotionModel2(null, position, t, maxSpeed), priority,
+		isBlocked, stateLastChanged);
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+	out.writeObject(stateLastChanged);
+	out.writeObject(scheduleIterator);
+	out.writeUnshared(trainMotionModel);
+	out.writeInt(engineType);
+	out.writeObject(wagonTypes);
+	out.writeInt(cargoBundleNumber);
+	out.writeObject(creationDate);
+	out.writeBoolean(isBlocked);
+	out.writeInt(state);
+	out.writeInt(priority);
+	out.flush();
     }
 
     private void readObject(ObjectInputStream in) throws IOException,
     ClassNotFoundException {
-	in.defaultReadObject();
-	trainMotionModel = new TrainMotionModel();
+	stateLastChanged = (GameTime) in.readObject();
+	scheduleIterator = (ScheduleIterator) in.readObject();
+	trainMotionModel = (TrainMotionModel2) in.readUnshared();
+	engineType = in.readInt();
+	wagonTypes = (int[]) in.readObject();
+	cargoBundleNumber = in.readInt();
+	creationDate = (GameTime) in.readObject();
+	isBlocked = in.readBoolean();
+	state = in.readInt();
+	priority = in.readInt();
     }
-
-    /**
-     * Call this immediately after doing or undoing a move
-     */
-    public void sync(GameTime now) {
-	trainMotionModel = new TrainMotionModel(trainMotionModel, this, now);
-    }
-
-    TrainPath getPathToDestination() {
-	return pathToDestination;
-    }
-
-    public void releaseAllLocks(World world) {
-	HashMap mapCoords = new HashMap();
-	getPosition().getMapCoordsAndDirections(mapCoords);
-	Iterator i = mapCoords.entrySet().iterator();
-	while (i.hasNext()) {
-	    Entry e = (Entry) i.next();
-	    world.getTile((Point) e.getKey()).getTrackTile().releaseLock
-		(((Byte) e.getValue()).byteValue());
-	}
-	getTrainMotionModel().setBlocked(true);
-    }
-    
-    public boolean acquireAllLocks(World w) {
-	HashMap mapCoords = new HashMap();
-	getPosition().getMapCoordsAndDirections(mapCoords);
-	final HashMap undoList = new HashMap();
-	undoList.clear();
-	Iterator i = mapCoords.entrySet().iterator();
-	while (i.hasNext()) {
-	    Entry e = (Entry) i.next();
-	    Point p = (Point) e.getKey();
-	    Byte b = (Byte) e.getValue();
-	    TrackTile tt = w.getTile(p).getTrackTile();
-	    if (tt == null || !tt.getLock(b.byteValue())) {
-		/*
-		 * XXX TODO if we delete the track from under a train, we
-		 * should handle this correctly 
-		 */
-		i = undoList.entrySet().iterator();
-		while (i.hasNext()) {
-		    e = (Entry) i.next();
-		    tt = w.getTile((Point) e.getKey()).getTrackTile();
-		    tt.releaseLock(((Byte) e.getValue()).byteValue());
-		}
-		return false;
-	    }
-	    undoList.put(p, b);
-	}
-	getTrainMotionModel().setBlocked(false);
-	return true;
-    }
-
 }

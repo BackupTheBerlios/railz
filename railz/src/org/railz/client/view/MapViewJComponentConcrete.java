@@ -312,6 +312,8 @@ final public class MapViewJComponentConcrete extends MapViewJComponent
 	    textArea.setMargin(new java.awt.Insets(10, 10, 10, 10));
 	    textArea.setOpaque(false);
 	    textArea.setVisible(true);
+
+	    setDoubleBuffered(true);
 	}
 
 	public void setup(GUIRoot gr, ModelRoot mr) {

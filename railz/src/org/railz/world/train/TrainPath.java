@@ -43,7 +43,7 @@ public final class TrainPath implements FreerailsSerializable {
      * we store the path length in order to avoid changes in total length
      * caused by rounding errors when summing calculated diagonals
      */
-    private int length;
+    private double length;
 
     /**
      * This is the length of the path.
@@ -62,7 +62,7 @@ public final class TrainPath implements FreerailsSerializable {
 	if (segments.size() < 1) {
 	    throw new IllegalArgumentException();
 	}
-	this.length = (int) actualLength.getLength();
+	this.length = actualLength.getLength();
     }
 
     public TrainPath (IntLine[] lines) {
@@ -77,7 +77,7 @@ public final class TrainPath implements FreerailsSerializable {
 	if (segments.size() < 1)
 	    throw new IllegalArgumentException();
 
-	length = (int) actualLength.getLength();
+	length = actualLength.getLength();
     }
 
     /**
@@ -105,7 +105,7 @@ public final class TrainPath implements FreerailsSerializable {
      * @return the intended length of the train path
      */
     public int getLength() {
-	return length;
+	return (int) length;
     }
 
     /**
@@ -156,7 +156,7 @@ public final class TrainPath implements FreerailsSerializable {
 	    segments.add(i.next());
 	}
 	actualLength.add(tp.actualLength);
-	length = (int) actualLength.getLength();
+	length = actualLength.getLength();
     }
 
     /**
@@ -164,10 +164,11 @@ public final class TrainPath implements FreerailsSerializable {
      * @param newLength the new length of the path
      * @return the portion which was removed
      */
-    public TrainPath truncateTail (int newLength) {
+    public TrainPath truncateTail (double newLength) {
 	final Point p = new Point ();
 	PathLength l = new PathLength();
-	if ((int) length == newLength) {
+	if ((int) actualLength.getLength() <= newLength) {
+	    assert newLength - (int) actualLength.getLength() < 3;
 	    getTail(p);
 	    return new TrainPath(new IntLine[]{new IntLine(p.x, p.y, p.x, p.y)});
 	}
@@ -186,12 +187,19 @@ public final class TrainPath implements FreerailsSerializable {
 	    int oldX2 = line.x2;
 	    int oldY2 = line.y2;
 	    PathLength segLength = new PathLength(line.getLength());
+	    // System.out.println("stub length = " + l.getLength());
 	    l.subtract(segLength);
 	    segLength.setLength(newLength - l.getLength());
+	    // System.out.println("set segLength to " + (newLength -
+	//		l.getLength()) + ", is actually=" +
+	//	    segLength.getLength());
 	    l.add(segLength);
 	    line.setLength(segLength);
 	    removedSegments.addFirst(new IntLine(line.x2, line.y2, oldX2,
 		       oldY2));
+	    // System.out.println("new actualLength = " + l.getLength() +
+	//	    ", intended length=" + newLength + ", old length=" +
+	//	    length);
 	}
 	length = newLength;
 	actualLength = l;
@@ -225,7 +233,7 @@ public final class TrainPath implements FreerailsSerializable {
 	    segments.addFirst(i.previous());
 	}
 	actualLength.add(l);
-	length = (int) actualLength.getLength();
+	length = actualLength.getLength();
     }
 
     /**
@@ -236,9 +244,13 @@ public final class TrainPath implements FreerailsSerializable {
      * @return the portion of the tail removed to maintain constant length
      */
     public TrainPath moveHeadTo(TrainPath additionalPath) {
-	int l = length;
+	// System.out.println(".");
+	double l = length;
 	prepend(additionalPath);
-	return truncateTail(l);
+	TrainPath tp = truncateTail(l);
+	double d =  Math.abs(actualLength.getLength() - length);
+	assert d < 3;
+	return tp;
     }
     
     /**

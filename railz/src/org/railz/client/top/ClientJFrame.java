@@ -154,7 +154,7 @@ UpdatedComponent {
 	    frameCount = 0;
     }
 
-    public boolean disDoubleBuffered() {
+    public boolean isDoubleBuffered() {
 	return true;
     }
 

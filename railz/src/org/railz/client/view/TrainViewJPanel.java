@@ -86,13 +86,13 @@ public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldLi
     
     /** Creates a new instance of TrainView */
     public TrainViewJPanel(ModelRoot mr) {
-	setup(mr, null);		  
+	setup(mr);		  
 	this.setBackground(backgoundColor);
     }
 
     /** Creates a new instance of TrainView */
     public TrainViewJPanel(ModelRoot mr, int trainNumber) {
-        setup(mr, null);
+        setup(mr);
         display(trainNumber);
         this.setBackground(backgoundColor);
     }
@@ -202,8 +202,7 @@ public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldLi
 	setMinimumSize(new Dimension(Math.max(200, width), height));
     }
     
-    public void setup(ModelRoot mr,
-    java.awt.event.ActionListener submitButtonCallBack) {
+    public void setup(ModelRoot mr) {
 	modelRoot = mr;
         w = modelRoot.getWorld();
         vl = modelRoot.getViewLists();
@@ -267,9 +266,5 @@ public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldLi
     
     public void itemRemoved(KEY key, int index, FreerailsPrincipal princpal) {
 	// do nothing
-    }
-    
-    public void paint(Graphics g) {
-	super.paint(g);
     }
 }

@@ -73,6 +73,17 @@ public class TrainPathFinder {
 	currentPosition.y = pe.y;
     }
 
+    private void fixUpPathEnds(TrainPath p, Point newStart, Point newEnd) {
+	Point oldStart = new Point();
+	Point oldEnd = new Point();
+	p.getHead(oldStart);
+	p.getTail(oldEnd);
+	IntLine newStartSegment = new IntLine(newStart, oldStart);
+	IntLine newEndSegment = new IntLine(oldEnd, newEnd);
+	p.prepend(new TrainPath(new IntLine[]{newStartSegment}));
+	p.append(new TrainPath(new IntLine[]{newEndSegment}));
+    }
+
     /**
      * @param start start location measured in Deltas from map origin.
      * @param target end location measured in Deltas from map origin.
@@ -86,11 +97,6 @@ public class TrainPathFinder {
      */
     public TrainPath findPath(Point start, Point dest) {
 	System.out.println("Finding path from " + start + " to " + dest);
-	/* "Stupidity" filter... */
-	if (start.equals(dest))
-	    return new TrainPath(new IntLine[]{new IntLine(start.x, start.y,
-			start.x, start.y)});
-
 	Point target = new Point(dest);
 	TrackTile.deltasToTileCoords(target);
 	startDirection = CompassPoints.NORTH;
@@ -101,9 +107,14 @@ public class TrainPathFinder {
 	bestCost = Integer.MAX_VALUE;
 	Point startCentre = new Point (start);
 	TrackTile.deltasToTileCoords(startCentre);
+	
+	/* "Stupidity" filter... */
+	if (startCentre.equals(target))
+	    return new TrainPath(new Point[]{new Point(start.x, start.y),
+		    TrackTile.tileCoordsToDeltas(startCentre),
+		    new Point(dest.x, dest.y)});
+
 	startCentre = TrackTile.tileCoordsToDeltas(startCentre);
-	IntLine startLine = new IntLine(start.x, start.y, startCentre.x,
-		    startCentre.y);
 	do {
 	    startDirection = CompassPoints.rotateClockwise(startDirection);
 	    if ((startDirection & world.getTile(startCentre.x /
@@ -225,9 +236,9 @@ public class TrainPathFinder {
 	    IntLine l = new IntLine(oldp.x, oldp.y, newp.x, newp.y);
 	    intLines.add(l);
 	}
-	intLines.addFirst(startLine);
 	TrainPath retVal = new TrainPath((IntLine[]) intLines.toArray(new
 		    IntLine[intLines.size()]));
+	fixUpPathEnds(retVal, start, dest);
 	System.out.println("Returning: " + retVal.toString());
 	return retVal;
     }

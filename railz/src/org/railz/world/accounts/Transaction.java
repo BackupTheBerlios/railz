@@ -54,6 +54,7 @@ public abstract class Transaction implements FreerailsSerializable {
     }
 
     protected Transaction(GameTime t, long value) {
+	assert Math.abs(value) < 10000000;
 	time = t;
 	this.value = value;
     }

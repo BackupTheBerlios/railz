@@ -24,6 +24,7 @@ import java.awt.Point;
 import org.railz.world.common.*;
 import org.railz.world.track.*;
 import org.railz.world.train.*;
+import org.railz.world.top.*;
 
 /**
  * This class draws a train from an overhead view.
@@ -43,8 +44,8 @@ public class TrainRenderer {
         this.trainImages = trainImages;
     }
 
-    public void paintTrain(Graphics g, TrainModel train) {
-        TrainPath s = train.getPosition();
+    public void paintTrain(Graphics g, TrainModel train, GameTime t) {
+        TrainPath s = train.getPosition(t);
 	if (s == null)
 	    return;
 

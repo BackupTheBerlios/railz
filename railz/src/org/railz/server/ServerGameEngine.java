@@ -89,7 +89,7 @@ public class ServerGameEngine implements GameModel, Runnable {
      * number of ticks since baseTime
      */
     private int n;
-    TrainMover trainMover;
+    AuthoritativeTrainMover trainMover;
     TrainController trainController;
     private int currentYearLastTick = -1;
     private int currentMonthLastTick = -1;
@@ -139,7 +139,7 @@ public class ServerGameEngine implements GameModel, Runnable {
 		moveExecuter);
 	trainMaintenanceMoveFactory = new TrainMaintenanceMoveFactory(w,
 		moveExecuter);
-	trainMover = new TrainMover(w);
+	trainMover = new AuthoritativeTrainMover(w, moveExecuter);
 	trainController = new TrainController(w, moveExecuter);
 
         for (int i = 0; i < serverAutomata.size(); i++) {
@@ -357,11 +357,14 @@ public class ServerGameEngine implements GameModel, Runnable {
             System.out.print("Saving game..  ");
 	    NonNullElements i = new NonNullElements(KEY.PLAYERS, world,
                     Player.AUTHORITATIVE);
+	    GameTime t = (GameTime) world.get(ITEM.TIME,
+		    Player.AUTHORITATIVE);
 	    while (i.next()) {
 		NonNullElements j = new NonNullElements(KEY.TRAINS, world,
 			((Player) i.getElement()).getPrincipal());
 		while (j.next()) {
-		    ((TrainModel) j.getElement()).releaseAllLocks(world); 
+		    TrainModel tm = ((TrainModel) j.getElement());
+		    trainMover.releaseAllLocks(world, tm.getPosition(t), tm); 
 		}
 	    }
 

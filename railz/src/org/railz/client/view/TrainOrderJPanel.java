@@ -114,7 +114,7 @@ public class TrainOrderJPanel extends javax.swing.JPanel {
         w = mr.getWorld();
         TrainViewJPanel trainViewJPanel = (TrainViewJPanel)consistChangeJPanel;
         trainViewJPanel.setHeight(15);
-        trainViewJPanel.setup(mr, null);
+        trainViewJPanel.setup(mr);
     }
     
     public void update(TrainOrdersListModel.TrainOrdersListElement

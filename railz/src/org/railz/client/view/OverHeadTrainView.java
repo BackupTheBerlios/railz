@@ -25,11 +25,10 @@ import org.railz.client.common.Painter;
 import org.railz.client.model.ModelRoot;
 import org.railz.client.renderer.TrainRenderer;
 import org.railz.client.renderer.ViewLists;
+import org.railz.world.common.*;
 import org.railz.world.player.Player;
 import org.railz.world.player.FreerailsPrincipal;
-import org.railz.world.top.KEY;
-import org.railz.world.top.NonNullElements;
-import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.top.*;
 import org.railz.world.train.TrainModel;
 
 public class OverHeadTrainView implements Painter {
@@ -50,6 +49,7 @@ public class OverHeadTrainView implements Painter {
 	g.setColor(Color.BLUE);
 	g.setStroke(new BasicStroke(10));
 	Stroke st;
+	GameTime t = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
 	NonNullElements j = new NonNullElements(KEY.PLAYERS, w,
 		Player.AUTHORITATIVE);
        
@@ -59,7 +59,7 @@ public class OverHeadTrainView implements Painter {
 	    for (int i = 0; i < w.size(KEY.TRAINS, p); i++) {
 		TrainModel train = (TrainModel)w.get(KEY.TRAINS, i, p);
 
-		trainPainter.paintTrain(g, train);
+		trainPainter.paintTrain(g, train, t);
 	    }
 	}
     }

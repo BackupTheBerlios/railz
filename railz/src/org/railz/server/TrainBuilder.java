@@ -103,7 +103,7 @@ class TrainBuilder {
             }
 
 	    train = new TrainModel(train, new ScheduleIterator(scheduleNumber,
-			0));
+			0), now);
 
             ImmutableSchedule is = s.toImmutableSchedule();
 
