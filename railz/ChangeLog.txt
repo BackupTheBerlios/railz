@@ -1,3 +1,6 @@
+February 15, 2005:
+------------------
+Made PathFinder into a generic pathfinder.
 February 13, 2005:
 ------------------
 Added some code for AI route building
