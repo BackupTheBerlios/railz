@@ -39,7 +39,7 @@ final public class TrackMoveProducer {
      * moves
      */
     private FreerailsPrincipal principal;
-    private UntriedMoveReceiver moveTester;
+    private UntriedMoveReceiver moveReceiver;
     public final static int BUILD_TRACK = 1;
     public final static int REMOVE_TRACK = 2;
     public final static int UPGRADE_TRACK = 3;
@@ -94,11 +94,11 @@ final public class TrackMoveProducer {
         Move moveAndTransaction = transactionsGenerator.addTransactions(move);
 	Logger.getLogger("global").log(Level.INFO, "trying " +
 		"build track move" + move.toString());
-        MoveStatus ms = moveTester.tryDoMove(moveAndTransaction);
+        MoveStatus ms = moveReceiver.tryDoMove(moveAndTransaction);
 
 	Logger.getLogger("global").log(Level.INFO, "processing " +
 		"build track move");
-        moveTester.processMove(moveAndTransaction);
+        moveReceiver.processMove(moveAndTransaction);
 	Logger.getLogger("global").log(Level.INFO, "processed " +
 		"build track move");
         return ms;
@@ -147,7 +147,7 @@ final public class TrackMoveProducer {
             throw new NullPointerException();
         }
 
-        this.moveTester = moveReceiver;
+        this.moveReceiver = moveReceiver;
         this.w = world;
         this.trackRule = 0;
         principal = p;
@@ -168,8 +168,8 @@ final public class TrackMoveProducer {
 
         Move move = UpgradeTrackMove.generateMove(before, after, point,
 		principal);
-	MoveStatus ms = moveTester.tryDoMove(move);
-        moveTester.processMove(transactionsGenerator.addTransactions(move));
+	MoveStatus ms = moveReceiver.tryDoMove(move);
+        moveReceiver.processMove(transactionsGenerator.addTransactions(move));
 
         return ms;
     }

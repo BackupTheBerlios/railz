@@ -19,10 +19,13 @@ package org.railz.world.top;
 
 import java.util.HashSet;
 
+import org.railz.world.building.*;
+import org.railz.world.cargo.*;
 import org.railz.world.common.*;
 import org.railz.world.player.*;
 import org.railz.world.terrain.TerrainType;
 import org.railz.world.track.*;
+import org.railz.world.train.*;
 
 /**
  * This class is used to generate fixures for Junit tests.
@@ -73,7 +76,7 @@ public class MapFixtureFactory {
 
         legalTrackConfigurations[0] = trackTemplates0;
         legalTrackPlacement[0] = new boolean[] { true, true, true, true };
-        trackRulesArray[0] = new TrackRule(0, "type0", false, 10,
+        trackRulesArray[0] = new TrackRule(0, "standard track", false, 10,
 		legalTrackConfigurations[0], 0, legalTrackPlacement[0], false);
 
         //2nd track type..
@@ -102,7 +105,38 @@ public class MapFixtureFactory {
         //We need this since when we built track, the terrain type gets check to see if we can
         //built track on it and an exception is thrown if terrain type 0 does not exist.
 	world.add(KEY.TERRAIN_TYPES, new TerrainType(0,
-		    TerrainType.CATEGORY_COUNTRY, "Dummy Terrain", 0L, 10,
+		    TerrainType.CATEGORY_COUNTRY, "Clear", 0L, 10,
 		    10), Player.AUTHORITATIVE);
+    }
+
+    public FreerailsPrincipal addPlayer(String name, int id) {
+	Player p = new Player(name);
+	p = new Player(name, p.getPublicKey(), id);
+	world.add(KEY.PLAYERS, p, Player.AUTHORITATIVE);
+	return p.getPrincipal();
+    }
+
+    public static final int TT_CLEAR = 0;
+    public static final int BT_CITY = 0;
+    public static final int CT_PASSENGER = 0;
+
+    public void setupCargoTypes() {
+	world.add(KEY.CARGO_TYPES, new CargoType("passenger",
+		TransportCategory.PASSENGER, 1000L, 30 * 45, 30 * 90),
+	Player.AUTHORITATIVE); 
+    }
+
+    public void setupBuildingTypes() {
+	// add a building type demanding and producing passengers
+	world.add(KEY.BUILDING_TYPES,
+		new BuildingType("city",
+		new Production[] {new Production(CT_PASSENGER, 100)},       
+		new Consumption[] {new Consumption(CT_PASSENGER)},
+		new Conversion[0],
+		1000L, 0, new byte[0], new boolean[] {true},
+	       	new boolean[] {true},
+	       	new BuildingType.DistributionParams[] 
+		{new BuildingType.DistributionParams(1.0, 1.0, 1.0)}),
+		Player.AUTHORITATIVE);
     }
 }

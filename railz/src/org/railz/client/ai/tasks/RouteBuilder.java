@@ -40,6 +40,7 @@ import org.railz.world.train.*;
  */
 class RouteBuilder extends TaskPlanner {
     private static final Logger logger = Logger.getLogger("ai");
+    private RouteBuilderMoveFactory routeBuilderMoveFactory;
     
     /** Max age of cache in ticks */
     private final long MAX_CACHE_AGE;
@@ -102,6 +103,7 @@ class RouteBuilder extends TaskPlanner {
 		Player.AUTHORITATIVE);
 	trackMaintenanceMoveGenerator = new TrackMaintenanceMoveGenerator
 	    (aiClient.getWorld(), null);
+	routeBuilderMoveFactory = new RouteBuilderMoveFactory(aiClient);
     }
 
     private boolean isInitialised = false;
@@ -681,12 +683,22 @@ class RouteBuilder extends TaskPlanner {
      * order to determine which activity to undertake first, in the event that
      * there are insufficient resources to perform all tasks. */
     public int getTaskPriority() {
+	if (taskPlan == null)
+	    return 0;
+	
 	return (int) (taskPlan.annualRevenueEstimate -
 		taskPlan.annualCostEstimate);
     }
 
     public void doTask() {
-	/* TODO */
+	if (taskPlan == null)
+	    return;
+
+	routeBuilderMoveFactory.processPlannedRoute(taskPlan);
+	shouldRebuildCache = true;
+	taskPlan = null;
+
+
     }
 
     public long getTaskCost() {

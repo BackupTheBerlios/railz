@@ -133,4 +133,8 @@ public class AIClient extends Client implements Runnable,
     public ReadOnlyWorld getWorld() {
 	return world;
     }
+
+    public UntriedMoveReceiver getUntriedMoveReceiver() {
+	return connectionAdapter;
+    }
 }
