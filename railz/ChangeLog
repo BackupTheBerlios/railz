@@ -1,6 +1,10 @@
 Mar 16, 2004:
 -------------
-Removed unused right-of-way charges. Fixed billing for tile purchases to debit
+Removed unused right-of-way charges.
+Fixed billing for tile purchases to debit
+Added prices to Track build tab pane tooltips.
+Resized build track buttons to make them smaller.
+Stopped client frame opening before display is ready.
 instead of credit!
 Mar 15, 2004:
 -------------

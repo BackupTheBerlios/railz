@@ -88,6 +88,9 @@ UpdatedComponent {
 	setTitle("Railz Client");
 	guiRoot.getMapMediator().setMainMap
 	    (mainMapView.getViewport(), mapViewJComponent);
+	setSize(640, 450);
+	/* needed on Mac OS X */
+	show();
     }
     
     public void doFrameUpdate(Graphics g) {
@@ -215,7 +218,6 @@ UpdatedComponent {
 
         setJMenuBar(jMenuBar1);
 
-        pack();
     }//GEN-END:initComponents
     
     /** Exit the Application */

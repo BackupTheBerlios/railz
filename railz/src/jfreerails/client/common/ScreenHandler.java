@@ -119,7 +119,6 @@ final public class ScreenHandler {
             goFullScreen(f, displayMode);
             break;
         case WINDOWED_MODE:
-            frame.show();
             break;
         default:
             throw new IllegalArgumentException(String.valueOf(mode));
@@ -197,7 +196,7 @@ final public class ScreenHandler {
 
     private Runnable swingWorker = new Runnable() {
 	public void run() {
-	    if (isMinimised) {
+	    if (isMinimised || ! frame.isVisible()) {
 		return;
 	    }
 
