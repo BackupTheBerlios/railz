@@ -1,3 +1,7 @@
+Apr 05, 2004:
+-------------
+Addressed some issues in bug 4 - scalable map background in select station
+dialog.
 Apr 04, 2004:
 -------------
 Fix for bug 20 - servers can now send messsages to clients
