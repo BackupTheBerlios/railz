@@ -1,5 +1,6 @@
 #!/bin/sh
-HERE=`dirname $0`
+cd `dirname $0`
+HERE=`pwd`
 L10NDIR=$HERE/src/jfreerails/data/l10n
 
 # define your supported languages here...

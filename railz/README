@@ -39,12 +39,13 @@ www.junit.org.
 Running It:
 ===========
 
-To run, type: java jfreerails/launcher/Launcher
+To run, type: java -jar railz.jar
 				
 Mac OS X users:
 ---------------
 
-There appears to be a bug in Mac OS X Java 1.4.2 which causes problems with map redraws. If this affects you then try running
+There appears to be a bug in Mac OS X Java 1.4.2 which causes problems with map
+redraws. If this affects you then try running
 java -DOSXWorkaround=true \
 jfreerails/launcher/Launcher
 For more information, see:
@@ -59,7 +60,12 @@ Railz is currently maintained by Robert Tuck (rtuck99@users.berlios.de).
 
 Bug reports and Feature Requests
 --------------------------------
-If you have bugs, or suggestions for enhancement, please submit them to the bug report tool at http://developer.berlios.de/bugs/?group_id=1483
+If you have bugs, or suggestions for enhancement, please submit them to the bug
+report tool at
+http://developer.berlios.de/bugs/?group_id=1483
+
+Please check to see whether your bug has already been filed by someone else in
+the bug database first before filing it.
 
 Mailing list
 ------------
@@ -68,5 +74,6 @@ http://developer.berlios.de/mail/?group_id=1483
 
 Credits
 =======
-Thanks to Berlios.de for hosting the project, and also those who worked on JFreerails.
+Thanks to Berlios.de for hosting the project, and also those who worked on
+JFreerails.
 

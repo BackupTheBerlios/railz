@@ -1,4 +1,5 @@
 Mar 9, 2004 Separated view and model client packages. Added Debug menu. Rendering bugs hopefully mostly fixed.
+Added Release Notes
 Mar 7, 2004 Reworked GUI architecture. Rendering code changed. Still a bit buggy :)
 Added L10N/I18N infrastructure (Thanks Christoph!)
 Feb 28, 2004 Railz CVS created from patched JFreerails source
