@@ -200,8 +200,10 @@ public class TrainModel implements FreerailsSerializable {
 		scheduleIterator, trainMotionModel, priority, isBlocked,
 		stateLastChanged, ticksInService,
 		costTraversedSinceLoadingWater);
-	tm.trainMotionModel =
-	    tm.trainMotionModel.setTrainPathLength(tm.getLength());
+	if (tm.trainMotionModel != null) {
+	    tm.trainMotionModel = tm.trainMotionModel.setTrainPathLength
+		(tm.getLength());
+	}
 	return tm;
     }
 

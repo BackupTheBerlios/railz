@@ -68,9 +68,9 @@ public class GUIClient extends Client implements ConnectionAdapterListener {
 	connectionAdapter = new ConnectionAdapter(player, pm,
 		modelRoot.getUserMessageLogger());
 	connectionAdapter.addConnectionAdapterListener(this);
-	setReceiver(connectionAdapter);
-        modelRoot.setMoveReceiver(getReceiver());
-        getReceiver().setMoveReceiver(getMoveChainFork());
+	receiver = connectionAdapter;
+        modelRoot.setMoveReceiver(receiver);
+        receiver.setMoveReceiver(getMoveChainFork());
 
         //We want to setup the screen handler before creating the view lists
         //since the ViewListsImpl creates images that are compatible with
@@ -84,7 +84,7 @@ public class GUIClient extends Client implements ConnectionAdapterListener {
         try {
             /* this causes the world to be loaded and the ViewLists to be
              * initialised */
-            getReceiver().setConnection(server);
+            receiver.setConnection(server);
         } catch (GeneralSecurityException e) {
             server.close();
             throw e;

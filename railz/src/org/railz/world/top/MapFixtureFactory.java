@@ -23,6 +23,7 @@ import org.railz.world.building.*;
 import org.railz.world.cargo.*;
 import org.railz.world.common.*;
 import org.railz.world.player.*;
+import org.railz.world.station.*;
 import org.railz.world.terrain.TerrainType;
 import org.railz.world.track.*;
 import org.railz.world.train.*;
@@ -71,7 +72,8 @@ public class MapFixtureFactory {
 	    CompassPoints.NORTHWEST | CompassPoints.WEST | CompassPoints.EAST,
 	    CompassPoints.NORTHEAST | CompassPoints.WEST | CompassPoints.EAST,
             CompassPoints.NORTH | CompassPoints.WEST,
-	    CompassPoints.NORTHWEST | CompassPoints.WEST
+	    CompassPoints.NORTHWEST | CompassPoints.WEST,
+	    CompassPoints.NORTH | CompassPoints.SOUTHEAST
         };
 
         legalTrackConfigurations[0] = trackTemplates0;
@@ -98,15 +100,15 @@ public class MapFixtureFactory {
         //Add track rules to world
         for (int i = 0; i < trackRulesArray.length; i++) {
 	    world.add(KEY.TRACK_RULES, trackRulesArray[i],
-		    Player.AUTHORITATIVE);
+		    Player.NOBODY);
         }
 
         //Add a single terrain type..		
         //We need this since when we built track, the terrain type gets check to see if we can
         //built track on it and an exception is thrown if terrain type 0 does not exist.
 	world.add(KEY.TERRAIN_TYPES, new TerrainType(0,
-		    TerrainType.CATEGORY_COUNTRY, "Clear", 0L, 10,
-		    10), Player.AUTHORITATIVE);
+		    TerrainType.CATEGORY_COUNTRY, "Clear", 0L, 0, 0),
+	       	Player.NOBODY);
     }
 
     public FreerailsPrincipal addPlayer(String name, int id) {
@@ -123,7 +125,7 @@ public class MapFixtureFactory {
     public void setupCargoTypes() {
 	world.add(KEY.CARGO_TYPES, new CargoType("passenger",
 		TransportCategory.PASSENGER, 1000L, 30 * 45, 30 * 90),
-	Player.AUTHORITATIVE); 
+	Player.NOBODY); 
     }
 
     public void setupBuildingTypes() {
@@ -137,6 +139,37 @@ public class MapFixtureFactory {
 	       	new boolean[] {true},
 	       	new BuildingType.DistributionParams[] 
 		{new BuildingType.DistributionParams(1.0, 1.0, 1.0)}),
-		Player.AUTHORITATIVE);
+		Player.NOBODY);
+	// add a station building type
+	world.add(KEY.BUILDING_TYPES,
+		new BuildingType("station",
+		    1000L, 2, new byte[] { CompassPoints.NORTH,
+		     (byte) (CompassPoints.NORTH | CompassPoints.SOUTH)},
+		     new boolean[] {true}, new boolean[]
+		    {true}, new BuildingType.DistributionParams[]
+		    {new BuildingType.DistributionParams(1.0, 1.0, 1.0)}),
+		Player.NOBODY);
+    }
+
+    public void setupCalendar() {
+	world.set(ITEM.CALENDAR, new GameCalendar(30, 1830, 30), Player.NOBODY);
+	world.set(ITEM.TIME, new GameTime(0), Player.NOBODY);
+    }
+
+    public void setupStationImprovements() {
+	world.add(KEY.STATION_IMPROVEMENTS, new StationImprovement
+		("WaterTower", "A water tower", 1000L, new int[0], new
+		 int[0]), Player.NOBODY);
+    }
+
+    public void setupEngineTypes() {
+	world.add(KEY.ENGINE_TYPES, new EngineType
+		("Test Engine Type", 6000L, 5000L, 600,
+		 EngineType.FUEL_TYPE_COAL, 1000, 40, 2000, 400, 0.2f, 0.7f,
+		 true), Player.NOBODY);
+    }
+
+    public void setupEconomy() {
+	world.set(ITEM.ECONOMY, new Economy(25, 5.0f), Player.NOBODY);
     }
 }

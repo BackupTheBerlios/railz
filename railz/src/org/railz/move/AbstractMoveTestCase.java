@@ -55,6 +55,7 @@ public abstract class AbstractMoveTestCase extends TestCase {
     protected void setUp() {
         setHasSetupBeenCalled(true);
 	MapFixtureFactory mff = new MapFixtureFactory(10, 10);
+	mff.setupEngineTypes();
         setWorld(mff.world);
 	for (int x = 0; x < 10; x++)
 	    for (int y = 0; y < 10; y++)

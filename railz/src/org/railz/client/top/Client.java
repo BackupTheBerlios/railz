@@ -27,14 +27,10 @@ import org.railz.world.player.Player;
  */
 public abstract class Client {
     private MoveChainFork moveChainFork;
-    private ConnectionAdapter receiver;
+    protected ConnectionAdapter receiver;
 
     protected Client(Player p) {
 	moveChainFork = new MoveChainFork();
-    }
-
-    public ConnectionAdapter getReceiver() {
-        return receiver;
     }
 
     protected void setMoveChainFork(MoveChainFork moveChainFork) {
@@ -46,9 +42,5 @@ public abstract class Client {
      */
     protected MoveChainFork getMoveChainFork() {
         return moveChainFork;
-    }
-
-    protected void setReceiver(ConnectionAdapter receiver) {
-        this.receiver = receiver;
     }
 }

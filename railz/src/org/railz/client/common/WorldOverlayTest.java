@@ -26,6 +26,10 @@ public class WorldOverlayTest extends WorldTest {
 	return new WorldOverlay(w);
     }
 
+    public void testItemStorage() {
+	/* This class doesn't support setting ITEMs */
+    }
+
     /*
     public void testNoHashMasking() {
 	World w = getWorld(10, 10);

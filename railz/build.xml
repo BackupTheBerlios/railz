@@ -69,17 +69,17 @@
       <javac debug="true" deprecation="true" destdir="${build}" fork="true" source="1.4" srcdir="${src}"/>
    </target>
    <target depends="debugcompile" description="Run all junit tests" name="runtests">
-      <junit haltonfailure="yes" printsummary="yes">
+      <junit showoutput="true" >
+      <assertions><enable /></assertions>
+      <sysproperty key=".level" value="FINEST" />
          <classpath>
             <pathelement location="${build}"/>
             <pathelement path="${java.class.path}"/>
          </classpath>
-         <formatter type="brief" usefile="no"/>
-         <batchtest fork="yes">
-            <fileset dir="${build}">
-               <include name="**/*Test.class"/>
-            </fileset>
-         </batchtest>
+         <sysproperty key="java.util.logging.config.class" value="org.railz.Tests" />
+         <formatter type="plain" usefile="false"/>
+         <test name="org.railz.Tests">
+         </test>
       </junit>
    </target>
    <target depends="debugcompile, mkdirs" description="Generate proto area" name="proto">

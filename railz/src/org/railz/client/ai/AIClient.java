@@ -28,7 +28,7 @@ import org.railz.world.top.*;
 
 /** Represents an instance of an AI client */
 public class AIClient extends Client implements Runnable,
-    ConnectionAdapterListener {
+    ConnectionAdapterListener, ClientDataProvider {
     private AIConfiguration config;
     private ClientMoveExecuter clientMoveExecuter;
     private ConnectionAdapter connectionAdapter;
@@ -53,7 +53,7 @@ public class AIClient extends Client implements Runnable,
 		FreerailsProgressMonitor.NULL_INSTANCE,
 		userMessageLogger);
 	connectionAdapter.addConnectionAdapterListener(this);
-	setReceiver(connectionAdapter);
+	receiver = connectionAdapter;
 	connectionAdapter.setMoveReceiver(getMoveChainFork());
 	try {
 	    // causes the connectionAdapter to initialize the game and call
@@ -134,7 +134,7 @@ public class AIClient extends Client implements Runnable,
 	return world;
     }
 
-    public UntriedMoveReceiver getUntriedMoveReceiver() {
+    public UntriedMoveReceiver getReceiver() {
 	return connectionAdapter;
     }
 }

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import org.railz.client.common.UserMessageLogger;
 import org.railz.client.renderer.ViewLists;
 import org.railz.client.view.DialogueBoxController;
+import org.railz.client.top.*;
 import org.railz.controller.MoveChainFork;
 import org.railz.controller.ServerControlInterface;
 import org.railz.controller.StationBuilder;
@@ -41,7 +42,7 @@ import org.railz.world.top.WorldListListener;
 /**
  * Central point for accessing control models and common UI-independent services
  */
-public final class ModelRoot {
+public final class ModelRoot implements ClientDataProvider {
     private TrackBuildModel trackBuildModel;
     private TrackMoveProducer trackMoveProducer;
     private StationBuildModel stationBuildModel;

@@ -20,6 +20,7 @@ import java.awt.*;
 import java.util.*;
 
 import org.railz.client.ai.*;
+import org.railz.client.top.*;
 import org.railz.world.common.*;
 import org.railz.world.city.*;
 import org.railz.world.player.*;
@@ -61,9 +62,9 @@ final class CityEntry implements Comparable {
     /** LinkedList of PathExplorers */
     LinkedList plannedRoute;
 
-    private AIClient aiClient;
+    private ClientDataProvider aiClient;
 
-    public CityEntry(AIClient aic, int c1, int c2, PathLength d) {
+    public CityEntry(ClientDataProvider aic, int c1, int c2, PathLength d) {
 	city1 = c1;
 	city2 = c2;
 	distance = new PathLength(d);

@@ -46,6 +46,8 @@ public class AddTransactionMoveTest extends AbstractMoveTestCase {
         assertTryMoveIsOk(m);
         assertTryUndoMoveFails(m);
         assertDoMoveIsOk(m);
+	account = (BankAccount) getWorld().get(KEY.BANK_ACCOUNTS, 0,
+		testPlayer.getPrincipal());
         assertTrue(100 == account.getCurrentBalance());
 
         Move m2 = new AddTransactionMove(5, t, testPlayer.getPrincipal());

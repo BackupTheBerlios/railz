@@ -77,7 +77,10 @@ public final class WorldConstants {
 
 	if (SI_WATER_TOWER == -1 || TT_CLEAR == -1 || TR_STANDARD_TRACK == -1) {
 	    logger.log(Level.SEVERE, "A special configuration value " + 
-		    "needed to function could not be found");
+		    "needed to function could not be found:" +
+		    "SI_WATER_TOWER=" + SI_WATER_TOWER + 
+		    ", TT_CLEAR=" + TT_CLEAR + 
+		    ", TR_STANDARD_TRACK=" + TR_STANDARD_TRACK);
 	    System.exit(1);
 	}
     }

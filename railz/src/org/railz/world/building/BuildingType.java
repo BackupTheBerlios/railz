@@ -92,7 +92,7 @@ public class BuildingType implements FreerailsSerializable {
 
     private void setTrackLayouts(byte[] trackLayouts) {
 	for (int i = 0; i < trackLayouts.length; i++) {
-	    int layout = trackLayouts[i];
+	    int layout = trackLayouts[i] & 0xFF;
 	    for (int j = 0; j < 8; j++) {
 		validTrackLayouts[layout] = true;
 		layout = CompassPoints.rotateClockwise((byte) layout) & 0xFF;

@@ -19,6 +19,7 @@ package org.railz.client.ai.tasks;
 import java.util.*;
 
 import org.railz.client.ai.*;
+import org.railz.client.top.*;
 
 /** Extended by each class which implements the AI for a given type of
  * task, e.g. Building track, buying trains, upgrading stations, changing
@@ -82,7 +83,7 @@ public abstract class TaskPlanner implements Comparable {
 	return getTaskPriority() ^ (int) getTaskCost();
     }
 
-    public static ArrayList createTaskPlanners(AIClient aic) {
+    public static ArrayList createTaskPlanners(ClientDataProvider aic) {
 	ArrayList al = new ArrayList();
 	al.add(new RouteBuilder(aic));
 	return al;

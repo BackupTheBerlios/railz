@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.logging.*;
 
 import org.railz.client.ai.*;
+import org.railz.client.top.*;
 import org.railz.controller.*;
 import org.railz.move.*;
 import org.railz.world.common.*;
@@ -29,7 +30,7 @@ import org.railz.world.common.*;
  * engine. 
  */
 final class RouteBuilderMoveFactory {
-    private AIClient aiClient;
+    private ClientDataProvider aiClient;
     private CityEntry plannedRoute;
     private Logger logger = Logger.getLogger("ai");
 
@@ -37,7 +38,7 @@ final class RouteBuilderMoveFactory {
     private Point startP = null;
     private Point endP = null;
 
-    public RouteBuilderMoveFactory(AIClient aic) {
+    public RouteBuilderMoveFactory(ClientDataProvider aic) {
 	aiClient = aic;
     }
 
@@ -60,7 +61,7 @@ final class RouteBuilderMoveFactory {
 
     private void addBuildTrackMoves(ArrayList moves) {
 	TrackMoveProducer tmp = new TrackMoveProducer(aiClient.getWorld(),
-		aiClient.getUntriedMoveReceiver(),
+		aiClient.getReceiver(),
 		aiClient.getPlayerPrincipal());
 	tmp.setTrackRule(WorldConstants.get().TR_STANDARD_TRACK);
 	tmp.setTrackBuilderMode(TrackMoveProducer.BUILD_TRACK);
@@ -80,7 +81,7 @@ final class RouteBuilderMoveFactory {
 	    oldP.setLocation(newP);
 	    newP.setLocation(pe.getX(), pe.getY());
 	    if (startP == null) {
-		startP.setLocation(pe.getX(), pe.getY());
+		startP = new Point(pe.getX(), pe.getY());
 		continue;
 	    }
 	    byte d = CompassPoints.unitDeltasToDirection(newP.x - oldP.x,
@@ -91,7 +92,7 @@ final class RouteBuilderMoveFactory {
 		logger.log(Level.WARNING, "Couldn't build track from " +
 			oldP + " to " + newP);
 	}
-	endP.setLocation(pe.getX(), pe.getY());
+	endP = new Point(pe.getX(), pe.getY());
     }
 
     private void addBuildStationMoves(ArrayList moves) {
@@ -108,7 +109,7 @@ final class RouteBuilderMoveFactory {
 
     private void processMoves(ArrayList moves) {
 	Move m = new CompositeMove(moves);
-	aiClient.getUntriedMoveReceiver().processMove(m);
+	aiClient.getReceiver().processMove(m);
     }
 }
 

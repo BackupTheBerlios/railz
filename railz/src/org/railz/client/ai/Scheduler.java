@@ -19,6 +19,7 @@ package org.railz.client.ai;
 import java.util.*;
 
 import org.railz.client.ai.tasks.*;
+import org.railz.client.top.*;
 import org.railz.world.accounts.*;
 import org.railz.world.top.*;
 /**
@@ -26,9 +27,9 @@ import org.railz.world.top.*;
  */
 final class Scheduler {
     private ArrayList taskPlanners;
-    private AIClient aiClient;
+    private ClientDataProvider aiClient;
 
-    public Scheduler(AIClient aic) {
+    public Scheduler(ClientDataProvider aic) {
 	aiClient = aic;
 	taskPlanners = TaskPlanner.createTaskPlanners(aic);
     }

@@ -22,6 +22,7 @@
 package org.railz.server;
 
 import junit.framework.TestCase;
+import java.util.logging.*;
 
 import org.railz.controller.*;
 import org.railz.move.Move;
@@ -48,6 +49,7 @@ import org.railz.world.player.Player;
 public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
     private World w;
     private MoveReceiver moveReceiver;
+    Logger logger = Logger.getLogger("global");
     
     private final CargoBatch cargoType0FromStation2 = new CargoBatch(0, 0, 0,
             0, 2);
@@ -71,39 +73,40 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
 
         //set up the cargo types.
         w.add(KEY.CARGO_TYPES, new CargoType("Mail", TransportCategory.MAIL,
-		    100, 100, 100), Player.AUTHORITATIVE);
+		    100, 100, 100), Player.NOBODY);
         w.add(KEY.CARGO_TYPES, new CargoType("Passengers",
 		   TransportCategory.PASSENGER, 100, 100, 100),
-		Player.AUTHORITATIVE);
+		Player.NOBODY);
         w.add(KEY.CARGO_TYPES, new CargoType("Goods",
 		   TransportCategory.FAST_FREIGHT, 100, 100, 100),
-		Player.AUTHORITATIVE);
+		Player.NOBODY);
 
        w.add(KEY.WAGON_TYPES, new WagonType("Mail Wagon",
-                   TransportCategory.MAIL, 40, 0, 10), Player.AUTHORITATIVE);
+                   TransportCategory.MAIL, 40, 0, 10), Player.NOBODY);
        w.add(KEY.WAGON_TYPES, new WagonType("1at class carriage",
 		   TransportCategory.PASSENGER, 40, 1, 10),
-	       Player.AUTHORITATIVE);
+	       Player.NOBODY);
        w.add(KEY.WAGON_TYPES, new WagonType("Goods van",
 		   TransportCategory.FAST_FREIGHT, 40, 1, 10),
-	       Player.AUTHORITATIVE);
+	       Player.NOBODY);
+       w.set(ITEM.TIME, new GameTime(0), Player.NOBODY);
 
 
         //Set up station
         int x = 10;
         int y = 10;
         int stationCargoBundleId = w.add(KEY.CARGO_BUNDLES,
-                new CargoBundleImpl(), Player.AUTHORITATIVE);
+                new CargoBundleImpl(), Player.NOBODY);
         String stationName = "Station 1";
-	GameTime now = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
+	GameTime now = (GameTime) w.get(ITEM.TIME, Player.NOBODY);
         StationModel station = new StationModel(x, y, stationName,
-		w.size(KEY.CARGO_TYPES, Player.AUTHORITATIVE),
+		w.size(KEY.CARGO_TYPES, Player.NOBODY),
 		stationCargoBundleId, now);
         w.add(KEY.STATIONS, station, testPlayer.getPrincipal());
 
         //Set up train
 	int trainCargoBundleId = w.add(KEY.CARGO_BUNDLES, new
-		CargoBundleImpl(), Player.AUTHORITATIVE);
+		CargoBundleImpl(), Player.NOBODY);
 
         //3 wagons to carry cargo type 0.
         int[] wagons = new int[] {0, 0, 0};
@@ -248,7 +251,9 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
 
         //Now remove the wagons from the train.
         removeAllWagonsFromTrain();
+	logger.log(Level.SEVERE, "stopping at station");
         stopAtStation();
+	logger.log(Level.SEVERE, "stopped at station");
 
         /*This time the train has no wagons, so has to drop the 40 units
          * of cargo type 1 even though the station does not demand it.  Since
@@ -355,7 +360,7 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
 	StationModel station = (StationModel)w.get(KEY.STATIONS, 0,
 		testPlayer.getPrincipal());
         CargoBundle cargoAtStation = (CargoBundle)w.get(KEY.CARGO_BUNDLES,
-                station.getCargoBundleNumber(), Player.AUTHORITATIVE);
+                station.getCargoBundleNumber(), Player.NOBODY);
 
         return cargoAtStation;
     }
@@ -365,7 +370,7 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
         TrainModel train = (TrainModel)w.get(KEY.TRAINS, 0,
 		testPlayer.getPrincipal());
         CargoBundle cargoOnTrain = (CargoBundle)w.get(KEY.CARGO_BUNDLES,
-                train.getCargoBundleNumber(), Player.AUTHORITATIVE);
+                train.getCargoBundleNumber(), Player.NOBODY);
 
         return cargoOnTrain;
     }

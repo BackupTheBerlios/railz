@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.logging.*;
 
 import org.railz.client.ai.*;
+import org.railz.client.top.*;
 import org.railz.controller.*;
 import org.railz.controller.RouteBuilderPathExplorer.RouteBuilderPathExplorerSettings;
 import org.railz.world.accounts.*;
@@ -82,7 +83,7 @@ class RouteBuilder extends TaskPlanner {
     private float REFERENCE_ENGINE_TYPE_MAX_SPEED;
     private int REFERENCE_ENGINE_TYPE_INDEX;
 
-    private final AIClient aiClient;
+    private final ClientDataProvider aiClient;
     private CityModelViewer cityModelViewer;
     private TrackTileViewer trackTileViewer;
     private TrackMaintenanceMoveGenerator trackMaintenanceMoveGenerator;
@@ -95,7 +96,7 @@ class RouteBuilder extends TaskPlanner {
     /** The "best" plan */
     private CityEntry taskPlan;
 
-    public RouteBuilder (AIClient aic) {
+    public RouteBuilder (ClientDataProvider aic) {
 	aiClient = aic;
 	MAX_CACHE_AGE = ((GameCalendar) aiClient.getWorld().get(ITEM.CALENDAR,
 		Player.AUTHORITATIVE)).getTicksPerDay() * 28;

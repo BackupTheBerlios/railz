@@ -161,6 +161,8 @@ class DropOffAndPickupCargoMoveGenerator {
                 transferCargoToStation(cargoType, amount2transfer, trainAfter,
                     stationAfter, cargoDroppedOff, stationKey);
 		needToDump = true;
+		logger.log(Level.SEVERE, "Dumping " + amount2transfer + " of " 
+			+ cargoType);
             }
         }
 
@@ -299,6 +301,13 @@ class DropOffAndPickupCargoMoveGenerator {
         return spaceAvailable;
     }
 
+    /**
+     * @param cargoType the cargo type to be transferred.
+     * @param amountToTransfer the amount in tonees to be transferred.
+     * @param from the cargo bundle from which the cargo is to be transferred.
+     * @param to the cargo bundle to which the cargo is to be transferred.
+     * @param droppedOff the cargo for which payment should be made.
+     */
     private void transferCargoToStation(int cargoType, int amountToTransfer,
 	    CargoBundle from, CargoBundle to, CargoBundle droppedOff,
 	    ObjectKey stationKey) {
@@ -329,10 +338,13 @@ class DropOffAndPickupCargoMoveGenerator {
 		    from.addCargo(cb, -amountOfThisBatchToTransfer);
 		}
 
-		if (droppedOff != null && demand.isCargoDemanded(cargoType))
-		    droppedOff.addCargo(cb, amountOfThisBatchToTransfer);
-
-                if (converted.isCargoConverted(cargoType)) {
+		if (demand.isCargoDemanded(cargoType)) {
+		    // cargo is demanded, so do not add to station, but
+		    // add to droppedOff for payment
+		    if (droppedOff != null)
+			droppedOff.addCargo(cb, amountOfThisBatchToTransfer);
+		} else if (converted.isCargoConverted(cargoType)) {
+		    // convert cargo to new type and add this to station
                     int newCargoType = converted.getConversion(cargoType);
 		    GameTime now = (GameTime) w.get(ITEM.TIME,
 			    Player.AUTHORITATIVE);
@@ -340,7 +352,11 @@ class DropOffAndPickupCargoMoveGenerator {
                             station.x, station.y, now.getTime(),
 			    stationKey.index);
                     to.addCargo(newCargoBatch, amountOfThisBatchToTransfer);
-                }
+                } else {
+		    // cargo is neither demanded nor converted, so leave it at
+		    // station
+		    to.addCargo(cb, amountOfThisBatchToTransfer);
+		}
 		amountTransferedSoFar += amountOfThisBatchToTransfer;
 	    }
 	}

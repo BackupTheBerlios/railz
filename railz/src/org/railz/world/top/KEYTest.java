@@ -44,7 +44,7 @@ public class KEYTest extends TestCase {
             String name = fields[i].getName();
             int modifiers = fields[i].getModifiers();
 
-            if (!name.equals("shared")) {
+            if (!(name.equals("shared") || name.equals("isPrivate"))) {
                 assertTrue("All the fields of KEY should be static",
                     Modifier.isStatic(modifiers));
             }

@@ -56,8 +56,6 @@ class AuthoritativeMoveExecuter implements UncommittedMoveReceiver {
         }
 
         if (status != MoveStatus.MOVE_OK) {
-	    logger.log(Level.INFO, "Server rejected move because " + status +
-		    ": " + move);
             moveReceiver.processMove(new RejectedMove(move, status));
         } else {
             moveReceiver.processMove(move);
@@ -83,6 +81,10 @@ class AuthoritativeMoveExecuter implements UncommittedMoveReceiver {
 	synchronized (world) {
 	    ms = move.doMove(world, p);
 	}
+
+	if (ms != MoveStatus.MOVE_OK)
+	    logger.log(Level.INFO, "Server rejected move because " + ms +
+		    ": " + move);
 
         forwardMove(move, ms);
     }
