@@ -1,6 +1,8 @@
 January 23, 2005:
 -----------------
 Fixed a bug where an exception could be thrown whilst changing the schedule.
+Wagon selection dialog no longer draws the locomotive facing in the wrong
+direction, and backdrop is now moddable.
 January 21, 2005:
 -----------------
 Fixed a bug where adding too many wagons to trains caused an exception.
