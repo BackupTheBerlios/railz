@@ -25,7 +25,6 @@ package jfreerails.launcher;
 
 import java.awt.DisplayMode;
 
-import jfreerails.client.view.DisplayModesComboBoxModels;
 import jfreerails.client.view.MyDisplayMode;
 import jfreerails.util.Resources;
 
@@ -41,7 +40,8 @@ class ClientOptionsJPanel extends javax.swing.JPanel {
     }
 
     DisplayMode getDisplayMode() {
-	return ((MyDisplayMode) listModel.getSelectedItem()).displayMode;
+	return ((MyDisplayMode) listModel.getElementAt
+		(jList1.getSelectedIndex())).displayMode;
     }
 
     boolean isWindowed() {
@@ -69,13 +69,13 @@ class ClientOptionsJPanel extends javax.swing.JPanel {
 	owner.setNextEnabled(isValid);
     }
 
-    private DisplayModesComboBoxModels listModel;
+    private DisplayModeListModel listModel;
 
     /** Creates new form ClientOptionsJPanel */
     public ClientOptionsJPanel(Launcher owner) {
 	this.owner = owner;
         initComponents();
-	listModel = new DisplayModesComboBoxModels();
+	listModel = new DisplayModeListModel();
 	jList1.setModel(listModel);
 	jList1.setSelectedIndex(0);
 	validateSettings();

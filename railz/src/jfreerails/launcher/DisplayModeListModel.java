@@ -15,21 +15,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/*
- * DisplayModesComboBoxModel.java
- *
- * Created on 30 August 2003, 23:39
- */
-
-package jfreerails.client.view;
+package jfreerails.launcher;
 
 import java.awt.*;
 import java.util.ArrayList;
+import javax.swing.ListModel;
+
+import jfreerails.client.view.MyDisplayMode;
+
 /**
- *
- * @author  Luke Lindsay
+ * @author lindsal
  */
-public class DisplayModesComboBoxModels implements javax.swing.ComboBoxModel {
+public class DisplayModeListModel implements ListModel {
     
      private GraphicsConfiguration defaultConfiguration =
 			GraphicsEnvironment
@@ -42,11 +39,13 @@ public class DisplayModesComboBoxModels implements javax.swing.ComboBoxModel {
      
      MyDisplayMode selection;
      
-     public DisplayModesComboBoxModels(){
+     public DisplayModeListModel(){
 	 ArrayList acceptableModes = new ArrayList();
-         DisplayMode currentMode = defaultConfiguration.getDevice().getDisplayMode();
+	 DisplayMode currentMode =
+	     defaultConfiguration.getDevice().getDisplayMode();
          selection = new MyDisplayMode(currentMode);
-         DisplayMode[]  displayModes  = defaultConfiguration.getDevice().getDisplayModes();
+	 DisplayMode[]  displayModes  =
+	     defaultConfiguration.getDevice().getDisplayModes();
          for (int i = 0 ; i < displayModes.length ; i ++){
 	     /*
 	      * don't support anything less than 800 x 600 or anything less
@@ -62,24 +61,15 @@ public class DisplayModesComboBoxModels implements javax.swing.ComboBoxModel {
 		 MyDisplayMode[acceptableModes.size()]);
      }
     
-    
-    public Object getSelectedItem() {
-        return selection;
-    }
-    
-    public void setSelectedItem(Object anItem) {
-        selection = (MyDisplayMode)anItem;
-    }
-    
-    public void addListDataListener(javax.swing.event.ListDataListener l) {
-    }
-    
     public Object getElementAt(int index) {
         return modes[index];
     }
     
     public int getSize() {
         return modes.length;
+    }
+    
+    public void addListDataListener(javax.swing.event.ListDataListener l) {
     }
     
     public void removeListDataListener(javax.swing.event.ListDataListener l) {

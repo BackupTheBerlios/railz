@@ -45,6 +45,7 @@ import jfreerails.world.player.Player;
 public class GUIClient extends Client {
     private String title;
     private ModelRoot modelRoot;
+    private GUIRoot guiRoot;
 
     private GUIClient(ConnectionToServer server, int mode, DisplayMode dm,
         String title, FreerailsProgressMonitor pm, Player player, ModelRoot mr)
@@ -58,7 +59,7 @@ public class GUIClient extends Client {
         modelRoot.setMoveFork(getMoveChainFork());
 
 	/* create the GUIRoot */
-	GUIRoot guiRoot = new
+	guiRoot = new
 	    GUIRoot(modelRoot);
 
 	setReceiver(new ConnectionAdapter(mr, guiRoot, player, pm,
@@ -110,5 +111,9 @@ public class GUIClient extends Client {
 
     public String getTitle() {
         return title;
+    }
+
+    public GUIRoot getGUIRoot() {
+	return guiRoot;
     }
 }

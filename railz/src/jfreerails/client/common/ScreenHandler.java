@@ -217,7 +217,7 @@ final public class ScreenHandler {
 
 	    bufferStrategy = frame.getBufferStrategy();
 	    /* OS X rendering appears to be different */
-	    if (runningOSX) {
+	    if (runningOSX && currentMode==FULL_SCREEN) {
 		do {
 		    /* mark everything in the layers above as being dirty */
 		    JLayeredPane lp = frame.getLayeredPane();
