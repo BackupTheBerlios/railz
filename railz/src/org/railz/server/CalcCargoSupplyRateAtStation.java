@@ -41,7 +41,7 @@ class CalcCargoSupplyRateAtStation {
     private SupplyDemandViewer supplyDemandViewer;
 
     CalcCargoSupplyRateAtStation(ReadOnlyWorld world, int X, int Y) {
-	world = w;
+	w = world;
 	supplyDemandViewer = new SupplyDemandViewer(world);
     }
 
