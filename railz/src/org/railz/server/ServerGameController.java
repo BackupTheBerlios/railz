@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Vector;
+import java.util.logging.*;
 import javax.swing.table.TableModel;
 
 import org.railz.controller.*;
@@ -43,6 +44,7 @@ class ServerGameController implements ServerControlInterface,
     private InetConnection serverSocket;
     ServerGameEngine gameEngine;
     private ClientConnectionTableModel tableModel = new ClientConnectionTableModel(this);
+    private static final Logger logger = Logger.getLogger("global");
 
     public ServerGameController(ServerGameEngine engine, int port) {
         moveChainFork = engine.getMoveChainFork();
@@ -55,7 +57,8 @@ class ServerGameController implements ServerControlInterface,
                 serverSocket = new InetConnection(this,
                         InetConnection.SERVER_PORT);
             } catch (IOException e) {
-                System.err.println("Couldn't open the server socket!!!" + e);
+                logger.log(Level.SEVERE,
+			"Couldn't open the server socket!!!" + e, e);
                 throw new RuntimeException(e);
             }
         }
@@ -309,10 +312,10 @@ class ServerGameController implements ServerControlInterface,
 			    + "rejected by the server", new
 			    Serializable[]{apc.getPlayer().getName()});
                 } else {
-		    System.out.println("sending addplayerresponsecommand");
+		    logger.log(Level.FINE, "sending addplayerresponsecommand");
                     c.sendCommand(new AddPlayerResponseCommand(
                             gameEngine.getIdentityProvider().getPrincipal(c)));
-		    System.out.println("sending sendmessagetoclients");
+		    logger.log(Level.FINE, "sending sendmessagetoclients");
 		    sendMessageToClients("{0} joined the game", new
 			    Serializable[]{apc.getPlayer().getName()});
                 }

@@ -131,15 +131,9 @@ public class Track_TilesHandlerImpl implements Track_TilesHandler {
     }
 
     public void start_Tiles(final Attributes meta) throws SAXException {
-        if (DEBUG) {
-            System.err.println("start_Tiles: " + meta);
-        }
     }
 
     public void end_Tiles() throws SAXException {
-        if (DEBUG) {
-            System.err.println("end_Tiles()");
-        }
     }
 
     public void start_TrackPieceTemplate(final Attributes meta)

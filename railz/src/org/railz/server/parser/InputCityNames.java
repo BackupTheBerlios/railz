@@ -25,7 +25,9 @@ package org.railz.server.parser;
 
 import java.io.*;
 import java.net.URL;
+import java.util.logging.*;
 import javax.xml.parsers.*;
+
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
@@ -34,6 +36,7 @@ import org.railz.util.*;
 
 public class InputCityNames {
     private World world;
+    private static final Logger logger = Logger.getLogger("global");
 
     public InputCityNames(World w, URL filename) throws SAXException {
         world = w;
@@ -44,7 +47,7 @@ public class InputCityNames {
         SAXParserFactory factory = SAXParserFactory.newInstance();
 	factory.setValidating(true);
 
-        System.out.println("\nLoading XML " + filename);
+        logger.log(Level.INFO, "\nLoading XML " + filename);
 
         try {
             SAXParser saxParser = factory.newSAXParser();

@@ -146,9 +146,6 @@ public class SelectEngineJPanel extends javax.swing.JPanel {
 	    tcm.getColumn(i).setMinWidth(width);
 	    tcm.getColumn(i).setPreferredWidth(width);
 	}
-	System.out.println("col width is " + width);
-	System.out.println("total width is " + width * (tcm.getColumnCount() -
-		    1) + tcm.getColumn(0).getPreferredWidth());
     }
 
     /** Creates new form SelectEngineJPanel */
@@ -327,12 +324,9 @@ public class SelectEngineJPanel extends javax.swing.JPanel {
      *
      */
     public int getEngineType(){
-	System.out.println("selected value is " + jList1.getSelectedValue());
 	NonNullElements i = new NonNullElements(KEY.ENGINE_TYPES,
 		modelRoot.getWorld(), Player.AUTHORITATIVE);
 	while (i.next()) {
-	    System.out.println(i.getElement().toString() + "<=>" + 
-		    jList1.getSelectedValue());
 	    if (i.getElement().equals(jList1.getSelectedValue()))
 		return i.getIndex();
 	}

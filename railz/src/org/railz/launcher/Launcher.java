@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.security.GeneralSecurityException;
+import java.util.logging.*;
 
 import org.railz.client.common.FileUtils;
 import org.railz.client.common.ScreenHandler;
@@ -258,6 +259,20 @@ FreerailsProgressMonitor {
      * Runs the game.
      */
     public static void main (String args[]) {
+	// configure the logging properties
+	LogManager lm = LogManager.getLogManager();
+	try {
+	    lm.readConfiguration(Launcher.class.getResourceAsStream
+		    ("/org/railz/util/logging.properties"));
+	} catch (IOException e) {
+	    System.err.println("Couldn't open logging properties" +
+		    " due to IOException" + e.getMessage());
+	} catch (SecurityException e) {
+	    System.err.println("Couldn't open logging configuration " + 
+		    "due to SecurityException:" + e.getMessage());
+	}
+	Logger.getLogger("global").log(Level.SEVERE, "Logging enabled");
+	
 	Launcher launcher = new Launcher();
 	launcher.show();
     }

@@ -26,9 +26,7 @@ import javax.swing.*;
 public class StretchableJTable extends JTable {
     public Dimension getPreferredScrollableViewportSize() {
 	Dimension d = getPreferredSize();
-	System.out.println("Returned preferred vp size " + d);
 	Dimension dd = getSize();
-	System.out.println("actual size " + dd);
 	return d;
     }
 

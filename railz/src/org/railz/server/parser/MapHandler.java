@@ -20,6 +20,8 @@
 package org.railz.server.parser;
 
 import java.util.*;
+import java.util.logging.*;
+
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
@@ -32,6 +34,7 @@ public class MapHandler extends DefaultHandler {
     private ScriptingEventHandler scriptingEventHandler;
     private CalendarHandler calendarHandler;
     private String currentElement = null;
+    private static final Logger logger = Logger.getLogger("global");
 
     public MapHandler(World w) throws SAXException {
 	cityParser = new CitySAXParser(w);
@@ -59,8 +62,8 @@ public class MapHandler extends DefaultHandler {
 		calendarHandler.startElement(sName, qName, attrs);
 	    }
 	} catch (Exception e) {
-	    System.out.println ("startElement caught " + e.getMessage());
-	    e.printStackTrace();
+	    logger.log(Level.WARNING, "startElement caught " + e.getMessage(),
+		    e);
 	}
     }
 
@@ -80,8 +83,8 @@ public class MapHandler extends DefaultHandler {
 		    currentElement = null;
 		}
 	    } catch (Exception e) {
-		System.out.println("endElement caught exception " +
-			e.getMessage());
+		logger.log(Level.WARNING, "endElement caught exception " +
+			e.getMessage(), e);
 		e.printStackTrace();
 	    }
 	}

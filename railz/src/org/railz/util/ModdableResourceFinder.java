@@ -19,6 +19,7 @@ package org.railz.util;
 
 import java.io.*;
 import java.net.*;
+import java.util.logging.*;
 
 /**
  * Provides a resource-finding facility for resources which may be bundled
@@ -27,6 +28,7 @@ import java.net.*;
 public class ModdableResourceFinder {
     private String prefix;
     private File prefixedHomeDir;
+    private static final Logger logger = Logger.getLogger("global");
 
     /**
      * @param prefix a UNIX-style search path which is prefixed to all
@@ -73,13 +75,13 @@ public class ModdableResourceFinder {
 		throw new IllegalArgumentException
 		    ("Illegal argument " + relPath + ": " + e.getMessage());
 	    }
-	    System.out.println("Getting URL " + u);
+	    logger.log(Level.FINE, "Getting URL " + u);
 	    return u;
 	}
 	
 	// file did not exist, open default URL
 	u = getClass().getResource(prefix + relPath);
-	System.out.println("Getting URL " + u + " for " + relPath);
+	logger.log(Level.FINE, "Getting URL " + u + " for " + relPath);
 	return u;
     }
 

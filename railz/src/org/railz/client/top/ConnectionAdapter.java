@@ -17,6 +17,7 @@
 package org.railz.client.top;
 
 import java.util.*;
+import java.util.logging.*;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
@@ -47,6 +48,7 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
     private Object authMutex = new Integer(1);
     private boolean authenticated;
     private GUIClient guiClient;
+    private static final Logger logger = Logger.getLogger("global");
 
     /**
      * The GameLoop providing the move execution thread for this
@@ -262,11 +264,12 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
             Thread t = new Thread(gameLoop, threadName);
             t.start();
         } catch (IOException e) {
+	    String s = Resources.get
+		("There was a problem reading in the graphics "
+			       + "data");
             modelRoot.getUserMessageLogger().println
-		(Resources.get("There was a problem reading in the graphics "
-			       + "data"));
-	    System.err.println(e.getMessage());
-	    e.printStackTrace();
+		(s);
+	    logger.log(Level.WARNING, s, e);
         }
     }
 
@@ -320,7 +323,8 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
 		    Resources.setExternalResourceBundle
 			(response.getResourceBundle());
 		} else {
-		    System.err.println("Couldn't get resource bundle from " +
+		    logger.log(Level.WARNING,
+			    "Couldn't get resource bundle from " +
 			    "server");
 		}
 	}

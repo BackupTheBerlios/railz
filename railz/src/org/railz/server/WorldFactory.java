@@ -18,6 +18,8 @@
 package org.railz.server;
 
 import java.net.URL;
+import java.util.logging.*;
+
 import org.railz.server.parser.*;
 import org.railz.util.*;
 import org.railz.world.common.*;
@@ -32,6 +34,8 @@ import org.xml.sax.SAXException;
  * This class sets up a World object. It cannot be instantiated.
  */
 class WorldFactory {
+    private static final Logger logger = Logger.getLogger("global");
+    
     private WorldFactory() {
     }
 
@@ -93,8 +97,7 @@ class WorldFactory {
         try {
             InputCityNames r = new InputCityNames(w, cities_xml_url);
         } catch (SAXException e) {
-	    System.err.println("Caught exception " + e.getMessage());
-	    e.printStackTrace();
+	    logger.log(Level.WARNING,"Caught exception " + e.getMessage(), e);
         }
 
         //Randomly position the city tiles - no need to assign this object

@@ -18,6 +18,7 @@
 package org.railz.server;
 
 import java.util.*;
+import java.util.logging.*;
 
 import org.railz.move.*;
 import org.railz.server.scripting.*;
@@ -33,6 +34,7 @@ import org.railz.world.top.*;
 class ScriptingEngine {
     private ReadOnlyWorld world;
     private AuthoritativeMoveExecuter moveExecuter;
+    private static final Logger logger = Logger.getLogger("global");
 
     private LinkedList pendingEvents = new LinkedList();
 
@@ -52,12 +54,12 @@ class ScriptingEngine {
 		    Player.AUTHORITATIVE)).getTime();
 	while (i.hasNext()) {
 	    ScriptingEvent se = (ScriptingEvent) i.next();
-	    System.out.println("event start time " +
+	    logger.log(Level.FINE, "event start time " +
 		    se.getStartTime().getTime() + " now " + now);
 	    if (now >= se.getStartTime().getTime() &&
 		    se.getEndTime().getTime() >= now) {
 		Move m = se.getMove(world);
-		System.out.println("sending move " + m);
+		logger.log(Level.INFO, "sending move " + m);
 		moveExecuter.processMove(m);
 	    }
 	    if (now > se.getEndTime().getTime())

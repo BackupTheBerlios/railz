@@ -18,6 +18,7 @@ package org.railz.server.scripting;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.logging.*;
 
 import org.railz.move.*;
 import org.railz.world.common.*;
@@ -30,6 +31,7 @@ import org.railz.world.top.*;
 public abstract class ScriptingEvent implements FreerailsSerializable {
     protected GameTime startTime;
     protected GameTime endTime;
+    private static final Logger logger = Logger.getLogger("global");
 
     /** @return the scheduled start time of the event */
     public GameTime getStartTime() {
@@ -64,9 +66,8 @@ public abstract class ScriptingEvent implements FreerailsSerializable {
 		seConstructor.newInstance
 		(new Object[] {w, startTime, endTime, attributes});
 	} catch (Exception e) {
-	    System.err.println("ScriptingEvent caught " +
-		    e.getMessage());
-	    e.printStackTrace();
+	    logger.log(Level.WARNING, "ScriptingEvent caught " +
+		    e.getMessage(), e);
 	    return null;
 	}
     }

@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.logging.*;
 
 import org.railz.client.model.ModelRoot;
 import org.railz.client.view.GUIRoot;
@@ -48,6 +49,7 @@ public class ViewListsImpl implements ViewLists {
     private final GUIRoot guiRoot;
     private final ModdableResourceFinder mrf = new ModdableResourceFinder
 	("org/railz/client/graphics");
+    private static final Logger logger = Logger.getLogger("global");
 
     public ViewListsImpl(ModelRoot mr, GUIRoot gr,
 	    FreerailsProgressMonitor pm)
@@ -208,7 +210,7 @@ public class ViewListsImpl implements ViewLists {
 
                 continue;
             } catch (IOException io) {
-                System.err.println("No tile renderer for " +
+                logger.log(Level.WARNING, "No tile renderer for " +
                     t.getTerrainTypeName());
             }
         }
@@ -282,7 +284,7 @@ public class ViewListsImpl implements ViewLists {
  	    URL iconURL;
  	    iconURL = mrf.getURLForReading (iconName + ".png");
  	    if (iconURL == null) {
- 		System.err.println("Couldn't find icon for " + iconName);
+ 		logger.log(Level.WARNING, "Couldn't find icon for " + iconName);
  		return null;
  	    }
  	    icons.put(iconName, new ImageIcon(iconURL));

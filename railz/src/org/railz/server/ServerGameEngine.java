@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.logging.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -58,6 +59,7 @@ public class ServerGameEngine implements GameModel, Runnable,
     private Scenario scenario;
     private ScenarioManager scenarioManager;
     private ScriptingEngine scriptingEngine;
+    private static final Logger logger = Logger.getLogger("global");
 
     /* some stats for monitoring sim speed */
     private int statUpdates = 0;
@@ -178,7 +180,7 @@ public class ServerGameEngine implements GameModel, Runnable,
     }
 
     public void run() {
-	System.out.println("Railz server thread started.");
+	logger.log(Level.INFO, "Railz server thread started.");
         Thread.currentThread().setName("Railz server");
 
         /*
@@ -192,8 +194,7 @@ public class ServerGameEngine implements GameModel, Runnable,
 		update();
 	    }
 	} catch (Throwable t) {
-	    System.err.println ("Caught throwable " + t);
-	    t.printStackTrace();
+	    logger.log(Level.SEVERE, "Caught throwable " + t, t);
 	    return;
 	}
     }
@@ -278,8 +279,8 @@ public class ServerGameEngine implements GameModel, Runnable,
 			    statLastTimestamp));
 
 		if (statLastTimestamp > 0) {
-		    //	System.out.println(
-		    //		"Updates per sec " + updatesPerSec);
+		    logger.log(Level.FINER,
+		    		"Updates per sec " + updatesPerSec);
 		}
 
 		statLastTimestamp = frameStartTime;
@@ -388,7 +389,7 @@ public class ServerGameEngine implements GameModel, Runnable,
 
     public synchronized void saveGame(File filename) {
         try {
-            System.out.print("Saving game..  ");
+            logger.log(Level.INFO, "Saving game..  ");
 	    NonNullElements i = new NonNullElements(KEY.PLAYERS, world,
                     Player.AUTHORITATIVE);
 	    GameTime t = (GameTime) world.get(ITEM.TIME,
@@ -425,7 +426,7 @@ public class ServerGameEngine implements GameModel, Runnable,
             objectOut.flush();
             objectOut.close();
 
-            System.out.println("done.");
+            logger.log(Level.INFO, "done.");
         } catch (Exception ex) {
             ex.printStackTrace();
         }

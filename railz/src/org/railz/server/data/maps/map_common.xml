@@ -14,7 +14,7 @@
   ++ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   -->
 <!-- Contains common map data -->
-<Calendar ticksPerDay="30" startYear="1832" />
+<Calendar ticksPerDay="30" startYear="1836" />
 <Events>
 	<ScriptingEvent name="EngineTypeEvent" startTime="1837-01-01"
 		 endTime="1837-01-01">

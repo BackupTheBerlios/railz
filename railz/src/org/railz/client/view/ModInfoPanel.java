@@ -21,6 +21,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.jar.*;
+import java.util.logging.*;
 import java.util.zip.*;
 import javax.swing.*;
 
@@ -32,10 +33,11 @@ import org.railz.util.*;
  * @author  bob
  */
 public class ModInfoPanel extends javax.swing.JPanel {
-    GUIRoot guiRoot;
-    Manifest manifest = null;
-    JarFile jarFile = null; 
-    ModdableResourceFinder mrf;
+    private GUIRoot guiRoot;
+    private Manifest manifest = null;
+    private JarFile jarFile = null; 
+    private ModdableResourceFinder mrf;
+    private static final Logger logger = Logger.getLogger("global");
     
     private class GenerateModFiles implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
@@ -60,7 +62,7 @@ public class ModInfoPanel extends javax.swing.JPanel {
 			}
 			os.close();
 			is.close();
-			messageTxt += s + "\n";
+			messageTxt += f.toString() + "\n";
 		    }
 		}
 		JTextArea jta = new JTextArea(messageTxt, 10, 30);
@@ -76,8 +78,8 @@ public class ModInfoPanel extends javax.swing.JPanel {
 		guiRoot.getDialogueBoxController().showOptionPane(jop);
 
 	    } catch (IOException ex) {
-		System.err.println("Caught IOException: " + ex.getMessage());
-		ex.printStackTrace();
+		logger.log(Level.WARNING, "Caught IOException: "
+		       	+ ex.getMessage(), ex);
 	    }
 	}
     }
@@ -95,8 +97,8 @@ public class ModInfoPanel extends javax.swing.JPanel {
 		jarFile = urlc.getJarFile();
 		manifest = urlc.getJarFile().getManifest();
 	    } catch (IOException e) {
-		System.err.println("Caught IOException: " + e.getMessage());
-		e.printStackTrace();
+		logger.log(Level.WARNING, "Caught IOException: " +
+		       	e.getMessage(), e);
 		jButton1.setEnabled(false);
 	    }
 	}

@@ -1,3 +1,6 @@
+January 16, 2005:
+-----------------
+Added support for Java logging framework.
 January 15, 2005:
 -----------------
 Fixed a problem with trains getting shorter over time which caused the game to

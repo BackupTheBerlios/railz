@@ -24,6 +24,8 @@
  */
 package org.railz.server.parser;
 
+import java.util.logging.*;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
@@ -57,6 +59,7 @@ public class CargoAndTerrainParser implements ContentHandler {
     private EconomyHandler economyHandler;
     private StationImprovementsHandler stationImprovementsHandler;
     private WagonTypesHandler wagonTypesHandler;
+    private static final Logger logger = Logger.getLogger("global");
 
     /**
      * Creates a parser instance.
@@ -290,7 +293,8 @@ public class CargoAndTerrainParser implements ContentHandler {
 		try {
 		    parse(new InputSource(url.toExternalForm()), w);
 		} catch (SAXParseException e) {
-		    System.out.println("Parse exception " + e.getMessage() +
+		    logger.log(Level.WARNING,
+			    "Parse exception " + e.getMessage() +
 			    " at line " + e.getLineNumber());
 		    if (e.getException() != null)
 			e.getException().printStackTrace();
@@ -327,7 +331,7 @@ public class CargoAndTerrainParser implements ContentHandler {
                 public void error(SAXParseException ex)
                     throws SAXException {
                     if (context.isEmpty()) {
-                        System.err.println("Missing DOCTYPE.");
+                        logger.log(Level.WARNING, "Missing DOCTYPE.");
                     }
 
                     throw ex;

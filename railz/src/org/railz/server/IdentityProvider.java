@@ -17,6 +17,8 @@
 package org.railz.server;
 
 import java.util.HashMap;
+import java.util.logging.*;
+
 import org.railz.controller.ConnectionToServer;
 import org.railz.controller.MoveChainFork;
 import org.railz.controller.MoveReceiver;
@@ -33,6 +35,7 @@ import org.railz.world.top.*;
  * Provides a method by which a Principal may be obtained
  */
 class IdentityProvider {
+    private static final Logger logger = Logger.getLogger("global");
 
     private StatGatherer statGatherer;
 
@@ -112,7 +115,7 @@ class IdentityProvider {
      */
     public synchronized boolean addConnection(ConnectionToServer c,
         Player player, byte[] signature) {
-        System.err.println("Authenticating player " + player.getName());
+        logger.log(Level.INFO, "Authenticating player " + player.getName());
 
         /* determine whether this identity already exists */
         NonNullElements i = new NonNullElements(KEY.PLAYERS,
@@ -125,18 +128,20 @@ class IdentityProvider {
                 /* this player already exists */
                 /* is this identity already connected ? */
                 if (principals.containsValue(p)) {
-                    System.err.println("Player " + p.getName() + " is already" +
-                        " connected");
+		    logger.log(Level.INFO, "Player " + p.getName() +
+			    " is already" + " connected");
 
                     return false;
                 }
 
                 /* is this player the same as the one which previously
                  * connected under the same name? */
-                System.out.println("Verifying player " + p + " with " + player);
+                logger.log(Level.FINE, 
+			"Verifying player " + p + " with " + player);
 
                 if (!p.verify(player, signature)) {
-                    System.err.println("Couldn't verify signature of player " +
+                    logger.log(Level.WARNING,
+			    "Couldn't verify signature of player " +
                         p.getName());
 
                     return false;
@@ -153,7 +158,7 @@ class IdentityProvider {
         }
 
         /* this player does not already exist */
-        System.err.println("Adding player " + player.getName() + " to " +
+        logger.log(Level.INFO, "Adding player " + player.getName() + " to " +
             serverGameEngine.getWorld());
 
 	MoveConfirmer mc = new MoveConfirmer(serverGameEngine.getMoveExecuter(),
@@ -168,7 +173,6 @@ class IdentityProvider {
          */
         World w = serverGameEngine.getWorld();
         assert (w != null);
-        System.err.println("checking " + w);
         player = (Player)w.get(KEY.PLAYERS,
                 w.size(KEY.PLAYERS, Player.AUTHORITATIVE) - 1,
                 Player.AUTHORITATIVE);

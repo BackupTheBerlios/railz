@@ -21,6 +21,8 @@
   */
 package org.railz.move;
 
+import java.util.logging.*;
+
 import org.railz.world.common.*;
 import org.railz.world.player.*;
 import org.railz.world.top.*;
@@ -33,11 +35,13 @@ import org.railz.world.train.*;
  *
  */
 public class ChangeTrainMove extends ChangeItemInListMove {
+    private static final Logger logger = Logger.getLogger("global");
+
     private ChangeTrainMove(int id, TrainModel before, TrainModel
 	    after, FreerailsPrincipal p) {
 	super(KEY.TRAINS, id, before, after, p);
-	System.out.println("creating ChangeTrainMove for train " + id + ": " +
-		getBefore() + ", " + ", " + getAfter());
+	logger.log(Level.FINE, "creating ChangeTrainMove for train " + id +
+		": " + getBefore() + ", " + ", " + getAfter());
     }
 
     /**
@@ -131,19 +135,20 @@ public class ChangeTrainMove extends ChangeItemInListMove {
     }
 
     public MoveStatus doMove(World w, FreerailsPrincipal p) {
-	System.out.println("Executing ChangeTrainMove:");
-	System.out.println("before=" + getBefore() + ", after=" + getAfter());
+	logger.log(Level.FINE, "Executing ChangeTrainMove:");
+	logger.log(Level.FINE, "before=" + getBefore() + ", after=" +
+	       	getAfter());
 	if (getBefore() != null &&
 		((TrainModel) getBefore()).getTrainMotionModel() != null &&
 		((TrainModel) getBefore()).getTrainMotionModel().getPathFunction() !=
 		null)
-	    System.out.println("getBefore() PathFunction=" + ((TrainModel)
+	    logger.log(Level.FINE, "getBefore() PathFunction=" + ((TrainModel)
 			getBefore()).getTrainMotionModel().getPathFunction());
 	if (getAfter() != null &&
 		((TrainModel) getBefore()).getTrainMotionModel() != null &&
 		((TrainModel) getAfter()).getTrainMotionModel().getPathFunction() !=
 		null)
-	    System.out.println("getAfter() PathFunction=" + ((TrainModel)
+	    logger.log(Level.FINE, "getAfter() PathFunction=" + ((TrainModel)
 			getAfter()).getTrainMotionModel().getPathFunction());
 
 	return super.doMove(w, p);
