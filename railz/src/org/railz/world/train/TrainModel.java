@@ -400,6 +400,7 @@ public class TrainModel implements FreerailsSerializable {
 	return new TrainModel(engineType, wagonTypes, cargoBundleNumber,
 		creationDate, state, scheduleIterator, tmm,
 		priority, isBlocked, stateLastChanged, ticksInService,
-		empty ? costTraversedSinceLoadingWater : 0);
+		empty ? costTraversedSinceLoadingWater +
+		trainMotionModel.getCostTraversed(t0) : 0);
     }
 }
