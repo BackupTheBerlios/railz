@@ -1,3 +1,6 @@
+January 25, 2005:
+-----------------
+Fix for bug 41 - ImageManager exposes file locations to rest of client
 January 24, 2005:
 -----------------
 Added status icon to train info panel. Train info panel now picks up icons from ModdableResourceFinder.

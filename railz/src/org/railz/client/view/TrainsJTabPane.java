@@ -19,7 +19,7 @@
  */
 
 /*
- * $Id: TrainsJTabPane.java,v 1.2 2004/10/25 20:38:18 rtuck99 Exp $
+ * $Id: TrainsJTabPane.java,v 1.3 2005/01/25 22:20:48 rtuck99 Exp $
  */
 
 package org.railz.client.view;
@@ -50,13 +50,13 @@ public class TrainsJTabPane extends JTabbedPane implements CursorEventListener {
 	 * setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 	 */
         
-	terrainInfoPanel = new TerrainInfoJPanel();
-	stationInfoPanel = new StationInfoJPanel();
-	trainSchedulePanel = new TrainDialogueJPanel();
 	buildJPane = new BuildJPane();
     }
     
     public void setup(ModelRoot modelRoot, GUIRoot gr) {	
+	trainSchedulePanel = new TrainDialogueJPanel(modelRoot, gr);
+	terrainInfoPanel = new TerrainInfoJPanel(modelRoot, gr);
+	stationInfoPanel = new StationInfoJPanel(gr);
 	world = modelRoot.getWorld();
 	ViewLists vl = modelRoot.getViewLists();
 	
@@ -68,9 +68,7 @@ public class TrainsJTabPane extends JTabbedPane implements CursorEventListener {
 		"Train Schedule");
  	addTab(null, vl.getImageIcon("build"), buildJPane, "Build");
 
-	terrainInfoPanel.setup(world, vl);
-	stationInfoPanel.setup(modelRoot, gr);
-	trainSchedulePanel.setup(modelRoot, gr);
+	stationInfoPanel.setup(modelRoot);
  	buildJPane.setup(vl, modelRoot);
         modelRoot.getCursor().addCursorEventListener(this);
         

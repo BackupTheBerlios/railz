@@ -31,8 +31,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.NoSuchElementException;
-import javax.swing.ListCellRenderer;
-import javax.swing.JList;
+import javax.swing.*;
 
 import org.railz.client.common.*;
 import org.railz.client.model.ModelRoot;
@@ -57,6 +56,8 @@ WorldListListener {
     private ModelRoot modelRoot;
     private GUIRoot guiRoot;
     
+    private ModdableResourceFinder graphicsResourceFinder;
+
     private ActionListener popupButtonListener = new ActionListener() {
 	public void actionPerformed(ActionEvent e) {
 	    wi.gotoIndex(popupJButton.getSelectedIndex());
@@ -86,7 +87,10 @@ WorldListListener {
     };
 
     /** Creates new form TrainDialogueJPanel */
-    public TrainDialogueJPanel() {
+    public TrainDialogueJPanel(ModelRoot mr, GUIRoot gr) {
+	modelRoot = mr;
+	guiRoot = gr;
+	graphicsResourceFinder = gr.getGraphicsResourceFinder();
         initComponents();
 	/* add the two buttons from newTrainScheduleJPanel "*/
 	java.awt.GridBagConstraints gridBagConstraints;
@@ -105,6 +109,31 @@ WorldListListener {
 	gridBagConstraints.weightx = 1.0;
 	gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
 	gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+
+	trainDetailsRenderer = new DetailsListCellRenderer(modelRoot, guiRoot);
+        w = modelRoot.getWorld();
+	wi = new NonNullElements(KEY.TRAINS, w, mr.getPlayerPrincipal());
+	addComponentListener(componentListener);
+
+	trainDetailsRenderer.trainDetailsJPanel.setup();
+	trainDetailsRenderer.trainViewJPanel = new TrainViewJPanel(modelRoot);
+
+	if (popupJButton != null)
+	    remove(popupJButton);
+
+	popupJButton = new PopupJButton(new World2ListModelAdapter(w,
+		    KEY.TRAINS, modelRoot.getPlayerPrincipal(),
+		    modelRoot.getMoveChainFork()), trainDetailsRenderer);
+
+	gridBagConstraints = new
+	    java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+        add(popupJButton, gridBagConstraints);
+
+	popupJButton.addActionListener(popupButtonListener);
     }
     
     /** This method is called from within the constructor to
@@ -115,7 +144,7 @@ WorldListListener {
     private void initComponents() {//GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
-        newTrainScheduleJPanel1 = new org.railz.client.view.TrainScheduleJPanel();
+        newTrainScheduleJPanel1 = new TrainScheduleJPanel(modelRoot, guiRoot);
         jPanel1 = new javax.swing.JPanel();
         previousJButton = new javax.swing.JButton();
         nextJButton = new javax.swing.JButton();
@@ -134,7 +163,7 @@ WorldListListener {
 
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
-        previousJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/railz/client/graphics/toolbar/previous.png")));
+        previousJButton.setIcon(new ImageIcon(graphicsResourceFinder.getURLForReading("toolbar/previous.png")));
         previousJButton.setToolTipText("Previous Train");
         previousJButton.setAlignmentX(1.0F);
         previousJButton.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -149,7 +178,7 @@ WorldListListener {
         gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
         jPanel1.add(previousJButton, gridBagConstraints);
 
-        nextJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/railz/client/graphics/toolbar/next.png")));
+        nextJButton.setIcon(new ImageIcon(graphicsResourceFinder.getURLForReading("toolbar/next.png")));
         nextJButton.setToolTipText("Next Train");
         nextJButton.setAlignmentX(1.0F);
         nextJButton.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -188,36 +217,6 @@ WorldListListener {
             System.err.println("Couldn't get next");
         }
     }//GEN-LAST:event_nextJButtonActionPerformed
-    
-    public void setup(ModelRoot mr, GUIRoot gr) {
-	modelRoot = mr;
-	guiRoot = gr;
-	trainDetailsRenderer = new DetailsListCellRenderer(modelRoot, guiRoot);
-        w = modelRoot.getWorld();
-	wi = new NonNullElements(KEY.TRAINS, w, mr.getPlayerPrincipal());
-        newTrainScheduleJPanel1.setup(mr, gr);
-	addComponentListener(componentListener);
-
-	trainDetailsRenderer.trainDetailsJPanel.setup();
-	trainDetailsRenderer.trainViewJPanel = new TrainViewJPanel(modelRoot);
-
-	if (popupJButton != null)
-	    remove(popupJButton);
-
-	popupJButton = new PopupJButton(new World2ListModelAdapter(w,
-		    KEY.TRAINS, modelRoot.getPlayerPrincipal(),
-		    modelRoot.getMoveChainFork()), trainDetailsRenderer);
-
-	GridBagConstraints gridBagConstraints = new
-	    java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        add(popupJButton, gridBagConstraints);
-
-	popupJButton.addActionListener(popupButtonListener);
-    }
     
     /**
      * Refreshes the component with the currently selected train
