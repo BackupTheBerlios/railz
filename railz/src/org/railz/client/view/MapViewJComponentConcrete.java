@@ -43,8 +43,8 @@ import org.railz.controller.MoveReceiver;
 import org.railz.client.model.CursorEvent;
 import org.railz.client.model.CursorEventListener;
 import org.railz.client.model.ModelRoot;
-import org.railz.client.top.UserInputOnMapController;
-import org.railz.client.top.StationTypesPopup;
+import org.railz.client.top.*;
+import org.railz.client.top.NonAuthoritativeMoveExecuter.PendingQueue;
 import org.railz.client.common.FPSCounter;
 import org.railz.client.common.Stats;
 import org.railz.client.renderer.MapRenderer;
@@ -68,6 +68,8 @@ final public class MapViewJComponentConcrete extends MapViewJComponent
     
 	private Stats paintStats = new Stats("MapViewJComponent paint");
 	private boolean frameRate;
+	private boolean debugMoves;
+
 	private JTextArea textArea;
 	private int textAreaWidth = -1;
 	private int textAreaHeight = -1;
@@ -117,6 +119,13 @@ final public class MapViewJComponentConcrete extends MapViewJComponent
 	    } catch (java.awt.AWTException e) {
 	    }
 	}
+
+	private ActionListener debugMovesListener = new ActionListener() {
+	    public void actionPerformed(ActionEvent e) {
+		debugMoves = modelRoot.getDebugModel().
+		    getClientMoveDebugModel().isSelected();
+	    }
+	};
 
 	private ActionListener frameRateListener = new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
@@ -287,11 +296,19 @@ final public class MapViewJComponentConcrete extends MapViewJComponent
 	//		    10+visRect.y+i*20);
 	    paintStats.exit();
 	    
-	    if (frameRate) {
+	    if (frameRate || debugMoves)
 		myGraphics.translate(visRect.x, visRect.y);
+	    if (frameRate)
 		fpsCounter.updateFPSCounter(myGraphics);
+	    if (debugMoves) {
+		myGraphics.setColor(Color.WHITE);
+		myGraphics.fillRect(50, 50, 50, 20);
+		myGraphics.setColor(Color.BLACK);
+		myGraphics.drawString(String.valueOf
+			(((ConnectionAdapter) modelRoot.getReceiver())
+			 .getNumBlockedMoves()), 50, 65);
 	    }
-	    
+
 	    /* dispose of the graphics context */	
 	    myGraphics.dispose();
 	}
@@ -341,13 +358,19 @@ final public class MapViewJComponentConcrete extends MapViewJComponent
 	    if (modelRoot != null) {
 		modelRoot.getDebugModel().getFrameRateDebugModel().
 		    removeActionListener(frameRateListener);
+		modelRoot.getDebugModel().getClientMoveDebugModel().
+		    removeActionListener(debugMovesListener);
 	    }
 
 	    modelRoot = mr;
 	    frameRate = modelRoot.getDebugModel().getFrameRateDebugModel().
 		isSelected();
+	    debugMoves = modelRoot.getDebugModel().getClientMoveDebugModel().
+		isSelected();
 	    modelRoot.getDebugModel().getFrameRateDebugModel().
 		addActionListener(frameRateListener);
+	    modelRoot.getDebugModel().getClientMoveDebugModel().
+		addActionListener(debugMovesListener);
 	}
 
 	public void setup(MapRenderer mv) {

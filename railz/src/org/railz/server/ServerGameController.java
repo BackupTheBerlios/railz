@@ -151,7 +151,15 @@ class ServerGameController implements ServerControlInterface,
 		int ticksPerSec = gameEngine.getTargetTicksPerSecond();
 
 		/* open a new controller */
-		ServerGameEngine newGame = ServerGameEngine.loadGame(file);
+		ServerGameEngine newGame;
+		try {
+		    newGame = ServerGameEngine.loadGame(file);
+		} catch (IOException e) {
+		    sendMessageToClients
+			("There was a problem loading the game: {0}" 
+			    , new Serializable[] {e.getMessage()});
+		    return;
+		}
 
 		transferClients(newGame);
 		setTargetTicksPerSecond(ticksPerSec);

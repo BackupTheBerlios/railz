@@ -18,7 +18,7 @@
 
 package org.railz.server;
 
-import java.io.File;
+import java.io.*;
 import java.util.Vector;
 
 import org.railz.controller.ServerControlInterface;
@@ -59,7 +59,14 @@ public class GameServer {
      */
     public ServerControlInterface getSavedGame(FreerailsProgressMonitor pm,
         int port, File filename) {
-        ServerGameEngine gameEngine = ServerGameEngine.loadGame(filename);
+	ServerGameEngine gameEngine;
+	try {
+	    gameEngine = ServerGameEngine.loadGame(filename);
+	} catch (IOException e) {
+	    pm.setMessage ("There was a problem loading the game: " +
+		    e.getMessage());
+	    return null;
+	}
         ServerGameController sgc = new ServerGameController(gameEngine, port);
         gameControllers.add(sgc);
 

@@ -100,10 +100,8 @@ class Dispatcher implements Runnable {
              * the client gets a copy of the World, for now just have a
              * crude lock
              */
-            synchronized (this.connection.world) {
-                this.connection.send(this.connection.world);
-                this.connection.flush();
-            }
+	    this.connection.send(this.connection.world);
+	    this.connection.flush();
 
             this.connection.setState(ConnectionState.READY);
         } else {

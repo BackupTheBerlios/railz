@@ -18,11 +18,7 @@
 package org.railz.server;
 
 import java.awt.Point;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -105,6 +101,8 @@ public class ServerGameEngine implements GameModel, Runnable,
 
     public synchronized void setTargetTicksPerSecond(int targetTicksPerSecond) {
         this.targetTicksPerSecond = targetTicksPerSecond;
+	n = 0;
+	baseTime = frameStartTime;
     }
 
     /**
@@ -219,98 +217,96 @@ public class ServerGameEngine implements GameModel, Runnable,
      * </ol>
      */
     public synchronized void update() {
-	synchronized (world) {
-	    if (targetTicksPerSecond > 0) {
-		queuedMoveReceiver.executeOutstandingMoves();
+	if (targetTicksPerSecond > 0) {
+	    queuedMoveReceiver.executeOutstandingMoves();
 
-		/*
-		 * start of server world update
-		 */
-		//update the time first, since other updates might need
-		//to know the current time.
-		updateGameTime();
+	    /*
+	     * start of server world update
+	     */
+	    //update the time first, since other updates might need
+	    //to know the current time.
+	    updateGameTime();
 
-		//now do the other updates
-		moveTrains();
+	    //now do the other updates
+	    moveTrains();
 
-		buildTrains();
+	    buildTrains();
 
-		//Check whether we have just started a new year..
-		GameTime time = (GameTime)world.get(ITEM.TIME);
-		GameCalendar calendar = (GameCalendar)world.get(ITEM.CALENDAR);
-		int currentYear = calendar.getCalendar(time).get(Calendar.YEAR);
-		int currentMonth = calendar.getCalendar(time).get(Calendar.MONTH);
+	    //Check whether we have just started a new year..
+	    GameTime time = (GameTime)world.get(ITEM.TIME);
+	    GameCalendar calendar = (GameCalendar)world.get(ITEM.CALENDAR);
+	    int currentYear = calendar.getCalendar(time).get(Calendar.YEAR);
+	    int currentMonth = calendar.getCalendar(time).get(Calendar.MONTH);
 
-		if (this.currentMonthLastTick != currentMonth) {
-		    this.currentMonthLastTick = currentMonth;
-		    newMonth();
-		}
-		if (this.currentYearLastTick != currentYear) {
-		    this.currentYearLastTick = currentYear;
-		    newYear(currentYear - 1);
-		}
+	    if (this.currentMonthLastTick != currentMonth) {
+		this.currentMonthLastTick = currentMonth;
+		newMonth();
+	    }
+	    if (this.currentYearLastTick != currentYear) {
+		this.currentYearLastTick = currentYear;
+		newYear(currentYear - 1);
+	    }
 
-		/*
-		 * all world updates done... now schedule next tick
-		 */
-		statUpdates++;
-		n++;
-		frameStartTime = System.currentTimeMillis();
+	    /*
+	     * all world updates done... now schedule next tick
+	     */
+	    statUpdates++;
+	    n++;
+	    frameStartTime = System.currentTimeMillis();
 
-		if (statUpdates == 100) {
-		    /* every 100 ticks, calculate some stats and reset
-		     * the base time */
-		    statUpdates = 0;
+	    if (statUpdates == 100) {
+		/* every 100 ticks, calculate some stats and reset
+		 * the base time */
+		statUpdates = 0;
 
-		    int updatesPerSec = (int)(100000L / (frameStartTime -
-				statLastTimestamp));
+		int updatesPerSec = (int)(100000L / (frameStartTime -
+			    statLastTimestamp));
 
-		    if (statLastTimestamp > 0) {
-			//	System.out.println(
-			//		"Updates per sec " + updatesPerSec);
-		    }
-
-		    statLastTimestamp = frameStartTime;
-
-		    baseTime = frameStartTime;
-		    n = 0;
+		if (statLastTimestamp > 0) {
+		    //	System.out.println(
+		    //		"Updates per sec " + updatesPerSec);
 		}
 
-		/* calculate "ideal world" time for next tick */
-		nextModelUpdateDue = baseTime + (1000 * n) / targetTicksPerSecond;
+		statLastTimestamp = frameStartTime;
 
-		int delay = (int)(nextModelUpdateDue - frameStartTime);
+		baseTime = frameStartTime;
+		n = 0;
+	    }
 
-		/* wake up any waiting client threads - we could be
-		 * more agressive, and only notify them if delay > 0? */
-		this.notifyAll();
+	    /* calculate "ideal world" time for next tick */
+	    nextModelUpdateDue = baseTime + (1000 * n) / targetTicksPerSecond;
 
-		try {
-		    if (delay > 0) {
-			this.wait(delay);
-		    } else {
-			this.wait(1);
-		    }
-		} catch (InterruptedException e) {
-		    // do nothing
+	    int delay = (int)(nextModelUpdateDue - frameStartTime);
+
+	    /* wake up any waiting client threads - we could be
+	     * more agressive, and only notify them if delay > 0? */
+	    this.notifyAll();
+
+	    try {
+		if (delay > 0) {
+		    this.wait(delay);
+		} else {
+		    this.wait(1);
 		}
-	    } else {
-		/*
-		 * even when game is paused, we should still check for moves
-		 * submitted by players due to execution of ServerCommands on the
-		 * server
-		 */
-		queuedMoveReceiver.executeOutstandingMoves();
-		// desired tick rate was 0
-		nextModelUpdateDue = frameStartTime;
+	    } catch (InterruptedException e) {
+		// do nothing
+	    }
+	} else {
+	    /*
+	     * even when game is paused, we should still check for moves
+	     * submitted by players due to execution of ServerCommands on the
+	     * server
+	     */
+	    queuedMoveReceiver.executeOutstandingMoves();
+	    // desired tick rate was 0
+	    nextModelUpdateDue = frameStartTime;
 
-		try {
-		    //When the game is frozen we don't want to be spinning in a
-		    //loop.
-		    Thread.sleep(200);
-		} catch (InterruptedException e) {
-		    // do nothing
-		}
+	    try {
+		//When the game is frozen we don't want to be spinning in a
+		//loop.
+		Thread.sleep(200);
+	    } catch (InterruptedException e) {
+		// do nothing
 	    }
 	}
     }
@@ -422,7 +418,7 @@ public class ServerGameEngine implements GameModel, Runnable,
     /**
      * load a game from a saved position
      */
-    public static ServerGameEngine loadGame(File filename) {
+    public static ServerGameEngine loadGame(File filename) throws IOException {
         ServerGameEngine engine = null;
 
         try {
@@ -463,6 +459,7 @@ public class ServerGameEngine implements GameModel, Runnable,
 
         } catch (Exception ex) {
             ex.printStackTrace();
+	    throw new IOException (ex.getMessage());
         }
 
         return engine;

@@ -63,6 +63,11 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
     private FreerailsProgressMonitor progressMonitor;
     private GUIRoot guiRoot;
 
+    public int getNumBlockedMoves() {
+	return ((NonAuthoritativeMoveExecuter.PendingQueue)
+	    moveExecuter.getUncommittedMoveReceiver()).getNumBlockedMoves();
+    }
+
     public ConnectionAdapter(ModelRoot mr, GUIRoot gr, Player
 	    player, FreerailsProgressMonitor pm, GUIClient gc) {
         modelRoot = mr;

@@ -158,4 +158,9 @@ public abstract class ChangeItemInListMove implements ListMove {
     public FreerailsSerializable getBefore() {
         return before;
     }
+
+    public String toString() {
+	return "ChangeItemInListMove: " + listKey + ", " + index + ", " +
+	    principal + " - change from: " + before + " to: " + after;
+    }
 }

@@ -78,21 +78,7 @@ class AuthoritativeMoveExecuter implements UncommittedMoveReceiver {
         MoveStatus ms;
 
 	synchronized (world) {
-	    org.railz.world.train.TrainPath tp = null, tp2 = null;
-	    org.railz.world.common.GameTime t = null;
-	    if (move instanceof ChangeTrainMove) {
-		t = (org.railz.world.common.GameTime) 
-		    world.get(ITEM.TIME, Player.AUTHORITATIVE);
-		tp = ((org.railz.world.train.TrainModel) ((ChangeTrainMove)
-			    move).getBefore()).getPosition(t);
-	    }
 	    ms = move.doMove(world, p);
-	    if (move instanceof ChangeTrainMove) {
-		tp2 = ((org.railz.world.train.TrainModel) ((ChangeTrainMove)
-			    move).getAfter()).getPosition(t);
-	System.out.println("tp=" + tp + ", tp2=" + tp2 + ", t=" + t);
-	    }
-
 	}
 
         forwardMove(move, ms);

@@ -193,6 +193,7 @@ public class AddRemoveScheduleStationMove extends CompositeMove {
     }
 
     public MoveStatus tryDoMove(World w, FreerailsPrincipal p) {
+	// verify the affected trains are still the same before applying move
 	ObjectKey[] actualKeys = (ObjectKey[])
 	    identifyAffectedTrains(w, p, mSchedule, mStationIndex, mOperation)
 	    .toArray(new ObjectKey[mTrains.length]);
@@ -201,17 +202,6 @@ public class AddRemoveScheduleStationMove extends CompositeMove {
 	    return MoveStatus.MOVE_FAILED;
 
 	return super.tryDoMove(w, p);
-    }
-
-    public MoveStatus tryUndoMove(World w, FreerailsPrincipal p) {
-	ObjectKey[] actualKeys = (ObjectKey[])
-	    identifyAffectedTrains(w, p, mSchedule, mStationIndex, mOperation)
-	    .toArray(new ObjectKey[mTrains.length]);
-
-	if (! Arrays.equals(actualKeys, mTrains))
-	    return MoveStatus.MOVE_FAILED;
-
-	return super.tryUndoMove(w, p);
     }
 
     public boolean equals(Object o) {

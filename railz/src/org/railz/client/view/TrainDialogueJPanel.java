@@ -200,6 +200,9 @@ WorldListListener {
 	trainDetailsRenderer.trainDetailsJPanel.setup(modelRoot);
 	trainDetailsRenderer.trainViewJPanel = new TrainViewJPanel(modelRoot);
 
+	if (popupJButton != null)
+	    remove(popupJButton);
+
 	popupJButton = new PopupJButton(new World2ListModelAdapter(w,
 		    KEY.TRAINS, modelRoot.getPlayerPrincipal(),
 		    modelRoot.getMoveChainFork()), trainDetailsRenderer);

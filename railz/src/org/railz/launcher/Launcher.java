@@ -82,6 +82,7 @@ FreerailsProgressMonitor {
     
     private ServerControlInterface sci;
 
+    /** TODO handle loading errors gracefully */
     private void startGame() {
 	jProgressBar1.setVisible(true);
 	setNextEnabled(false);

@@ -33,6 +33,8 @@ import org.railz.world.top.ObjectKey;
  * @author  Luke
  */
 public class TrainOrdersModel implements FreerailsSerializable {
+    static final long serialVersionUID = 2414702987622334721L;
+
     /**
      * The maximum number of wagons that a train may consist of
      */
@@ -115,5 +117,20 @@ public class TrainOrdersModel implements FreerailsSerializable {
         } else {
             return false;
         }
+    }
+
+    public String toString() {
+	String s = "";
+	s = "waitUntilFull=" + waitUntilFull + ", stationIndex=" + 
+	    station.index + ", loadTrain=" + loadTrain + 
+	    ", unloadTrain=" + unloadTrain + ", consist=(";
+	for (int i = 0; i < consist.length; i++)  {
+	    if (i > 0) {
+		s += ", ";
+	    }
+	    s += consist[i];
+	}
+	s += ")";
+	return s;
     }
 }

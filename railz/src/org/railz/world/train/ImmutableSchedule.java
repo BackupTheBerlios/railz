@@ -31,7 +31,11 @@ import org.railz.world.common.FreerailsSerializable;
  *
  */
 public class ImmutableSchedule implements Schedule, FreerailsSerializable {
+    static final long serialVersionUID = 3543587943412566094L;
+
     protected TrainOrdersModel[] orders;
+
+    /** TODO remove this */
     protected int firstId;
 
     /**
@@ -63,5 +67,18 @@ public class ImmutableSchedule implements Schedule, FreerailsSerializable {
     public int hashCode() {
 	/* probably a very bad hash! */
 	return orders.length;
+    }
+
+    public String toString() {
+	int i = 0;
+	String s = "";
+	while (i < orders.length) {
+	    if (i > 0)
+		s +=", ";
+	    s += "order " + i + ": ";
+	    s += orders[i].toString();
+	    i++;
+	}
+	return s;
     }
 }

@@ -124,6 +124,11 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
         private LinkedList approvedMoves = new LinkedList();
         private UncommittedMoveReceiver moveReceiver;
 
+	/** For debug purposes */
+	int getNumBlockedMoves() {
+	    return approvedMoves.size();
+	}
+
         private boolean undoMoves() {
             int n = 0;
             MoveStatus ms;
@@ -152,7 +157,11 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
                     rejectedMoves.remove(i);
                     forwardMove(new UndoneMove(attempted), ms);
                     n++;
-                }
+                } else {
+		    System.err.println("FAILED to undo move " + attempted
+			    + " because " + ms);
+		    assert false;
+		}
             }
 
             if (n > 0) {
@@ -225,11 +234,17 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
                     return;
                 }
 		// move succeeded but was submitted  by another client
+		if (debug) {
+		    System.err.println("Didn't recognise move: " + move + 
+			    "<=>" + pendingMove);
+		}
             }
 
 	    // Replace our pending move
-	    synchronized (pendingMoves) {
-		pendingMoves.addFirst(pendingMove);
+	    if (pendingMove != null) {
+		synchronized (pendingMoves) {
+		    pendingMoves.addFirst(pendingMove);
+		}
 	    }
 
             /* move must be from another client */
