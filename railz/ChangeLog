@@ -1,6 +1,7 @@
 May 09, 2004:
 -------------
 Rendering bugs and train motion bugs fixed.
+Fix for bug 30 - Can't build stations on end track pieces
 Apr 27, 2004:
 -------------
 Mid-way through the "Great Refactoring"...

@@ -61,7 +61,7 @@ public class TrainRenderer {
 	    engine) {
 	final Point p = new Point();
 	byte direction = s.getDirectionAtDistance(p, (int) ((n + 0.5) *
-		    WAGON_LENGTH * TrackTile.DELTAS_PER_TILE /
+		    WAGON_LENGTH * TrackTile.DELTAS_PER_TILE * 0.8 /
 		    TileRenderer.TILE_SIZE.width));
         Image image;
         if (engine) {

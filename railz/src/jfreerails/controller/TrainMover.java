@@ -47,7 +47,7 @@ import jfreerails.world.track.*;
  *
  * for now just use simple constant-speed model.
  */
-public class TrainMover {
+public final class TrainMover {
     private World world;
     private TrainPathFinder pathFinder;
 
@@ -76,6 +76,8 @@ public class TrainMover {
 		}
 		if (tm.getState() == TrainModel.STATE_RUNNABLE)
 		    updateTrainPosition(tm);
+		else if (! tm.getTrainMotionModel().isBlocked())
+		   releaseAllLocks(tm);
 	    }
 	}
     }

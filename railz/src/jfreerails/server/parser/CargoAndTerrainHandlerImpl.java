@@ -32,6 +32,7 @@ import org.xml.sax.SAXException;
 
 import jfreerails.world.cargo.CargoType;
 import jfreerails.world.building.*;
+import jfreerails.world.common.*;
 import jfreerails.world.terrain.TerrainType;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.World;
@@ -54,6 +55,7 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
     ArrayList typeConsumes = new ArrayList();
     ArrayList typeProduces = new ArrayList();
     ArrayList typeConverts = new ArrayList();
+    ArrayList trackTemplates = new ArrayList();
     boolean isStation;
     long maintenance;
     int stationRadius;
@@ -168,12 +170,17 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
         }
 
 	BuildingType buildingType;
+	byte[] tts = new byte[trackTemplates.size()];
+	for (int i = 0; i < trackTemplates.size(); i++) {
+	    tts[i] = ((Byte) trackTemplates.get(i)).byteValue();
+	}
+	    
 	if (isStation) {
 	    buildingType = new BuildingType(tileID, tileBaseValue,
-		    stationRadius);
+		    stationRadius, tts);
 	} else {
 	    buildingType = new BuildingType(tileID, produces,
-		    consumes, converts, tileBaseValue, tileCategory);
+		    consumes, converts, tileBaseValue, tileCategory, tts);
 	}
 	world.add(KEY.BUILDING_TYPES, buildingType, Player.AUTHORITATIVE);
     }
@@ -183,6 +190,7 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
 	    typeConsumes.clear();
 	    typeProduces.clear();
 	    typeConverts.clear();
+	    trackTemplates.clear();
 	    tileID = meta.getValue("id");
 	    String category = meta.getValue("category");
 	    if ("Urban".equals(category))
@@ -255,4 +263,11 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
             throw new SAXException("Unknown cargo type: " + cargoName);
         }
     }
+    
+    public void handle_trackPieceTemplate(final Attributes meta) throws
+	SAXException {
+	    String trackTemplate = meta.getValue("trackTemplate");
+	    trackTemplates.add(new
+		    Byte(CompassPoints.nineBitToEightBit(trackTemplate)));
+	}
 }

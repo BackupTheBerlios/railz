@@ -8,6 +8,15 @@
 
 <!ELEMENT Cargo_Types (Cargo)*>
 
+<!ELEMENT TrackPieceTemplate EMPTY>
+<!--
+  ++ trackTemplate is a 9 bit binary number which encodes a track template.
+  ++ A 1 indicates the presence of track.
+  ++ Bit 8(MSB)   7	6   5	4   3	2   1	0(LSB)
+  ++     NW	    N	NE  W	N/A E	SW  S	SE
+  -->
+<!ATTLIST TrackPieceTemplate trackTemplate CDATA #REQUIRED >
+
 <!ELEMENT Consumes EMPTY>
 <!ATTLIST Consumes
     Prerequisite ( 1 | 2 | 4 | 8 | 16 )  #IMPLIED
@@ -38,7 +47,7 @@
   >
 
 <!ELEMENT Building_Types (Building_Type)*>
-<!ELEMENT Building_Type (Converts|Consumes|Produces)*>
+<!ELEMENT Building_Type (TrackPieceTemplate|Converts|Consumes|Produces)*>
 <!ATTLIST Building_Type
 	id ID #REQUIRED
 	baseValue CDATA #REQUIRED

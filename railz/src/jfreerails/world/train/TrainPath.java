@@ -31,7 +31,7 @@ import jfreerails.world.track.*;
  * Describes a continuous sequence of straight-line segments.
  * @author rtuck99@users.berlios.de
  */
-public class TrainPath implements FreerailsSerializable {
+public final class TrainPath implements FreerailsSerializable {
     /**
      * A linked list of type IntLine
      */

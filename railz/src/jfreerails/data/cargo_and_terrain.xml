@@ -125,15 +125,21 @@
       </Building_Type>
       <Building_Type id="depot" stationRadius="1" baseValue="50000"
       maintenance="2000" category="Station">
+	<TrackPieceTemplate trackTemplate="100010001" />
+	<TrackPieceTemplate trackTemplate="100010000" />
       <!--  X="9" Y="10" doubleTrack="false" RGBvalue="000007" maxConsecutivePieces="0" -->
       </Building_Type>
       <Building_Type id="station" stationRadius="2"
       baseValue="100000" maintenance="2000" category="Station">
+	<TrackPieceTemplate trackTemplate="100010001" />
+	<TrackPieceTemplate trackTemplate="100010000" />
       <!-- X="9" Y="12"  doubleTrack="false" RGBvalue="000008"
       maxConsecuativePieces="0"-->
       </Building_Type>
       <Building_Type id="terminal" stationRadius="3"
       baseValue="200000" maintenance="2000" category="Station">
+	<TrackPieceTemplate trackTemplate="100010001" />
+	<TrackPieceTemplate trackTemplate="100010000" />
       <!--  X="9" Y="14"  doubleTrack="false" maxConsecuativePieces="0"
       RGBvalue="000009" -->
       </Building_Type>

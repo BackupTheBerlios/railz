@@ -22,6 +22,7 @@ import jfreerails.world.common.*;
  * @author rtuck99@users.berlios.de
  */
 public class BuildingType implements FreerailsSerializable {
+    private final boolean[] validTrackLayouts = new boolean[256];
     private final Production[] production;
     private final Consumption[] consumption;
     private final Conversion[] conversion;
@@ -35,7 +36,18 @@ public class BuildingType implements FreerailsSerializable {
     public static final int CATEGORY_URBAN = 2;
     public static final int CATEGORY_STATION = 3;
 
-    public BuildingType(String name, long baseValue, int stationRadius) {
+    private void setTrackLayouts(byte[] trackLayouts) {
+	for (int i = 0; i < trackLayouts.length; i++) {
+	    int layout = trackLayouts[i];
+	    for (int j = 0; j < 8; j++) {
+		validTrackLayouts[layout] = true;
+		layout = CompassPoints.rotateClockwise((byte) layout) & 0xFF;
+	    }
+	}
+    }
+
+    public BuildingType(String name, long baseValue, int stationRadius, byte[]
+	    validTrackLayouts) {
 	this.name = name;
 	this.baseValue = baseValue;
 	this.stationRadius = stationRadius;
@@ -43,11 +55,12 @@ public class BuildingType implements FreerailsSerializable {
 	consumption = new Consumption[0];
 	conversion = new Conversion[0];
 	category = CATEGORY_STATION;
+	setTrackLayouts(validTrackLayouts);
     }
 
     public BuildingType(String name, Production[] production, Consumption[]
 	    consumption, Conversion[] conversion, long baseValue, int
-	    category) {
+	    category, byte[] validTrackLayouts) {
 	this.name = name;
 	this.production = production;
 	this.consumption = consumption;
@@ -55,6 +68,7 @@ public class BuildingType implements FreerailsSerializable {
 	this.baseValue = baseValue;
 	this.category = category;
 	stationRadius = 0;
+	setTrackLayouts(validTrackLayouts);
     }
 
     public Production[] getProduction() {
@@ -83,5 +97,9 @@ public class BuildingType implements FreerailsSerializable {
 
     public int getStationRadius() {
 	return stationRadius;
+    }
+
+    public boolean isTrackLayoutValid(byte trackLayout) {
+	return validTrackLayouts[trackLayout & 0xFF];
     }
 }

@@ -118,6 +118,8 @@ public class CargoAndTerrainParser implements ContentHandler {
 	    handler.handle_Building_Types(attrs);
 	} else if ("Building_Type".equals(name)) {
 	    handler.start_Building_Type(attrs);
+	} else if ("TrackPieceTemplate".equals(name)) {
+	    handler.handle_trackPieceTemplate(attrs);
 	}
     }
 

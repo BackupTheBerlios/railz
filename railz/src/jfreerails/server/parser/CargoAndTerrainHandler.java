@@ -121,4 +121,7 @@ public interface CargoAndTerrainHandler {
 	SAXException;
 
     public void end_Building_Type() throws SAXException;
+
+    public void handle_trackPieceTemplate(final Attributes meta) throws
+	SAXException;
 }

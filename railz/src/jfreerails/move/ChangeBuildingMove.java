@@ -55,6 +55,16 @@ public class ChangeBuildingMove implements MapUpdateMove {
 		((oldTile != null) && !oldTile.equals(bTile))) {
 	    return MoveStatus.moveFailed("Tile was changed by another player");
 	}
+
+	if (newTile != null) {
+	    TrackTile tt = w.getTile(point).getTrackTile();
+	    BuildingType bType = (BuildingType) w.get(KEY.BUILDING_TYPES,
+		    newTile.getType(), Player.AUTHORITATIVE);
+	    if (tt != null && !bType.isTrackLayoutValid
+		    (tt.getTrackConfiguration()))
+		return MoveStatus.moveFailed("Illegal track layout");
+	}
+
 	return MoveStatus.MOVE_OK;
     }
 
@@ -67,6 +77,16 @@ public class ChangeBuildingMove implements MapUpdateMove {
 		((newTile != null) && !newTile.equals(bTile))) {
 	    return MoveStatus.MOVE_FAILED;
 	}
+	
+	if (oldTile != null) {
+	    TrackTile tt = w.getTile(point).getTrackTile();
+	    BuildingType bType = (BuildingType) w.get(KEY.BUILDING_TYPES,
+		    oldTile.getType(), Player.AUTHORITATIVE);
+	    if (tt != null && !bType.isTrackLayoutValid
+		    (tt.getTrackConfiguration()))
+		return MoveStatus.moveFailed("Illegal track layout");
+	}
+
 	return MoveStatus.MOVE_OK;
     }
 

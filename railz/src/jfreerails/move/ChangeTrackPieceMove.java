@@ -20,6 +20,7 @@ package jfreerails.move;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import jfreerails.world.building.*;
 import jfreerails.world.player.FreerailsPrincipal;
 import jfreerails.world.player.Player;
 import jfreerails.world.terrain.TerrainType;
@@ -123,6 +124,14 @@ final public class ChangeTrackPieceMove implements TrackMove, MapUpdateMove {
 
 		return MoveStatus.moveFailed("Can't build " + thisTrackType +
 			" on " + terrainCategory);
+	    }
+	    BuildingTile bTile = currentTile.getBuildingTile();
+	    if (bTile != null) {
+		BuildingType bType = (BuildingType) w.get(KEY.BUILDING_TYPES,
+			bTile.getType(), Player.AUTHORITATIVE);
+		if (!bType.isTrackLayoutValid
+			(newTrackPiece.getTrackConfiguration()))
+		    return MoveStatus.moveFailed("Illegal track layout");
 	    }
 	}
 	
