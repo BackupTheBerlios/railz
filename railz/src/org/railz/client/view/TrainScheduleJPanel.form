@@ -113,27 +113,11 @@
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
       </AuxValues>
     </Component>
-    <Component class="javax.swing.JButton" name="priorityOrdersJButton">
-      <Properties>
-        <Property name="icon" type="javax.swing.Icon" editor="org.openide.explorer.propertysheet.editors.IconEditor">
-          <Image iconType="3" name="/org/railz/client/graphics/toolbar/priority_orders.png"/>
-        </Property>
-        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Add priority orders" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
-        </Property>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="priorityOrdersJButtonActionPerformed"/>
-      </Events>
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-      </AuxValues>
-    </Component>
   </NonVisualComponents>
   <Properties>
     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
       <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-        <TitledBorder title="">
+        <TitledBorder title="&lt;Schedule&gt;">
           <ResourceString PropertyName="titleX" bundle="org/railz/data/l10n/jfreerails_en.properties" key="Schedule" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
         </TitledBorder>
       </Border>

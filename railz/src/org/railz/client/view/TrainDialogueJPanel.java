@@ -104,7 +104,6 @@ WorldListListener {
 	gridBagConstraints.weightx = 1.0;
 	gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
 	gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-	add(newTrainScheduleJPanel1.priorityOrdersJButton, gridBagConstraints);
     }
     
     /** This method is called from within the constructor to

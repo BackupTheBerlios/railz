@@ -89,7 +89,6 @@ WorldListListener {
         pullUpJMenuItem = new javax.swing.JMenuItem();
         pushDownJMenuItem = new javax.swing.JMenuItem();
         addStationJButton = new javax.swing.JButton();
-        priorityOrdersJButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         orders = new javax.swing.JList();
         orders.addMouseListener(ordersPopupAdapter);
@@ -181,14 +180,6 @@ WorldListListener {
             }
         });
 
-        priorityOrdersJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/railz/client/graphics/toolbar/priority_orders.png")));
-        priorityOrdersJButton.setToolTipText(org.railz.util.Resources.get("Add priority orders"));
-        priorityOrdersJButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                priorityOrdersJButtonActionPerformed(evt);
-            }
-        });
-
         setLayout(new java.awt.GridBagLayout());
 
         setBorder(new javax.swing.border.TitledBorder(org.railz.util.Resources.get("Schedule")));
@@ -243,20 +234,7 @@ WorldListListener {
     private void dontWaitJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dontWaitJMenuItemActionPerformed
         setWaitUntilFull(false);
     }//GEN-LAST:event_dontWaitJMenuItemActionPerformed
-    
-    private void priorityOrdersJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_priorityOrdersJButtonActionPerformed
-	TrainOrdersModel tom = new TrainOrdersModel(new ObjectKey(KEY.STATIONS,
-			modelRoot.getPlayerPrincipal(), 0), null, false, true,
-		    true);
-	ScheduleIterator si = new ScheduleIterator(scheduleIterator, tom);
-	TrainModel train = (TrainModel) w.get(KEY.TRAINS, trainNumber,
-		modelRoot.getPlayerPrincipal());
-	Move m = ChangeTrainMove.generateMove(trainNumber,
-		modelRoot.getPlayerPrincipal(), train, si,
-		(GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE));
-	modelRoot.getReceiver().processMove(m);
-    }//GEN-LAST:event_priorityOrdersJButtonActionPerformed
-    
+        
     private void addStationJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStationJButtonActionPerformed
 	TrainModel tm = (TrainModel) w.get(KEY.TRAINS, trainNumber,
 		modelRoot.getPlayerPrincipal());
@@ -394,7 +372,6 @@ WorldListListener {
     
     private void disableButtons() {
 	addStationJButton.setEnabled(false);
-	priorityOrdersJButton.setEnabled(false);
 	editOrderJPopupMenu.setEnabled(false);
     }
 
@@ -402,8 +379,6 @@ WorldListListener {
         MutableSchedule s  = getSchedule();
         addStationJButton.setEnabled(true);
         
-        //Only one set of prority orders are allowed.
-        priorityOrdersJButton.setEnabled(!scheduleIterator.hasPriorityOrder());
 	editOrderJPopupMenu.setEnabled(true);
     }
     
@@ -503,7 +478,6 @@ WorldListListener {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     javax.swing.JList orders;
-    javax.swing.JButton priorityOrdersJButton;
     private javax.swing.JMenuItem pullUpJMenuItem;
     private javax.swing.JMenuItem pushDownJMenuItem;
     private javax.swing.JMenuItem removeStationJMenuItem;
