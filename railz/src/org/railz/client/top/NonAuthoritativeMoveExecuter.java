@@ -154,13 +154,13 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
 
                 if (ms == MoveStatus.MOVE_OK) {
 		    attempted.undoMove(world, attempted.getPrincipal());
-		    logger.log(Level.FINE, "Unrolled precommited move " +
+		    logger.log(Level.INFO, "Unrolled precommited move " +
 			       	attempted.toString());
                     rejectedMoves.remove(i);
                     forwardMove(new UndoneMove(attempted), ms);
                     n++;
                 } else {
-		    logger.log(Level.FINE, "FAILED to undo move " +
+		    logger.log(Level.WARNING, "FAILED to undo move " +
 			    attempted + " because " + ms);
 		    assert false;
 		}
@@ -193,7 +193,7 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
                      * match*/
                     if (((RejectedMove)move).getAttemptedMove()
 			    .equals(pendingMove)) {
-			logger.log(Level.FINE, "Logging rejected move " +
+			logger.log(Level.INFO, "Logging rejected move " +
 				    ((RejectedMove) move).getAttemptedMove());
                         /* Move was one of ours so we add it to the list of
                          * rejected moves and remove it from the list of pending
@@ -217,7 +217,7 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
                                     break;
                                 }
 
-				logger.log(Level.FINE, "Committed queued move "
+				logger.log(Level.INFO, "Committed queued move "
 					+ am);
                                 approvedMoves.removeFirst();
                             }
@@ -255,15 +255,17 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
 		ms = move.doMove(world, move.getPrincipal());
 
                 if (ms != MoveStatus.MOVE_OK) {
-		    if (move instanceof TimeTickMove &&
-			    ((TimeTickMove) move).getNewTime().getTime() <=
-			    t.getTime()) {
-			// we have already received this TimeTick
-			// this can occur when we load the game initially
+		    if (pendingMoves.isEmpty()) {
+			// there are no pre-committed moves, therefore our 
+			// game-world is in sync with the server.
+			// We have already received the information in this
+			// move, this can occur when we load the game initially
+			logger.log(Level.INFO, "Dropping redundant move " +
+				"received from server:" + move);
 			return;
 		    }
 
-		    logger.log(Level.FINE, "Queueing blocked move " +
+		    logger.log(Level.INFO, "Queueing blocked move " +
 			    move + " - " + ms.toString());
 
                     /* move could not be committed because of

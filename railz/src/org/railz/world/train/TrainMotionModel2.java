@@ -210,4 +210,32 @@ public final class TrainMotionModel2 implements FreerailsSerializable {
     public TrainPathFunction getPathFunction() {
 	return pathFunction;
     }
+
+    /** @return a new TrainMotionModel2 where the train is the specified
+     * length */
+    public TrainMotionModel2 setTrainPathLength(int length) {
+	TrainPath newTrainPath = new TrainPath(trainPath);
+	TrainMotionModel2 tmm;
+	if (length > trainPath.getLength()) {
+	    // construct a path from the tail of the train to its destination,
+	    // which we can use to extend the trains path at t0
+	    TrainPath extension;
+	    if (pathToDestination != null) {
+		extension =new TrainPath(pathToDestination);
+		extension.append(new TrainPath(trainPath));
+	    } else {
+		extension = new TrainPath(trainPath);
+	    }
+
+	    do {
+		extension.reverse();
+		newTrainPath.append(extension);
+	    } while (newTrainPath.getLength() < length);
+	}
+
+	newTrainPath.truncateTail(length);
+	tmm = new TrainMotionModel2(this);
+	tmm.trainPath = newTrainPath;
+	return tmm;
+    }
 }

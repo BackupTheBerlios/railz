@@ -1,3 +1,6 @@
+January 21, 2005:
+-----------------
+Fixed a bug where adding too many wagons to trains caused an exception.
 January 16, 2005:
 -----------------
 Added support for Java logging framework.

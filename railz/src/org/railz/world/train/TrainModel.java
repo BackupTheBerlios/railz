@@ -195,10 +195,14 @@ public class TrainModel implements FreerailsSerializable {
      * engine and wagons
      */
     public TrainModel getNewInstance(int newEngine, int[] newWagons) {
-        return new TrainModel(newEngine, newWagons, this.getCargoBundleNumber(),
-	    creationDate, state, scheduleIterator, trainMotionModel,
-	    priority, isBlocked, stateLastChanged, ticksInService,
-	    costTraversedSinceLoadingWater);
+	TrainModel tm = new TrainModel(newEngine, newWagons,
+		this.getCargoBundleNumber(), creationDate, state,
+		scheduleIterator, trainMotionModel, priority, isBlocked,
+		stateLastChanged, ticksInService,
+		costTraversedSinceLoadingWater);
+	tm.trainMotionModel =
+	    tm.trainMotionModel.setTrainPathLength(tm.getLength());
+	return tm;
     }
 
     /**
