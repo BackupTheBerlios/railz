@@ -1,6 +1,8 @@
 January 24, 2005:
 -----------------
 Added status icon to train info panel. Train info panel now picks up icons from ModdableResourceFinder.
+Added server configuration xml file to allow new maps to be added without code
+modifiation.
 January 23, 2005:
 -----------------
 Fixed a bug where an exception could be thrown whilst changing the schedule.
