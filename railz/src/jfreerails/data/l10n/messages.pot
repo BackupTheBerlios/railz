@@ -1,0 +1,105 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+!=Project-Id-Version\: PACKAGE VERSION\nReport-Msgid-Bugs-To\: \nPOT-Creation-Date\: 2004-03-07 16\:19+0000\nPO-Revision-Date\: YEAR-MO-DA HO\:MI+ZONE\nLast-Translator\: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team\: LANGUAGE <LL@li.org>\nMIME-Version\: 1.0\nContent-Type\: text/plain; charset\=UTF-8\nContent-Transfer-Encoding\: 8bit\n
+
+#: src/jfreerails/launcher/ClientOptionsJPanel.java:47
+!Please\ set\ a\ name\ for\ your\ player=
+
+#: src/jfreerails/launcher/ClientOptionsJPanel.java:94
+!Player\ Details=
+
+#: src/jfreerails/launcher/ClientOptionsJPanel.java:95
+!Player\ name\:=
+
+#: src/jfreerails/launcher/ClientOptionsJPanel.java:99
+!Player1=
+
+#: src/jfreerails/launcher/ClientOptionsJPanel.java:117
+!Select\ Display\ Mode=
+
+#: src/jfreerails/launcher/ClientOptionsJPanel.java:128
+!Windowed=
+
+#: src/jfreerails/launcher/ClientOptionsJPanel.java:132
+!Full\ screen=
+
+#: src/jfreerails/launcher/Launcher.java:58
+!Start=
+
+#: src/jfreerails/launcher/Launcher.java:60
+#: src/jfreerails/launcher/Launcher.java:293
+!Next...=
+
+#: src/jfreerails/launcher/Launcher.java:96
+#: src/jfreerails/launcher/Launcher.java:127
+#: src/jfreerails/launcher/Launcher.java:157
+!JFreerails\ Client=
+
+#: src/jfreerails/launcher/Launcher.java:197
+!Loading\ saved\ player\ keys=
+
+#: src/jfreerails/launcher/Launcher.java:207
+!Saving\ player\ keys=
+
+#: src/jfreerails/launcher/Launcher.java:212
+#: src/jfreerails/launcher/Launcher.java:215
+!Player\ KeyPair\ was\ corrupted\!=
+
+#: src/jfreerails/launcher/Launcher.java:269
+!JFreerails\ Launcher=
+
+#: src/jfreerails/launcher/Launcher.java:316
+!Back...=
+
+#: src/jfreerails/launcher/LauncherPanel1.java:83
+!Please\ enter\ a\ valid\ port\ number=
+
+#: src/jfreerails/launcher/LauncherPanel1.java:88
+!Please\ enter\ a\ valid\ remote\ server\ address=
+
+#: src/jfreerails/launcher/LauncherPanel1.java:91
+!Couldn't\ resolve\ remote\ server\ address=
+
+#: src/jfreerails/launcher/LauncherPanel1.java:139
+!Select\ Game\ Type=
+
+#: src/jfreerails/launcher/LauncherPanel1.java:147
+!Single-Player=
+
+#: src/jfreerails/launcher/LauncherPanel1.java:160
+!Start\ a\ network\ game=
+
+#: src/jfreerails/launcher/LauncherPanel1.java:174
+!Join\ a\ network\ game=
+
+#: src/jfreerails/launcher/LauncherPanel1.java:188
+!Server\ only=
+
+#: src/jfreerails/launcher/LauncherPanel1.java:204
+!Remote\ server\ address=
+
+#: src/jfreerails/launcher/LauncherPanel1.java:208
+!IP\ Address\:=
+
+#: src/jfreerails/launcher/LauncherPanel1.java:227
+#: src/jfreerails/launcher/LauncherPanel1.java:256
+!Port\:=
+
+#: src/jfreerails/launcher/LauncherPanel1.java:255
+!Server\ port=
+
+#: src/jfreerails/launcher/MapSelectionPanel.java:70
+!Load\ a\ saved\ game=
+
+#: src/jfreerails/launcher/MapSelectionPanel.java:75
+!Start\ a\ new\ map=
+
+#: src/jfreerails/launcher/MapSelectionPanel.java:89
+!Select\ Map=
+
+#: src/jfreerails/launcher/ServerStatusPanel.java:40
+!Server\ Status=

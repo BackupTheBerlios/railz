@@ -46,7 +46,8 @@
              <include name="**/*.gif"/>
              <include name="client/view/game_controls.html"/>             
              <include name="**/*.htm"/>
-         </fileset>
+             <include name="**/*.properties"/>
+            </fileset>
       </copy>
 
       <copy todir="${build}">
