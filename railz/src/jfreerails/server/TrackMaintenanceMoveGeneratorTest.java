@@ -40,14 +40,15 @@ public class TrackMaintenanceMoveGeneratorTest extends TestCase {
         addTrack(0, 50);
 
         /* The maintenace cost of track type 0 is 10 (see MapFixtureFactory), so
-        * the cost of maintaining 50 units is 500. */
+        * the monthly cost of maintaining 50 units is 500 / 12. */
 	AddTransactionMove[] moves =
 	    TrackMaintenanceMoveGenerator.generateMove(w);
 	AddTransactionMove m = moves[0];
         Transaction t = m.getTransaction();
-        long expected = -500;
+        long expected = -500 / 12;
         long actual = t.getValue();
-        assertTrue(expected == actual);
+        assertTrue("Received " + actual + ", expected " + expected, 
+		expected == actual);
     }
 
     public void testCalulateNumberOfEachTrackType() {

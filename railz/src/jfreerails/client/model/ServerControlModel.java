@@ -1,18 +1,22 @@
 package jfreerails.client.model;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
 import javax.swing.Action;
 import javax.swing.AbstractAction;
+import javax.swing.JFileChooser;
 import java.util.Enumeration;
+
 import jfreerails.client.common.ActionAdapter;
 import jfreerails.controller.ServerControlInterface;
-
 
 /**
  * Exposes the ServerControlInterface to client UI implementations
  */
 public class ServerControlModel {
     private ServerControlInterface serverInterface;
+    private String currentDirectory = System.getProperty("user.home");
+    private ModelRoot modelRoot;
 
     private class NewGameAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
@@ -41,7 +45,20 @@ public class ServerControlModel {
     private class LoadGameAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             if (serverInterface != null) {
-                serverInterface.loadGame();
+		JFileChooser chooser = new JFileChooser(currentDirectory);
+		chooser.setMultiSelectionEnabled(false);
+		int option = chooser.showOpenDialog(null);
+		if (option == JFileChooser.APPROVE_OPTION) {
+		    File f = chooser.getSelectedFile();
+		    if (! f.isFile()) {
+			modelRoot.getUserMessageLogger().println("You must "
+				+ "select a valid file name");
+			return;
+		    }
+		    currentDirectory =
+			chooser.getCurrentDirectory().getPath();
+		    serverInterface.loadGame(f);
+		}
             }
         }
 
@@ -56,7 +73,15 @@ public class ServerControlModel {
     private class SaveGameAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             if (serverInterface != null) {
-                serverInterface.saveGame();
+		JFileChooser chooser = new JFileChooser(currentDirectory);
+		chooser.setMultiSelectionEnabled(false);
+		int option = chooser.showSaveDialog(null);
+		if (option == JFileChooser.APPROVE_OPTION) {
+		    File f = chooser.getSelectedFile();
+		    currentDirectory =
+			chooser.getCurrentDirectory().getPath();
+		    serverInterface.saveGame(f);
+		}
             }
         }
 
@@ -124,8 +149,9 @@ public class ServerControlModel {
         newGameAction.setEnabled(enabled);
     }
 
-    public ServerControlModel(ServerControlInterface i) {
+    public ServerControlModel(ServerControlInterface i, ModelRoot mr) {
         setServerControlInterface(i);
+	modelRoot = mr;
     }
 
     /**

@@ -2,12 +2,11 @@
 
 Targeted features before next stable release branch 0.4
 ====================================================
-Full multiplayer support - ownership of all appropriate game world objects.
-Ability to place new trains on map
-Profit and loss
-I18N infrastructure
 Move to bugzilla bug database
-File select on load/save
+Balance sheet
+Income tax
+Ability to place new trains on map
+Cash Flow
 
 Optional 0.4 features
 =====================
@@ -30,7 +29,6 @@ Rationalisation of package structure (split into client, server and common
 Rationalisation of train movement and timer
 Station improvements
 Train maintenance
-Balance sheet
 Train collision / track contention.
 Train / terrain track layout speed interaction.
 Trading between players

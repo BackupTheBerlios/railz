@@ -42,7 +42,8 @@ public final class ModelRoot {
  
     private ArrayList listeners = new ArrayList();
 
-    protected ServerControlModel serverControls = new ServerControlModel(null);
+    protected ServerControlModel serverControls = new ServerControlModel(null,
+	    this);
     private ReadOnlyWorld world;
       
     public void addModelRootListener(ModelRootListener l) {

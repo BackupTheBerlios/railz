@@ -1,6 +1,7 @@
 package jfreerails.server;
 
 import java.awt.Point;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -357,11 +358,12 @@ public class ServerGameEngine implements GameModel, Runnable {
         trainMovers.add(m);
     }
 
-    public synchronized void saveGame() {
+    public synchronized void saveGame(File filename) {
         try {
             System.out.print("Saving game..  ");
 
-            FileOutputStream out = new FileOutputStream("freerails.sav");
+            FileOutputStream out = new
+		FileOutputStream(filename.getCanonicalPath());
             GZIPOutputStream zipout = new GZIPOutputStream(out);
 
             ObjectOutputStream objectOut = new ObjectOutputStream(zipout);
@@ -392,13 +394,14 @@ public class ServerGameEngine implements GameModel, Runnable {
     /**
      * load a game from a saved position
      */
-    public static ServerGameEngine loadGame() {
+    public static ServerGameEngine loadGame(File filename) {
         ServerGameEngine engine = null;
 
         try {
             System.out.print("Loading game..  ");
 
-            FileInputStream in = new FileInputStream("freerails.sav");
+            FileInputStream in = new
+		FileInputStream(filename.getCanonicalPath());
             GZIPInputStream zipin = new GZIPInputStream(in);
             ObjectInputStream objectIn = new ObjectInputStream(zipin);
             ArrayList trainMovers = (ArrayList)objectIn.readObject();

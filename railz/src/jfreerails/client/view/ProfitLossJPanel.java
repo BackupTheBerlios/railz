@@ -333,8 +333,6 @@ class ProfitLossJPanel extends javax.swing.JPanel {
 	prevButton.setEnabled(true);
     }//GEN-LAST:event_nextButtonActionPerformed
     
-
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel freightRevenueJLabel;
     private javax.swing.JLabel fuelExpenseJLabel;

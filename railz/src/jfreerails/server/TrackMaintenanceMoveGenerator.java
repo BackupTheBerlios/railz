@@ -54,15 +54,15 @@ public class TrackMaintenanceMoveGenerator {
 
         for (int i = 0; i < track.length; i++) {
             TrackRule trackRule = (TrackRule)w.get(KEY.TRACK_RULES, i);
-            long maintenanceCost = trackRule.getMaintenanceCost() / 12;
+            long maintenanceCost = trackRule.getMaintenanceCost();
 
             if (track[i] > 0) {
                 amount += maintenanceCost * track[i];
             }
         }
+	amount /= 12;
 
 	GameTime now = (GameTime) w.get(ITEM.TIME, p);
-	System.err.println("new track maintenance bill for " + amount);
         Transaction t = new Bill(now, amount, Bill.TRACK_MAINTENANCE);
 
         return new AddTransactionMove(0, t, p);
@@ -90,8 +90,6 @@ public class TrackMaintenanceMoveGenerator {
                 }
             }
         }
-	for (int i = 0; i < unitsOfTrack.length; i++) 
-System.out.println("found " + unitsOfTrack[i] + " of type " + i +" for " + p);
         return unitsOfTrack;
     }
 
