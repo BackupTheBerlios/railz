@@ -32,7 +32,8 @@ Compilation:
 ============
 
 To compile, either 
-(i) go to the directory src, and type: javac org/railz/launcher/Launcher.java
+(i) go to the directory src, and type:
+ javac -source 1.4 org/railz/launcher/Launcher.java org/railz/server/scripting/*.java
 or	
 (ii) use the build.xml file and Ant version 1.5.
 
