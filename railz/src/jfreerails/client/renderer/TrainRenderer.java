@@ -63,6 +63,7 @@ public class TrainRenderer {
 	byte direction = s.getDirectionAtDistance(p, (int) ((n + 0.5) *
 		    WAGON_LENGTH * TrackTile.DELTAS_PER_TILE /
 		    TileRenderer.TILE_SIZE.width));
+	System.out.println("renderWagon: tp = " + s + ", p = " + p);
         Image image;
         if (engine) {
             image = trainImages.getOverheadEngineImage(type,

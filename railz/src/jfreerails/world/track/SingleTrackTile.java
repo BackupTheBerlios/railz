@@ -29,8 +29,8 @@ FreerailsSerializable {
     }
 
     public boolean getLock(byte directions) {
-	directions |= CompassPoints.invert(directions);
-	if ((trackLock & directions) == 0) {
+	int lock = trackLock | CompassPoints.invert(trackLock);
+	if ((lock & directions) == 0) {
 	    trackLock |= directions;
 	    return true;
 	}
@@ -38,7 +38,6 @@ FreerailsSerializable {
     } 
 
     public void releaseLock(byte directions) {
-	directions |= CompassPoints.invert(directions);
 	trackLock &= ~directions;
     }
 }

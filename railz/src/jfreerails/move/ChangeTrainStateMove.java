@@ -34,8 +34,8 @@ public class ChangeTrainStateMove extends TrainMove {
     private FreerailsPrincipal principal;
 
     public ChangeTrainStateMove(ReadOnlyWorld w, ObjectKey train, TrainPath
-	    pathFromLastSync, int newState) {
-	super(train, pathFromLastSync);
+	    pathFromLastSync, GameTime timeOfLastSync, int newState) {
+	super(train, timeOfLastSync, pathFromLastSync);
 	TrainModel tm = (TrainModel) w.get(train.key, train.index,
 		train.principal);
 	this.oldState = tm.getState();
@@ -75,6 +75,8 @@ public class ChangeTrainStateMove extends TrainMove {
 	if (tryDoMove(w, p) != MoveStatus.MOVE_OK)
 	    return MoveStatus.MOVE_FAILED;
 
+	super.doMove(w, p);
+
 	TrainModel tm = (TrainModel) w.get(KEY.TRAINS, trainKey.index, p);
 	tm.setState(newState, newStateTime);
 	return MoveStatus.MOVE_OK;
@@ -83,6 +85,8 @@ public class ChangeTrainStateMove extends TrainMove {
     public MoveStatus undoMove(World w, FreerailsPrincipal p) {
 	if (tryUndoMove(w, p) != MoveStatus.MOVE_OK)
 	    return MoveStatus.MOVE_FAILED;
+
+	super.undoMove(w, p);
 
 	TrainModel tm = (TrainModel) w.get(KEY.TRAINS, trainKey.index, p);
 	tm.setState(oldState, oldStateTime);

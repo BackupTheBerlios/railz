@@ -68,13 +68,9 @@ public class TrainMotionModel {
 	return pathTraversedSinceLastSync;
     }
 
-    public void setPathTraversedSinceLastSync(TrainPath tp) {
-	pathTraversedSinceLastSync = tp;
-    }
-
-    public void sync(GameTime now, Point p) {
+    public void sync(GameTime now, TrainPath p) {
 	timeOfLastSync = now;
-	pathTraversedSinceLastSync = new TrainPath(new Point[]{p, p});
+	pathTraversedSinceLastSync = new TrainPath(p);
     }
 
     public boolean isBlocked() {
@@ -91,5 +87,11 @@ public class TrainMotionModel {
 
     public GameTime getTimeOfLastSync() {
 	return timeOfLastSync;
+    }
+
+    public String toString() {
+	return "TrainMotionModel: pathToDest = " + pathToDestination +
+	    ", pathSinceSync = " + pathTraversedSinceLastSync +
+	    ", timeOfSync = " + timeOfLastSync + ", isBlocked = " + isBlocked;
     }
 }

@@ -27,6 +27,11 @@ public class ScheduleIterator implements FreerailsSerializable {
     private int scheduleId;
     private TrainOrdersModel priorityOrder;
 
+    public String toString() {
+	return "currentOrder = " + currentOrder + ", scheduleId = " +
+	    scheduleId + ", priorityOrder = " + priorityOrder;
+    }
+
     public ScheduleIterator(int scheduleId, int currentOrder) {
 	this.scheduleId = scheduleId;
 	this.currentOrder = currentOrder;
@@ -63,8 +68,8 @@ public class ScheduleIterator implements FreerailsSerializable {
     }
 
     public ScheduleIterator nextOrder(ReadOnlyWorld w) {
+	Thread.currentThread().dumpStack();
 	if (priorityOrder != null) {
-	    priorityOrder = null;
 	    return new ScheduleIterator(this, null);
 	} else {
 	    Schedule s = (Schedule) w.get(KEY.TRAIN_SCHEDULES, scheduleId,

@@ -66,6 +66,11 @@ public class TrainModel implements FreerailsSerializable {
 
     private int state;
 
+    public String toString() {
+	return "stateLastChanged = " + stateLastChanged + ", trainPath = " +
+	    trainPath + ", scheduleIterator = " + scheduleIterator;
+    }
+
     /**
      * copy constructor with original schedule, cargo, position, but new
      * engine and wagons
@@ -162,7 +167,9 @@ public class TrainModel implements FreerailsSerializable {
                 null == this.trainPath ? null == test.trainPath :
 		    this.trainPath.equals(test.trainPath) &&
                 Arrays.equals(this.wagonTypes, test.wagonTypes) &&
-                this.scheduleIterator == test.scheduleIterator;
+		(scheduleIterator != null ?
+		this.scheduleIterator.equals(test.scheduleIterator) :
+		test.scheduleIterator == null);
 
             return b;
         } else {

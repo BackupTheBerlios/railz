@@ -167,7 +167,9 @@ final public class FreerailsCursor implements KeyListener, MapCursor {
             int deltaY = cursorMapPosition.y - oldCursorMapPosition.y;
 
             /*Build track! */
-            if (deltaX >= -1 && deltaX <= 1 && deltaY >= -1 && deltaY <= 1) {
+            if ((deltaX != 0 || deltaY != 0) &&
+		    deltaX >= -1 && deltaX <= 1 &&
+		    deltaY >= -1 && deltaY <= 1) {
 		fireOffCursorOneTileMove
 		    (CompassPoints.unitDeltasToDirection(deltaX,
 			    deltaY), oldCursorMapPosition);

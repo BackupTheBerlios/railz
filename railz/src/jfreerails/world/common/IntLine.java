@@ -39,6 +39,8 @@ public class IntLine implements FreerailsSerializable {
      */
     public int y2;
 
+    private PathLength length;
+
     /**
      * return a CompassPoint defining the direction from head to tail
      */
@@ -60,10 +62,8 @@ public class IntLine implements FreerailsSerializable {
     /**
      * @return the length of the line
      */
-    public double getLength() {
-        int sumOfSquares = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-
-        return Math.sqrt((double)sumOfSquares);
+    public PathLength getLength() {
+	return length;
     }
 
     public IntLine(IntLine l) {
@@ -71,6 +71,7 @@ public class IntLine implements FreerailsSerializable {
 	y1 = l.y1;
 	x2 = l.x2;
 	y2 = l.y2;
+	length = new PathLength(l.x1, l.y1, l.x2, l.y2);
     }
 
     public IntLine(Point p1, Point p2) {
@@ -88,6 +89,7 @@ public class IntLine implements FreerailsSerializable {
         y1 = yy1;
         x2 = xx2;
         y2 = yy2;
+	length = new PathLength(x1, y1, x2, y2);
     }
 
     /**
@@ -95,6 +97,7 @@ public class IntLine implements FreerailsSerializable {
      */
     public IntLine() {
 	x1 = y1 = x2 = y2 = 0;
+	length = new PathLength();
     }
 
     public boolean equals(Object o) {
@@ -128,7 +131,7 @@ public class IntLine implements FreerailsSerializable {
      * shorten so that the tail is the specified distance from the head by
      * moving the head.
      */
-    public void setLengthFromTail(double length) {
+    public void setLengthFromTail(PathLength length) {
 	int xx = x1;
 	int yy = y1;
 	x1 = x2;
@@ -148,55 +151,56 @@ public class IntLine implements FreerailsSerializable {
      * shorten so that the tail is the specified distance from the head by
      * moving the tail
      */
-    public void setLength(double length) {
+    public void setLength(PathLength length) {
 	int delta;
+	this.length = new PathLength(length);
 	switch (getDirection()) {
 	    case CompassPoints.NORTH:
-		y2 = y1 - (int) length;
+		y2 = y1 - length.straightLength;
 		break;
 	    case CompassPoints.NORTHEAST:
-		delta = (int) Math.sqrt(length * length / 2);
-		x2 = x1 + delta;
-		y2 = y1 - delta;
+		x2 = x1 + length.diagLength;
+		y2 = y1 - length.diagLength;
 		break;
 	    case CompassPoints.EAST:
-		x2 = x1 + (int) length;
+		x2 = x1 + length.straightLength;
 		break;
 	    case CompassPoints.SOUTHEAST:
-		delta = (int) Math.sqrt(length * length / 2);
-		x2 = x1 + delta;
-		y2 = y1 + delta;
+		x2 = x1 + length.diagLength;
+		y2 = y1 + length.diagLength;
 		break;
 	    case CompassPoints.SOUTH:
-		y2 = y1 + (int) length;
+		y2 = y1 + length.straightLength;
 		break;
 	    case CompassPoints.SOUTHWEST:
-		delta = (int) Math.sqrt(length * length / 2);
-		x2 = x1 - delta;
-		y2 = y1 + delta;
+		x2 = x1 - length.diagLength;
+		y2 = y1 + length.diagLength;
 		break;
 	    case CompassPoints.WEST:
-		x2 = x1 - (int) length;
+		x2 = x1 - length.straightLength;
 		break;
 	    case CompassPoints.NORTHWEST:
-		delta = (int) Math.sqrt(length * length / 2);
-		x2 = x1 - delta;
-		y2 = y1 - delta;
+		x2 = x1 - length.diagLength;
+		y2 = y1 - length.diagLength;
 		break;
 	}
     }
 
     public void append(IntLine l) {
-	assert (l.getDirection() == getDirection()) &&
+	assert (l.getDirection() == getDirection() ||
+		(l.x1 == l.x2 && l.y1 == l.y2)) &&
 	    (l.x1 == x2 && l.y1 == y2);
 	x2 = l.x2;
 	y2 = l.y2;
+	length.add(l.length);
     }
 
     public void prepend(IntLine l) {
-	assert (l.getDirection() == getDirection()) &&
+	assert ((l.getDirection() == getDirection()) ||
+		(l.x1 == l.x2 && l.y1 == l.y2)) &&
 	    (l.x2 == x1 && l.y2 == y1);
 	x1 = l.x1;
 	y1 = l.y1;
+	length.add(l.length);
     }
 }

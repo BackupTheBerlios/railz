@@ -16,6 +16,8 @@
  */
 package jfreerails.move;
 
+import java.awt.Point;
+
 import jfreerails.world.common.*;
 import jfreerails.world.player.*;
 import jfreerails.world.top.*;
@@ -27,10 +29,13 @@ import jfreerails.world.train.*;
 public abstract class TrainMove implements Move {
     protected ObjectKey trainKey;
     protected TrainPath pathFromLastSync;
+    protected GameTime timeOfLastSync;
 
-    protected TrainMove(ObjectKey train, TrainPath pathFromLastSync) {
+    protected TrainMove(ObjectKey train, GameTime timeOfLastSync, TrainPath
+	    pathFromLastSync) {
 	trainKey = train;
 	this.pathFromLastSync = pathFromLastSync;
+	this.timeOfLastSync = timeOfLastSync;
     }
 
     public MoveStatus tryDoMove(World w, FreerailsPrincipal p) {
@@ -41,14 +46,20 @@ public abstract class TrainMove implements Move {
 	if (tm == null)
 	    return MoveStatus.moveFailed("The train does not exist.");
 
+	TrainMotionModel tmm = tm.getTrainMotionModel();
+
 	if ((pathFromLastSync == null &&
-		    tm.getTrainMotionModel().getPathTraversedSinceLastSync() ==
-		    null) ||
-		((pathFromLastSync != null) &&
-		 pathFromLastSync.equals(tm.getTrainMotionModel().
-		    getPathTraversedSinceLastSync())))
+		    tmm.getPathTraversedSinceLastSync() == null) ||
+		((pathFromLastSync != null) && pathFromLastSync.equals
+		 (tmm.getPathTraversedSinceLastSync()) &&
+		tmm.getTimeOfLastSync().equals(timeOfLastSync)))
 	    return MoveStatus.MOVE_OK;
 
+	System.err.println("Failing TrainMove: before = " + tmm + 
+		" after: pathSinceSync = " + pathFromLastSync + 
+		", timeOfSync = " + timeOfLastSync + " in " +
+		Thread.currentThread().getName()); 
+		
 	return MoveStatus.MOVE_FAILED;
     }
 
@@ -64,5 +75,22 @@ public abstract class TrainMove implements Move {
 	    return MoveStatus.MOVE_OK;
 
 	return MoveStatus.MOVE_FAILED;
+    }
+
+    public MoveStatus doMove(World w, FreerailsPrincipal p) {
+	GameTime now = (GameTime) w.get(ITEM.TIME, p);
+	Point head = new Point();
+	pathFromLastSync.getHead(head);
+	((TrainModel) w.get(KEY.TRAINS, trainKey.index, p))
+	    .getTrainMotionModel().sync(now, new
+		    TrainPath(new Point[]{head, head}));
+	return MoveStatus.MOVE_OK;
+    }
+
+    public MoveStatus undoMove(World w, FreerailsPrincipal p) {
+	((TrainModel) w.get(KEY.TRAINS, trainKey.index, p))
+	    .getTrainMotionModel().sync(timeOfLastSync,
+		    pathFromLastSync);
+	return MoveStatus.MOVE_OK;
     }
 }

@@ -17,6 +17,7 @@
 
 package jfreerails.move;
 
+import jfreerails.world.common.*;
 import jfreerails.world.train.*;
 import jfreerails.world.top.*;
 import jfreerails.world.player.*;
@@ -25,18 +26,92 @@ import jfreerails.world.player.*;
  * Issued to set a new destination for the train.
  * @author rtuck99@users.berlios.de
  */
-public class ChangeTrainDestinationMove extends ChangeTrainMove {
+public class ChangeTrainDestinationMove extends TrainMove {
+    private TrainModel oldTrain;
+    private TrainModel newTrain;
+    private TrainPath oldPathToDestination;
+
     public static ChangeTrainDestinationMove generateMove(ReadOnlyWorld w,
 	    ObjectKey train, ScheduleIterator newIterator) {
-	TrainModel tm = (TrainModel) w.get(train.key, train.index,
+	TrainModel oldTm = (TrainModel) w.get(train.key, train.index,
 		train.principal);
-	TrainModel newTm = new TrainModel(tm, newIterator);
-	return new ChangeTrainDestinationMove(train.index, tm, newTm,
-		train.principal);
+	TrainModel newTm = new TrainModel(oldTm, newIterator);
+	TrainMotionModel tmm = oldTm.getTrainMotionModel();
+	return new ChangeTrainDestinationMove(train, oldTm, newTm,
+		tmm);
     }
 
-    private ChangeTrainDestinationMove(int index, TrainModel before,
-	    TrainModel after, FreerailsPrincipal p) {
-	super(index, before, after, p);
+    private ChangeTrainDestinationMove(ObjectKey trainKey, TrainModel before,
+	    TrainModel after, TrainMotionModel tmm) {
+	super(trainKey, tmm.getTimeOfLastSync(),
+		tmm.getPathTraversedSinceLastSync());
+	oldTrain = before;
+	newTrain = after;
+	oldPathToDestination = tmm.getPathToDestination();
+    }
+    
+    public MoveStatus tryDoMove(World w, FreerailsPrincipal p) {
+	if (w.size(trainKey.key, trainKey.principal) <= trainKey.index) {
+	    return MoveStatus.moveFailed("Train does not exist");
+	}
+
+	TrainModel tm = (TrainModel) w.get(trainKey.key, trainKey.index,
+		trainKey.principal);
+	if ((tm == null && oldTrain != null) ||
+		(tm != null && !tm.equals(oldTrain))) {
+	    System.out.println(" old = " + oldTrain + " current = " + tm);
+	    return MoveStatus.moveFailed("Train has changed since last sync");
+	}
+	return MoveStatus.MOVE_OK;
+    }
+
+    public MoveStatus tryUndoMove(World w, FreerailsPrincipal p) {
+	if (w.size(trainKey.key, trainKey.principal) <= trainKey.index) {
+	    return MoveStatus.moveFailed("Train does not exist");
+	}
+
+	TrainModel tm = (TrainModel) w.get(trainKey.key, trainKey.index,
+		trainKey.principal);
+	if ((tm == null && newTrain != null) ||
+		(tm != null && !tm.equals(newTrain))) {
+	    return MoveStatus.moveFailed("Train has changed since last sync");
+	}
+	return MoveStatus.MOVE_OK;
+    }
+
+    public MoveStatus doMove(World w, FreerailsPrincipal p) {
+	MoveStatus ms = tryDoMove(w, p);
+	if (ms != MoveStatus.MOVE_OK)
+	    return ms;
+	
+	super.doMove(w, p);
+
+	TrainMotionModel oldModel = ((TrainModel) w.get(trainKey.key,
+		    trainKey.index, p)).getTrainMotionModel();
+	w.set(trainKey.key, trainKey.index, newTrain, p);
+	newTrain.setTrainMotionModel(oldModel);
+	oldModel.setPathToDestination(null);
+
+	return MoveStatus.MOVE_OK;
+    }
+
+    public MoveStatus undoMove(World w, FreerailsPrincipal p) {
+	MoveStatus ms = tryUndoMove(w, p);
+	if (ms != MoveStatus.MOVE_OK)
+	    return ms;
+
+	TrainMotionModel oldModel = ((TrainModel) w.get(trainKey.key,
+		    trainKey.index, p)).getTrainMotionModel();
+	w.set(trainKey.key, trainKey.index, oldTrain, p);
+	oldTrain.setTrainMotionModel(oldModel);
+	oldModel.setPathToDestination(oldPathToDestination);
+
+	super.undoMove(w, p);
+
+	return MoveStatus.MOVE_OK;
+    }
+
+    public FreerailsPrincipal getPrincipal() {
+	return trainKey.principal;
     }
 }

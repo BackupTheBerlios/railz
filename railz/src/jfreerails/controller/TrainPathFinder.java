@@ -85,6 +85,7 @@ public class TrainPathFinder {
      * 45deg A/C from target, rather than 180..)
      */
     public TrainPath findPath(Point start, Point dest) {
+	System.out.println("Finding path from " + start + " to " + dest);
 	/* "Stupidity" filter... */
 	if (start.equals(dest))
 	    return new TrainPath(new IntLine[]{new IntLine(start.x, start.y,
@@ -196,7 +197,7 @@ public class TrainPathFinder {
 	} while (startDirection != CompassPoints.NORTH);
 	/* all possible paths have been explored */
 	if (bestPath.isEmpty())
-	    return new TrainPath(new IntLine[0]);
+	    return null;
 
 	System.out.println("best path:");
 	dumpState(bestPath);

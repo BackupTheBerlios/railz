@@ -16,7 +16,8 @@
 
 package jfreerails.server;
 
-import jfreerails.util.SychronizedQueue;
+import java.util.LinkedList;
+
 import jfreerails.controller.SourcedMoveReceiver;
 import jfreerails.controller.ConnectionToServer;
 import jfreerails.move.Move;
@@ -29,8 +30,8 @@ import jfreerails.world.player.Player;
  * Implements a queue for moves which can be periodically emptied
  */
 class QueuedMoveReceiver implements SourcedMoveReceiver {
-    private SychronizedQueue moveQueue = new SychronizedQueue();
-    private SychronizedQueue principalQueue = new SychronizedQueue();
+    private LinkedList moveQueue = new LinkedList();
+    private LinkedList principalQueue = new LinkedList();
     private final AuthoritativeMoveExecuter moveExecuter;
     private final IdentityProvider identityProvider;
 
@@ -40,24 +41,35 @@ class QueuedMoveReceiver implements SourcedMoveReceiver {
     }
 
     public void processMove(Move move) {
-        moveQueue.write(move);
-        principalQueue.write(Player.NOBODY);
+	synchronized (moveQueue) {
+	    moveQueue.add(move);
+	    principalQueue.add(Player.NOBODY);
+	}
     }
 
     public void processMove(Move move, ConnectionToServer c) {
-        moveQueue.write(move);
+	synchronized (moveQueue) {
+	    moveQueue.add(move);
 
-        FreerailsPrincipal principal = identityProvider.getPrincipal(c);
-        principalQueue.write(principal);
+	    FreerailsPrincipal principal = identityProvider.getPrincipal(c);
+	    principalQueue.add(principal);
+	}
     }
 
     public void executeOutstandingMoves() {
-        FreerailsSerializable[] items = moveQueue.read();
-        FreerailsSerializable[] principals = principalQueue.read();
-
-        for (int i = 0; i < items.length; i++) {
-            Move move = (Move)items[i];
-            moveExecuter.processMove(move, (FreerailsPrincipal)principals[i]);
+	final LinkedList tmpMoves = new LinkedList();
+	final LinkedList tmpPrincipals = new LinkedList();
+	synchronized (moveQueue) {
+	    while (!moveQueue.isEmpty()) {
+		tmpMoves.add(moveQueue.removeFirst());
+		tmpPrincipals.add(principalQueue.removeFirst());
+	    }
+	}
+	
+	while (!tmpMoves.isEmpty()) {
+            Move move = (Move) tmpMoves.removeFirst();
+            moveExecuter.processMove(move,
+		    (FreerailsPrincipal)tmpPrincipals.removeFirst());
         }
     }
 

@@ -227,7 +227,7 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
                 if (ms != MoveStatus.MOVE_OK) {
                     if (debug) {
                         System.out.println("Queueing blocked move " +
-			       move);
+			       move + " - " + ms.toString());
                     }
 
                     /* move could not be committed because of

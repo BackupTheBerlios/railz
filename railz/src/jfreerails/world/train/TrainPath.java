@@ -37,44 +37,82 @@ public class TrainPath implements FreerailsSerializable {
      */
     private LinkedList segments = new LinkedList();
 
-    /* we store the path length in order to avoid changes in total length
-     * caused by rounding errors when summing calculated diagonals */
+    /**
+     * This is the intended length of the path that we attempt to maintain
+     * when moving the head or tail.
+     * we store the path length in order to avoid changes in total length
+     * caused by rounding errors when summing calculated diagonals
+     */
     private int length;
 
+    /**
+     * This is the length of the path.
+     */
+    private PathLength actualLength;
+
     public TrainPath (Point[] points) {
-	if (points.length < 2) {
-	    throw new IllegalArgumentException();
-	}
-	double length = 0;
+	actualLength = new PathLength();
 	for (int i = 1; i < points.length; i++) {
+	    if (points[i - 1].equals(points[i]) && i < points.length - 1)
+		continue;
 	    IntLine l = new IntLine(points[i - 1], points[i]);
 	    segments.add(l);
-	    length += l.getLength();
+	    actualLength.add(l.getLength());
 	}
-	this.length = (int) length;
+	if (segments.size() < 1) {
+	    throw new IllegalArgumentException();
+	}
+	this.length = (int) actualLength.getLength();
     }
 
     public TrainPath (IntLine[] lines) {
-	double l = 0;
-	if (lines.length != 0) {
-	    for (int i = 0; i < lines.length; i++) {
-		segments.add(lines[i]);
-		l += lines[i].getLength();
-	    }
+	actualLength = new PathLength();
+	for (int i = 0; i < lines.length; i++) {
+	    if (lines[i].getLength().getLength() == 0.0 &&
+		    i < lines.length - 1)
+		continue;
+	    segments.add(lines[i]);
+	    actualLength.add(lines[i].getLength());
 	}
-	length = (int) l;
+	if (segments.size() < 1)
+	    throw new IllegalArgumentException();
+
+	length = (int) actualLength.getLength();
+    }
+
+    /**
+     * Reverses the head and tail of the TrainPath
+     */
+    public void reverse() {
+	LinkedList newSegments = new LinkedList();
+	while (! segments.isEmpty()) {
+	    IntLine il = (IntLine) segments.removeFirst();
+	    newSegments.addFirst(new IntLine(il.x2, il.y2, il.x1, il.y1));
+	}
+	segments = newSegments;
     }
 
     public TrainPath(TrainPath p) {
 	length = p.length;
+	actualLength = new PathLength(p.actualLength);
 	ListIterator i = p.segments.listIterator(0);
 	while (i.hasNext()) {
 	    segments.add(new IntLine((IntLine) i.next()));
 	}
     }
 
+    /**
+     * @return the intended length of the train path
+     */
     public int getLength() {
 	return length;
+    }
+
+    /**
+     * @return the actual length of the train
+     */
+    public PathLength getActualLength() {
+	return actualLength;
     }
 
     public void getHead(Point p) {
@@ -98,15 +136,18 @@ public class TrainPath implements FreerailsSerializable {
     }
 
     /**
-     * Append the specified path to the tail
+     * Append the specified path to the tail. Actual total lengths is
+     * preserved and intended length is calculated.
      */
     public void append(TrainPath tp) {
+	System.out.println("appending " + tp + " to " + this);
 	IntLine tpHead = (IntLine) tp.segments.getFirst();
 	IntLine tail = (IntLine) segments.getLast();
-	if (tpHead.x2 != tail.x1 ||
-		tpHead.y2 != tail.y1)
+	if (tpHead.x1 != tail.x2 ||
+		tpHead.y1 != tail.y2)
 	    throw new IllegalArgumentException();
-	if (tpHead.getDirection() == tail.getDirection()) {
+	int headDir = tpHead.getDirection();
+	if (headDir == 0 || headDir == tail.getDirection()) {
 	    tail.append(tpHead);
 	} else {
 	    segments.add(tpHead);
@@ -115,7 +156,8 @@ public class TrainPath implements FreerailsSerializable {
 	while (i.hasNext()) {
 	    segments.add(i.next());
 	}
-	length += tp.getLength();
+	actualLength.add(tp.actualLength);
+	length = (int) actualLength.getLength();
     }
 
     /**
@@ -124,26 +166,42 @@ public class TrainPath implements FreerailsSerializable {
      * @return the portion which was removed
      */
     public TrainPath truncateTail (int newLength) {
+	final Point p = new Point ();
+	PathLength l = new PathLength();
+	if ((int) length == newLength) {
+	    getTail(p);
+	    return new TrainPath(new IntLine[]{new IntLine(p.x, p.y, p.x, p.y)});
+	}
 	ListIterator i = segments.listIterator(0);
-	double l = 0;
 	IntLine line = null;
 	LinkedList removedSegments = new LinkedList(); 
-	while (i.hasNext() && l < newLength) {
+	while (i.hasNext() && (int) l.getLength() <= newLength) {
 	    line = (IntLine) i.next();
-	    l += line.getLength();
+	    l.add(line.getLength());
 	}
 	while (i.hasNext()) {
 	    removedSegments.add(i.next());
 	    i.remove();
 	}
-	if (l > newLength) {
+	if ((int) l.getLength() > newLength) {
 	    int oldX2 = line.x2;
 	    int oldY2 = line.y2;
-	    line.setLength(line.getLength() - (l - newLength));
+	    PathLength segLength = new PathLength(line.getLength());
+	    l.subtract(segLength);
+	    System.out.println("newLength = " + newLength + "l" +
+		    l.getLength());
+	    segLength.setLength(newLength - l.getLength());
+	    l.add(segLength);
+	    line.setLength(segLength);
 	    removedSegments.addFirst(new IntLine(line.x2, line.y2, oldX2,
 		       oldY2));
 	}
 	length = newLength;
+	actualLength = l;
+	if (removedSegments.isEmpty()) {
+	    getTail(p);
+	    removedSegments.add(new IntLine(p.x, p.y, p.x, p.y));
+	}
 	return new TrainPath((IntLine[]) removedSegments.toArray(new
 		    IntLine[removedSegments.size()]));
     }
@@ -153,10 +211,12 @@ public class TrainPath implements FreerailsSerializable {
      * additionalPath is equal to the head of this path
      */
     public void prepend(TrainPath additionalPath) {
-	int l = additionalPath.length;
+	PathLength l = additionalPath.actualLength;
 	IntLine tail = (IntLine) additionalPath.segments.removeLast();
 	IntLine head = getFirstSegment();
-	if (tail.getDirection() == head.getDirection()) {
+	int tailDir = tail.getDirection();
+	if (tailDir == 0 || (tailDir == head.getDirection())) {
+	    System.out.println("prepending " + tail + " to " + head);
 	    head.prepend(tail);
 	} else {
 	    segments.addFirst(tail);
@@ -165,7 +225,8 @@ public class TrainPath implements FreerailsSerializable {
 	while (! additionalPath.segments.isEmpty()) {
 	    segments.addFirst(additionalPath.segments.removeLast());
 	}
-	length += l;
+	actualLength.add(l);
+	length = (int) actualLength.getLength();
     }
 
     /**
@@ -176,8 +237,10 @@ public class TrainPath implements FreerailsSerializable {
      * @return the portion of the tail removed to maintain constant length
      */
     public TrainPath moveHeadTo(TrainPath additionalPath) {
+	int l = length;
 	prepend(additionalPath);
-	return truncateTail(length);
+	System.out.println("Truncating to " + l);
+	return truncateTail(l);
     }
     
     /**
@@ -188,32 +251,32 @@ public class TrainPath implements FreerailsSerializable {
      * @return the position of the head prior to the path being advanced
      */
     public Point moveTailTo(TrainPath additionalPath) {
-	IntLine tail = (IntLine) additionalPath.segments.removeFirst();
-	IntLine head = getLastSegment();
-	Point oldHeadPoint = new Point (tail.x1, tail.y1);
-	if (tail.getDirection() == head.getDirection()) {
-	    head.append(tail);
+	IntLine additionalHead = (IntLine)
+	    additionalPath.segments.removeFirst();
+	IntLine tail = getLastSegment();
+	Point oldHeadPoint = new Point (additionalHead.x1, additionalHead.y1);
+	if (tail.getDirection() == additionalHead.getDirection()) {
+	    tail.append(additionalHead);
 	} else {
-	    segments.add(tail);
+	    segments.add(additionalHead);
 	}
+	actualLength.add(additionalHead.getLength());
 	/* add the rest of the path */
 	while (! additionalPath.segments.isEmpty()) {
-	    segments.add(additionalPath.segments.removeFirst());
+	    additionalHead = (IntLine) additionalPath.segments.removeFirst();
+	    segments.add(additionalHead);
+	    actualLength.add(additionalHead.getLength());
 	}
-	double l = length;
-	int i = segments.size();
-	do {
-	    l -= ((IntLine) segments.get(i)).getLength();
-	    i--;
-	} while (l > 0 && i >= 0);
-	while (i > 0) {
-	    /* remaining segments are surplus to requirements */
-	    segments.removeFirst();
-	    i--;
-	};	
-	if (l < 0) {
-	    IntLine seg = (IntLine) segments.getFirst();
-	    seg.setLengthFromTail(seg.getLength() + l);
+	IntLine head = null;
+	while (actualLength.getLength() > length) {
+	    head = (IntLine) segments.removeFirst();
+	    actualLength.subtract(head.getLength());
+	};
+	if (actualLength.getLength() < length) {
+	    PathLength headLength = new PathLength(head.getLength());
+	    headLength.setLength(length - actualLength.getLength());
+	    head.setLengthFromTail(headLength);
+	    segments.addFirst(head);
 	}
 	return oldHeadPoint;
     }
@@ -285,11 +348,15 @@ public class TrainPath implements FreerailsSerializable {
 		Byte oldNextDirection = (Byte) mapCoords.get(map);
 		if (oldNextDirection != null)
 		    nextDirection |= oldNextDirection.byteValue();
+		System.out.println("putting " + oldMapPoint + ", " +
+			CompassPoints.toString(direction));
 		mapCoords.put(new Point(oldMapPoint), new Byte(direction));
 	    };
 	}
 	/* add the last point */
 	mapCoords.put(new Point(map), new Byte(nextDirection));
+	System.out.println("putting " + map + ", " +
+		CompassPoints.toString(nextDirection));
     }
 
     /**
@@ -300,18 +367,25 @@ public class TrainPath implements FreerailsSerializable {
      * @param distance distance of the locus from the head of the TrainPath
      */
     public byte getDirectionAtDistance(Point p, int distance) {
-	double d = 0.0;
+	PathLength d = new PathLength();
 	ListIterator li = segments.listIterator(0);
 	while (li.hasNext()) {
 	    IntLine l = (IntLine) li.next();
-	    double segLength = l.getLength();
-	    if (d + segLength >= distance) {
+	    d.add(l.getLength());
+	    if (d.getLength() >= distance) {
+		PathLength pl = new PathLength(l.getLength());
+		System.out.println("setting length to " +
+			(l.getLength().getLength() -
+			    (d.getLength() - distance)));
+		pl.setLength(l.getLength().getLength() - (d.getLength() -
+			    distance));
+		IntLine il = new IntLine(l);
+		il.setLength(pl);
 		// locus is within this segment.
-		p.x = l.x1 + (int) ((l.x2 - l.x1) * (distance - d) / segLength);
-		p.y = l.y1 + (int) ((l.y2 - l.y1) * (distance - d) / segLength);
+		p.x = il.x2;
+		p.y = il.y2;
 		return l.getDirection();
 	    }
-	    d += segLength;
 	}
 	// distance was bigger than length of the TrainPath
 	throw new IllegalArgumentException();
@@ -325,6 +399,8 @@ public class TrainPath implements FreerailsSerializable {
 		s += ", ";
 	    s += ((IntLine) i.next()).toString();
 	}
+	s+= ", length = " + length;
+	s += ", actual = " + actualLength;
 	return s;
     }
 }

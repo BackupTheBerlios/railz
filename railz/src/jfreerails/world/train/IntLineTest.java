@@ -31,6 +31,6 @@ public class IntLineTest extends TestCase {
 
     public void testGetLength() {
         IntLine line = new IntLine(0, 0, 100, 0);
-        assertEquals(100, line.getLength(), 0.1);
+        assertEquals(100, line.getLength().getLength(), 0.1);
     }
 }
