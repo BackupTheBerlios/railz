@@ -5,14 +5,13 @@
 */
 package jfreerails.world.terrain;
 
-
 /**
-*        This class represents a type of terrain
-*
-*@author     Luke Lindsay
-*     16 August 2001
-*@version    1.0
-*/
+ * This class represents a type of terrain
+ *
+ * @author     Luke Lindsay
+ *     16 August 2001
+ * @version    1.0
+ */
 final public class TileTypeImpl implements TerrainType {
     private final int rgb;
     private final String terrainCategory;

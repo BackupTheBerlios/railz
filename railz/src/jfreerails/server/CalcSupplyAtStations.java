@@ -4,8 +4,6 @@
  *
  * This class loops through all of the known stations and recalculates
  * the cargoes that they supply.
- *
- * FIXME This class should really be in the jfreerails.server package.
  */
 package jfreerails.server;
 
@@ -66,7 +64,7 @@ public class CalcSupplyAtStations implements WorldListListener {
      * @param station A StationModel ojbect to be processed
      *
      */
-    public StationModel calculations(StationModel station) {
+    private StationModel calculations(StationModel station) {
         int x = station.getStationX();
         int y = station.getStationY();
 
@@ -77,7 +75,7 @@ public class CalcSupplyAtStations implements WorldListListener {
 
         //calculate the supply rates and put information into a vector
         supplyRate = new CalcCargoSupplyRateAtStation(w, x, y);
-        supply = supplyRate.ScanAdjacentTiles();
+        supply = supplyRate.scanAdjacentTiles();
 
         //grab the supply rates from the vector
         for (int i = 0; i < supply.size(); i++) {

@@ -78,9 +78,9 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
         addStationJButton = new javax.swing.JButton();
         priorityOrdersJButton = new javax.swing.JButton();
         selectStationJPanel1 = new jfreerails.client.view.SelectStationJPanel();
-        trainOrderJPanel1 = new jfreerails.client.view.TrainOrderJPanel();
         selectStationJPopupMenu = new javax.swing.JPopupMenu();
         this.selectStationJPopupMenu.add(selectStationJPanel1);
+        trainOrderJPanel1 = new jfreerails.client.view.TrainOrderJPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         orders = new javax.swing.JList();
         orders.addMouseListener(ordersPopupAdapter);

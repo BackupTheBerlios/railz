@@ -47,8 +47,6 @@ public class TrainOrderJPanel extends javax.swing.JPanel implements View, ListCe
 
         setLayout(new java.awt.GridBagLayout());
 
-        setMinimumSize(new java.awt.Dimension(160, 28));
-        setPreferredSize(new java.awt.Dimension(160, 28));
         gotoIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jfreerails/client/graphics/selected_arrow.png")));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

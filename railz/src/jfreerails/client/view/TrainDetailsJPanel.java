@@ -5,6 +5,9 @@
  */
 
 package jfreerails.client.view;
+
+import javax.swing.border.TitledBorder;
+
 import jfreerails.world.cargo.CargoBundle;
 import jfreerails.world.cargo.CargoType;
 import jfreerails.world.top.KEY;
@@ -41,25 +44,11 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements View, Worl
     private void initComponents() {//GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
-        jLabel1 = new javax.swing.JLabel();
         trainViewJPanel1 = new jfreerails.client.view.TrainViewJPanel();
 
         setLayout(new java.awt.GridBagLayout());
 
-        setBorder(new javax.swing.border.TitledBorder("Current Details"));
-        jLabel1.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel1.setText("<html><head></head><body>Trains X: 20 passengers, 15 tons of mfg goods, 12 sacks of mail, and 7 tons of livestock.</body></html>");
-        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        jLabel1.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        add(jLabel1, gridBagConstraints);
-
+        setBorder(new javax.swing.border.TitledBorder(""));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
@@ -88,28 +77,10 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements View, Worl
 	    CargoBundle cb = (CargoBundle)w.get(KEY.CARGO_BUNDLES,
 		    train.getCargoBundleNumber());
 	    s="Train #"+trainNumber+": ";
-	    int numberOfTypesInBundle = 0;
-	    for (int i = 0 ; i < w.size(KEY.CARGO_TYPES) ; i ++){
-		int amount = cb.getAmount(i);
-		if(0 != amount){
-		    CargoType ct = (CargoType)w.get(KEY.CARGO_TYPES, i);
-		    String cargoTypeName = ct.getDisplayName();
-		    if(0!=numberOfTypesInBundle){
-			s+="; ";
-		    }
-		    numberOfTypesInBundle++;
-
-		    s+= cargoTypeName+" ("+amount+")";
-		}
-	    }
-	    if(0 == numberOfTypesInBundle){
-		s+="no cargo";
-	    }
-	    s+=".";
 	} else {
 	    s = "No trains to display";
 	}
-        this.jLabel1.setText(s);
+	((TitledBorder) getBorder()).setTitle(s);
     }
         
 	public void listUpdated(KEY key, int index) {
@@ -133,7 +104,6 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements View, Worl
 	}
                 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private jfreerails.client.view.TrainViewJPanel trainViewJPanel1;
     // End of variables declaration//GEN-END:variables
     

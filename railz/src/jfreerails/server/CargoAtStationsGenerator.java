@@ -29,11 +29,6 @@ import jfreerails.world.top.World;
 public class CargoAtStationsGenerator implements FreerailsServerSerializable {
     private final MoveReceiver moveReceiver;
 
-    /**
-     * arbitrary multiplier from supply-rate into "wagon capacity units"
-     */
-    private static final int UNITS_OF_CARGO_PER_WAGON = 40;
-
     public CargoAtStationsGenerator(MoveReceiver moveExecuter) {
         moveReceiver = moveExecuter;
     }
@@ -70,8 +65,7 @@ public class CargoAtStationsGenerator implements FreerailsServerSerializable {
                     CargoBatch cb = new CargoBatch(i, station.x, station.y, 0,
                             stationNumber);
                     int amountAlready = after.getAmount(cb);
-		    after.setAmount(cb, (amountSupplied *
-				UNITS_OF_CARGO_PER_WAGON) + amountAlready);
+		    after.setAmount(cb, (amountSupplied) + amountAlready);
                 }
             }
 

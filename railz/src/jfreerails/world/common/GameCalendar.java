@@ -21,7 +21,8 @@ final public class GameCalendar implements FreerailsSerializable {
         return startYear + (ticks / ticksPerYear);
     }
 
-    /** Returns the time of day as a string, note that a year is made
+    /**
+     * Returns the time of day as a string, note that a year is made
      * up of a representative day, so 1st June is equilavent to 12 noon.
      */
     public String getTimeOfDay(int i) {
@@ -137,5 +138,9 @@ final public class GameCalendar implements FreerailsSerializable {
         } else {
             return false;
         }
+    }
+
+    public int getTicksPerYear() {
+	return ticksPerYear;
     }
 }

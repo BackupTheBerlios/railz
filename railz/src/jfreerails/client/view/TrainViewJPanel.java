@@ -24,6 +24,8 @@ import jfreerails.world.train.TrainModel;
 import jfreerails.world.train.TrainOrdersModel;
 import jfreerails.world.train.WagonType;
 import jfreerails.world.cargo.CargoBundle;
+import jfreerails.world.cargo.CargoType;
+import jfreerails.world.player.Player;
 
 /**
  *  This JPanel displays an engine and a number of wagons.
@@ -95,9 +97,24 @@ public class TrainViewJPanel extends JPanel implements View, ListCellRenderer, W
 
 	    //evaluate amount of each cargo on the train
 	    int cargoAmounts[] = new int [w.size(KEY.CARGO_TYPES)];
+	    String cargoText = "Empty train";
+	    int totalAmount = 0;
 	    for (int i = 0; i < cargoAmounts.length; i++) {
 		cargoAmounts[i] = cargoBundle.getAmount(i);
+		if (cargoAmounts[i] > 0) {
+		    CargoType cargoType = (CargoType) w.get(KEY.CARGO_TYPES, i,
+			    Player.AUTHORITATIVE);
+		    String cargoTypeName = cargoType.getDisplayName();
+		    if (totalAmount > 0) {
+			cargoText += ", ";
+		    } else {
+			cargoText = "";
+		    }
+		    cargoText += cargoTypeName + " (" + cargoAmounts[i] + ")";
+		    totalAmount += cargoAmounts[i];
+		}
 	    }
+	    setToolTipText(cargoText);
         
 	    //Set up the array of images.
 	    images = new Image[1 + train.getNumberOfWagons()];
@@ -162,6 +179,7 @@ public class TrainViewJPanel extends JPanel implements View, ListCellRenderer, W
         }
         this.trainWidth = width;
         this.setPreferredSize(new Dimension(width, height));
+	setMinimumSize(new Dimension(Math.max(200, width), height));
     }
     
     public void setup(
