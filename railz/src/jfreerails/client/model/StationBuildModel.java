@@ -82,7 +82,8 @@ public class StationBuildModel {
 		    trackPieceRendererList.getTrackPieceView(i);
 		StationChooseAction action = new StationChooseAction(i);
 		String trackType = trackRule.getTypeName();
-		action.putValue(Action.SHORT_DESCRIPTION, trackType);
+		action.putValue(Action.SHORT_DESCRIPTION, trackType + " @ $" +
+			trackRule.getPrice());
 		action.putValue(Action.NAME, "Build " + trackType);
 		action.putValue(Action.SMALL_ICON, new
 			ImageIcon(renderer.getTrackPieceIcon(trackTemplate)));
