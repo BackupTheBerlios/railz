@@ -131,7 +131,8 @@ public class SelectStationJPanel extends javax.swing.JPanel {
             int lastSelectedStationId = this.selectedStationID;
             OneTileMoveVector v = OneTileMoveVector.getInstanceMappedToKey(evt.getKeyCode());
             //now find nearest station in direction of the vector.
-            NearestStationFinder stationFinder = new NearestStationFinder(this.world);
+	    NearestStationFinder stationFinder = new
+		NearestStationFinder(modelRoot);
             int station = stationFinder.findNearestStationInDirection(this.selectedStationID, v);
             
             if(selectedStationID != station && station != NearestStationFinder.NOT_FOUND){
@@ -160,7 +161,8 @@ public class SelectStationJPanel extends javax.swing.JPanel {
         double y = evt.getY();
         y = y /scale +  visableMapTiles.y;
         
-        NearestStationFinder stationFinder = new NearestStationFinder(this.world);
+	NearestStationFinder stationFinder = new
+	    NearestStationFinder(modelRoot);
         int station = stationFinder.findNearestStation((int)x, (int)y);
         
         if(selectedStationID != station && station != NearestStationFinder.NOT_FOUND){
@@ -181,7 +183,7 @@ public class SelectStationJPanel extends javax.swing.JPanel {
 		modelRoot.getPlayerPrincipal());
         Schedule schedule = (Schedule)world.get(KEY.TRAIN_SCHEDULES, train.getScheduleID());
         TrainOrdersModel order = schedule.getOrder(selectedOrderNumber);
-        this.selectedStationID = order.getStationNumber();
+        this.selectedStationID = order.getStationNumber().index;
         
         //Set the text on the title JLabel.
         this.jLabel1.setText("Train #"+String.valueOf(trainID+1)+" Stop "+String.valueOf(selectedOrderNumber+1));
@@ -190,7 +192,10 @@ public class SelectStationJPanel extends javax.swing.JPanel {
         cargoWaitingAndDemandedJPanel1.display(selectedStationID);
     }
     
-    /** Sets the zoom based on the size of the component and the positions of the stations. */
+    /**
+     * Sets the zoom based on the size of the component and the positions of
+     * the stations.
+     */
     private void setZoom(){
         mapRect = this.getBounds();
         Rectangle r = cargoWaitingAndDemandedJPanel1.getBounds();
@@ -201,8 +206,8 @@ public class SelectStationJPanel extends javax.swing.JPanel {
         int bottomRightX = Integer.MIN_VALUE;
         int bottomRightY = Integer.MIN_VALUE;
         
-        
-        NonNullElements it = new NonNullElements(KEY.STATIONS, world);
+	NonNullElements it = new NonNullElements(KEY.STATIONS, world,
+		modelRoot.getPlayerPrincipal());
         while(it.next()){
             StationModel station = (StationModel)it.getElement();
             if(station.x < topLeftX) topLeftX = station.x;
@@ -235,8 +240,10 @@ public class SelectStationJPanel extends javax.swing.JPanel {
         
         super.paintComponent(g);
         
+	/* TODO show other players stations if they allow use by this player */
         Graphics2D g2 = (Graphics2D)g;
-        NonNullElements it = new NonNullElements(KEY.STATIONS, world);
+	NonNullElements it = new NonNullElements(KEY.STATIONS, world,
+		modelRoot.getPlayerPrincipal());
         
         //Draw track
         g2.setColor(Color.BLACK);
@@ -260,14 +267,18 @@ public class SelectStationJPanel extends javax.swing.JPanel {
         //Draw stations
         while(it.next()){
             
-                /*
-                 * (1)	The selected station is drawn green.
-                 * (2)	Non-selected stations which are on the schedule are drawn blue.
-                 * (3)	Other stations are drawn white.
-                 * (4)	If, for instance,  station X is the first stop on the schedule, "1" is drawn above the station.
-                 * (5)	If, for instance,  station X is the first and third stop on the schedule, "1, 3" is drawn above the station.
-                 * (6)	The stop numbers drawn above the stations are drawn using the same colour as used to draw the station.
-                 */
+	    /*
+	     * (1)	The selected station is drawn green.
+	     * (2)	Non-selected stations which are on the schedule are
+	     * drawn blue.
+	     * (3)	Other stations are drawn white.
+	     * (4)	If, for instance,  station X is the first stop on the
+	     * schedule, "1" is drawn above the station.
+	     * (5)	If, for instance,  station X is the first and third
+	     * stop on the schedule, "1, 3" is drawn above the station.
+	     * (6)	The stop numbers drawn above the stations are drawn
+	     * using the same colour as used to draw the station.
+	     */
             StationModel station = (StationModel)it.getElement();
             double x = station.x - visableMapTiles.x;
             x = x * scale;
@@ -279,7 +290,7 @@ public class SelectStationJPanel extends javax.swing.JPanel {
             String stopNumbersString ="";
             boolean stationIsOnSchedule = false;
             for(int orderNumber = 0; orderNumber < schedule.getNumOrders(); orderNumber++){
-                int stationID = orderNumber == this.selectedOrderNumber ? this.selectedStationID : schedule.getOrder(orderNumber).getStationNumber();
+                int stationID = orderNumber == this.selectedOrderNumber ? this.selectedStationID : schedule.getOrder(orderNumber).getStationNumber().index;
                 if(it.getIndex() == stationID){
                     if(stationIsOnSchedule){
                         stopNumbersString = stopNumbersString+", "+String.valueOf(orderNumber+1);
@@ -306,7 +317,7 @@ public class SelectStationJPanel extends javax.swing.JPanel {
     public void setup(ModelRoot mr, ActionListener submitButtonCallBack) {
 	modelRoot = mr;
         this.world = mr.getWorld();
-        cargoWaitingAndDemandedJPanel1.setup(world, mr.getViewLists(),  null);
+        cargoWaitingAndDemandedJPanel1.setup(modelRoot, null);
         this.submitButtonCallBack = submitButtonCallBack;
     }
     

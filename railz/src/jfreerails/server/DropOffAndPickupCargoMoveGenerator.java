@@ -21,7 +21,7 @@ import jfreerails.world.player.FreerailsPrincipal;
  * This class generates moves that transfer cargo between train and the
  * stations it stops at - it also handles cargo converions that occur when
  * cargo is dropped off.
- *
+ * 
  * @author Scott Bennett
  * Date Created: 4 June 2003
  *
@@ -32,6 +32,7 @@ class DropOffAndPickupCargoMoveGenerator {
     private int trainId;
     private int trainBundleId;
     private FreerailsPrincipal trainPrincipal;
+    private FreerailsPrincipal stationPrincipal;
     private int stationId;
     private int stationBundleId;
     private CargoBundle stationAfter;
@@ -45,13 +46,16 @@ class DropOffAndPickupCargoMoveGenerator {
      * @param trainNo ID of the train
      * @param stationNo ID of the station
      * @param world The world object
-     * @param trainPlayer Player which owns the train
+     * @param tp Player which owns the train
+     * @param sp Player which owns the station
      */
     public DropOffAndPickupCargoMoveGenerator(FreerailsPrincipal tp,
-	    int trainNo, int stationNo, ReadOnlyWorld world) {
+	    int trainNo, FreerailsPrincipal sp, int stationNo, ReadOnlyWorld
+	    world) {
         trainId = trainNo;
         stationId = stationNo;
 	trainPrincipal = tp;
+	stationPrincipal = sp;
         w = world;
 
         train = (TrainModel)w.get(KEY.TRAINS, trainId, trainPrincipal);
@@ -62,11 +66,15 @@ class DropOffAndPickupCargoMoveGenerator {
         processStationBundle(); //ie. load train / pickup cargo
     }
 
-    public Move generateMove() {
-        //The methods that calculate the before and after bundles could be called from here.
-        ChangeCargoBundleMove changeAtStation = new ChangeCargoBundleMove(stationBefore,
-                stationAfter, stationBundleId);
-        ChangeCargoBundleMove changeOnTrain = new ChangeCargoBundleMove(trainBefore,
+    Move generateMove() {
+	// The methods that calculate the before and after bundles could be
+	// called from here.
+	ChangeCargoBundleMove changeAtStation = new
+	    ChangeCargoBundleMove(stationBefore, stationAfter,
+		    stationBundleId);
+
+	ChangeCargoBundleMove changeOnTrain = new
+	    ChangeCargoBundleMove(trainBefore,
                 trainAfter, trainBundleId);
 
         return TransferCargoAtStationMove.generateMove(changeAtStation,
@@ -78,7 +86,8 @@ class DropOffAndPickupCargoMoveGenerator {
 	    .getCargoBundleNumber();
         trainBefore = ((CargoBundle)w.get(KEY.CARGO_BUNDLES, trainBundleId)).getCopy();
         trainAfter = ((CargoBundle)w.get(KEY.CARGO_BUNDLES, trainBundleId)).getCopy();
-        stationBundleId = ((StationModel)w.get(KEY.STATIONS, stationId)).getCargoBundleNumber();
+	stationBundleId = ((StationModel)w.get(KEY.STATIONS, stationId,
+		    stationPrincipal)).getCargoBundleNumber();
         stationAfter = ((CargoBundle)w.get(KEY.CARGO_BUNDLES, stationBundleId)).getCopy();
         stationBefore = ((CargoBundle)w.get(KEY.CARGO_BUNDLES, stationBundleId)).getCopy();
     }
@@ -86,7 +95,8 @@ class DropOffAndPickupCargoMoveGenerator {
     private void processTrainBundle() {
         Iterator batches = trainAfter.cargoBatchIterator();
 
-        StationModel station = (StationModel)w.get(KEY.STATIONS, stationId);
+	StationModel station = (StationModel)w.get(KEY.STATIONS, stationId,
+		stationPrincipal);
 
         CargoBundle cargoDroppedOff = new CargoBundleImpl();
 
@@ -118,7 +128,8 @@ class DropOffAndPickupCargoMoveGenerator {
         }
 
         payment = ProcessCargoAtStationMoveGenerator.processCargo(w,
-                cargoDroppedOff, this.stationId);
+		cargoDroppedOff, trainPrincipal, this.stationId,
+		stationPrincipal);
 
         //Unload the cargo that there isn't space for on the train regardless of whether the station
         // demands it.

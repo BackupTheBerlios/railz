@@ -141,7 +141,8 @@ public class DialogueBoxController {
         selectWagons.setup(modelRoot, new ActionListener() {
             
             public void actionPerformed(ActionEvent arg0) {
-                WorldIterator wi = new NonNullElements(KEY.STATIONS, finalROW);
+		WorldIterator wi = new NonNullElements(KEY.STATIONS, finalROW,
+		    modelRoot.getPlayerPrincipal());
                 if (wi.next()) {
                     
                     StationModel station = (StationModel) wi.getElement();
@@ -152,11 +153,9 @@ public class DialogueBoxController {
                     ProductionAtEngineShop after =
                     new ProductionAtEngineShop(engineType, wagonTypes);
                     
-                    Move m =
-                    new ChangeProductionAtEngineShopMove(
-                    before,
-                    after,
-                    wi.getIndex());
+                    Move m = new ChangeProductionAtEngineShopMove
+		    (before, after, wi.getIndex(),
+		     modelRoot.getPlayerPrincipal());
                     moveReceiver.processMove(m);
                 }
                 closeContent();
@@ -193,7 +192,8 @@ public class DialogueBoxController {
     }
     
     public void showSelectEngine() {
-        WorldIterator wi = new NonNullElements(KEY.STATIONS, world);
+	WorldIterator wi = new NonNullElements(KEY.STATIONS, world,
+		modelRoot.getPlayerPrincipal());
         if (!wi.next()) {
             modelRoot.getUserMessageLogger().println("Can't" +
             " build train since there are no stations");
@@ -329,9 +329,11 @@ public class DialogueBoxController {
     public void showStationOrTerrainInfo(int x, int y) {
         FreerailsTile tile = world.getTile(x, y);
         if (tile.getTrackRule().isStation()) {
-            for (int i = 0; i < world.size(KEY.STATIONS); i++) {
+	    for (int i = 0; i < world.size(KEY.STATIONS,
+			modelRoot.getPlayerPrincipal()); i++) {
                 StationModel station =
-                (StationModel) world.get(KEY.STATIONS, i);
+		(StationModel) world.get(KEY.STATIONS, i,
+					 modelRoot.getPlayerPrincipal());
                 if (null != station && station.x == x && station.y == y) {
                     this.showStationInfo(i);
                     return;

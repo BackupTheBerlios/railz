@@ -73,7 +73,7 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
         String stationName = "Station 1";
         StationModel station = new StationModel(x, y, stationName,
                 w.size(KEY.CARGO_TYPES), stationCargoBundleId);
-        w.add(KEY.STATIONS, station);
+        w.add(KEY.STATIONS, station, testPlayer.getPrincipal());
 
         //Set up train
         int trainCargoBundleId = w.add(KEY.CARGO_BUNDLES, new CargoBundleImpl());
@@ -95,7 +95,8 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
         cargoBundleWith2CarloadsOfCargo0.setAmount(cargoType0FromStation2, 80);
 
         //Get the station from the world object.
-        StationModel station = (StationModel)w.get(KEY.STATIONS, 0);
+	StationModel station = (StationModel)w.get(KEY.STATIONS, 0,
+		testPlayer.getPrincipal());
 
         assertEquals("There shouldn't be any cargo at the station yet",
             emptyCargoBundle, getCargoAtStation());
@@ -155,7 +156,8 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
         getCargoAtStation().setAmount(this.cargoType0FromStation0, 110);
 
         //Check that station does not demand cargo type 0.
-        StationModel station = (StationModel)w.get(KEY.STATIONS, 0);
+	StationModel station = (StationModel)w.get(KEY.STATIONS, 0,
+		testPlayer.getPrincipal());
         assertFalse(station.getDemand().isCargoDemanded(0));
 
         //Stop at station.
@@ -180,12 +182,13 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
      */
     public void testDropOffCargo() {
         //Set the station to demand cargo type 0.
-        StationModel station = (StationModel)w.get(KEY.STATIONS, 0);
+	StationModel station = (StationModel)w.get(KEY.STATIONS, 0,
+		testPlayer.getPrincipal());
         DemandAtStation demand = new DemandAtStation(new boolean[] {
                     true, false, false, false
                 });
         station = new StationModel(station, demand);
-        w.set(KEY.STATIONS, 0, station);
+        w.set(KEY.STATIONS, 0, station, testPlayer.getPrincipal());
 
         //Check that the station demadns what we think it does.		
         assertTrue("The station should demand cargo type 0.",
@@ -272,12 +275,13 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
         getCargoAtStation().setAmount(this.cargoType0FromStation0, 200);
 
         //Set station to demand cargo 0.
-        StationModel station = (StationModel)w.get(KEY.STATIONS, 0);
+	StationModel station = (StationModel)w.get(KEY.STATIONS, 0,
+		testPlayer.getPrincipal());
         DemandAtStation demand = new DemandAtStation(new boolean[] {
                     true, false, false, false
                 });
         station = new StationModel(station, demand);
-        w.set(KEY.STATIONS, 0, station);
+        w.set(KEY.STATIONS, 0, station, testPlayer.getPrincipal());
 
         assertTrue(station.getDemand().isCargoDemanded(0));
         stopAtStation();
@@ -308,7 +312,7 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
     private void stopAtStation() {
         DropOffAndPickupCargoMoveGenerator moveGenerator = new
 	    DropOffAndPickupCargoMoveGenerator(testPlayer.getPrincipal(), 0,
-		    0, w);
+		    testPlayer.getPrincipal(), 0, w);
         Move m = moveGenerator.generateMove();
         MoveStatus ms = m.doMove(w, testPlayer.getPrincipal());
         assertTrue(ms.isOk());
@@ -316,7 +320,8 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
 
     /** Retrieves the cargo bundle that is waiting at the station from the world object.*/
     private CargoBundle getCargoAtStation() {
-        StationModel station = (StationModel)w.get(KEY.STATIONS, 0);
+	StationModel station = (StationModel)w.get(KEY.STATIONS, 0,
+		testPlayer.getPrincipal());
         CargoBundle cargoAtStation = (CargoBundle)w.get(KEY.CARGO_BUNDLES,
                 station.getCargoBundleNumber());
 

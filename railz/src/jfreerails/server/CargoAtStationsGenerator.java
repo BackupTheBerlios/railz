@@ -12,6 +12,8 @@ import jfreerails.move.Move;
 import jfreerails.world.cargo.CargoBatch;
 import jfreerails.world.cargo.CargoBundle;
 import jfreerails.world.cargo.CargoType;
+import jfreerails.world.player.FreerailsPrincipal;
+import jfreerails.world.player.Player;
 import jfreerails.world.station.StationModel;
 import jfreerails.world.station.SupplyAtStation;
 import jfreerails.world.top.KEY;
@@ -34,44 +36,53 @@ public class CargoAtStationsGenerator implements FreerailsServerSerializable {
     }
 
     public void update(World w) {
-        NonNullElements nonNullStations = new NonNullElements(KEY.STATIONS, w);
+	NonNullElements players = new NonNullElements(KEY.PLAYERS, w,
+		Player.AUTHORITATIVE);
+	while (players.next()) {
+	    FreerailsPrincipal p = (FreerailsPrincipal) ((Player)
+		    players.getElement()).getPrincipal();
+	    NonNullElements nonNullStations = new
+		NonNullElements(KEY.STATIONS, w, p);
 
-        while (nonNullStations.next()) {
-            StationModel station = (StationModel)nonNullStations.getElement();
-            SupplyAtStation supply = station.getSupply();
-            CargoBundle cargoBundle = (CargoBundle)w.get(KEY.CARGO_BUNDLES,
-                    station.getCargoBundleNumber());
-            CargoBundle before = cargoBundle.getCopy();
-            CargoBundle after = cargoBundle.getCopy();
-            int stationNumber = nonNullStations.getIndex();
+	    while (nonNullStations.next()) {
+		StationModel station =
+		    (StationModel)nonNullStations.getElement();
+		SupplyAtStation supply = station.getSupply();
+		CargoBundle cargoBundle = (CargoBundle)w.get(KEY.CARGO_BUNDLES,
+			station.getCargoBundleNumber());
+		CargoBundle before = cargoBundle.getCopy();
+		CargoBundle after = cargoBundle.getCopy();
+		int stationNumber = nonNullStations.getIndex();
 
-            /* Let the cargo have a half life of one year, so half the existing cargo wastes away.*/
-            Iterator it = after.cargoBatchIterator();
+		/* Let the cargo have a half life of one year, so half the
+		 * existing cargo wastes away.*/
+		Iterator it = after.cargoBatchIterator();
 
-            while (it.hasNext()) {
-                CargoBatch cb = (CargoBatch)it.next();
-                int amount = after.getAmount(cb);
+		while (it.hasNext()) {
+		    CargoBatch cb = (CargoBatch)it.next();
+		    int amount = after.getAmount(cb);
 
-                if (amount > 0) {
-                    after.setAmount(cb, amount / 2);
-                }
-            }
+		    if (amount > 0) {
+			after.setAmount(cb, amount / 2);
+		    }
+		}
 
-            for (int i = 0; i < w.size(KEY.CARGO_TYPES); i++) {
-                int amountSupplied = supply.getSupply(i);
-		CargoType cargoType = (CargoType) w.get(KEY.CARGO_TYPES, i);
+		for (int i = 0; i < w.size(KEY.CARGO_TYPES); i++) {
+		    int amountSupplied = supply.getSupply(i);
+		    CargoType cargoType = (CargoType) w.get(KEY.CARGO_TYPES, i);
 
-                if (amountSupplied > 0) {
-                    CargoBatch cb = new CargoBatch(i, station.x, station.y, 0,
-                            stationNumber);
-                    int amountAlready = after.getAmount(cb);
-		    after.setAmount(cb, (amountSupplied) + amountAlready);
-                }
-            }
+		    if (amountSupplied > 0) {
+			CargoBatch cb = new CargoBatch(i, station.x,
+				station.y, 0, stationNumber);
+			int amountAlready = after.getAmount(cb);
+			after.setAmount(cb, (amountSupplied) + amountAlready);
+		    }
+		}
 
-            Move m = new ChangeCargoBundleMove(before, after,
-                    station.getCargoBundleNumber());
-            moveReceiver.processMove(m);
+		Move m = new ChangeCargoBundleMove(before, after,
+			station.getCargoBundleNumber());
+		moveReceiver.processMove(m);
+	    }
         }
     }
 }

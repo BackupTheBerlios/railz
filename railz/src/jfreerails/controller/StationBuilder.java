@@ -27,10 +27,12 @@ public class StationBuilder {
     private ReadOnlyWorld w;
     private int ruleNumber;
     private TrackMoveTransactionsGenerator transactionsGenerator;
+    private FreerailsPrincipal stationOwner;
 
     public StationBuilder(UntriedMoveReceiver moveReceiver,
         ReadOnlyWorld world, FreerailsPrincipal p) {
         this.moveReceiver = moveReceiver;
+	stationOwner = p;
         w = world;
 
         TrackRule trackRule;
@@ -90,7 +92,7 @@ public class StationBuilder {
 
                 //check the terrain to see if we can build a station on it...
                 Move m = AddStationMove.generateMove(w, stationName, p,
-                        upgradeTrackMove);
+                        upgradeTrackMove, stationOwner);
 
                 this.moveReceiver.processMove(transactionsGenerator.addTransactions(
                         m));

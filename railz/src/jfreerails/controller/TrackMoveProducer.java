@@ -50,7 +50,7 @@ final public class TrackMoveProducer {
 		break;
 	    case REMOVE_TRACK:
 		move = ChangeTrackPieceCompositeMove.generateRemoveTrackMove
-		    (from, trackVector, w);
+		    (from, trackVector, w, principal);
 		break;
 	    case IGNORE_TRACK:
 		return MoveStatus.MOVE_OK;

@@ -22,9 +22,15 @@ import jfreerails.world.player.Player;
  *
  */
 public class ProcessCargoAtStationMoveGenerator {
+    /**
+     * @param tp owner of the train
+     * @param sp owner of the station
+     */
     public static AddTransactionMove processCargo(ReadOnlyWorld w,
-        CargoBundle cargoBundle, int stationID) {
-        StationModel thisStation = (StationModel)w.get(KEY.STATIONS, stationID);
+	CargoBundle cargoBundle, FreerailsPrincipal tp, int stationID,
+	FreerailsPrincipal sp) {
+	StationModel thisStation = (StationModel)w.get(KEY.STATIONS, stationID,
+		sp);
         Iterator batches = cargoBundle.cargoBatchIterator();
         int amountOfCargo = 0;
         double amount = 0;
@@ -41,11 +47,7 @@ public class ProcessCargoAtStationMoveGenerator {
         DeliverCargoReceipt receipt = new DeliverCargoReceipt(new Money(
                     (long)amount), cargoBundle);
 
-	/* FIXME until stations or trains have owners we will credit the first
-	 * players account */
-	FreerailsPrincipal p = ((Player) w.get(KEY.PLAYERS, 0,
-		    Player.AUTHORITATIVE)).getPrincipal();	
-
-        return new AddTransactionMove(0, receipt, p);
+	/* credit owner of the train for cargo delivery */
+        return new AddTransactionMove(0, receipt, tp);
     }
 }

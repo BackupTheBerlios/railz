@@ -10,6 +10,8 @@ import jfreerails.world.cargo.CargoBundle;
 import jfreerails.world.cargo.CargoType;
 import jfreerails.world.common.GameCalendar;
 import jfreerails.world.common.GameTime;
+import jfreerails.world.player.FreerailsPrincipal;
+import jfreerails.world.player.Player;
 import jfreerails.world.station.StationModel;
 import jfreerails.world.top.ITEM;
 import jfreerails.world.top.KEY;
@@ -49,6 +51,10 @@ class UserMessageGenerator implements MoveReceiver {
 		(DeliverCargoReceipt)addTransactionMove.getTransaction();
             long revenue = deliverCargoReceipt.getValue().getAmount();
 
+	    // ignore other player's trains
+	    if (! move.getPrincipal().equals(mr.getPlayerPrincipal()))
+		return;
+
             if (0 < revenue) {
                 int trainCargoBundle =
 		    transferCargoAtStationMove.getChangeOnTrain()
@@ -58,8 +64,8 @@ class UserMessageGenerator implements MoveReceiver {
                                                                    .getIndex();
                 NonNullElements trains = new NonNullElements(KEY.TRAINS, world,
 		       	mr.getPlayerPrincipal());
-                NonNullElements stations = new NonNullElements(KEY.STATIONS,
-                        world);
+		NonNullElements players = new NonNullElements(KEY.PLAYERS,
+			world);
 
                 int trainNumber = -1;
                 int statonNumber = -1;
@@ -75,15 +81,22 @@ class UserMessageGenerator implements MoveReceiver {
                     }
                 }
 
-                while (stations.next()) {
-                    StationModel station = (StationModel)stations.getElement();
+		while (players.next()) {
+		    FreerailsPrincipal p = (FreerailsPrincipal)
+			((Player) players.getElement()).getPrincipal();
+		    NonNullElements stations = new NonNullElements(KEY.STATIONS,
+			    world, p);
+		    while (stations.next()) {
+			StationModel station = (StationModel)stations
+			    .getElement();
 
-                    if (station.getCargoBundleNumber() == stationCargoBundle) {
-                        statonNumber = stations.getRowNumber();
-                        stationName = station.getStationName();
-
-                        break;
-                    }
+			if (station.getCargoBundleNumber() ==
+				stationCargoBundle) {
+			    statonNumber = stations.getRowNumber();
+			    stationName = station.getStationName();
+			    break;
+			}
+		    }
                 }
 
                 CargoBundle cb = deliverCargoReceipt.getCargoDelivered();

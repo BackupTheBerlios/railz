@@ -20,7 +20,7 @@ public class KEY implements FreerailsSerializable {
     public static final KEY CITIES = new KEY(true);
     public static final KEY ENGINE_TYPES = new KEY(true);
     public static final KEY TRACK_RULES = new KEY(true);
-    public static final KEY STATIONS = new KEY(true);
+    public static final KEY STATIONS = new KEY(false);
     public static final KEY TERRAIN_TYPES = new KEY(true);
     public static final KEY WAGON_TYPES = new KEY(true);
     public static final KEY BANK_ACCOUNTS = new KEY(false);

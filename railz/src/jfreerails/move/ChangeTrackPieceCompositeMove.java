@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import jfreerails.world.common.Money;
 import jfreerails.world.common.OneTileMoveVector;
+import jfreerails.world.player.FreerailsPrincipal;
 import jfreerails.world.top.ReadOnlyWorld;
 import jfreerails.world.track.FreerailsTile;
 import jfreerails.world.track.NullTrackPiece;
@@ -49,13 +50,14 @@ public final class ChangeTrackPieceCompositeMove extends CompositeMove
     }
 
     public static ChangeTrackPieceCompositeMove generateRemoveTrackMove(
-        Point from, OneTileMoveVector direction, ReadOnlyWorld w) {
+        Point from, OneTileMoveVector direction, ReadOnlyWorld w,
+	FreerailsPrincipal p) {
         TrackMove a;
         TrackMove b;
 
-        a = getRemoveTrackChangeTrackPieceMove(from, direction, w);
+        a = getRemoveTrackChangeTrackPieceMove(from, direction, w, p);
         b = getRemoveTrackChangeTrackPieceMove(direction.createRelocatedPoint(
-                    from), direction.getOpposite(), w);
+                    from), direction.getOpposite(), w, p);
 
         return new ChangeTrackPieceCompositeMove(a, b);
     }
@@ -89,7 +91,7 @@ public final class ChangeTrackPieceCompositeMove extends CompositeMove
 
     //utility method.
     private static TrackMove getRemoveTrackChangeTrackPieceMove(Point p,
-        OneTileMoveVector direction, ReadOnlyWorld w) {
+        OneTileMoveVector direction, ReadOnlyWorld w, FreerailsPrincipal owner) {
         TrackPiece oldTrackPiece;
         TrackPiece newTrackPiece;
 
@@ -120,7 +122,7 @@ public final class ChangeTrackPieceCompositeMove extends CompositeMove
         //If we are removing a station, we also need to remove the station from the staiton list.
         if (oldTrackPiece.getTrackRule().isStation() &&
                 !newTrackPiece.getTrackRule().isStation()) {
-            return RemoveStationMove.getInstance(w, m);
+            return RemoveStationMove.getInstance(w, m, owner);
         } else {
             return m;
         }

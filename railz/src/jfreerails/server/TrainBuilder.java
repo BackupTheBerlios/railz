@@ -13,6 +13,7 @@ import jfreerails.world.common.FreerailsPathIterator;
 import jfreerails.world.common.PositionOnTrack;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.NonNullElements;
+import jfreerails.world.top.ObjectKey;
 import jfreerails.world.top.ReadOnlyWorld;
 import jfreerails.world.top.World;
 import jfreerails.world.top.WorldIterator;
@@ -68,13 +69,17 @@ class TrainBuilder {
 
         if (NullTrackType.NULL_TRACK_TYPE_RULE_NUMBER != tr.getRuleNumber()) {
             //Add train to train list.
-            WorldIterator wi = new NonNullElements(KEY.STATIONS, world);
+            WorldIterator wi = new NonNullElements(KEY.STATIONS, world, tp);
 
             MutableSchedule s = new MutableSchedule();
 
-            //Add upto 4 stations to the schedule.
+	    /*
+	     * Add upto 4 stations to the schedule. Stations are selected from
+	     * those owned by the train owner.
+	     */
             while (wi.next() && s.getNumOrders() < 5) {
-                TrainOrdersModel orders = new TrainOrdersModel(wi.getIndex(),
+                TrainOrdersModel orders = new TrainOrdersModel
+		    (new ObjectKey(KEY.STATIONS, tp, wi.getIndex()),
                         null, false);
                 s.addOrder(orders);
             }

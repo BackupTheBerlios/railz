@@ -20,6 +20,7 @@ import jfreerails.move.Move;
 import jfreerails.world.cargo.CargoType;
 import jfreerails.world.player.FreerailsPrincipal;
 import jfreerails.world.top.KEY;
+import jfreerails.world.top.ObjectKey;
 import jfreerails.world.top.NonNullElements;
 import jfreerails.world.top.ReadOnlyWorld;
 import jfreerails.world.top.WorldListListener;
@@ -276,13 +277,15 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
     
     private void priorityOrdersJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_priorityOrdersJButtonActionPerformed
         MutableSchedule s = getSchedule();
-        s.setPriorityOrders(new TrainOrdersModel(0, null, false));
+        s.setPriorityOrders(new TrainOrdersModel(new ObjectKey(KEY.STATIONS,
+			modelRoot.getPlayerPrincipal(), 0), null, false));
         sendUpdateMove(s);
     }//GEN-LAST:event_priorityOrdersJButtonActionPerformed
     
     private void addStationJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStationJButtonActionPerformed
         MutableSchedule s = getSchedule();
-        s.addOrder(new TrainOrdersModel(0, null, false));
+        s.addOrder(new TrainOrdersModel(new ObjectKey(KEY.STATIONS,
+			modelRoot.getPlayerPrincipal(), 0), null, false));
         sendUpdateMove(s);
     }//GEN-LAST:event_addStationJButtonActionPerformed
     
@@ -430,7 +433,9 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
         MutableSchedule s = getSchedule();
         int orderNumber = this.orders.getSelectedIndex();
         oldOrders = s.getOrder(orderNumber);
-        newOrders = new TrainOrdersModel(stationIndex, oldOrders.getConsist(), oldOrders.getWaitUntilFull());
+	newOrders = new TrainOrdersModel(new ObjectKey(KEY.STATIONS,
+		    modelRoot.getPlayerPrincipal(), stationIndex),
+		oldOrders.getConsist(), oldOrders.getWaitUntilFull());
         s.setOrder(orderNumber, newOrders);
         sendUpdateMove(s);
     }

@@ -13,6 +13,7 @@ import jfreerails.controller.MoveReceiver;
 import jfreerails.move.ChangeStationMove;
 import jfreerails.move.Move;
 import jfreerails.world.player.FreerailsPrincipal;
+import jfreerails.world.player.Player;
 import jfreerails.world.station.StationModel;
 import jfreerails.world.station.SupplyAtStation;
 import jfreerails.world.top.KEY;
@@ -43,19 +44,25 @@ public class CalcSupplyAtStations implements WorldListListener {
      *
      */
     public void doProcessing() {
-        NonNullElements iterator = new NonNullElements(KEY.STATIONS, w);
+	NonNullElements i = new NonNullElements(KEY.PLAYERS, w,
+		Player.AUTHORITATIVE);
+	while (i.next()) {
+	    FreerailsPrincipal p = (FreerailsPrincipal) ((Player)
+		    i.getElement()).getPrincipal();
+	    NonNullElements iterator = new NonNullElements(KEY.STATIONS, w, p);
+	    while (iterator.next()) {
+		StationModel stationBefore =
+		    (StationModel)iterator.getElement();
 
-        while (iterator.next()) {
-            StationModel stationBefore = (StationModel)iterator.getElement();
+		StationModel stationAfter = calculations(stationBefore);
 
-            StationModel stationAfter = calculations(stationBefore);
-
-            if (!stationAfter.equals(stationBefore)) {
-                Move move = new ChangeStationMove(iterator.getIndex(),
-                        stationBefore, stationAfter);
-                this.moveReceiver.processMove(move);
-            }
-        }
+		if (!stationAfter.equals(stationBefore)) {
+		    Move move = new ChangeStationMove(iterator.getIndex(),
+			    stationBefore, stationAfter, p);
+		    this.moveReceiver.processMove(move);
+		}
+	    }
+	}
     }
 
     /**

@@ -18,6 +18,7 @@ import java.awt.*;
  */
 public class TrainOrderJPanel extends javax.swing.JPanel implements 
 ListCellRenderer {
+    private ModelRoot modelRoot;
     
     jfreerails.world.top.ReadOnlyWorld w;
     
@@ -93,6 +94,7 @@ ListCellRenderer {
     }//GEN-END:initComponents
     
     public void setup(ModelRoot mr, java.awt.event.ActionListener submitButtonCallBack) {
+	modelRoot = mr;
         w = mr.getWorld();
         TrainViewJPanel trainViewJPanel = (TrainViewJPanel)consistChangeJPanel;
         trainViewJPanel.setHeight(15);
@@ -103,8 +105,9 @@ ListCellRenderer {
         TrainOrdersListModel.TrainOrdersListElement trainOrders = (TrainOrdersListModel.TrainOrdersListElement)value;
         
         //Set station name
-        int stationNumber = trainOrders.order.station;
-        StationModel station = (StationModel)w.get(KEY.STATIONS, stationNumber);
+        int stationNumber = trainOrders.order.station.index;
+	StationModel station = (StationModel)w.get(KEY.STATIONS, stationNumber,
+		modelRoot.getPlayerPrincipal());
         String stationName = station.getStationName();
         this.stationNameJLabel.setText(stationName);
         

@@ -132,8 +132,9 @@ public class ChangeTrackPieceCompositeMoveTest extends AbstractMoveTestCase {
     }
 
     private void assertRemoveTrackSuceeds(Point p, OneTileMoveVector v) {
-        ChangeTrackPieceCompositeMove move = ChangeTrackPieceCompositeMove.generateRemoveTrackMove(p,
-                v, getWorld());
+	ChangeTrackPieceCompositeMove move =
+	    ChangeTrackPieceCompositeMove.generateRemoveTrackMove(p, v,
+		    getWorld(), testPlayer.getPrincipal());
         MoveStatus status = move.doMove(getWorld(), testPlayer.getPrincipal());
         assertEquals(true, status.isOk());
     }
