@@ -1,3 +1,7 @@
+January 15, 2005:
+-----------------
+Fixed a problem with trains getting shorter over time which caused the game to
+throw an exception
 January 11, 2005:
 -----------------
 Fixed problems with TrainPathFunction getting out of control and not homing

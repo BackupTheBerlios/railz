@@ -73,6 +73,7 @@ public class TrainPathFunction implements FreerailsSerializable {
 	/** max time for which this segment is valid */
 	private final float tMax;
 
+	/** @return -1.0f if we never reach sMax */
 	public float getTMax() {
 	    return tMax;
 	}
@@ -106,12 +107,11 @@ public class TrainPathFunction implements FreerailsSerializable {
 	    if (a == 0.0f) {
 		tMax = t0 + (sMax - s0) / v0;
 	    } else if (v0 * v0 + 2.0f * a * deltaS < 0.0f) {
-		tMax = -1;
+		tMax = -1.0f;
 	    } else {
 		tMax = t0 + (-v0 + (float) Math.sqrt(v0 * v0 + 2.0f * a * 
 			    deltaS)) / a;
 	    }
-	    assert tMax >= t0: "sMax=" + sMax + ", " + this.toString();
 	}
 
 	public String toString() {

@@ -121,7 +121,7 @@ class IdentityProvider {
         while (i.next()) {
             Player p = (Player)i.getElement();
 
-            if (p.equals(player)) {
+            if (p.getName().equals(player.getName())) {
                 /* this player already exists */
                 /* is this identity already connected ? */
                 if (principals.containsValue(p)) {

@@ -49,7 +49,6 @@ class Dispatcher implements Runnable {
      * wait() on this object when we need the client to wait for a response
      */
     private Object clientSemaphore = new Integer(1);
-    private boolean worldNotYetLoaded = true;
 
     public void addMoveReceiver(SourcedMoveReceiver m) {
 	moveReceiver = m;
@@ -62,8 +61,7 @@ class Dispatcher implements Runnable {
     public World receiveWorld() throws IOException {
 	World w;
 	synchronized (clientSemaphore) {
-	    while (connection == null ||
-		    connection.world == null) {
+	    while (connection.world == null) {
 		try {
 		    clientSemaphore.wait();
 		} catch (InterruptedException e) {
@@ -106,7 +104,7 @@ class Dispatcher implements Runnable {
     private void processNextObject() throws IOException {
 	Object o = null;
 	synchronized (this) {
-	    while ((objectInputStream == null) || connection == null ||
+	    while ((objectInputStream == null) ||
 		    connection.connectionListener == null) {
 		/*
 		 * if we are closed then wait until we are opened.
@@ -144,17 +142,16 @@ class Dispatcher implements Runnable {
 	if (o instanceof ServerCommand) {
 	    processServerCommand((ServerCommand)o);
 	} else if (o instanceof Move) {
-	    if (worldNotYetLoaded) {
+	    if (connection.world == null) {
 		System.out.println("Discarding move");
 	    } else {
 		SourcedMoveReceiver mr = moveReceiver;
 		assert mr != null;
 		mr.processMove((Move)o, this.connection);
 	    }
-	} else if ((o instanceof World) && worldNotYetLoaded) {
+	} else if ((o instanceof World) && connection.world == null) {
 	    connection.world = (World)o;
 	    connection.setState(ConnectionState.READY);
-	    worldNotYetLoaded = false;
 	    synchronized (clientSemaphore) {
 		clientSemaphore.notify();
 	    }
@@ -183,7 +180,6 @@ class Dispatcher implements Runnable {
     }
 
     public synchronized void open() throws IOException {
-        worldNotYetLoaded = true;
         objectInputStream = new ObjectInputStream(connection.socket.getInputStream());
 
         /*
@@ -201,7 +197,6 @@ class Dispatcher implements Runnable {
             System.out.println("Caught an IOException disconnecting " + e);
         }
 
-        worldNotYetLoaded = true;
         objectInputStream = null;
     }
 

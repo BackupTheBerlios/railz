@@ -197,8 +197,6 @@ public final class TrainMotionModel2 implements FreerailsSerializable {
     public TrainMotionModel2 setOutOfWater(boolean outOfWater, GameTime t0,
 	    TrainPath pathToDestination, TrainPathFunction pathFunction) {
 	TrainPath newTP = getPosition(t0);
-	System.out.println("setOutOfWater - new tp=" + newTP + ", t0=" + t0);
-
 	TrainMotionModel2 tmm = new TrainMotionModel2(pathToDestination, newTP,
 		t0.getTime(), hasLock, outOfWater, pathFunction);
 

@@ -109,6 +109,7 @@ public class TrainPathFinder {
      * against theoretical minimum and accept non-optimal solutions if they
      * are within a certain %age. Also it may be more efficient to scan from
      * 45deg A/C from target, rather than 180..)
+     * @return the found path, or null if no path could be found.
      */
     public TrainPath findPath(Point start, Point dest) {
 	Point target = new Point(dest);

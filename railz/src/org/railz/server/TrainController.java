@@ -359,6 +359,7 @@ class TrainController {
 		.getSpeed(tBase);
 	// add segment for path from current pos to centre of tile
 	if (p1.equals(p2)) {
+	    /* TODO do this in smaller chunks */
 	    // Last segment is from train head to centre of tile
 	    TrainPathSegment seg = getNewSegment(p1, p2, t0, v0, s0, mass,
 		    power, (float) il.getLength().getLength(), et);
@@ -445,6 +446,10 @@ class TrainController {
 	}
 	tm.getPosition(t).getHead(head);
 	TrainPath tp = pathFinder.findPath(stationCoords, head);
+	if (tp == null) {
+	    // no path to destination
+	    return TrainModel.STATE_RUNNABLE;
+	}
 
 	TrainPathFunction tpf = buildPathFunction(tp, tm,
 		tm.getTrainMotionModel().isOutOfWater());

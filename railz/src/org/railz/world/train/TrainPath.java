@@ -167,6 +167,7 @@ public final class TrainPath implements FreerailsSerializable {
 	if ((int) actualLength.getLength() <= newLength) {
 	    assert newLength - (int) actualLength.getLength() < 3;
 	    getTail(p);
+	    length = newLength;
 	    return new TrainPath(new IntLine[]{new IntLine(p.x, p.y, p.x, p.y)});
 	}
 	ListIterator i = segments.listIterator(0);
@@ -184,19 +185,12 @@ public final class TrainPath implements FreerailsSerializable {
 	    int oldX2 = line.x2;
 	    int oldY2 = line.y2;
 	    PathLength segLength = new PathLength(line.getLength());
-	    // System.out.println("stub length = " + l.getLength());
 	    l.subtract(segLength);
 	    segLength.setLength(newLength - l.getLength());
-	    // System.out.println("set segLength to " + (newLength -
-	//		l.getLength()) + ", is actually=" +
-	//	    segLength.getLength());
 	    l.add(segLength);
 	    line.setLength(segLength);
 	    removedSegments.addFirst(new IntLine(line.x2, line.y2, oldX2,
 		       oldY2));
-	    // System.out.println("new actualLength = " + l.getLength() +
-	//	    ", intended length=" + newLength + ", old length=" +
-	//	    length);
 	}
 	length = newLength;
 	actualLength = l;
@@ -230,7 +224,7 @@ public final class TrainPath implements FreerailsSerializable {
 	    segments.addFirst(i.previous());
 	}
 	actualLength.add(l);
-	length = actualLength.getLength();
+	length = Math.max(actualLength.getLength(), length);
     }
 
     /**
@@ -241,7 +235,6 @@ public final class TrainPath implements FreerailsSerializable {
      * @return the portion of the tail removed to maintain constant length
      */
     public TrainPath moveHeadTo(TrainPath additionalPath) {
-	// System.out.println(".");
 	double l = length;
 	prepend(additionalPath);
 	TrainPath tp = truncateTail(l);
