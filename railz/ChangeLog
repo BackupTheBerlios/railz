@@ -1,3 +1,6 @@
+July 18, 2004:
+--------------
+Fix for bug 3 - Train list button on schedule pane doesn't work
 July 15, 2004:
 --------------
 Fixed bug 40 - terrain info doesn't update when user clicks in build mode

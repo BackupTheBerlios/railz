@@ -19,7 +19,7 @@
  */
 
 /*
- * $Id: TrainsJTabPane.java,v 1.7 2004/07/12 20:57:43 rtuck99 Exp $
+ * $Id: TrainsJTabPane.java,v 1.8 2004/07/18 16:35:26 rtuck99 Exp $
  */
 
 package jfreerails.client.view;
@@ -71,8 +71,6 @@ public class TrainsJTabPane extends JTabbedPane implements CursorEventListener {
 	terrainInfoPanel.setup(world, vl);
 	stationInfoPanel.setup(modelRoot);
 	trainSchedulePanel.setup(modelRoot, gr);
-	trainSchedulePanel.setTrainDetailsButtonActionListener
-	    (trainScheduleTrainDetailsListener);
  	buildJPane.setup(vl, modelRoot);
         modelRoot.getCursor().addCursorEventListener(this);
         
@@ -105,12 +103,5 @@ public class TrainsJTabPane extends JTabbedPane implements CursorEventListener {
     public void cursorKeyPressed(CursorEvent e) {
 	// do nothing
     }
-
-    private ActionListener trainScheduleTrainDetailsListener = new
-	ActionListener() {
-	    public void actionPerformed(ActionEvent e) {
-		trainSchedulePanel.showTrainList();
-	    }
-	};
 }
 

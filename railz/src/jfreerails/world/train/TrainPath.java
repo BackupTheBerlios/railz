@@ -266,22 +266,16 @@ public final class TrainPath implements FreerailsSerializable {
 	    actualLength.add(additionalHead.getLength());
 	}
 	IntLine head = null;
-	System.out.println("actual length = " + actualLength.getLength() + 
-		" length = " + length);
 	while (actualLength.getLength() > length) {
 	    head = (IntLine) segments.removeFirst();
 	    actualLength.subtract(head.getLength());
 	};
-	System.out.println("2: actual length = " + actualLength.getLength() + 
-		" length = " + length);
 	if (actualLength.getLength() < length && head != null) {
 	    PathLength headLength = new PathLength(head.getLength());
 	    headLength.setLength(length - actualLength.getLength());
 	    head.setLengthFromTail(headLength);
 	    segments.addFirst(head);
 	}
-	System.out.println("3: actual length = " + actualLength.getLength() + 
-		" length = " + length);
 	return oldHeadPoint;
     }
 

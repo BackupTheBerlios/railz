@@ -21,12 +21,18 @@
  */
 package jfreerails.client.view;
 
+import java.lang.ref.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import javax.swing.ListModel;
+import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import jfreerails.controller.*;
+import jfreerails.move.*;
+import jfreerails.util.*;
 import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
+import jfreerails.world.top.*;
 
 /**
  * This class implements the GoF Adapter pattern.  It converts the
@@ -43,11 +49,80 @@ public class World2ListModelAdapter implements ListModel {
 
 	private final FreerailsPrincipal principal;
 	
+	private final WeakRefList listeners = new WeakRefList();
+
+	private WorldListListener worldListener = new WorldListListener() {
+	    public void listUpdated(KEY key, int index, FreerailsPrincipal p) {
+		if (key != k)
+		    return;
+
+		if (!p.equals(principal))
+		    return;
+
+		Enumeration en = listeners.elements();
+		ListDataEvent lde = new
+		    ListDataEvent(World2ListModelAdapter.this,
+			    ListDataEvent.CONTENTS_CHANGED, index, index);
+		synchronized (listeners) {
+		    while (en.hasMoreElements()) {
+			((ListDataListener) en.nextElement())
+			    .contentsChanged(lde);
+		    }
+		}
+	    }
+
+	    public void itemAdded(KEY key, int index, FreerailsPrincipal p) {
+		if (key != k)
+		    return;
+
+		if (!p.equals(principal))
+		    return;
+
+		Enumeration en = listeners.elements();
+		ListDataEvent lde = new 
+		    ListDataEvent(World2ListModelAdapter.this,
+			    ListDataEvent.INTERVAL_ADDED, index, index);
+		synchronized (listeners) {
+		    while (en.hasMoreElements()) {
+			((ListDataListener) en.nextElement())
+			    .intervalAdded(lde);
+		    }
+		}
+	    }
+
+	    public void itemRemoved(KEY key, int index, FreerailsPrincipal
+		    p) {
+		if (key != k)
+		    return;
+
+		if (!p.equals(principal))
+		    return;
+
+		Enumeration en = listeners.elements();
+		ListDataEvent lde = new
+		    ListDataEvent(World2ListModelAdapter.this,
+			    ListDataEvent.INTERVAL_REMOVED, index, index);
+		synchronized (listeners) {
+		    while (en.hasMoreElements()) {
+			((ListDataListener) en.nextElement())
+			    .intervalRemoved(lde);
+		    }
+		}
+	    }
+	};
+
 	public World2ListModelAdapter(ReadOnlyWorld world, KEY key,
 		FreerailsPrincipal p){
-		this.k=key;
-		this.w=world;
-		principal = p;
+	    this(world, key, p, null);
+	}
+
+	public World2ListModelAdapter(ReadOnlyWorld world, KEY key,
+		FreerailsPrincipal p, MoveChainFork mcf){
+	    this.k=key;
+	    this.w=world;
+	    principal = p;
+	    if (mcf != null)
+		mcf.addListListener(worldListener);
 	}
 
 	public int getSize() {
@@ -58,13 +133,16 @@ public class World2ListModelAdapter implements ListModel {
 		return w.get(k, i, principal);
 	}
 
-	public void addListDataListener(ListDataListener arg0) {
-		// TODO Auto-generated method stub
-
+	public void addListDataListener(ListDataListener l) {
+	    System.out.println("listener added");
+	    synchronized (listeners) {
+		listeners.add(l);
+	    }
 	}
 
-	public void removeListDataListener(ListDataListener arg0) {
-		// TODO Auto-generated method stub
-
+	public void removeListDataListener(ListDataListener l) {
+	    synchronized (listeners) {
+		listeners.remove(l);
+	    }
 	}
 }

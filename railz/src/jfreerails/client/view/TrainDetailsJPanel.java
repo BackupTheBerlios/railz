@@ -23,6 +23,7 @@
 
 package jfreerails.client.view;
 
+import java.awt.Graphics;
 import javax.swing.border.TitledBorder;
 
 import jfreerails.client.model.ModelRoot;
@@ -85,10 +86,10 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements WorldListL
         trainViewJPanel1.setHeight(20);
          trainViewJPanel1.setCenterTrain(true);
         this.w = w;
+	modelRoot.getMoveChainFork().addListListener(this);
     }    
     
     public void displayTrain(int trainNumber){
-    	
     	this.trainNumber = trainNumber;
         
         trainViewJPanel1.display(trainNumber);
@@ -133,4 +134,8 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements WorldListL
     private jfreerails.client.view.TrainViewJPanel trainViewJPanel1;
     // End of variables declaration//GEN-END:variables
     
+
+    public void paint(Graphics g) {
+	super.paint(g);
+    }
 }

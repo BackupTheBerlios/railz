@@ -182,12 +182,6 @@ public class DialogueBoxController {
         
         trainDialogueJPanel = new TrainDialogueJPanel();
         trainDialogueJPanel.setup(modelRoot, guiRoot);
-        trainDialogueJPanel.setTrainDetailsButtonActionListener( new ActionListener() {            
-            public void actionPerformed(ActionEvent arg0) {
-                closeContent();
-                showTrainList();
-            }            
-        });
     }
     
     public void showNewspaper(String headline) {

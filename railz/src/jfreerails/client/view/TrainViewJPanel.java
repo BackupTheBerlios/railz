@@ -60,7 +60,7 @@ public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldLi
     
     private ScheduleIterator scheduleIterator;
     
-    private int height = 100;
+    private int height = 20;
     
     private Image[] images = new Image[0];
     
@@ -209,12 +209,8 @@ public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldLi
         vl = modelRoot.getViewLists();
     }
     
-    public Component getListCellRendererComponent(
-    JList list,
-    Object value,
-    int index,
-    boolean isSelected,
-    boolean cellHasFocus) {
+    public Component getListCellRendererComponent(JList list, Object value,
+	    int index, boolean isSelected, boolean cellHasFocus) {
         display(index);
         if(selected != isSelected){
             selected = isSelected;
@@ -273,4 +269,7 @@ public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldLi
 	// do nothing
     }
     
+    public void paint(Graphics g) {
+	super.paint(g);
+    }
 }

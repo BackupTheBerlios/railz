@@ -23,12 +23,18 @@
 
 package jfreerails.client.view;
 
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.NoSuchElementException;
+import javax.swing.ListCellRenderer;
+import javax.swing.JList;
 
+import jfreerails.client.common.*;
 import jfreerails.client.model.ModelRoot;
 import jfreerails.util.*;
 import jfreerails.world.player.FreerailsPrincipal;
@@ -51,6 +57,43 @@ WorldListListener {
     private ModelRoot modelRoot;
     private GUIRoot guiRoot;
     
+    private ActionListener popupButtonListener = new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+	    wi.gotoIndex(popupJButton.getSelectedIndex());
+	    TrainDialogueJPanel.this.display();
+	}
+    };
+
+    private DetailsListCellRenderer trainDetailsRenderer = new
+	DetailsListCellRenderer();
+   
+    private void disableAllComponents(Container c) {
+	Component components[] = c.getComponents();
+	for (int i = 0; i < components.length; i++) {
+	    if (components[i] instanceof Container) {
+		disableAllComponents((Container) components[i]);
+	    }
+	    components[i].setEnabled(false);
+	}
+    }
+
+    private class DetailsListCellRenderer implements ListCellRenderer {
+	private TrainDetailsJPanel trainDetailsJPanel = new
+	    TrainDetailsJPanel();
+	private TrainViewJPanel trainViewJPanel;
+
+	public Component getListCellRendererComponent(JList list, Object
+		value, int index, boolean isSelected, boolean cellHasFocus) {
+	    System.out.println ("getting index " + index);
+	    if (index == -1) {
+		trainDetailsJPanel.displayTrain(wi.getIndex());
+		return trainDetailsJPanel;
+	    }
+	    return trainViewJPanel.getListCellRendererComponent(list, value,
+		    index, isSelected, cellHasFocus);
+	}
+    };
+
     /** Creates new form TrainDialogueJPanel */
     public TrainDialogueJPanel() {
         initComponents();
@@ -82,21 +125,12 @@ WorldListListener {
     private void initComponents() {//GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
-        trainDetailsJPanel1 = new jfreerails.client.view.TrainDetailsJPanel();
         newTrainScheduleJPanel1 = new jfreerails.client.view.TrainScheduleJPanel();
         jPanel1 = new javax.swing.JPanel();
         previousJButton = new javax.swing.JButton();
         nextJButton = new javax.swing.JButton();
-        trainListJButton = new javax.swing.JButton();
 
         setLayout(new java.awt.GridBagLayout());
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        add(trainDetailsJPanel1, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -145,14 +179,6 @@ WorldListListener {
         gridBagConstraints.weightx = 1.0;
         add(jPanel1, gridBagConstraints);
 
-        trainListJButton.setText("Train list");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        add(trainListJButton, gridBagConstraints);
-
     }//GEN-END:initComponents
     
     private void previousJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousJButtonActionPerformed
@@ -179,8 +205,25 @@ WorldListListener {
         w = modelRoot.getWorld();
 	wi = new NonNullElements(KEY.TRAINS, w, mr.getPlayerPrincipal());
         newTrainScheduleJPanel1.setup(mr, gr);
-        trainDetailsJPanel1.setup(mr, null);
 	addComponentListener(componentListener);
+
+	trainDetailsRenderer.trainDetailsJPanel.setup(modelRoot, null);
+	disableAllComponents(trainDetailsRenderer.trainDetailsJPanel);
+	trainDetailsRenderer.trainViewJPanel = new TrainViewJPanel(modelRoot);
+
+	popupJButton = new PopupJButton(new World2ListModelAdapter(w,
+		    KEY.TRAINS, modelRoot.getPlayerPrincipal(),
+		    modelRoot.getMoveChainFork()), trainDetailsRenderer);
+
+	GridBagConstraints gridBagConstraints = new
+	    java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+        add(popupJButton, gridBagConstraints);
+
+	popupJButton.addActionListener(popupButtonListener);
     }
     
     /**
@@ -213,13 +256,14 @@ WorldListListener {
         }
         
         newTrainScheduleJPanel1.display(wi.getIndex());
-        trainDetailsJPanel1.displayTrain(wi.getIndex());
+        trainDetailsRenderer.trainDetailsJPanel.displayTrain(wi.getIndex());
 	repaint();
     }
     
     public void listUpdated(KEY key, int index, FreerailsPrincipal p) {
         newTrainScheduleJPanel1.listUpdated(key, index, p);
-        trainDetailsJPanel1.listUpdated(key, index, p);
+        trainDetailsRenderer.trainDetailsJPanel.listUpdated(key, index, p);
+	popupJButton.repaint();
     }
     
     public void itemAdded(KEY key, int index, FreerailsPrincipal p) {
@@ -243,41 +287,12 @@ WorldListListener {
 	}
     };
      
-    void setTrainDetailsButtonActionListener(ActionListener l){
-        ActionListener[] oldListeners = trainListJButton.getActionListeners();
-        for(int i = 0; i < oldListeners.length; i++){
-            trainListJButton.removeActionListener(oldListeners[i]);
-        }
-        this.trainListJButton.addActionListener(l);
-    }
-    
-    public void showTrainList() {
-	trainListJPanel = new TrainListJPanel();
-	trainListJPanel.setup(modelRoot, null);
-	trainListJPanel.setShowTrainDetailsActionListener(trainListListener);
-	guiRoot.getDialogueBoxController().createDialog(trainListJPanel,
-		Resources.get("Select Train"));
-    }
-
-    private ActionListener trainListListener = new ActionListener() {
-	public void actionPerformed(ActionEvent e) {
-	    int selected = trainListJPanel.getSelectedTrainID();
-	    if (selected >= 0 && selected < w.size(KEY.TRAINS,
-			modelRoot.getPlayerPrincipal())) {
-		wi.gotoIndex(selected);
-		display();
-	    }
-	}
-    };
-
-    private TrainListJPanel trainListJPanel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private jfreerails.client.view.TrainScheduleJPanel newTrainScheduleJPanel1;
     private javax.swing.JButton nextJButton;
     private javax.swing.JButton previousJButton;
-    private jfreerails.client.view.TrainDetailsJPanel trainDetailsJPanel1;
-    private javax.swing.JButton trainListJButton;
     // End of variables declaration//GEN-END:variables
     
+    private PopupJButton popupJButton;
 }

@@ -47,7 +47,6 @@ public class ChangeTrainMove extends ChangeItemInListMove {
     public static ChangeTrainMove generateMove(int id,
 	    FreerailsPrincipal p, TrainModel before, ScheduleIterator
 	    newScheduleIterator) {
-	System.out.println("ChangeTrainMove: New scheduled stop");
 	TrainModel after = new TrainModel(before, newScheduleIterator);
 	return  new ChangeTrainMove(id, before, after, p);
     }
@@ -57,7 +56,6 @@ public class ChangeTrainMove extends ChangeItemInListMove {
      */
     public static ChangeTrainMove generateMove(int id, FreerailsPrincipal p,
 	    TrainModel before, int newState, GameTime now) {
-	System.out.println("ChangeTrainMove: New state " + newState);
 	TrainModel after = new TrainModel(before, now, newState);
 	return new ChangeTrainMove(id, before, after, p);
     }
@@ -67,7 +65,6 @@ public class ChangeTrainMove extends ChangeItemInListMove {
      */
     public static ChangeTrainMove generateMove(int id, FreerailsPrincipal p,
 	    TrainModel before, TrainPath pathToDestination, GameTime now) {
-	System.out.println("ChangeTrainMove: New path to destination");
 	TrainModel after = new TrainModel(before, pathToDestination, now);
 	return new ChangeTrainMove(id, before, after, p);
     }
@@ -77,7 +74,6 @@ public class ChangeTrainMove extends ChangeItemInListMove {
      */
     public static ChangeTrainMove generateMove(int id, FreerailsPrincipal p,
 	    TrainModel before, int newEngine, int[] newWagons) {
-	System.out.println("ChangeTrainMove: New wagons");
         TrainModel after = before.getNewInstance(newEngine, newWagons);
 
         return new ChangeTrainMove(id, before, after, p);
@@ -95,8 +91,6 @@ public class ChangeTrainMove extends ChangeItemInListMove {
 	GameTime now = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
 	tm = ((TrainModel) w.get(listKey, index, p));
 	tm.sync(now);
-	System.out.println("done move " + this);
-	System.out.println(tm + ", motionmodel = " + tm.getTrainMotionModel());
 
 	return MoveStatus.MOVE_OK;
     }

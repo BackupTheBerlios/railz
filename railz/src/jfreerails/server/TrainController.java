@@ -76,7 +76,6 @@ class TrainController {
 	/* Is the train lost and we are trying to go somewhere ? */
 	if (tm.getTrainMotionModel().isLost() && state ==
 		TrainModel.STATE_RUNNABLE) {
-	    System.out.println("Train " + tm + " is lost");
 	   if (tm.getPosition() != null) {
 	       int newState = setPathToDestination(new ObjectKey(KEY.TRAINS, p,
 			   trainIndex), tm);
@@ -210,9 +209,6 @@ class TrainController {
     }
 
     private void setState(int trainIndex, FreerailsPrincipal p, int newState) {
-	System.out.println("setting state of train " + trainIndex + " for " +
-		p + " to state " + stateToString(newState) + " at " + 
-		world.get(ITEM.TIME, p));
 	TrainModel tm = (TrainModel) world.get(KEY.TRAINS, trainIndex, p);
 	ChangeTrainMove m  = ChangeTrainMove.generateMove(trainIndex, p, tm,
 		newState, (GameTime) world.get(ITEM.TIME,

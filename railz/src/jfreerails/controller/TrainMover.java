@@ -110,7 +110,6 @@ public final class TrainMover {
 	TrainPath pos = tm.getPosition();
 	TrainPath removed = pos.moveHeadTo(tp);
 	if (! tm.acquireAllLocks(world)) {
-	    System.out.println ("Couldn't acquire lock!");
 	    tmm.getPathToDestination().append(tp);
 	    pos.moveTailTo(removed);
 	    tmm.block();
