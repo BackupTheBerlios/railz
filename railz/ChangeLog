@@ -1,3 +1,14 @@
+Feb 28, 2004 Railz CVS created from patched JFreerails source
+Added:
+* Overhead wagon graphics
+* Integration of schedule into JTabPane
+* GUI Icons
+* Resizable dialogs
+* Bank account patch
+* Fix to cargo payment calculations
+* GPL License file
+Removed "experimental" directory
+============================================================================
 Feb 20, 2004 6:34:03 PM Luke
 	o Fix 839371 - Goods & livestock wagons appear the same on train orders
 Feb 20, 2004 12:31:15 PM Luke
