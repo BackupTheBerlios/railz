@@ -2,10 +2,10 @@
 
 Targeted features before next stable release branch 0.4
 ====================================================
+Interest on bank accounts
+Charge for train maintenance.
 Move to bugzilla bug database
-Balance sheet
 Ability to place new trains on map
-Cash Flow
 
 Optional 0.4 features
 =====================
@@ -18,6 +18,7 @@ Tile value map overlays
 Launcher/load/save cleanup.
 Network "robustness".
 Sound??
+Cash Flow
 
 Development features for 0.5 or later
 =====================================
