@@ -110,7 +110,7 @@ public class CompositeMove implements Move {
         MoveStatus ms = MoveStatus.MOVE_OK;
 
         for (int i = 0; i < moves.length; i++) {
-	    logger.log(Level.INFO, "doing move " + i + " of " + moves.length +
+	    logger.log(Level.FINEST, "doing move " + i + " of " + moves.length +
 		    ":" + moves[i].toString());
             ms = moves[i].doMove(w, p);
 

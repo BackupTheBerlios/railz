@@ -19,10 +19,7 @@ package org.railz.server;
 import java.util.HashMap;
 import java.util.logging.*;
 
-import org.railz.controller.ConnectionToServer;
-import org.railz.controller.MoveChainFork;
-import org.railz.controller.MoveReceiver;
-import org.railz.controller.SourcedMoveReceiver;
+import org.railz.controller.*;
 import org.railz.move.AddPlayerMove;
 import org.railz.move.Move;
 import org.railz.move.MoveStatus;
@@ -150,8 +147,14 @@ class IdentityProvider {
                 principals.put(c, p);
 
 		/* set the connection world */
-		c.setWorld(new WorldView(serverGameEngine.getWorld(),
-			    p.getPrincipal()));
+		if (c instanceof LocalConnection) {
+		    // don't create a WorldView, since the local client needs
+		    // to synchronize against the world object itself.
+		    c.setWorld(serverGameEngine.getWorld());
+		} else {
+		    c.setWorld(new WorldView(serverGameEngine.getWorld(),
+				p.getPrincipal()));
+		}
 
                 return true;
             }

@@ -59,6 +59,7 @@ final public class SynchronizedEventQueue extends EventQueue {
     public synchronized static void stopUse() {
 	if (instance != null) {
 	    instance.pop();
+	    instance = null;
 	}
     }
 }

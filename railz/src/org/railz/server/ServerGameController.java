@@ -134,7 +134,6 @@ class ServerGameController implements ServerControlInterface,
             tableModel.addRow(c,
                 ((InetConnection)c).getRemoteAddress().toString());
         } else if (c instanceof LocalConnection) {
-            ((LocalConnection)c).setWorld(gameEngine.getWorld());
             tableModel.addRow(c, "Local connection");
         }
     }

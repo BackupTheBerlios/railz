@@ -206,6 +206,10 @@ public class ServerGameEngine implements GameModel, Runnable,
         keepRunning = false;
     }
 
+    public Object getMutex() {
+	return world;
+    }
+
     /**
      * This is the main server update method, which does all the
      * "simulation".
@@ -356,7 +360,8 @@ public class ServerGameEngine implements GameModel, Runnable,
      * field set.
      */
     private void buildTrains() {
-	NonNullElements j = new NonNullElements(KEY.PLAYERS, world);
+	NonNullElements j = new NonNullElements(KEY.PLAYERS, world,
+		Player.AUTHORITATIVE);
 	while (j.next()) {
 	    FreerailsPrincipal principal = ((Player)
 		    j.getElement()).getPrincipal();
