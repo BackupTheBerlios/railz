@@ -19,6 +19,8 @@ package org.railz.server;
 import javax.swing.*;
 
 import org.railz.move.*;
+import org.railz.util.*;
+import org.railz.util.Resources.*;
 import org.railz.world.common.*;
 import org.railz.world.player.*;
 import org.railz.world.top.*;
@@ -39,7 +41,7 @@ public interface Scenario extends FreerailsSerializable {
      * @return a resource key to a textual description of the conditions which
      * must be met in order to be victorious
      */
-    public String getDescription();
+    public ResourceKey getDescription();
 
     /**
      * @return VICTORY, DEFEAT or UNDECIDED
@@ -53,9 +55,10 @@ public interface Scenario extends FreerailsSerializable {
      */
     public Move getSetupMoves(ReadOnlyWorld w, FreerailsPrincipal p);
 
-    /**
+    /** 
      * @return a control panel that can be used to customize starting
-     * conditions.
+     * conditions. The setEnabled() method must be overridden to disable all
+     * contained components.
      */
     public JPanel getControlPanel();
 

@@ -34,7 +34,8 @@ public final class ScenarioManager {
     private final Scenario scenario;
 
     private static final Scenario[] scenarios = new Scenario[] {
-	new SandBox()
+	new SandBox(),
+	new CashDash()
     };
 
     private static ListModel listModel = new ListModel() {
@@ -71,7 +72,8 @@ public final class ScenarioManager {
 	return listModel;
     }
 
-    public ScenarioManager(ReadOnlyWorld w, Scenario s, ServerCommandReceiver r) {
+    public ScenarioManager(ReadOnlyWorld w, Scenario s,
+	    ServerCommandReceiver r) {
 	world = w;
 	scenario = s;
 	commandReceiver = r;

@@ -16,6 +16,7 @@
  */
 package org.railz.world.common;
 
+import org.railz.util.Resources.*;
 import org.railz.world.player.*;
 import org.railz.world.top.*;
 
@@ -23,7 +24,7 @@ import org.railz.world.top.*;
  * Provides a description of victory conditions for the game
  */
 public class VictoryConditions implements FreerailsSerializable {
-    private final String description;
+    private final ResourceKey description;
     private final String name;
 
     /**
@@ -37,11 +38,11 @@ public class VictoryConditions implements FreerailsSerializable {
      * @return a resource key to a textual description of the conditions which
      * must be met in order to be victorious
      */
-    public String getDescription() {
+    public ResourceKey getDescription() {
 	return description;
     }
 
-    public VictoryConditions(String name, String description) {
+    public VictoryConditions(String name, ResourceKey description) {
 	this.description = description;
 	this.name = name;
     }

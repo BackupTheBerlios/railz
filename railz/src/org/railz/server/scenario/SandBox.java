@@ -17,11 +17,13 @@
 package org.railz.server.scenario;
 
 import java.awt.*;
+import java.text.*;
 import javax.swing.*;
 
 import org.railz.move.*;
 import org.railz.server.*;
 import org.railz.util.*;
+import org.railz.util.Resources.ResourceKey;
 import org.railz.world.accounts.*;
 import org.railz.world.common.*;
 import org.railz.world.player.*;
@@ -52,15 +54,20 @@ public class SandBox implements Scenario {
 	    add(label, BorderLayout.NORTH);
 	    add(cashSlider, BorderLayout.CENTER);
 	}
+
+	public void setEnabled(boolean enabled) {
+	    cashSlider.setEnabled(enabled);
+	}
     };
 
     public String getName() {
 	return "SandBox";
     }
 
-    public String getDescription() {
-	return "An open-ended scenario with no time-limit. Players "
-	    + "start with a pre-determined amount of cash.";
+    public ResourceKey getDescription() {
+	return Resources.getResourceKey
+	    ("An open-ended scenario with no time-limit. Players "
+	    + "start with a pre-determined amount of cash.");
     }
 
     public int getVictoryState(ReadOnlyWorld w, FreerailsPrincipal p) {

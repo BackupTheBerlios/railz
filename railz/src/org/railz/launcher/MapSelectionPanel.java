@@ -24,6 +24,7 @@
 package org.railz.launcher;
 
 import java.awt.*;
+import java.beans.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.io.File;
@@ -50,13 +51,18 @@ class MapSelectionPanel extends javax.swing.JPanel {
     private ListSelectionListener scenarioListener = new
 	ListSelectionListener() {
 	    public void valueChanged(ListSelectionEvent e) {
-		updateScenarioControlPanel(e.getFirstIndex());
+		changeScenarioControlPanel(scenarioJList.getSelectedIndex());
 	    }
 	};
 
-    private void updateScenarioControlPanel(int index) {
-	if (scenarioControlPanel != null)
-	    remove(scenarioControlPanel);
+    private int scenarioIndex;
+
+    private void changeScenarioControlPanel(int index) {
+	if (scenarioControlPanel != null) {
+	    jPanel5.remove(scenarioControlPanel);
+	    scenarioControlPanel.removePropertyChangeListener
+		(controlPanelListener);
+	}
 
 	GridBagConstraints gbc = new GridBagConstraints();
 	gbc.gridy = 1;
@@ -66,10 +72,17 @@ class MapSelectionPanel extends javax.swing.JPanel {
 	Scenario[] scenarios =  ScenarioManager.getScenarios();
 	scenarioControlPanel = scenarios[index].getControlPanel();
 	scenarioDescription.setWrapStyleWord(true);
-	scenarioDescription.setText(Resources.get
-		(scenarios[index].getDescription()));
 	scenario = scenarios[index];
 	jPanel5.add(scenarioControlPanel, gbc);
+	scenarioControlPanel.addPropertyChangeListener
+	    (controlPanelListener);
+	jPanel5.validate();
+	updateScenarioControlPanel();
+    }
+
+    private void updateScenarioControlPanel() {
+	scenarioDescription.setText(Resources.get (scenario.getDescription()));
+	jPanel5.repaint();
     }
 
     int getMapAction() {
@@ -304,6 +317,13 @@ class MapSelectionPanel extends javax.swing.JPanel {
 	validateSettings();
     }//GEN-LAST:event_newMapButtonStateChanged
     
+    private PropertyChangeListener controlPanelListener =
+       	new PropertyChangeListener() {
+	public void propertyChange(PropertyChangeEvent e) {
+	    updateScenarioControlPanel();
+	}
+    };
+
     private JTextArea scenarioDescription;
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -104,7 +104,8 @@ public final class AuthoritativeTrainMover {
 		ObjectKey ok = (ObjectKey) trainLists[i].get(j);
 		TrainModel tm = (TrainModel) world.get(ok.key, ok.index,
 			ok.principal);
-		if (tm.getTrainMotionModel().hasLock()) {
+		if (tm.getTrainMotionModel() != null &&
+			tm.getTrainMotionModel().hasLock()) {
 		    releaseAllLocks(world, tm.getPosition(tPlus1), tm);
 		}
 	    }

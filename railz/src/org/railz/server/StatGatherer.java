@@ -47,13 +47,13 @@ class StatGatherer {
 	GameTime t = (GameTime) world.get(ITEM.TIME,
 		Player.AUTHORITATIVE);
 	ArrayList l = new ArrayList();
+	int index = world.size(KEY.STATISTICS, p);
 	for (int j = 0; j < monitors.length; j++) {
 	    ObjectKey ok;
 	    Statistic stat = new Statistic(monitors[j].getName(),
 			    monitors[j].getDescription(),
 			    monitors[j].getYUnit());
-	    ok = new ObjectKey(KEY.STATISTICS,
-		    p, world.size(KEY.STATISTICS, p));
+	    ok = new ObjectKey(KEY.STATISTICS, p, index++);
 	    l.add(new AddStatisticMove(ok, stat));
 	}
 	return new CompositeMove((Move[]) l.toArray(new Move[l.size()]));

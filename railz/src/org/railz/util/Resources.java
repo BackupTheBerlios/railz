@@ -16,13 +16,37 @@
 
 package org.railz.util;
  
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.io.Serializable;
+import java.util.*;
+import java.text.*;
 
 /**
  * Utility class for obtaining localised resource strings.
  */
 public final class Resources {
+    public static class ResourceKey implements Serializable {
+	private String string;
+	private Serializable[] params;
+
+	private ResourceKey(String string, Serializable[] params) {
+	    this.string = string;
+	    this.params = params;
+	}
+    }
+
+    /**
+     * @param string. The localisation key.
+     * @param params. The parameters to be passed into MessageFormat.format()
+     */
+    public static ResourceKey getResourceKey(String string, Serializable[]
+	    params) {
+	return new ResourceKey(string, params);
+    }
+    
+    public static ResourceKey getResourceKey(String string) {
+	return new ResourceKey(string, new Serializable[0]);
+    }
+
     private static ResourceBundle bundle;
     private static ResourceBundle externalResource;
    
@@ -68,6 +92,10 @@ public final class Resources {
      */
     public static String get(String defaultString) {
 	return get(defaultString, defaultString);
+    }
+
+    public static String get(ResourceKey key) {
+	return MessageFormat.format(key.string, key.params);
     }
 
     /**
