@@ -26,8 +26,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import java.util.Enumeration;
 
-import jfreerails.client.common.ActionAdapter;
-import jfreerails.client.common.ScreenHandler;
+import jfreerails.client.common.*;
 import jfreerails.controller.ServerControlInterface;
 
 /**
@@ -35,7 +34,7 @@ import jfreerails.controller.ServerControlInterface;
  */
 public class ServerControlModel {
     private ServerControlInterface serverInterface;
-    private String currentDirectory = System.getProperty("user.home");
+    private String currentDirectory = FileUtils.savesDirectory;
     private ModelRoot modelRoot;
     private ScreenHandler screenHandler;
     private Component dialog;

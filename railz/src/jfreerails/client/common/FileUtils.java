@@ -37,6 +37,24 @@ public final class FileUtils {
     public static final String DATA_TYPE_PLAYER_SPECIFIC = "Player";
 
     /**
+     * Default location for saved games
+     */
+    public static final String savesDirectory;
+
+    static {
+	String currentDirectory = System.getProperty("user.home");
+	/* fix for windows users */
+	if (System.getProperty("os.name").toLowerCase().matches("windows.*")) {
+	    File desktopDir = new File(currentDirectory + File.separator +
+		    "desktop");
+	    if (desktopDir.isDirectory())
+		currentDirectory = currentDirectory + File.separator +
+		    "desktop";
+	}
+	savesDirectory = currentDirectory;
+    }
+
+    /**
      * @param dataType one of DATA_TYPE_XXX
      * @param dataKey if dataType is PLAYER_SPECIFIC, then dataKey is the name
      * of the player. If dataType is USER_SPECIFIC, then KEY is null (seeing

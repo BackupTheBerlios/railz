@@ -26,6 +26,7 @@ package jfreerails.launcher;
 import javax.swing.JFileChooser;
 import java.io.File;
 
+import jfreerails.client.common.FileUtils;
 import jfreerails.server.GameServer;
 import jfreerails.util.Resources;
 
@@ -34,7 +35,7 @@ import jfreerails.util.Resources;
  * @author rtuck99@users.sourceforge.net
  */
 class MapSelectionPanel extends javax.swing.JPanel {
-    private String currentDirectory = System.getProperty("user.home");
+    private String currentDirectory = FileUtils.savesDirectory;
 
     private Launcher owner;
 

@@ -2,6 +2,7 @@ Apr 05, 2004:
 -------------
 Addressed some issues in bug 4 - scalable map background in select station
 dialog.
+Fix for bug 18 - default save/load directory on windows machines is now desktop
 Apr 04, 2004:
 -------------
 Fix for bug 20 - servers can now send messsages to clients
