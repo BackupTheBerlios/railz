@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
-!=Project-Id-Version\: PACKAGE VERSION\nReport-Msgid-Bugs-To\: \nPOT-Creation-Date\: 2004-03-07 16\:19+0000\nPO-Revision-Date\: YEAR-MO-DA HO\:MI+ZONE\nLast-Translator\: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team\: LANGUAGE <LL@li.org>\nMIME-Version\: 1.0\nContent-Type\: text/plain; charset\=UTF-8\nContent-Transfer-Encoding\: 8bit\n
+!=Project-Id-Version\: PACKAGE VERSION\nReport-Msgid-Bugs-To\: \nPOT-Creation-Date\: 2004-03-07 18\:02+0000\nPO-Revision-Date\: YEAR-MO-DA HO\:MI+ZONE\nLast-Translator\: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team\: LANGUAGE <LL@li.org>\nMIME-Version\: 1.0\nContent-Type\: text/plain; charset\=UTF-8\nContent-Transfer-Encoding\: 8bit\n
 
 #: src/jfreerails/launcher/ClientOptionsJPanel.java:47
 !Please\ set\ a\ name\ for\ your\ player=

@@ -33,7 +33,7 @@ import javax.swing.SwingUtilities;
  * button)</h2>
  * Client code should cause the relevant parts to be redrawn.
  * <h2>A refresh is caused by a world model change</h2>
- * Client code should call repaint()
+ * Client code should call repaint() for the changed components.
  *
  * <p>Note that redraws are inefficient at the moment due to differing platform
  * behaviour, e.g. OS X provides native double buffering so buffering in Java
@@ -42,9 +42,9 @@ import javax.swing.SwingUtilities;
  * which is wasteful.
  */
 final public class ScreenHandler {
+    public static final int NUM_BUFFERS = 2;
     public static final int FULL_SCREEN = 0;
     public static final int WINDOWED_MODE = 1;
-    public static final int FIXED_SIZE_WINDOWED_MODE = 2;
     public final JFrame frame;
     DisplayMode displayMode;
     private UpdatedComponent updatedComponent;
@@ -54,6 +54,8 @@ final public class ScreenHandler {
     private int oldHeight;
     private BufferStrategy bufferStrategy;
     private GraphicsConfiguration graphicsConfig;
+    private boolean runningOSX = "Mac OS X".equals
+	(System.getProperty("os.name"));
 
     /**
      * Game starts off in WINDOWED_MODE by default
@@ -117,19 +119,6 @@ final public class ScreenHandler {
             goFullScreen(f, displayMode);
             break;
         case WINDOWED_MODE:
-            frame.show();
-            break;
-        case FIXED_SIZE_WINDOWED_MODE:
-            /* We need to make the frame not displayable before calling
-	     * setUndecorated(true) otherwise a
-	     * java.awt.IllegalComponentStateException will get thrown.
-            */
-            if (frame.isDisplayable()) {
-                frame.dispose();
-            }
-            frame.setUndecorated(true);
-            frame.setResizable(false);
-            frame.setSize(640, 480);
             frame.show();
             break;
         default:
@@ -213,24 +202,46 @@ final public class ScreenHandler {
 	    }
 
 	    bufferStrategy = frame.getBufferStrategy();
+	    /* OS X rendering appears to be different */
+	    if (runningOSX) {
+		do {
+		    /* mark everything in the layers above as being dirty */
+		    JLayeredPane lp = frame.getLayeredPane();
+		    markLayerDirty(lp, lp.DRAG_LAYER.intValue());
+		    markLayerDirty(lp, lp.MODAL_LAYER.intValue());
+		    markLayerDirty(lp, lp.PALETTE_LAYER.intValue());
+		    markLayerDirty(lp, lp.POPUP_LAYER.intValue());
+
+		    Graphics g = bufferStrategy.getDrawGraphics();
+		    Insets i = frame.getInsets();
+		    g.translate(i.left, i.top);
+		    updatedComponent.doFrameUpdate(g);
+		    /* draw everything in the layers above the main layer */
+		    RepaintManager.currentManager(frame).paintDirtyRegions();
+
+		    g.dispose();
+		} while (bufferStrategy.contentsLost());
+		bufferStrategy.show();
+		return;
+	    }
+
+	    /* non-OS X rendering code */
+            int w = frame.getWidth();
+            int h = frame.getHeight();
+            if (w != oldWidth || h != oldHeight) {
+                oldWidth = w;
+                oldHeight = h;
+                frame.createBufferStrategy(NUM_BUFFERS);
+                bufferStrategy = frame.getBufferStrategy();
+            }
 	    do {
-		/* mark everything in the layers above as being dirty */
-		JLayeredPane lp = frame.getLayeredPane();
-		markLayerDirty(lp, lp.DRAG_LAYER.intValue());
-		markLayerDirty(lp, lp.MODAL_LAYER.intValue());
-		markLayerDirty(lp, lp.PALETTE_LAYER.intValue());
-		markLayerDirty(lp, lp.POPUP_LAYER.intValue());
-
+		/* draw the whole JFrame */
 		Graphics g = bufferStrategy.getDrawGraphics();
-		Insets i = frame.getInsets();
-		g.translate(i.left, i.top);
-		updatedComponent.doFrameUpdate(g);
-		/* draw everything in the layers above the main layer */
-		RepaintManager.currentManager(frame).paintDirtyRegions();
-
+		frame.paint(g);
 		g.dispose();
 	    } while (bufferStrategy.contentsLost());
-//	    bufferStrategy.show();
+	    bufferStrategy.show();
+	    return;
 	}
     };
 
