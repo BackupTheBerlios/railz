@@ -60,9 +60,15 @@ public class ChangeBuildingMove implements MapUpdateMove {
 	    TrackTile tt = w.getTile(point).getTrackTile();
 	    BuildingType bType = (BuildingType) w.get(KEY.BUILDING_TYPES,
 		    newTile.getType(), Player.AUTHORITATIVE);
-	    if (tt != null && !bType.isTrackLayoutValid
+	    if (tt != null) {
+	       if (!bType.isTrackLayoutValid
 		    (tt.getTrackConfiguration()))
-		return MoveStatus.moveFailed("Illegal track layout");
+		   return MoveStatus.moveFailed("Illegal track layout");
+
+	       if (!bType.canBuildHere(w, point))
+		   return MoveStatus.moveFailed("Cannot build on this " +
+			   "terrain");
+	    }
 	}
 
 	return MoveStatus.MOVE_OK;
@@ -82,9 +88,14 @@ public class ChangeBuildingMove implements MapUpdateMove {
 	    TrackTile tt = w.getTile(point).getTrackTile();
 	    BuildingType bType = (BuildingType) w.get(KEY.BUILDING_TYPES,
 		    oldTile.getType(), Player.AUTHORITATIVE);
-	    if (tt != null && !bType.isTrackLayoutValid
-		    (tt.getTrackConfiguration()))
-		return MoveStatus.moveFailed("Illegal track layout");
+	    if (tt != null) {
+	       if (!bType.isTrackLayoutValid (tt.getTrackConfiguration()))
+		   return MoveStatus.moveFailed("Illegal track layout");
+
+	       if (!bType.canBuildHere(w, point))
+		   return MoveStatus.moveFailed("Cannot build on this " +
+			   "terrain");
+	    }
 	}
 
 	return MoveStatus.MOVE_OK;

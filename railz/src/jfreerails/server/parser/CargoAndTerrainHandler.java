@@ -124,4 +124,19 @@ public interface CargoAndTerrainHandler {
 
     public void handle_trackPieceTemplate(final Attributes meta) throws
 	SAXException;
+
+    public void start_NeighbouringTerrainTypes(final Attributes meta) throws
+	SAXException;
+
+    public void end_NeighbouringTerrainTypes() throws SAXException;
+
+    public void start_AcceptableTerrainTypes(final Attributes meta) throws
+	SAXException;
+
+    public void end_AcceptableTerrainTypes() throws SAXException;
+
+    public void handle_TerrainType(final Attributes meta) throws SAXException;
+
+    public void handle_AllTerrainTypes(final Attributes meta) throws
+	SAXException;
 }

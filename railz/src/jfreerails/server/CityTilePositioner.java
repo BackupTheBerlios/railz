@@ -32,10 +32,13 @@
  */
 package jfreerails.server;
 
+import java.awt.Point;
+
 import java.util.ArrayList;
 import jfreerails.world.city.*;
 import jfreerails.world.terrain.TerrainType;
 import jfreerails.world.building.*;
+import jfreerails.world.player.*;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.World;
 import jfreerails.world.track.FreerailsTile;
@@ -91,39 +94,45 @@ class CityTilePositioner {
     }
 
     private int calcNumberOfInitialTiles(int max) {
-        int max_tiles = max;
-        double low = 0;
-        double high;
-        double myRand = Math.random();
-
-        for (int i = 1; i < max_tiles + 1; i++) {
-            high = (double)i / max_tiles;
-
-            if ((myRand >= low) && (myRand < high)) {
-                return i;
-            }
-
-            low = high;
-        }
-
-        return 1;
+	return randomSelector(max);
     }
 
-    private int randomSelector(int max, double randValue) {
-        double low = 0;
-        double high;
+    private Integer selectBuildingType(int x, int y, int tileCategory) {
+	final int MAX_TRIES = 3;
+	int i = 0;
+	Integer typeToAdd = null;
+	do {
+	    switch (tileCategory) {
+		case BuildingType.CATEGORY_INDUSTRY:
+		    typeToAdd = (Integer)
+			industryTerrainTypes.get
+			(randomSelector(industryTerrainTypes.size()) - 1);
+		    break;
+		case BuildingType.CATEGORY_URBAN:
+		    typeToAdd = (Integer)
+			urbanTerrainTypes.get
+			(randomSelector(urbanTerrainTypes.size()) - 1);
+		    break;
+		case BuildingType.CATEGORY_RESOURCE:
+		    typeToAdd = (Integer)
+			resourceTerrainTypes.get
+			(randomSelector(resourceTerrainTypes.size()) - 1);
+		    break;
+	    }
+	    BuildingType bt = (BuildingType) w.get(KEY.BUILDING_TYPES,
+		    typeToAdd.intValue(), Player.AUTHORITATIVE);
+	    if (bt.canBuildHere(w, new Point(x,y)))
+		return typeToAdd;
+	    i++;
+	} while (i < MAX_TRIES);
+	return null;
+    }
 
-        for (int i = 1; i < max + 1; i++) {
-            high = (double)i / max;
-
-            if ((randValue >= low) && (randValue < high)) {
-                return i;
-            }
-
-            low = high;
-        }
-
-        return 1;
+	/**
+	 * @return a random value between 1 and max inclusive
+	 */
+    private int randomSelector(int max) {
+	return ((int) (Math.random() * max)) + 1;
     }
 
     private int getCategoryForTile(int x, int y) {
@@ -160,40 +169,28 @@ class CityTilePositioner {
                 for (int X = cityX - 2; X < cityX + 3; X++) {
                     if (w.boundsContain(X, Y)) {
                         if (Math.random() < tileProbability) {
-			    //tile is selected, now select a tile to build if
-			    //the tile has a Country terrain, then build a
-			    //tile on it, otherwise ignore
-			    /*
-			     * TODO site should be better selected on basis of
-			     * terrain type - e.g. harbours should be next to
-			     * ocean tiles etc.
-			     */
-                            if (getCategoryForTile(X, Y) ==
-				    TerrainType.CATEGORY_COUNTRY) {
-                                Integer typeToAdd = null;
-                                int tileTypeToBuild = randomSelector(3,
-                                        Math.random());
-                                double myRand = Math.random();
+			    Integer typeToAdd = null;
+			    int tileTypeToBuild = randomSelector(3);
+			    double myRand = Math.random();
 
-                                if ((tileTypeToBuild == 1) && (urbanTiles > 0)) {
-                                    urbanTiles--;
-                                    typeToAdd = (Integer)urbanTerrainTypes.get(randomSelector(
-                                                urbanTerrainTypes.size(), myRand) -
-                                            1);
-                                } else if ((tileTypeToBuild == 2) &&
+			    if ((tileTypeToBuild == 1) && (urbanTiles > 0)) {
+				urbanTiles--;
+				typeToAdd = selectBuildingType(X, Y,
+					BuildingType.CATEGORY_URBAN);
+			    } else if ((tileTypeToBuild == 2) &&
                                         (industryTiles > 0) &&
                                         industriesNotAtCity.size() > 0) {
                                     /* We only want one of any industry type in the city.*/
-                                    int i = randomSelector(industriesNotAtCity.size(),
-                                            myRand) - 1;
-                                    typeToAdd = (Integer)industriesNotAtCity.remove(i);
+				    int i = randomSelector
+					(industriesNotAtCity.size()) - 1;
+				    typeToAdd = selectBuildingType(X, Y,
+					    BuildingType.CATEGORY_INDUSTRY);
                                     industryTiles--;
                                 } else if ((tileTypeToBuild == 3) &&
                                         (resourceTiles > 0)) {
                                     resourceTiles--;
-                                    typeToAdd = (Integer)resourceTerrainTypes.get(randomSelector(
-                                                resourceTerrainTypes.size(),
-                                                myRand) - 1);
+                                    typeToAdd = selectBuildingType(X, Y,
+					    BuildingType.CATEGORY_RESOURCE);
                                 }
 
                                 if (typeToAdd != null) {
@@ -204,22 +201,10 @@ class CityTilePositioner {
                                     w.setTile(X, Y, tile);
                                 }
                             }
-
-                            //end 'Country' check
-                        }
-                    }
-
-                    //end bounds check
-                }
-
-                //end inner loop
-            }
-
-            //end outer loop
+                    } //end bounds check
+                } //end inner loop
+            } //end outer loop
             loopCount += 1;
-        }
-
-        //end while
+        } //end while
     }
-    //end calculateAndPositionTiles method
-} //end CityTilePositioner class
+}

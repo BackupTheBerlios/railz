@@ -45,9 +45,21 @@
     id ID #REQUIRED
     baseValue CDATA #REQUIRED
   >
+  
+<!ELEMENT TerrainType EMPTY>
+<!ATTLIST TerrainType 
+	terrainType CDATA #REQUIRED>
+
+<!ELEMENT AllTerrainTypes EMPTY>
+
+<!ELEMENT AcceptableTerrainTypes (TerrainType*|AllTerrainTypes)>
+
+<!ELEMENT NeighbouringTerrainTypes (TerrainType*|AllTerrainTypes)>
 
 <!ELEMENT Building_Types (Building_Type)*>
-<!ELEMENT Building_Type (TrackPieceTemplate|Converts|Consumes|Produces)*>
+
+<!ELEMENT Building_Type (AcceptableTerrainTypes, NeighbouringTerrainTypes,
+       	(TrackPieceTemplate|Converts|Consumes|Produces)*)>
 <!ATTLIST Building_Type
 	id ID #REQUIRED
 	baseValue CDATA #REQUIRED

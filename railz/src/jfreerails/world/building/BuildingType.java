@@ -16,7 +16,10 @@
  */
 package jfreerails.world.building;
 
+import java.awt.Point;
+
 import jfreerails.world.common.*;
+import jfreerails.world.top.*;
 /**
  * Defines a type of building.
  * @author rtuck99@users.berlios.de
@@ -30,11 +33,39 @@ public class BuildingType implements FreerailsSerializable {
     private final String name;
     private final int stationRadius;
     private final int category;
+    private final boolean[] acceptableTerrainTypes;
+    private final boolean[] neighbouringTerrainTypes;
 
     public static final int CATEGORY_INDUSTRY = 0;
     public static final int CATEGORY_RESOURCE = 1;
     public static final int CATEGORY_URBAN = 2;
     public static final int CATEGORY_STATION = 3;
+
+    /**
+     * @return true if the terrain types on the squares near this tile are OK
+     * to build on.
+     * @param p position at which to build
+     */
+    public boolean canBuildHere(World w, Point p) {
+	int terrainType = w.getTile(p).getTerrainTypeNumber();
+	if (! acceptableTerrainTypes[terrainType])
+	    return false;
+
+	int xmin = (p.x == 0) ? 0 : p.x - 1;
+	int ymin = (p.y == 0) ? 0 : p.y - 1;
+	int xmax = (p.x == w.getMapWidth()) ? w.getMapWidth() : p.x + 1;
+	int ymax = (p.y == w.getMapHeight()) ? w.getMapHeight() : p.y + 1;
+	for (int x = xmin; x <= xmax; x++) {
+	    for (int y = ymin; y <= ymax; y++) {
+		if (x == p.x && y == p.y)
+		    continue;
+		terrainType = w.getTile(x, y).getTerrainTypeNumber();
+		if (neighbouringTerrainTypes[terrainType])
+		    return true;
+	    }
+	}
+	return false;
+    }
 
     private void setTrackLayouts(byte[] trackLayouts) {
 	for (int i = 0; i < trackLayouts.length; i++) {
@@ -47,7 +78,8 @@ public class BuildingType implements FreerailsSerializable {
     }
 
     public BuildingType(String name, long baseValue, int stationRadius, byte[]
-	    validTrackLayouts) {
+	    validTrackLayouts, boolean[] acceptableTerrainTypes, boolean[]
+	    neighbouringTerrainTypes) {
 	this.name = name;
 	this.baseValue = baseValue;
 	this.stationRadius = stationRadius;
@@ -56,11 +88,15 @@ public class BuildingType implements FreerailsSerializable {
 	conversion = new Conversion[0];
 	category = CATEGORY_STATION;
 	setTrackLayouts(validTrackLayouts);
+	this.neighbouringTerrainTypes = neighbouringTerrainTypes;
+	this.acceptableTerrainTypes = acceptableTerrainTypes;
     }
 
     public BuildingType(String name, Production[] production, Consumption[]
 	    consumption, Conversion[] conversion, long baseValue, int
-	    category, byte[] validTrackLayouts) {
+	    category, byte[] validTrackLayouts, boolean[]
+	    acceptableTerrainTypes,  boolean[]
+	    neighbouringTerrainTypes) {
 	this.name = name;
 	this.production = production;
 	this.consumption = consumption;
@@ -69,6 +105,8 @@ public class BuildingType implements FreerailsSerializable {
 	this.category = category;
 	stationRadius = 0;
 	setTrackLayouts(validTrackLayouts);
+	this.neighbouringTerrainTypes = neighbouringTerrainTypes;
+	this.acceptableTerrainTypes = acceptableTerrainTypes;
     }
 
     public Production[] getProduction() {

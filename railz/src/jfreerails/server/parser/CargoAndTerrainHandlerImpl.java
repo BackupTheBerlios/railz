@@ -24,6 +24,7 @@
  */
 package jfreerails.server.parser;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,7 +39,6 @@ import jfreerails.world.top.KEY;
 import jfreerails.world.top.World;
 import jfreerails.world.train.TransportCategory;
 import jfreerails.world.player.Player;
-
 
 public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
     private final World world;
@@ -56,6 +56,9 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
     ArrayList typeProduces = new ArrayList();
     ArrayList typeConverts = new ArrayList();
     ArrayList trackTemplates = new ArrayList();
+    private ArrayList neighbouringTerrainTypes = new ArrayList();
+    private ArrayList acceptableTerrainTypes = new ArrayList();
+    private ArrayList terrainTypes;
     boolean isStation;
     long maintenance;
     int stationRadius;
@@ -175,13 +178,26 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
 	    tts[i] = ((Byte) trackTemplates.get(i)).byteValue();
 	}
 	    
+	boolean[] att = new boolean[world.size(KEY.TERRAIN_TYPES,
+		Player.AUTHORITATIVE)];
+	boolean[] ntt = new boolean[world.size(KEY.TERRAIN_TYPES,
+	    Player.AUTHORITATIVE)];
+
+	for (int i = 0; i < acceptableTerrainTypes.size(); i++)
+	    att[((Integer) acceptableTerrainTypes.get(i)).intValue()] = true;
+
+	for (int i = 0; i < neighbouringTerrainTypes.size(); i++)
+	    ntt[((Integer) neighbouringTerrainTypes.get(i)).intValue()] = true;
+	
 	if (isStation) {
 	    buildingType = new BuildingType(tileID, tileBaseValue,
-		    stationRadius, tts);
+		    stationRadius, tts, att, ntt);
 	} else {
 	    buildingType = new BuildingType(tileID, produces,
-		    consumes, converts, tileBaseValue, tileCategory, tts);
+		    consumes, converts, tileBaseValue, tileCategory, tts, att,
+		    ntt);
 	}
+
 	world.add(KEY.BUILDING_TYPES, buildingType, Player.AUTHORITATIVE);
     }
 
@@ -270,4 +286,46 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
 	    trackTemplates.add(new
 		    Byte(CompassPoints.nineBitToEightBit(trackTemplate)));
 	}
+
+    public void start_NeighbouringTerrainTypes(final Attributes meta) throws
+	SAXException {
+	    neighbouringTerrainTypes.clear();
+	    terrainTypes = neighbouringTerrainTypes;
+	}
+
+    public void end_NeighbouringTerrainTypes() throws
+	SAXException {
+	    // do nothing
+	}
+
+    public void start_AcceptableTerrainTypes (final Attributes meta) throws
+	SAXException {
+	    acceptableTerrainTypes.clear();
+	    terrainTypes = acceptableTerrainTypes;
+	}
+
+    public void end_AcceptableTerrainTypes () throws SAXException {
+	// do nothing
+    }
+
+    public void handle_AllTerrainTypes(final Attributes meta) throws
+	SAXException {
+	    int n = world.size(KEY.TERRAIN_TYPES, Player.AUTHORITATIVE);
+	    for (int i = 0; i < n; i++) {
+		terrainTypes.add(new Integer(i));
+	    }
+	}
+
+    public void handle_TerrainType(final Attributes meta) throws SAXException {
+	int n = world.size(KEY.TERRAIN_TYPES, Player.AUTHORITATIVE);
+	String type = meta.getValue("terrainType");
+	for (int i = 0; i < n; i++) {
+	    if (((TerrainType) world.get(KEY.TERRAIN_TYPES, i,
+			    Player.AUTHORITATIVE)).getTerrainTypeName().
+		    equals(type)) {
+		terrainTypes.add(new Integer(i));
+		break;
+	    }
+	}
+    }
 }

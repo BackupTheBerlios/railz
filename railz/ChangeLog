@@ -1,3 +1,8 @@
+May 13, 2004:
+-------------
+Fix for bug 33 - harbours should be placed next to sea
+Fix for bug 29 - Blue blobs on map near cities
+Update docs for new domain name
 May 09, 2004:
 -------------
 Rendering bugs and train motion bugs fixed.
