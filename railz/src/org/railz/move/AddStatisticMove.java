@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003 Luke Lindsay
+ * Copyright (C) 2004 Robert Tuck
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -14,34 +14,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+package org.railz.move;
 
-/*
- * TypeID.java
- *
- * Created on 22 August 2003, 20:20
- */
-package org.railz.world.top;
-
-
+import org.railz.world.common.*;
+import org.railz.world.player.*;
+import org.railz.world.top.*;
 /**
- *  This class stores a list KEY and an item index.
- * @author  Luke Lindsay
+ * Add a statistic class for a given player.
  */
-public class TypeID {
-    private final int id;
-    private final KEY key;
-
-    /** Creates a new instance of TypeID */
-    public TypeID(int id, KEY key) {
-        this.id = id;
-        this.key = key;
-    }
-
-    public KEY getKey() {
-        return key;
-    }
-
-    public int getID() {
-        return id;
+public class AddStatisticMove extends AddItemToListMove {
+    public AddStatisticMove(ObjectKey ok, Statistic s) {
+	super(KEY.STATISTICS, ok.index, s, ok.principal);
     }
 }
