@@ -35,11 +35,13 @@ import javax.swing.table.*;
 
 import org.railz.client.model.ModelRoot;
 import org.railz.client.renderer.ViewLists;
+import org.railz.util.*;
 import org.railz.world.common.*;
 import org.railz.world.player.*;
 import org.railz.world.top.*;
 import org.railz.world.train.*;
 import org.railz.world.track.*;
+
 /**
  * This JPanel lets the user select an engine from a list.
  *
@@ -280,7 +282,7 @@ public class SelectEngineJPanel extends javax.swing.JPanel {
             String text =
             "<html><body>"
             + (isSelected ? "<strong>" : "")
-            + engine.getEngineTypeName() + "<br>"
+            + Resources.get(engine.getEngineTypeName()) + "<br>"
 	    + "price: $" + engine.getPrice() + "<br>" +
 	    "maintenance: $" + engine.getMaintenance() + "/year<br>"
 	    + "fuel consumption: " + engine.getAnnualFuelConsumption() +

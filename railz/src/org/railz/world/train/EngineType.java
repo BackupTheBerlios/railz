@@ -61,6 +61,7 @@ final public class EngineType implements FreerailsSerializable {
         return maintenance;
     }
 
+    /** @return a unique resource key to the name of this engine */
     public String getEngineTypeName() {
         return engineTypeName;
     }

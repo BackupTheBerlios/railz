@@ -2,6 +2,7 @@ January 1, 2005:
 ----------------
 Added workaround for Crimson XML parser where it was failing to parse DTDs
 referenced via relative URLs in jar files.
+Added configurable start date and simulated time lapse rate.
 December 30, 2004:
 ------------------
 Adjusted physics model. Added scripting engine, added configurable EngineType

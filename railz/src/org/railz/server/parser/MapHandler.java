@@ -30,31 +30,34 @@ import org.railz.world.player.*;
 public class MapHandler extends DefaultHandler {
     private CitySAXParser cityParser;
     private ScriptingEventHandler scriptingEventHandler;
+    private CalendarHandler calendarHandler;
     private String currentElement = null;
 
     public MapHandler(World w) throws SAXException {
 	cityParser = new CitySAXParser(w);
 	scriptingEventHandler = new ScriptingEventHandler(w);
+	calendarHandler = new CalendarHandler(w);
     }
 
     public void startElement(String namespaceURI, String sName, String qName,
-        Attributes attrs) throws SAXException {
+	    Attributes attrs) throws SAXException {
 	try {
-	if (currentElement == null) {
-	    if (qName.equals("Cities")) {
-		currentElement="Cities";
-		startElement(namespaceURI, sName, qName, attrs);
-	    } else if (qName.equals("Events")) {
-		currentElement = qName;
-		startElement(namespaceURI, sName, qName, attrs);
+	    if (currentElement == null) {
+		if (qName.equals("Cities") ||
+			qName.equals("Events") ||
+			qName.equals("Calendar")) {
+		    currentElement = qName;
+		    startElement(namespaceURI, sName, qName, attrs);
+		}
+		return;
+	    } 
+	    if ("Cities".equals(currentElement)) {
+		cityParser.startElement(sName, qName, attrs);
+	    } else if ("Events".equals(currentElement)) {
+		scriptingEventHandler.startElement(sName, qName, attrs);
+	    } else if ("Calendar".equals(currentElement)) {
+		calendarHandler.startElement(sName, qName, attrs);
 	    }
-	    return;
-	} 
-	if ("Cities".equals(currentElement)) {
-	    cityParser.startElement(sName, qName, attrs);
-	} else if ("Events".equals(currentElement)) {
-	    scriptingEventHandler.startElement(sName, qName, attrs);
-	}
 	} catch (Exception e) {
 	    System.out.println ("startElement caught " + e.getMessage());
 	    e.printStackTrace();
@@ -64,20 +67,23 @@ public class MapHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws
 	SAXException {
 	    try {
-	if ("Cities".equals(currentElement)) {
-	    cityParser.endElement(localName, qName);
-	} else if ("Events".equals(currentElement)) {
-	    scriptingEventHandler.endElement(localName, qName);
-	}
-	if ("Cities".equals(qName) ||
-		"Events".equals(qName)) {
-	    currentElement = null;
-	}
+		if ("Cities".equals(currentElement)) {
+		    cityParser.endElement(localName, qName);
+		} else if ("Events".equals(currentElement)) {
+		    scriptingEventHandler.endElement(localName, qName);
+		} else if ("Calendar".equals(currentElement)) {
+		    calendarHandler.endElement(localName, qName);
+		}
+		if ("Cities".equals(qName) ||
+			"Events".equals(qName) ||
+			"Calendar".equals(qName)) {
+		    currentElement = null;
+		}
 	    } catch (Exception e) {
 		System.out.println("endElement caught exception " +
 			e.getMessage());
 		e.printStackTrace();
 	    }
-    }
+	}
 }
 

@@ -40,4 +40,10 @@
 	y CDATA #REQUIRED
 >
 
-<!ELEMENT Map (Cities|Events)*>
+<!ELEMENT Calendar EMPTY>
+<!ATTLIST Calendar
+	ticksPerDay CDATA #REQUIRED
+	startYear CDATA #REQUIRED
+>
+
+<!ELEMENT Map (Calendar, (Cities|Events)*)>

@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
-!=Project-Id-Version\: PACKAGE VERSION\nReport-Msgid-Bugs-To\: \nPOT-Creation-Date\: 2004-12-31 13\:21+0000\nPO-Revision-Date\: YEAR-MO-DA HO\:MI+ZONE\nLast-Translator\: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team\: LANGUAGE <LL@li.org>\nMIME-Version\: 1.0\nContent-Type\: text/plain; charset\=UTF-8\nContent-Transfer-Encoding\: 8bit\n
+!=Project-Id-Version\: PACKAGE VERSION\nReport-Msgid-Bugs-To\: \nPOT-Creation-Date\: 2005-01-01 22\:02+0000\nPO-Revision-Date\: YEAR-MO-DA HO\:MI+ZONE\nLast-Translator\: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team\: LANGUAGE <LL@li.org>\nMIME-Version\: 1.0\nContent-Type\: text/plain; charset\=UTF-8\nContent-Transfer-Encoding\: 8bit\n
 
 #: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/scenario/CashDash.java:69
 #: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/scenario/SandBox.java:45
@@ -64,3 +64,8 @@
 # which cannot be picked up by xgettext (Usually because the resource strings
 # are defined in .xml files.
 !WaterTower=
+
+# EngineType names
+!Norris=
+
+!Grasshopper=
