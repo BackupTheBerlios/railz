@@ -2,12 +2,12 @@ package jfreerails.world.train;
 
 import jfreerails.world.common.FreerailsSerializable;
 
-
-/** This class represents an engine type, for example 'Grass Hopper'.  It encapsulates
- * the properties that are common to all engines of the same type.
+/**
+ * This class represents an engine type, for example 'Grass Hopper'.  It
+ * encapsulates the properties that are common to all engines of the same
+ * type.
  *
  * @author Luke
- *
  */
 final public class EngineType implements FreerailsSerializable {
     private final String engineTypeName;

@@ -27,31 +27,11 @@ class TaxationMoveFactory {
 	    FreerailsPrincipal p, Economy economy, GameTime now) {
 	BankAccount account = (BankAccount) (world.get(KEY.BANK_ACCOUNTS, 0,
 		    p));
-	long income = 0;
-	for (int i = 0; i < account.size(); i++) {
-	    Transaction t = account.getTransaction(i);
-	    long transactionTime = t.getTime().getTime();
-	    if (transactionTime < startTicks || transactionTime >=
-		    endTicks)
-		continue;
-	    switch (t.getCategory()) {
-		// expenses are -ve and deducted from total income
-		case Transaction.CATEGORY_REVENUE:
-		case Transaction.CATEGORY_COST_OF_SALES:
-		case Transaction.CATEGORY_OPERATING_EXPENSE:
-		case Transaction.CATEGORY_INTEREST:
-		case Transaction.CATEGORY_CAPITAL_GAIN:
-		    income += t.getValue();
-		    break;
-		default:
-		    // ignore
-	    }
-	}
-	if (income < 0) {
-	    // no need to deduct tax
-	    return;
-	}
-	long taxDue = income * economy.getIncomeTaxRate() / 100;
+	BankAccountViewer bav = new BankAccountViewer(world);
+	bav.setBankAccount(account);
+	long taxDue = bav.getIncomeTaxLiability();
+	if (taxDue < 0)
+	    taxDue = 0;
 	Bill taxBill = new Bill(now, taxDue, Bill.INCOME_TAX);
 	AddTransactionMove taxMove = new AddTransactionMove(0, taxBill, false,
 		p);

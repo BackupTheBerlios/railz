@@ -21,6 +21,7 @@ public abstract class Transaction implements FreerailsSerializable {
     public static final int CATEGORY_CAPITAL_EXPENSE = 5;
     public static final int CATEGORY_TAX = 6;
     public static final int CATEGORY_CAPITAL_GAIN = 7;
+    public static final int CATEGORY_OUTSIDE_INVESTMENT = 8;
 
     public static final int SUBCATEGORY_NO_SUBCATEGORY = 0;
 

@@ -87,6 +87,10 @@ final public class NullTrackType implements jfreerails.world.track.TrackRule {
         return 0;
     }
 
+    public long getAssetValue() {
+	return 0;
+    }
+
     public long getMaintenanceCost() {
         return 0;
     }

@@ -4,10 +4,11 @@
  */
 package jfreerails.move;
 
+import jfreerails.world.common.GameTime;
+import jfreerails.world.player.Player;
 import jfreerails.world.station.ProductionAtEngineShop;
 import jfreerails.world.station.StationModel;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.WagonAndEngineTypesFactory;
+import jfreerails.world.top.*;
 
 
 /**
@@ -24,11 +25,15 @@ public class ChangeProductionAtEngineShopMoveTest extends AbstractMoveTestCase {
 
     protected void setUp() {
         super.setUp();
-        getWorld().add(KEY.STATIONS, new StationModel(),
+	GameTime gt = (GameTime) getWorld().get(ITEM.TIME, Player.AUTHORITATIVE);
+        getWorld().add(KEY.STATIONS,
+	       	new StationModel(0, 0, "No name", 0, 0, gt),
+	       	testPlayer.getPrincipal());
+        getWorld().add(KEY.STATIONS,
+	       	new StationModel(0, 0, "No name", 0, 0, gt),
 		testPlayer.getPrincipal());
-        getWorld().add(KEY.STATIONS, new StationModel(),
-		testPlayer.getPrincipal());
-        getWorld().add(KEY.STATIONS, new StationModel(),
+        getWorld().add(KEY.STATIONS, 
+		new StationModel(0, 0, "No name", 0, 0, gt),
 		testPlayer.getPrincipal());
 
         WagonAndEngineTypesFactory wetf = new WagonAndEngineTypesFactory();

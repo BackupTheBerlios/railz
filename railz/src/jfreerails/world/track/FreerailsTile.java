@@ -92,20 +92,4 @@ public class FreerailsTile implements TrackPiece, TerrainTile,
     public void setOwner(FreerailsPrincipal o) {
 	owner = o;
     }
-
-    /**
-     * Calculates the value of the tile based on the base value of this tile,
-     * adjusted by an aaverage of the values of the surrounding tiles.
-     * TODO perform the averaging...
-     * @param tile tile for which to calculate value
-     * @param x x coord for the tile for which to calculate the value
-     * @param y y coord for the tile for which to calculate the value
-     * @param w reference to the game world.
-     */
-    public long getTerrainValue(ReadOnlyWorld w, int x, int y) {
-	TerrainType t = (TerrainType) w.get(KEY.TERRAIN_TYPES, terrainType,
-		Player.AUTHORITATIVE);
-
-	return t.getBaseValue();
-    }
 }

@@ -1,7 +1,7 @@
 package jfreerails.world.train;
 
 import java.util.Arrays;
-import jfreerails.world.common.FreerailsSerializable;
+import jfreerails.world.common.*;
 
 
 public class TrainModel implements FreerailsSerializable {
@@ -11,10 +11,22 @@ public class TrainModel implements FreerailsSerializable {
     int engineType = 0;
     final int[] wagonTypes;
     private int cargoBundleNumber;
+    private GameTime creationDate;
 
+    /**
+     * copy constructor with original schedule, cargo, position, but new
+     * engine and wagons
+     */
     public TrainModel getNewInstance(int newEngine, int[] newWagons) {
         return new TrainModel(newEngine, newWagons, this.getPosition(),
-            this.getScheduleID(), this.getCargoBundleNumber());
+            this.getScheduleID(), this.getCargoBundleNumber(), creationDate);
+    }
+
+    /**
+     * @return the date at which the engine was created
+     */
+    public GameTime getCreationDate() {
+	return creationDate;
     }
 
     /**
@@ -23,18 +35,14 @@ public class TrainModel implements FreerailsSerializable {
      * @param wagons array of indexes into the WAGON_TYPES table
      * @param p initial position of the train on the map.
      */
-    public TrainModel(int engine, int[] wagons, TrainPositionOnMap p,
-        int scheduleID, int BundleId) { //World world){
-        this.engineType = engine;
-        this.wagonTypes = wagons;
-        trainposition = p;
-        this.scheduleID = scheduleID;
-        this.cargoBundleNumber = BundleId;
-    }
-
-    public TrainModel(int[] wagons, int BundleId) {
-        this.wagonTypes = wagons;
-        this.cargoBundleNumber = BundleId;
+    public TrainModel(int engine, int[] wagons, TrainPositionOnMap p, int
+	    scheduleID, int bundleId, GameTime creationDate) {
+	engineType = engine;
+	wagonTypes = wagons;
+	trainposition = p;
+	this.scheduleID = scheduleID;
+	cargoBundleNumber = bundleId;
+	this.creationDate = creationDate;
     }
 
     public TrainModel(int engine, int[] wagons, TrainPositionOnMap p,
@@ -43,11 +51,6 @@ public class TrainModel implements FreerailsSerializable {
         this.wagonTypes = wagons;
         trainposition = p;
         this.scheduleID = scheduleID;
-    }
-
-    public TrainModel(int engine) {
-        this.engineType = engine;
-        wagonTypes = new int[] {0, 1, 2};
     }
 
     public int getLength() {
@@ -77,6 +80,9 @@ public class TrainModel implements FreerailsSerializable {
         trainposition = s;
     }
 
+    /**
+     * @return an index into the ENGINE_TYPES database
+     */
     public int getEngineType() {
         return engineType;
     }

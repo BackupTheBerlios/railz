@@ -8,10 +8,8 @@ import jfreerails.move.Move;
 import jfreerails.move.MoveStatus;
 import jfreerails.world.common.FreerailsPathIterator;
 import jfreerails.move.ChangeTrainPositionMove;
-import jfreerails.world.common.IntLine;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.World;
-import jfreerails.world.top.WorldImpl;
+import jfreerails.world.common.*;
+import jfreerails.world.top.*;
 import jfreerails.world.train.PathWalker;
 import jfreerails.world.train.TrainModel;
 import jfreerails.world.train.TrainPositionOnMap;
@@ -41,6 +39,8 @@ public class TrainMoverTest extends TestCase {
     protected void setUp() {
 	w = new WorldImpl(0, 0);
 	points = new ArrayList();
+	GameTime now = new GameTime(0);
+	w.set(ITEM.TIME, now, Player.AUTHORITATIVE);
 
 	points.add(new Point(0, 0));
 	points.add(new Point(80, 80));
@@ -48,7 +48,7 @@ public class TrainMoverTest extends TestCase {
 
 	w.add(KEY.PLAYERS, testPlayer, Player.AUTHORITATIVE);
 
-	TrainModel train = new TrainModel(0);
+	TrainModel train = new TrainModel(0, new int[0], null, 0, 0, now);
 
 	w.add(KEY.TRAINS, train, testPlayer.getPrincipal());
 

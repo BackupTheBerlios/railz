@@ -4,8 +4,10 @@
  */
 package jfreerails.move;
 
+import jfreerails.world.common.GameTime;
+import jfreerails.world.player.Player;
 import jfreerails.world.station.StationModel;
-import jfreerails.world.top.KEY;
+import jfreerails.world.top.*;
 
 
 /**
@@ -13,10 +15,20 @@ import jfreerails.world.top.KEY;
  *
  */
 public class CompositeMoveTest extends AbstractMoveTestCase {
-    StationModel station1 = new StationModel(1, 1, "station1", 10, 0);
-    StationModel station2 = new StationModel(2, 3, "station2", 10, 0);
-    StationModel station3 = new StationModel(3, 3, "station3", 10, 0);
-    StationModel station4 = new StationModel(4, 4, "station4", 10, 0);
+    StationModel station1;
+    StationModel station2;
+    StationModel station3;
+    StationModel station4;
+
+    public void setUp() {
+	super.setUp();
+	GameTime now = (GameTime) getWorld().get(ITEM.TIME,
+		Player.AUTHORITATIVE);
+	station1 = new StationModel(1, 1, "station1", 10, 0, now);
+	station2 = new StationModel(2, 3, "station2", 10, 0, now);
+	station3 = new StationModel(3, 3, "station3", 10, 0, now);
+	station4 = new StationModel(4, 4, "station4", 10, 0, now);
+    }
 
     public void testMove() {
         Move[] moves = new Move[4];

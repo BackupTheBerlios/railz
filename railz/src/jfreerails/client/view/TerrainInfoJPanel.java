@@ -21,9 +21,11 @@ import jfreerails.world.terrain.TerrainType;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.NonNullElements;
 import jfreerails.world.top.ReadOnlyWorld;
+import jfreerails.world.terrain.TerrainTileViewer;
 import jfreerails.world.train.WagonType;
 
-/** This JPanel shows information on a terrain type.
+/**
+ * This JPanel shows information on a terrain type.
  *
  * @author  Luke
  */
@@ -37,6 +39,8 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
      * Map coordinate of tile we are showing
      */
     private Point location;
+
+    private TerrainTileViewer terrainTileViewer;
     
     /** Creates new form TerrainInfoJPanel */
     public TerrainInfoJPanel() {
@@ -90,10 +94,12 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
     public void setup(ReadOnlyWorld w, ViewLists vl) {
         this.w = w;
         this.vl = vl;
+	terrainTileViewer = new TerrainTileViewer(w);
     }    
     
     public void setTerrainLocation(Point point) {
 	FreerailsTile tile = w.getTile(point.x, point.y);
+	terrainTileViewer.setFreerailsTile(point.x, point.y);
 
 	TerrainType type = (TerrainType)w.get(KEY.TERRAIN_TYPES,
 		tile.getTerrainTypeNumber());
@@ -110,8 +116,8 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
 		}
 	    }
 	} else {
-	    row = "<p>Purchase cost: $" + tile.getTerrainValue(w, point.x,
-		    point.y) + "</p>";
+	    row = "<p>Purchase cost: $" +
+	       	terrainTileViewer.getTerrainValue() + "</p>";
 	}
 	
         String tableString = "";

@@ -6,10 +6,10 @@ package jfreerails.move;
 
 import java.awt.Point;
 import jfreerails.world.cargo.CargoBundleImpl;
+import jfreerails.world.common.GameTime;
 import jfreerails.world.station.StationModel;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
+import jfreerails.world.player.*;
+import jfreerails.world.top.*;
 import jfreerails.world.track.TrackRule;
 
 
@@ -32,8 +32,9 @@ public class AddStationMove extends CompositeMove {
         Move addCargoBundleMove = new AddCargoBundleMove(cargoBundleNumber,
                 new CargoBundleImpl());
         int stationNumber = w.size(KEY.STATIONS, owner);
+	GameTime now = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
         StationModel station = new StationModel(p.x, p.y, stationName,
-                w.size(KEY.CARGO_TYPES), cargoBundleNumber);
+                w.size(KEY.CARGO_TYPES), cargoBundleNumber, now);
 
         Move addStation = new AddItemToListMove(KEY.STATIONS, stationNumber,
                 station, owner);

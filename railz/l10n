@@ -4,7 +4,7 @@ HERE=`pwd`
 L10NDIR=$HERE/src/jfreerails/data/l10n
 
 # define your supported languages here...
-LANGUAGES="de_DE"
+LANGUAGES="en de_DE"
 
 # Allow those of us with more than one xgettext to specify the right one :)
 if [ -z "$XGETTEXT" ]; then

@@ -9,14 +9,8 @@ import jfreerails.move.CompositeMove;
 import jfreerails.move.Move;
 import jfreerails.world.cargo.CargoBundle;
 import jfreerails.world.cargo.CargoBundleImpl;
-import jfreerails.world.common.FreerailsPathIterator;
-import jfreerails.world.common.PositionOnTrack;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.NonNullElements;
-import jfreerails.world.top.ObjectKey;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.top.World;
-import jfreerails.world.top.WorldIterator;
+import jfreerails.world.common.*;
+import jfreerails.world.top.*;
 import jfreerails.world.track.FreerailsTile;
 import jfreerails.world.track.NullTrackType;
 import jfreerails.world.track.TrackRule;
@@ -92,8 +86,10 @@ class TrainBuilder {
                     cb);
             int scheduleNumber = world.size(KEY.TRAIN_SCHEDULES);
 
+	    GameTime now = (GameTime) world.get(ITEM.TIME,
+		    Player.AUTHORITATIVE);
             TrainModel train = new TrainModel(engineTypeNumber, wagons, null,
-                    scheduleNumber, cargoBundleNumber);
+                    scheduleNumber, cargoBundleNumber, now);
 
             EngineType engineType = (EngineType)world.get(KEY.ENGINE_TYPES,
                     engineTypeNumber);

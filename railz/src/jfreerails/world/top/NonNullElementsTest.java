@@ -10,8 +10,10 @@ import junit.framework.TestCase;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import jfreerails.world.common.GameTime;
 import jfreerails.world.player.Player;
 import jfreerails.world.station.StationModel;
+import jfreerails.world.top.ITEM;
 
 /**
  * This junit TestCase tests NonNullElements.
@@ -41,10 +43,12 @@ public class NonNullElementsTest extends TestCase {
     protected void setUp() {
         w = new WorldImpl();
 	w.add(KEY.PLAYERS, testPlayer, Player.AUTHORITATIVE);
+	GameTime now = new GameTime(0);
+	w.set(ITEM.TIME, now);
 
-        station1 = new StationModel(10, 20, "Station1", 4, 0);
-        station2 = new StationModel(15, 16, "Station2", 4, 1);
-        station3 = new StationModel(30, 50, "Station3", 4, 2);
+        station1 = new StationModel(10, 20, "Station1", 4, 0, now);
+        station2 = new StationModel(15, 16, "Station2", 4, 1, now);
+        station3 = new StationModel(30, 50, "Station3", 4, 2, now);
         w.add(KEY.STATIONS, station1, testPlayer.getPrincipal());
         w.add(KEY.STATIONS, null, testPlayer.getPrincipal());
         w.add(KEY.STATIONS, station2, testPlayer.getPrincipal());

@@ -56,6 +56,7 @@ public class ServerGameEngine implements GameModel, Runnable {
     private int targetTicksPerSecond = 0;
     private IdentityProvider identityProvider;
     private TaxationMoveFactory taxationMoveFactory;
+    private BalanceSheetMoveFactory balanceSheetMoveFactory;
 
     /**
      * List of the ServerAutomaton objects connected to this game
@@ -115,6 +116,8 @@ public class ServerGameEngine implements GameModel, Runnable {
         calcSupplyAtStations = new CalcSupplyAtStations(w, moveExecuter);
         moveChainFork.addListListener(calcSupplyAtStations);
 	taxationMoveFactory = new TaxationMoveFactory(w, moveExecuter);
+	balanceSheetMoveFactory = new BalanceSheetMoveFactory(w,
+		moveExecuter);
 
         for (int i = 0; i < serverAutomata.size(); i++) {
             ((ServerAutomaton)serverAutomata.get(i)).initAutomaton(moveExecuter);
@@ -287,6 +290,7 @@ public class ServerGameEngine implements GameModel, Runnable {
      */
     private void newYear(int lastYear) {
 	taxationMoveFactory.generateMoves(lastYear);
+	balanceSheetMoveFactory.generateMoves();
     }
 
     /**

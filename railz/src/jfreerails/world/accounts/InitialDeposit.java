@@ -13,7 +13,7 @@ public class InitialDeposit extends Transaction {
     }
 
     public final int getCategory() {
-	return CATEGORY_NO_CATEGORY;
+	return CATEGORY_OUTSIDE_INVESTMENT;
     }
 
     public final int getSubcategory() {
