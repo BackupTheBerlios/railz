@@ -61,8 +61,6 @@ final public class ChangeTrackPieceMove implements TrackMove, MapUpdateMove {
         }
 	FreerailsTile currentTile = 
 	    (FreerailsTile)w.getTile(location.x, location.y);
-System.err.println("player " + p.toString() + " tries to remove track of " +
-	currentTile.getOwner() + ", " + currentTile);
 
 	if (! currentTile.getOwner().equals(trackOwner))
 	    return MoveStatus.moveFailed("You don't own this track");
@@ -234,5 +232,11 @@ System.err.println("player " + p.toString() + " tries to remove track of " +
         } else {
             return false;
         }
+    }
+
+    public String toString() {
+	return "ChangeTrackPieceMove: before=" + trackPieceBefore + ", after="
+	    + trackPieceAfter + ", owner=" + trackOwner + ", location=" +
+	    location;
     }
 }

@@ -65,4 +65,10 @@ public class AddItemTransaction extends Transaction {
     public int getType() {
         return type;
     }
+
+    public String toString() {
+	return "AddItemTransaction: subcategory=" + subcategory + ", type=" +
+	    type + ", quantity=" + quantity + ", value=" + getValue() +
+	    ", category=" + getCategory();
+    }
 }

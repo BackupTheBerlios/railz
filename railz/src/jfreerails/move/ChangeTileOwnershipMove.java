@@ -20,7 +20,7 @@ public class ChangeTileOwnershipMove implements Move {
 	oldOwner = (FreerailsPrincipal) ((FreerailsTile) w.getTile(location.x,
 		    location.y)).getOwner();
 	this.newOwner = newOwner;
-	this.location = location;
+	this.location = new Point(location);
     }
 
     public FreerailsPrincipal getPrincipal() {
@@ -74,5 +74,10 @@ public class ChangeTileOwnershipMove implements Move {
     public int hashCode() {
 	return oldOwner.hashCode() ^ newOwner.hashCode() ^
 	    location.hashCode();
+    }
+
+    public String toString() {
+	return "ChangeTileOwnershipMove: oldOwner=" + oldOwner + ", newOwner="
+	    + newOwner + ", location" + location;
     }
 }
