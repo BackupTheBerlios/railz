@@ -143,13 +143,11 @@ public class SelectEngineJPanel extends javax.swing.JPanel {
             String text =
             "<html><body>"
             + (isSelected ? "<strong>" : "")
-            + engine.getEngineTypeName()
-            + "<br>"
-            + engine.getMaxSpeed()
-            + " m.p.h. "
-            + engine.getPowerAtDrawbar()
-            + " hp $"
-            + engine.getPrice()
+            + engine.getEngineTypeName() + "<br>"
+            + engine.getMaxSpeed() + " m.p.h.<br>"
+            + engine.getPowerAtDrawbar() + " hp<br>" +
+	    "price: $" + engine.getPrice() + "<br>" +
+	    "maintenance: $" + engine.getMaintenance() + "/year"
             + (isSelected ? "</strong>" : "")
             + "</body></html>";
             label.setText(text);
