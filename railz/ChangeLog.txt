@@ -1,3 +1,6 @@
+January 26, 2005:
+-----------------
+Fix for bug 9 - too easy to accidentally build track by clicking on map
 January 25, 2005:
 -----------------
 Fix for bug 41 - ImageManager exposes file locations to rest of client

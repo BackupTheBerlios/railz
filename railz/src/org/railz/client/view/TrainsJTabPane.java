@@ -19,7 +19,7 @@
  */
 
 /*
- * $Id: TrainsJTabPane.java,v 1.3 2005/01/25 22:20:48 rtuck99 Exp $
+ * $Id: TrainsJTabPane.java,v 1.4 2005/01/26 00:46:40 rtuck99 Exp $
  */
 
 package org.railz.client.view;
@@ -27,12 +27,13 @@ package org.railz.client.view;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Point;
-
+import java.util.*;
 import javax.swing.JTabbedPane;
+import javax.swing.event.*;
 
-import org.railz.client.model.CursorEventListener;
-import org.railz.client.model.CursorEvent;
-import org.railz.client.model.ModelRoot;
+import org.railz.client.common.*;
+import org.railz.client.common.ActionAdapter.MappedButtonModel; 
+import org.railz.client.model.*;
 import org.railz.client.renderer.ViewLists;
 import org.railz.world.top.ReadOnlyWorld;
 
@@ -42,6 +43,8 @@ public class TrainsJTabPane extends JTabbedPane implements CursorEventListener {
     private TrainDialogueJPanel trainSchedulePanel;
     private ReadOnlyWorld world;
     private BuildJPane buildJPane;
+    private MappedButtonModel viewModeButtonModel;
+    private MappedButtonModel buildModeButtonModel;
 
     public TrainsJTabPane() {
 	/* set up trainsJTabbedPane */
@@ -69,12 +72,52 @@ public class TrainsJTabPane extends JTabbedPane implements CursorEventListener {
  	addTab(null, vl.getImageIcon("build"), buildJPane, "Build");
 
 	stationInfoPanel.setup(modelRoot);
- 	buildJPane.setup(vl, modelRoot);
-        modelRoot.getCursor().addCursorEventListener(this);
         
 	stationInfoPanel.display();
-        	
+        TrackBuildModel tbm = modelRoot.getTrackBuildModel();
+	ActionAdapter aa = tbm.getBuildModeActionAdapter();
+	Enumeration e = aa.getButtonModels();
+	while (e.hasMoreElements()) {
+	    MappedButtonModel mbm = (MappedButtonModel) e.nextElement();
+	    if ("View Mode".equals(mbm.actionName)) {
+		viewModeButtonModel = mbm;
+		viewModeButtonModel.addChangeListener(viewModeListener);
+	    } else if ("Build Track".equals(mbm.actionName)) {
+		buildModeButtonModel = mbm;
+	    }
+	}
+	addChangeListener(tabListener);
+
+ 	buildJPane.setup(vl, modelRoot);
+        modelRoot.getCursor().addCursorEventListener(this);
+	viewModeButtonModel.setSelected(true);
     }
+
+    /** Sets the track build mode whenever the View or Build tabs are clicked
+     * */
+    private ChangeListener tabListener = new ChangeListener() {
+	public void stateChanged(ChangeEvent e) {
+	    if (getSelectedComponent() == terrainInfoPanel &&
+		    ! viewModeButtonModel.isSelected()) {
+		viewModeButtonModel.setSelected(true);
+	    } else if (getSelectedComponent() == buildJPane) {
+		buildModeButtonModel.setSelected(true);
+	    }
+	}
+    };
+
+    /** Changes the tab to the view tab whenever the view mode is selected */
+    private ChangeListener viewModeListener = new ChangeListener() {
+	public void stateChanged(ChangeEvent e) {
+	    if (viewModeButtonModel.isSelected()) {
+		if (getSelectedComponent() != terrainInfoPanel)
+		    setSelectedComponent(terrainInfoPanel);
+	    } else {
+		if (getSelectedComponent() != buildJPane)
+		    setSelectedComponent(buildJPane);
+	    }
+	}
+    };
 
     private void updateTerrainInfo(CursorEvent e) {
 	Point p = e.newPosition;
