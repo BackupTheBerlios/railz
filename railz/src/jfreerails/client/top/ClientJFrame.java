@@ -16,7 +16,9 @@ import javax.swing.KeyStroke;
 import javax.swing.JSplitPane;
 import javax.swing.JViewport;
 import javax.swing.RepaintManager;
-import jfreerails.client.common.UpdatedComponent;
+import javax.swing.SwingUtilities;
+
+import jfreerails.client.common.*;
 import jfreerails.client.view.MapViewJComponent;
 import jfreerails.client.view.MapViewJComponentConcrete;
 import jfreerails.client.view.CashJLabel;
@@ -74,23 +76,36 @@ UpdatedComponent {
 	
     }
 
+    private Runnable setupImpl = new Runnable() {
+	/**
+	 * Execute from the swing event thread to avoid any threading problems
+	 */
+	public void run() {
+	    mainMapView.setViewportView(mapViewJComponent);
+	    mapViewJComponent.setup(guiRoot, modelRoot);
+	    ((OverviewMapJComponent) mapOverview).setup(modelRoot);
+	    ((DateJLabel) datejLabel).setup(modelRoot);
+	    ((CashJLabel) cashjLabel).setup(modelRoot);
+	    ((TrainsJTabPane) trainsJTabPane1).setup(modelRoot);
+	    ((BuildMenu) buildMenu).setup(modelRoot);
+	    setTitle("Railz Client");
+	    guiRoot.getMapMediator().setMainMap
+		(mainMapView.getViewport(), mapViewJComponent);
+	    ((GameMenu) gameMenu).setup();
+	    if (guiRoot.getScreenHandler().getMode() ==
+		    ScreenHandler.WINDOWED_MODE)
+		setSize(800, 550);
+
+	    /* needed on Mac OS X */
+	    show();
+	}
+    };
+
     /**
      * Calles when the world model has changed and the ViewLists are updated
      */
     public void setup() {
-        mainMapView.setViewportView(mapViewJComponent);
-        mapViewJComponent.setup(guiRoot, modelRoot);
-	((OverviewMapJComponent) mapOverview).setup(modelRoot);
-        ((DateJLabel) datejLabel).setup(modelRoot);
-        ((CashJLabel) cashjLabel).setup(modelRoot);
-        ((TrainsJTabPane) trainsJTabPane1).setup(modelRoot);
-	((BuildMenu) buildMenu).setup(modelRoot);
-	setTitle("Railz Client");
-	guiRoot.getMapMediator().setMainMap
-	    (mainMapView.getViewport(), mapViewJComponent);
-	setSize(640, 450);
-	/* needed on Mac OS X */
-	show();
+	SwingUtilities.invokeLater(setupImpl);
     }
     
     public void doFrameUpdate(Graphics g) {
