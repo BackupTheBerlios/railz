@@ -1,6 +1,7 @@
 October 17, 2004:
 -----------------
 Added PAUSED message when game paused
+Implemented "Wait until full"
 October 10, 2004:
 -----------------
 Fixed some more problems with train motion and synchronization
