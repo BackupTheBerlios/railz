@@ -1,6 +1,8 @@
 January 30, 2005:
 -----------------
-Updated Grasshopper graphics.
+Fix for bug 6 - Top-down engine gfx are just black rectangles.
+Updated Grasshopper graphics.  Updated Norris graphics.
+Fix for scripting events not being executed properly.
 January 28, 2005:
 -----------------
 Fix for bug 11 - freight and passenger revenues are not separated

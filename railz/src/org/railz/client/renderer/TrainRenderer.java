@@ -54,11 +54,11 @@ public class TrainRenderer {
 	int wagonLength = trainImages.getEngineLength(train.getEngineType());
         renderWagon(g, s, wagonPos, wagonLength, train.getEngineType(), true);
 
-	int n = train.getNumberOfWagons() + 1;
+	int n = train.getNumberOfWagons();
         //renderer wagons.				
-        for (int i = 1; i < n; i++) {
+        for (int i = 0; i < n; i++) {
 	    wagonPos += wagonLength;
-            int wagonType = train.getWagon(i - 1);
+            int wagonType = train.getWagon(i);
 	    wagonLength = trainImages.getWagonLength(wagonType);
             renderWagon(g, s, wagonPos, wagonLength, wagonType, false);
         }
@@ -75,9 +75,9 @@ public class TrainRenderer {
     private void renderWagon(Graphics g, TrainPath s, int pos, int length,
 	    int type, boolean engine) {
 	final Point p = new Point();
-	byte direction = s.getDirectionAtDistance(p, (int) 
-		(((pos + length / 2) * TrackTile.DELTAS_PER_TILE * 0.8) /
-		    TileRenderer.TILE_SIZE.width));
+	int dist = (int) (((pos + length / 2) * TrackTile.DELTAS_PER_TILE) /
+		    TileRenderer.TILE_SIZE.width);
+	byte direction = s.getDirectionAtDistance(p, dist);
 	// direction of TrainPath is head-to-tail, we reverse it to get the
 	// correct orientation for the wagons
 	direction = CompassPoints.invert(direction);

@@ -246,9 +246,12 @@ public final class TrainImages {
 			    (attributes.getValue("name"))) {
 			wagonLengths[i.getIndex()] = 
 			    Integer.parseInt(attributes.getValue("length"));
-			break;
+			return;
 		    }
 		}
+		Logger.getLogger("global").log(Level.WARNING,
+			"Unrecognized wagon type " + attributes.getValue
+			("name"));
 	    } else if ("EngineType".equals(qName)) {
 		NonNullElements i = new NonNullElements(KEY.ENGINE_TYPES, w,
 			Player.AUTHORITATIVE);
@@ -257,9 +260,12 @@ public final class TrainImages {
 			    .equals(attributes.getValue("name"))) {
 			engineLengths[i.getIndex()] =
 			    Integer.parseInt(attributes.getValue("length"));
-			break;
+			return;
 		    }
 		}
+		Logger.getLogger("global").log(Level.WARNING,
+			"Unrecognized engine type " + attributes.getValue
+			("name"));
 	    }
 	}
     }

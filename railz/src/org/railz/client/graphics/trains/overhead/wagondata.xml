@@ -18,21 +18,21 @@
 <TrainTypes>
     <EngineTypes>
 	<EngineType name="Grasshopper" length="18" />
-	<EngineType name="Norris" length="30" />
+	<EngineType name="Norris" length="24" />
     </EngineTypes>
     <WagonTypes>
-	<WagonType name="Coffee" length="30" />
-	<WagonType name="Export_Goods" length="30" />
-	<WagonType name="Food" length="30" />
-	<WagonType name="Grain" length="30" />
-	<WagonType name="Livestock" length="30" />
-	<WagonType name="Mail" length="30" />
-	<WagonType name="Mfg._Goods" length="30" />
-	<WagonType name="Oil" length="30" />
-	<WagonType name="Passengers" length="30" />
-	<WagonType name="Petroleum" length="30" />
-	<WagonType name="Sugar" length="30" />
-	<WagonType name="Wood" length="30" />
+	<WagonType name="Coffee_Wagon" length="24" />
+	<WagonType name="Export_Goods_Wagon" length="24" />
+	<WagonType name="Food_Wagon" length="24" />
+	<WagonType name="Grain_Wagon" length="24" />
+	<WagonType name="Livestock_Wagon" length="24" />
+	<WagonType name="Mail_Wagon" length="24" />
+	<WagonType name="Mfg._Goods_Wagon" length="24" />
+	<WagonType name="Oil_Wagon" length="24" />
+	<WagonType name="Passenger_Car" length="24" />
+	<WagonType name="Petroleum_Wagon" length="24" />
+	<WagonType name="Sugar_Wagon" length="24" />
+	<WagonType name="Wood_Wagon" length="24" />
     </WagonTypes>
 </TrainTypes>
 
