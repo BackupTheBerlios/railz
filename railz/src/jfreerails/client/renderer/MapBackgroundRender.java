@@ -244,8 +244,10 @@ final public class MapBackgroundRender implements MapLayerRenderer {
     public void paintRect(Graphics g, Rectangle visibleRect) {
         int x = visibleRect.x / TileRenderer.TILE_SIZE.width;
         int y = visibleRect.y / TileRenderer.TILE_SIZE.height;
-        int width = visibleRect.width / TileRenderer.TILE_SIZE.width + 2;
-        int height = visibleRect.height / TileRenderer.TILE_SIZE.height + 2;
+        int width = (visibleRect.width + visibleRect.x - 1) /
+	    TileRenderer.TILE_SIZE.width - x + 1;
+        int height = (visibleRect.height + visibleRect.y - 1) /
+	    TileRenderer.TILE_SIZE.height - y + 1;
         paintRectangleOfTiles(g, x, y, width, height);
     }
 

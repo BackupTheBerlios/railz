@@ -16,6 +16,7 @@
 
 package jfreerails.client.renderer;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -34,6 +35,8 @@ import jfreerails.world.track.FreerailsTile;
  * This class draws the voerview map.
  */
 final public class ZoomedOutMapRenderer implements MapRenderer {
+    private static final int BUILDING_COLOR = Color.MAGENTA.getRGB();
+
     private final int imageWidth;
     private final int imageHeight;
     private final int mapWidth;
@@ -89,14 +92,16 @@ final public class ZoomedOutMapRenderer implements MapRenderer {
 
         FreerailsTile tt = w.getTile(tile.x, tile.y);
 
-        if (tt.getTrackTile() == null) {
-		int typeNumber = tt.getTerrainTypeNumber();
-		TerrainType terrainType = (TerrainType)w.get(KEY.TERRAIN_TYPES,
-			typeNumber);
-		one2oneImage.setRGB(tile.x, tile.y, terrainType.getRGB());
-        } else {
+        if (tt.getTrackTile() != null) {
             /* black with alpha of 1 */
             one2oneImage.setRGB(tile.x, tile.y, 0xff000000);
+        } else if (tt.getBuildingTile() != null) {
+	    one2oneImage.setRGB(tile.x, tile.y, BUILDING_COLOR);
+	} else {
+	    int typeNumber = tt.getTerrainTypeNumber();
+	    TerrainType terrainType = (TerrainType)w.get(KEY.TERRAIN_TYPES,
+		    typeNumber);
+	    one2oneImage.setRGB(tile.x, tile.y, terrainType.getRGB());
         }
 	int scaledX = (tile.x - mapX) * imageWidth / mapWidth;
 	int scaledY = (tile.y - mapY) * imageHeight / mapHeight;
@@ -137,16 +142,19 @@ final public class ZoomedOutMapRenderer implements MapRenderer {
 
 		FreerailsTile tt = w.getTile(tile.x, tile.y);
 
-		if (tt.getTrackTile() == null) {
+		if (tt.getTrackTile() != null) {
+		    /* black with alpha of 1 */
+		    one2oneImage.setRGB(tile.x - mapX,
+			    tile.y - mapY, 0xff000000);
+		} else if (tt.getBuildingTile() != null) {
+		    one2oneImage.setRGB(tile.x - mapX,
+			    tile.y - mapY, BUILDING_COLOR);
+		} else {
 		    int typeNumber = tt.getTerrainTypeNumber();
 		    TerrainType terrainType = (TerrainType)w.get(KEY.TERRAIN_TYPES,
 			    typeNumber);
 		    one2oneImage.setRGB(tile.x - mapX, tile.y - mapY,
 			    terrainType.getRGB());
-		} else {
-		    /* black with alpha of 1 */
-		    one2oneImage.setRGB(tile.x - mapX,
-			    tile.y - mapY, 0xff000000);
 		}
             }
         }
