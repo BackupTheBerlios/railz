@@ -82,7 +82,7 @@
    <target depends="mkdirs" description="Generate source distribution" name="srcdist">
        <!-- Replace current latest with the jar file we have just created. -->
       <tar compression="gzip" defaultexcludes="true" tarfile="${dist}/railz-src-${org.railz.build}.tar.gz">
-            <tarfileset dir="${basedir}" includes="README*, l10n, ChangeLog, COPYING, src/**, ROADMAP, ReleaseNotes"/>
+            <tarfileset dir="${basedir}" includes="README*, l10n, ChangeLog, COPYING, src/**, ROADMAP, ReleaseNotes,build.xml"/>
         </tar>      
     </target>
    <target depends="init" description="Clean up build and distribution" name="clean">
