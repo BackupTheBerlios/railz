@@ -22,15 +22,25 @@
  */
 
 package jfreerails.client.view;
+
+import java.awt.Component;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import jfreerails.client.model.ModelRoot;
 import jfreerails.controller.MoveReceiver;
 import jfreerails.move.AddItemToListMove;
 import jfreerails.move.ListMove;
 import jfreerails.move.Move;
+import jfreerails.util.*;
 import jfreerails.world.cargo.CargoBundle;
 import jfreerails.world.cargo.CargoType;
 import jfreerails.world.player.*;
@@ -49,16 +59,133 @@ import jfreerails.world.train.WagonType;
  */
 public class StationInfoJPanel extends javax.swing.JPanel
 implements MoveReceiver {
+    private static final int ICON_HEIGHT = 12;
     private ModelRoot modelRoot;
     private WorldIterator wi;
     private boolean ignoreMoves = true;
     private ReadOnlyWorld world;
+    private StationTableModel stationTableModel;
     
     /**
      * The index of the cargoBundle associated with this station
      */
     private int cargoBundleIndex;
     
+    private ImageIcon getWagonImage(int cargoType) {
+	for (int i = 0; i < world.size(KEY.WAGON_TYPES,
+		    Player.AUTHORITATIVE); i++) {
+	    if (((WagonType) world.get(KEY.WAGON_TYPES, i,
+			    Player.AUTHORITATIVE)).getCargoType()
+		    == cargoType) {
+		Image icon =
+		    modelRoot.getViewLists().getTrainImages().
+		    getSideOnWagonImage(i, ICON_HEIGHT);
+		return new ImageIcon(icon);
+	    }
+	}
+	throw new IllegalArgumentException();
+    }
+
+    private class StationTableCellRenderer implements TableCellRenderer {
+	public Component getTableCellRendererComponent(JTable table, Object
+		value, boolean isSelected, boolean hasFocus, int row, int
+		column) {
+	    JLabel label = new JLabel();
+	    switch (column) {
+		case 0:
+		    int cargoType = ((Integer) value).intValue();
+		    label.setIcon(getWagonImage(cargoType));
+		    CargoType ct = (CargoType) world.get(KEY.CARGO_TYPES,
+			    cargoType, Player.AUTHORITATIVE);
+		    label.setToolTipText(ct.getDisplayName());
+		    return label;
+		case 1:
+		case 2:
+		    label.setText(((Integer) value).toString());
+		    return label;
+	    }
+	    throw new IllegalArgumentException();
+	}
+    }
+
+    private class StationTableRow {
+	public final int cargoType;
+	public final int supplyRate;
+	public final int cargoWaiting;
+
+	public StationTableRow(int ct, int sr, int cw) {
+	    cargoType = ct;
+	    supplyRate = sr;
+	    cargoWaiting = cw;
+	}
+    }
+
+    private class StationTableModel extends AbstractTableModel {
+	/**
+	 * Array of StationTableRow
+	 */
+	private ArrayList rows = new ArrayList();
+
+	public String getColumnName(int column) {
+	    switch (column) {
+		case 0:
+		    return Resources.get("Cargo");
+		case 1:
+		    return Resources.get("Supply rate");
+		case 2:
+		    return Resources.get("Cargo Waiting");
+	    }
+	    throw new IllegalArgumentException();
+	}
+
+	public StationTableModel() {
+	    updateModel();
+	}
+
+	public void updateModel() {
+	    rows.clear();
+	    if (wi.getIndex() == WorldIterator.BEFORE_FIRST) {
+		fireTableDataChanged();
+		return;
+	    }
+
+	    StationModel station = (StationModel) world.get(KEY.STATIONS,
+		    wi.getIndex(), modelRoot.getPlayerPrincipal());
+	    CargoBundle cb = (CargoBundle) world.get(KEY.CARGO_BUNDLES,
+		    station.getCargoBundleNumber(), Player.AUTHORITATIVE);
+	    for (int i = 0; i < world.size(KEY.CARGO_TYPES); i++) {
+		if (station.getSupply().getSupply(i) == 0)
+		    continue;
+
+		int supplyRate = station.getSupply().getSupply(i);
+		int waiting = cb.getAmount(i);
+		rows.add(new StationTableRow(i, supplyRate, waiting));
+	    }
+	    fireTableDataChanged();
+	}
+
+	public int getRowCount() {
+	    return rows.size();
+	}
+
+	public int getColumnCount() {
+	    return 3;
+	}
+
+	public Object getValueAt(int row, int column) {
+	    StationTableRow stm = (StationTableRow) rows.get(row);
+	    switch (column) {
+		case 0:
+		    return new Integer(stm.cargoType);
+		case 1:
+		    return new Integer(stm.supplyRate);
+		case 2:
+		    return new Integer(stm.cargoWaiting);
+	    }
+	    throw new IllegalArgumentException();
+	}
+    }
+
     /** Creates new form StationInfoJPanel */
     public StationInfoJPanel() {
         initComponents();
@@ -75,25 +202,25 @@ implements MoveReceiver {
         jLabel1 = new javax.swing.JLabel();
         nextStation = new javax.swing.JButton();
         previousStation = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
 
         setLayout(new java.awt.GridBagLayout());
 
-        setMinimumSize(new java.awt.Dimension(250, 177));
-        jLabel1.setFont(new java.awt.Font("Dialog", 0, 10));
-        jLabel1.setText("<html>\n<h4 align=\"center\">Supply and Demand at stationName</h4>\n<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n  <tr>\n    <td>&nbsp;</td>\n    <td>Will pay<br>for</td>\n    <td>Supplies<br>(tonnes/yr)</td>\n    <td>Waiting for pickup<br>(tonnes)</td>\n  </tr>\n   <tr>\n    <td>Mail</td>\n    <td>Yes</td>\n    <td>&nbsp;</td>\n    <td>&nbsp;</td>\n  </tr>\n  <tr>\n    <td>Passengers</td>\n    <td>No</td>\n    <td>3</td>\n    <td>2.5</td>\n  </tr>\n \n</table>\n\n</html>");
-        jLabel1.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        jLabel1.setText("Station Name");
         jLabel1.setAlignmentY(0.0F);
+        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         jLabel1.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.insets = new java.awt.Insets(4, 4, 2, 4);
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(8, 8, 4, 8);
         add(jLabel1, gridBagConstraints);
 
-        nextStation.setText("next ->");
+        nextStation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jfreerails/client/graphics/toolbar/next.png")));
+        nextStation.setToolTipText(jfreerails.util.Resources.get("Next Station"));
         nextStation.setMargin(new java.awt.Insets(0, 0, 0, 0));
         nextStation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -103,14 +230,15 @@ implements MoveReceiver {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 4, 4);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 8, 8);
         add(nextStation, gridBagConstraints);
 
-        previousStation.setText("<- previous");
+        previousStation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jfreerails/client/graphics/toolbar/previous.png")));
+        previousStation.setToolTipText(jfreerails.util.Resources.get("Previous Station"));
         previousStation.setMargin(new java.awt.Insets(0, 0, 0, 0));
         previousStation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -120,12 +248,60 @@ implements MoveReceiver {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(2, 4, 4, 2);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(4, 8, 8, 4);
         add(previousStation, gridBagConstraints);
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Cargo", "Supply Rate", "Waiting"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Integer.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(jTable1);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(2, 4, 2, 4);
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(jScrollPane1, gridBagConstraints);
+
+        jPanel1.setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), jfreerails.util.Resources.get("Cargo Types in Demand")));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(2, 4, 2, 4);
+        gridBagConstraints.weightx = 1.0;
+        add(jPanel1, gridBagConstraints);
 
     }//GEN-END:initComponents
     
@@ -170,6 +346,10 @@ implements MoveReceiver {
         addComponentListener(componentListener);
 	modelRoot.getMoveChainFork().addSplitMoveReceiver(this);
 	world = modelRoot.getWorld();
+	stationTableModel = new StationTableModel();
+	jTable1.setModel(stationTableModel);
+	jTable1.getColumnModel().getColumn(0).
+	    setCellRenderer(new StationTableCellRenderer());
     }
     
     public void setStation(int stationNumber) {
@@ -190,7 +370,9 @@ implements MoveReceiver {
         } else {
             this.nextStation.setEnabled(false);
         }
-        
+        stationTableModel.updateModel();
+	jPanel1.removeAll();
+
         int stationNumber = wi.getIndex();
         String label;
         if (stationNumber != WorldIterator.BEFORE_FIRST) {
@@ -202,51 +384,25 @@ implements MoveReceiver {
 			tile.getTrackRule(),
 			Player.AUTHORITATIVE)).toString();
             cargoBundleIndex = station.getCargoBundleNumber();
-            CargoBundle cargoWaiting =
-            (CargoBundle) world.get(
-            KEY.CARGO_BUNDLES,
-            station.getCargoBundleNumber());
-            String title =
-            "<h2 align=\"center\">"
-            + station.getStationName()
-            + " ("
-            + stationTypeName
-            + ")</h2>";
-            String table =
-            "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"3\"><tr><td>&nbsp;</td>\n    <td>Will pay for</td>\n    <td>Supplies<br><em>tonnes/yr</em></td><td>Waiting for pickup<br><em>tonnes</em></td>  </tr>";
+            CargoBundle cargoWaiting = (CargoBundle) world.get
+		(KEY.CARGO_BUNDLES, station.getCargoBundleNumber());
+            String title = station.getStationName()
+		+ " (" + stationTypeName + ")";
             for (int i = 0; i < world.size(KEY.CARGO_TYPES); i++) {
-                
                 //get the values
-                CargoType cargoType = (CargoType) world.get(KEY.CARGO_TYPES, i);
-                String demanded =
-                (station.getDemand().isCargoDemanded(i) ? "Yes" : "No");
-                int amountSupplied = station.getSupply().getSupply(i);
-                String supply =
-                (amountSupplied > 0)
-                ? String.valueOf(amountSupplied)
-                : "&nbsp;";
-                int amountWaiting = cargoWaiting.getAmount(i);
-                String waiting =
-                (amountWaiting > 0)
-                ? String.valueOf(amountWaiting)
-                : "&nbsp;";
-                
-                //build the html
-                table += "<tr>";
-                table += "<td>" + cargoType.getDisplayName() + "</td>";
-                table += "<td>" + demanded + "</td>";
-                table += "<td>" + supply + "</td>";
-                table += "<td>" + waiting + "</td>";
-                table += "</tr>";
-                
+		boolean isDemanded = station.getDemand().isCargoDemanded(i);
+		if (! isDemanded)
+		    continue;
+		JLabel jl = new JLabel(getWagonImage(i));
+		CargoType ct = (CargoType) world.get(KEY.CARGO_TYPES,
+			i, Player.AUTHORITATIVE);
+		jl.setToolTipText(ct.getDisplayName());
+		jPanel1.add(jl);
             }
-            table += "</table>";
-            label = "<html>" + title + table + "</html>";
+            label = title;
         } else {
             cargoBundleIndex = WorldIterator.BEFORE_FIRST;
-            label =
-            "<html><h2 align=\"center\">No Station "
-            + "Selected</h2></html>";
+            label = Resources.get("No Station");
         }
         jLabel1.setText(label);
         this.repaint();
@@ -309,6 +465,9 @@ implements MoveReceiver {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JButton nextStation;
     private javax.swing.JButton previousStation;
     // End of variables declaration//GEN-END:variables
