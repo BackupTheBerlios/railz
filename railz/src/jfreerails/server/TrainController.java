@@ -45,10 +45,12 @@ class TrainController {
     
     private ReadOnlyWorld world;
     private AuthoritativeMoveExecuter moveReceiver;
+    private DropOffAndPickupCargoMoveGenerator dopucmg;
 
     public TrainController(ReadOnlyWorld w, AuthoritativeMoveExecuter mr) {
 	world = w;
 	moveReceiver = mr;
+	dopucmg = new DropOffAndPickupCargoMoveGenerator(world, moveReceiver);
     }
 
     public void updateTrains() {
@@ -68,16 +70,20 @@ class TrainController {
     private void updateTrain(TrainModel tm, GameTime now, FreerailsPrincipal
 	    p, int trainIndex) {
 	int state = tm.getState();
+	TrainOrdersModel tom;
 	switch (state) {
 	    case TrainModel.STATE_LOADING:
 		if (tm.getStateLastChangedTime().getTime() + LOADING_DELAY <
 			now.getTime())
-		    loadTrain(tm, now, p, trainIndex);
+		    loadTrain(tm, p, trainIndex);
 		return;
 	    case TrainModel.STATE_UNLOADING:
 		if (tm.getStateLastChangedTime().getTime() + UNLOADING_DELAY <
-			now.getTime())
-		    unloadTrain(trainIndex, p, tm, now);
+			now.getTime()) {
+		    unloadTrain(trainIndex, p, tm);
+		    changeWagons(new ObjectKey(KEY.TRAINS,
+				p, trainIndex));
+		}
 		return;
 	    case TrainModel.STATE_RUNNABLE:
 		/* check to see whether the train has reached its destination
@@ -85,7 +91,19 @@ class TrainController {
 		TrainPath tp =
 		    tm.getTrainMotionModel().getPathToDestination();
 		if (tp != null && tp.getLength() == 0) {
-		    setState(trainIndex, p, TrainModel.STATE_UNLOADING);
+		    if(tm.getScheduleIterator().getCurrentOrder(world).
+			    unloadTrain) {
+			setState(trainIndex, p, TrainModel.STATE_UNLOADING);
+			return;
+		    }
+		    changeWagons(new ObjectKey(KEY.TRAINS,
+				p, trainIndex));
+		    if (tm.getScheduleIterator().getCurrentOrder(world).
+			    loadTrain) {
+			setState(trainIndex, p, TrainModel.STATE_LOADING);
+			return;
+		    }
+		    setState(trainIndex, p, TrainModel.STATE_RUNNABLE);
 		}
 		return;
 	    default:
@@ -93,17 +111,7 @@ class TrainController {
 	}
     }
 
-    /**
-     * TODO split loading and unloading into separate moves. For now do both
-     * operations during load phase.
-     */
-    private void unloadTrain(int trainIndex, FreerailsPrincipal p,
-	    TrainModel tm, GameTime now) {
-	setState(trainIndex, p, TrainModel.STATE_LOADING);
-    }
-
-    private void loadTrain(TrainModel tm, GameTime now, FreerailsPrincipal p,
-	    int trainIndex) {
+    private ObjectKey getStationKey(ObjectKey trainKey, TrainModel tm) {
 	/* get the details of the station the train is at */
 	Point point = new Point();
 	tm.getPosition().getHead(point);
@@ -126,20 +134,60 @@ class TrainController {
 		}
 	    }
 	}
-	if (flag) {
-	    DropOffAndPickupCargoMoveGenerator dopucmg = new
-		DropOffAndPickupCargoMoveGenerator(p, trainIndex, sp,
-			i.getIndex(), world);
-	    Move m = dopucmg.generateMove();
-	    moveReceiver.processMove(m);
-	}
-	// set the trains new destination
-	Move ctdm = ChangeTrainDestinationMove.generateMove(world,
-		new ObjectKey(KEY.TRAINS, p, trainIndex),
-		tm.getScheduleIterator().nextOrder(world));
-	moveReceiver.processMove(ctdm);
+	if (flag)
+	    return new ObjectKey(KEY.STATIONS, sp, i.getIndex());
+
+	return null;
+    }
+
+    private void unloadTrain(int trainIndex, FreerailsPrincipal p,
+	    TrainModel tm) {
+	ObjectKey trainKey = new ObjectKey(KEY.TRAINS, p, trainIndex);
+	ObjectKey stationKey = getStationKey(trainKey, tm);
+	if (stationKey != null)
+	    dopucmg.unloadTrain(trainKey, stationKey);
+
+	setState(trainIndex, p, TrainModel.STATE_LOADING);
+    }
+
+    private void loadTrain(TrainModel tm, FreerailsPrincipal p,
+	    int trainIndex) {
+	ObjectKey trainKey = new ObjectKey(KEY.TRAINS, p, trainIndex);
+	ObjectKey stationKey = getStationKey(trainKey, tm);
+	if (stationKey != null)
+	    dopucmg.loadTrain(trainKey, stationKey);
+	
 	setState(trainIndex, p, TrainModel.STATE_RUNNABLE);
 	return;
+    }
+
+    private void changeWagons(ObjectKey trainKey) {
+	TrainModel tm = (TrainModel) world.get(trainKey.key, trainKey.index,
+		trainKey.principal);
+
+	ObjectKey stationKey = getStationKey(trainKey, tm);
+	if (stationKey != null) {
+	    ScheduleIterator si = tm.getScheduleIterator();
+	    TrainOrdersModel tom = si.getCurrentOrder(world);
+	    if (! tom.isNoConsistChange()) {
+		Move m = ChangeTrainMove.generateMove(trainKey.index,
+			trainKey.principal, tm, tm.getEngineType(),
+			tom.getConsist());
+		moveReceiver.processMove(m);
+
+		// dump or sell any surplus cargo
+		dopucmg.dumpSurplusCargo(trainKey, stationKey);
+	    }
+	}
+
+	// get the updated train model
+	tm = (TrainModel) world.get(trainKey.key, trainKey.index,
+		trainKey.principal);
+
+	// set the trains new destination
+	Move ctdm = ChangeTrainDestinationMove.generateMove(world,
+		trainKey, tm.getScheduleIterator().nextOrder(world));
+	moveReceiver.processMove(ctdm);
     }
 
     private void setState(int trainIndex, FreerailsPrincipal p, int newState) {

@@ -66,9 +66,13 @@ class UserMessageGenerator implements MoveReceiver {
 
 	    AddTransactionMove addTransactionMove =
 		transferCargoAtStationMove.getPayment();
-	    DeliverCargoReceipt deliverCargoReceipt =
-		(DeliverCargoReceipt)addTransactionMove.getTransaction();
-            long revenue = deliverCargoReceipt.getValue();
+	    long revenue = 0;
+	    DeliverCargoReceipt deliverCargoReceipt = null;
+	    if (addTransactionMove != null) {
+		deliverCargoReceipt =
+		    (DeliverCargoReceipt)addTransactionMove.getTransaction();
+		revenue = deliverCargoReceipt.getValue();
+	    }
 
 	    // ignore other player's trains
 	    if (! move.getPrincipal().equals(mr.getPlayerPrincipal()))

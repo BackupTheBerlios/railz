@@ -33,8 +33,7 @@ import java.awt.*;
  *
  * @author  Luke Lindsay
  */
-public class TrainOrderJPanel extends javax.swing.JPanel implements 
-ListCellRenderer {
+public class TrainOrderJPanel extends javax.swing.JPanel {
     private ModelRoot modelRoot;
     
     jfreerails.world.top.ReadOnlyWorld w;
@@ -118,9 +117,8 @@ ListCellRenderer {
         trainViewJPanel.setup(mr, null);
     }
     
-    public java.awt.Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        TrainOrdersListModel.TrainOrdersListElement trainOrders = (TrainOrdersListModel.TrainOrdersListElement)value;
-        
+    public void update(TrainOrdersListModel.TrainOrdersListElement
+	    trainOrders, boolean isSelected, int index) {
         //Set station name
         int stationNumber = trainOrders.order.station.index;
 	StationModel station = (StationModel)w.get(KEY.STATIONS, stationNumber,
@@ -129,7 +127,8 @@ ListCellRenderer {
         this.stationNameJLabel.setText(stationName);
         
         //Set wait until full
-        String waitUntilFull  = trainOrders.order.waitUntilFull ? "Wait until full" : "";
+	String waitUntilFull  = trainOrders.order.waitUntilFull ? 
+	    "Wait until full" : "";
         this.ordersJLabel.setText(waitUntilFull);
         
         //Set selected
@@ -172,13 +171,8 @@ ListCellRenderer {
         }else{
             this.noChangeJLabel.setText(null);
         }
-        
-        //Set the section title
-        //this.sectionTitleJLabel.setText("trainOrders.sectionTitle");
-        
-        return this;
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel consistChangeJPanel;
     private javax.swing.JLabel gotoIcon;

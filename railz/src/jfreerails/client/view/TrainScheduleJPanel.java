@@ -24,10 +24,13 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import javax.swing.ImageIcon;
+import javax.swing.JList;
 import javax.swing.JMenuItem;
+import javax.swing.ListCellRenderer;
 
 import jfreerails.client.common.PortablePopupAdapter;
 import jfreerails.client.renderer.TrainImages;
@@ -50,7 +53,9 @@ import jfreerails.world.train.*;
  *  edit it.
  * @author  Luke Lindsay
  */
-public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldListListener {
+public class TrainScheduleJPanel extends javax.swing.JPanel implements
+WorldListListener, ListCellRenderer {
+    private ArrayList listCells = new ArrayList();
     private ModelRoot modelRoot;
     private GUIRoot guiRoot;
 
@@ -68,6 +73,7 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
     /** Creates new form TrainScheduleJPanel */
     public TrainScheduleJPanel() {
         initComponents();
+	orders.setCellRenderer(this);
     }
     
     /** This method is called from within the constructor to
@@ -98,7 +104,6 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
         pushDownJMenuItem = new javax.swing.JMenuItem();
         addStationJButton = new javax.swing.JButton();
         priorityOrdersJButton = new javax.swing.JButton();
-        trainOrderJPanel1 = new jfreerails.client.view.TrainOrderJPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         orders = new javax.swing.JList();
         orders.addMouseListener(ordersPopupAdapter);
@@ -238,7 +243,6 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
 
         setBorder(new javax.swing.border.TitledBorder("Schedule"));
         orders.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        orders.setCellRenderer(trainOrderJPanel1);
         jScrollPane1.setViewportView(orders);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -289,14 +293,16 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
     private void priorityOrdersJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_priorityOrdersJButtonActionPerformed
         MutableSchedule s = getSchedule();
         s.setPriorityOrders(new TrainOrdersModel(new ObjectKey(KEY.STATIONS,
-			modelRoot.getPlayerPrincipal(), 0), null, false));
+			modelRoot.getPlayerPrincipal(), 0), null, false, true,
+		    true));
         sendUpdateMove(s);
     }//GEN-LAST:event_priorityOrdersJButtonActionPerformed
     
     private void addStationJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStationJButtonActionPerformed
         MutableSchedule s = getSchedule();
         s.addOrder(new TrainOrdersModel(new ObjectKey(KEY.STATIONS,
-			modelRoot.getPlayerPrincipal(), 0), null, false));
+			modelRoot.getPlayerPrincipal(), 0), null, false, true,
+		    true));
         sendUpdateMove(s);
     }//GEN-LAST:event_addStationJButtonActionPerformed
     
@@ -361,7 +367,6 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
 	modelRoot = mr;
         this.w = mr.getWorld();
         this.vl = mr.getViewLists();
-        trainOrderJPanel1.setup(modelRoot, null);
         
         //This actionListener is fired by the select station popup when a stion is selected.
         ActionListener actionListener =  new ActionListener(){
@@ -385,6 +390,12 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
 		    modelRoot.getPlayerPrincipal());
 	    scheduleIterator = train.getScheduleIterator();
 	    listModel = new TrainOrdersListModel(modelRoot, trainNumber);
+	    listCells.clear();
+	    for (int i = 0; i < listModel.getSize(); i++) {
+		TrainOrderJPanel toj = new TrainOrderJPanel();
+		toj.setup(modelRoot, null);
+		listCells.add(toj);
+	    }
 	    orders.setModel(listModel);
 	    // orders.setFixedCellWidth(250);
 	    listModel.fireRefresh();
@@ -452,7 +463,8 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
         oldOrders = s.getOrder(orderNumber);
 	newOrders = new TrainOrdersModel(new ObjectKey(KEY.STATIONS,
 		    modelRoot.getPlayerPrincipal(), stationIndex),
-		oldOrders.getConsist(), oldOrders.getWaitUntilFull());
+		oldOrders.getConsist(), oldOrders.getWaitUntilFull(),
+		oldOrders.loadTrain, oldOrders.unloadTrain);
         s.setOrder(orderNumber, newOrders);
         sendUpdateMove(s);
     }
@@ -462,7 +474,8 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
         MutableSchedule s = getSchedule();
         int orderNumber = this.orders.getSelectedIndex();
         oldOrders = s.getOrder(orderNumber);
-        newOrders = new TrainOrdersModel(oldOrders.getStationNumber(), null, false);
+	newOrders = new TrainOrdersModel(oldOrders.getStationNumber(), null,
+		false, oldOrders.loadTrain, oldOrders.unloadTrain);
         s.setOrder(orderNumber, newOrders);
         sendUpdateMove(s);
     }
@@ -472,7 +485,9 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
         MutableSchedule s = getSchedule();
         int orderNumber = this.orders.getSelectedIndex();
         oldOrders = s.getOrder(orderNumber);
-        newOrders = new TrainOrdersModel(oldOrders.getStationNumber(), oldOrders.consist, b);
+	newOrders = new TrainOrdersModel(oldOrders.getStationNumber(),
+		oldOrders.consist, b, oldOrders.loadTrain,
+		oldOrders.unloadTrain);
         s.setOrder(orderNumber, newOrders);
         sendUpdateMove(s);
     }
@@ -496,7 +511,9 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
         }else{
             newConsist = new int[]{wagonTypeNumber};
         }
-        newOrders = new TrainOrdersModel(oldOrders.getStationNumber(), newConsist, oldOrders.getWaitUntilFull());
+	newOrders = new TrainOrdersModel(oldOrders.getStationNumber(),
+		newConsist, oldOrders.getWaitUntilFull(), oldOrders.loadTrain,
+		oldOrders.unloadTrain);
         s.setOrder(orderNumber, newOrders);
         sendUpdateMove(s);
     }
@@ -506,7 +523,8 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
         MutableSchedule s = getSchedule();
         int orderNumber = this.orders.getSelectedIndex();
         oldOrders = s.getOrder(orderNumber);
-        newOrders = new TrainOrdersModel(oldOrders.getStationNumber(), new int[0], false);
+	newOrders = new TrainOrdersModel(oldOrders.getStationNumber(), new
+		int[0], false, oldOrders.loadTrain, oldOrders.unloadTrain);
         s.setOrder(orderNumber, newOrders);
         sendUpdateMove(s);
     }
@@ -525,7 +543,9 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
         
         //Copy existing wagons
         System.arraycopy(oldConsist, 0, newConsist, 0, newConsist.length);
-        newOrders = new TrainOrdersModel(oldOrders.getStationNumber(), newConsist, oldOrders.waitUntilFull);
+	newOrders = new TrainOrdersModel(oldOrders.getStationNumber(),
+		newConsist, oldOrders.waitUntilFull, oldOrders.loadTrain,
+		oldOrders.unloadTrain);
         s.setOrder(orderNumber, newOrders);
         sendUpdateMove(s);
     }
@@ -556,9 +576,17 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
         //do nothing.
     }
     
+    public Component getListCellRendererComponent(JList list, Object value,
+	    int index, boolean isSelected, boolean cellHasFocus) {
+	TrainOrderJPanel toj = (TrainOrderJPanel) listCells.get(index);
+	toj.update((TrainOrdersListModel.TrainOrdersListElement) value,
+		isSelected, index);
+	return toj;
+    }
+
     private SelectStationJPanel selectStationJPanel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    javax.swing.JButton addStationJButton;
+    private javax.swing.JButton addStationJButton;
     private javax.swing.JMenu addWagonJMenu;
     private javax.swing.JMenu changeConsistJMenu;
     private javax.swing.JMenuItem changeStation;
@@ -571,14 +599,13 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JMenuItem noChangeJMenuItem;
     private javax.swing.JList orders;
-    javax.swing.JButton priorityOrdersJButton;
+    private javax.swing.JButton priorityOrdersJButton;
     private javax.swing.JMenuItem pullUpJMenuItem;
     private javax.swing.JMenuItem pushDownJMenuItem;
     private javax.swing.JMenuItem removeAllJMenuItem;
     private javax.swing.JMenuItem removeLastJMenuItem;
     private javax.swing.JMenuItem removeStationJMenuItem;
     private javax.swing.JMenu removeWagonsJMenu;
-    private jfreerails.client.view.TrainOrderJPanel trainOrderJPanel1;
     private javax.swing.JMenu waitJMenu;
     private javax.swing.JMenuItem waitUntilFullJMenuItem;
     // End of variables declaration//GEN-END:variables

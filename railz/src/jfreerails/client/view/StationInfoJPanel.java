@@ -65,6 +65,7 @@ implements MoveReceiver {
     private boolean ignoreMoves = true;
     private ReadOnlyWorld world;
     private StationTableModel stationTableModel;
+    private StationTableCellRenderer stationTableCellRenderer;
     
     /**
      * The index of the cargoBundle associated with this station
@@ -90,25 +91,23 @@ implements MoveReceiver {
 	public Component getTableCellRendererComponent(JTable table, Object
 		value, boolean isSelected, boolean hasFocus, int row, int
 		column) {
-	    JLabel label = new JLabel();
+	    StationTableRow str = stationTableModel.getStationTableRow(row);
 	    switch (column) {
 		case 0:
-		    int cargoType = ((Integer) value).intValue();
-		    label.setIcon(getWagonImage(cargoType));
-		    CargoType ct = (CargoType) world.get(KEY.CARGO_TYPES,
-			    cargoType, Player.AUTHORITATIVE);
-		    label.setToolTipText(ct.getDisplayName());
-		    return label;
+		    return str.cargoTypeLabel;
 		case 1:
+		    return str.supplyRateLabel;
 		case 2:
-		    label.setText(((Integer) value).toString());
-		    return label;
+		    return str.cargoWaitingLabel;
 	    }
 	    throw new IllegalArgumentException();
 	}
     }
 
     private class StationTableRow {
+	public final JLabel cargoTypeLabel;
+	public final JLabel supplyRateLabel;
+	public final JLabel cargoWaitingLabel;
 	public final int cargoType;
 	public final int supplyRate;
 	public final int cargoWaiting;
@@ -117,6 +116,15 @@ implements MoveReceiver {
 	    cargoType = ct;
 	    supplyRate = sr;
 	    cargoWaiting = cw;
+
+	    cargoTypeLabel = new JLabel();
+	    cargoTypeLabel.setIcon(getWagonImage(cargoType));
+	    CargoType cType = (CargoType) world.get(KEY.CARGO_TYPES,
+		    cargoType, Player.AUTHORITATIVE);
+	    cargoTypeLabel.setToolTipText(cType.getDisplayName());
+
+	    supplyRateLabel = new JLabel(String.valueOf(supplyRate));
+	    cargoWaitingLabel = new JLabel(String.valueOf(cargoWaiting));
 	}
     }
 
@@ -125,6 +133,10 @@ implements MoveReceiver {
 	 * Array of StationTableRow
 	 */
 	private ArrayList rows = new ArrayList();
+
+	public StationTableRow getStationTableRow(int row) {
+	    return (StationTableRow) rows.get(row);
+	}
 
 	public String getColumnName(int column) {
 	    switch (column) {
@@ -348,8 +360,9 @@ implements MoveReceiver {
 	world = modelRoot.getWorld();
 	stationTableModel = new StationTableModel();
 	jTable1.setModel(stationTableModel);
+	stationTableCellRenderer = new StationTableCellRenderer();
 	jTable1.getColumnModel().getColumn(0).
-	    setCellRenderer(new StationTableCellRenderer());
+	    setCellRenderer(stationTableCellRenderer);
     }
     
     public void setStation(int stationNumber) {
@@ -358,7 +371,6 @@ implements MoveReceiver {
     }
     
     public void display() {
-        
         if (wi.getRowNumber() > 0) {
             this.previousStation.setEnabled(true);
         } else {

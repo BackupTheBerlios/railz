@@ -118,6 +118,7 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements WorldListL
 	    this.displayTrain(this.trainNumber);
 	}			
 	trainViewJPanel1.listUpdated(key, index, p);
+	repaint();
     }
 
     public void itemAdded(KEY key, int index, FreerailsPrincipal p) {

@@ -45,6 +45,8 @@ public class TrainRenderer {
 
     public void paintTrain(Graphics g, TrainModel train) {
         TrainPath s = train.getPosition();
+	if (s == null)
+	    return;
 
         //renderer engine.
         renderWagon(g, s, 0, train.getEngineType(), true);

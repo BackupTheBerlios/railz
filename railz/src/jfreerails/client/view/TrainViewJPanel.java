@@ -169,7 +169,9 @@ public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldLi
 	TrainModel train = (TrainModel) w.get(KEY.TRAINS, trainNumber,
 		modelRoot.getPlayerPrincipal());
         scheduleIterator = train.getScheduleIterator();
-        TrainOrdersModel order = scheduleIterator.getCurrentOrder(w);
+	Schedule schedule  = (Schedule) w.get(KEY.TRAIN_SCHEDULES,
+		scheduleIterator.getScheduleId(), Player.AUTHORITATIVE);
+        TrainOrdersModel order = schedule.getOrder(scheduleOrderNumber);
         
         //Set up the array of images.
         if (null != order.consist) {

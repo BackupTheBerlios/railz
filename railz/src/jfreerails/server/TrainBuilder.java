@@ -98,7 +98,7 @@ class TrainBuilder {
             while (wi.next() && s.getNumOrders() < 5) {
                 TrainOrdersModel orders = new TrainOrdersModel
 		    (new ObjectKey(KEY.STATIONS, tp, wi.getIndex()),
-                        null, false);
+                        null, false, true, true);
                 s.addOrder(orders);
             }
 

@@ -158,9 +158,13 @@ public class TrainPathFinder {
 		}
 
 		/* add the current position to the current path */
-		byte trackLayout = 0;
-		trackLayout = world.getTile(currentPosition.x,
-			currentPosition.y).getTrackConfiguration();
+		TrackTile tt = world.getTile(currentPosition.x,
+			currentPosition.y).getTrackTile();
+		if (tt == null) {
+		    nextElement(currentPosition);
+		    continue;
+		}
+		byte trackLayout = tt.getTrackConfiguration();
 		byte initialDirection =
 		    CompassPoints.invert(currentElement.direction);
 

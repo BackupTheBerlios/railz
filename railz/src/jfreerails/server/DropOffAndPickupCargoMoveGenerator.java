@@ -20,6 +20,7 @@ package jfreerails.server;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import jfreerails.controller.*;
 import jfreerails.move.AddTransactionMove;
 import jfreerails.move.ChangeCargoBundleMove;
 import jfreerails.move.Move;
@@ -30,11 +31,10 @@ import jfreerails.world.cargo.CargoBundleImpl;
 import jfreerails.world.station.ConvertedAtStation;
 import jfreerails.world.station.DemandAtStation;
 import jfreerails.world.station.StationModel;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
+import jfreerails.world.top.*;
 import jfreerails.world.train.TrainModel;
 import jfreerails.world.train.WagonType;
-import jfreerails.world.player.FreerailsPrincipal;
+import jfreerails.world.player.*;
 
 /**
  * This class generates moves that transfer cargo between train and the
@@ -47,94 +47,44 @@ import jfreerails.world.player.FreerailsPrincipal;
  */
 class DropOffAndPickupCargoMoveGenerator {
     private ReadOnlyWorld w;
-    private TrainModel train;
-    private int trainId;
-    private int trainBundleId;
-    private FreerailsPrincipal trainPrincipal;
-    private FreerailsPrincipal stationPrincipal;
-    private int stationId;
-    private int stationBundleId;
-    private CargoBundle stationAfter;
-    private CargoBundle stationBefore;
-    private CargoBundle trainAfter;
-    private CargoBundle trainBefore;
-    private AddTransactionMove payment;
+    private MoveReceiver moveReceiver;
 
     /**
-     * Contructor
-     * @param trainNo ID of the train
-     * @param stationNo ID of the station
-     * @param world The world object
-     * @param tp Player which owns the train
-     * @param sp Player which owns the station
+     * Cargo on board the train is unloaded and sold.
      */
-    public DropOffAndPickupCargoMoveGenerator(FreerailsPrincipal tp,
-	    int trainNo, FreerailsPrincipal sp, int stationNo, ReadOnlyWorld
-	    world) {
-        trainId = trainNo;
-        stationId = stationNo;
-	trainPrincipal = tp;
-	stationPrincipal = sp;
-        w = world;
+    public void unloadTrain(ObjectKey trainKey, ObjectKey stationKey) {
+	TrainModel train = (TrainModel)w.get(trainKey.key, trainKey.index,
+		trainKey.principal);
 
-        train = (TrainModel)w.get(KEY.TRAINS, trainId, trainPrincipal);
+	int trainBundleId = train.getCargoBundleNumber();
+	CargoBundle trainBefore = (CargoBundle) w.get(KEY.CARGO_BUNDLES,
+		trainBundleId, Player.AUTHORITATIVE);
+	trainBefore = trainBefore.getCopy();
+	CargoBundle trainAfter = trainBefore.getCopy();
 
-        getBundles();
+	StationModel station = (StationModel) w.get(stationKey.key,
+		stationKey.index, stationKey.principal);
+	int stationBundleId = station.getCargoBundleNumber();
+	CargoBundle stationBefore = (CargoBundle) w.get(KEY.CARGO_BUNDLES,
+		stationBundleId, Player.AUTHORITATIVE);
+	stationBefore = stationBefore.getCopy();
+	CargoBundle stationAfter = stationBefore.getCopy();
 
-        processTrainBundle(); //ie. unload train / dropoff cargo
-        processStationBundle(); //ie. load train / pickup cargo
-    }
-
-    Move generateMove() {
-	// The methods that calculate the before and after bundles could be
-	// called from here.
-	ChangeCargoBundleMove changeAtStation = new
-	    ChangeCargoBundleMove(stationBefore, stationAfter,
-		    stationBundleId);
-
-	ChangeCargoBundleMove changeOnTrain = new
-	    ChangeCargoBundleMove(trainBefore,
-                trainAfter, trainBundleId);
-
-	System.out.println("stationAfter = " + stationAfter +
-	       	", stationBefore = " + stationBefore + ", trainAfter = " + 
-		trainAfter + ", trainBefore = " + trainBefore);
-
-        return TransferCargoAtStationMove.generateMove(changeAtStation,
-            changeOnTrain, payment);
-    }
-
-    private void getBundles() {
-        trainBundleId = ((TrainModel)w.get(KEY.TRAINS, trainId, trainPrincipal))
-	    .getCargoBundleNumber();
-        trainBefore = ((CargoBundle)w.get(KEY.CARGO_BUNDLES, trainBundleId)).getCopy();
-        trainAfter = ((CargoBundle)w.get(KEY.CARGO_BUNDLES, trainBundleId)).getCopy();
-	stationBundleId = ((StationModel)w.get(KEY.STATIONS, stationId,
-		    stationPrincipal)).getCargoBundleNumber();
-        stationAfter = ((CargoBundle)w.get(KEY.CARGO_BUNDLES, stationBundleId)).getCopy();
-        stationBefore = ((CargoBundle)w.get(KEY.CARGO_BUNDLES, stationBundleId)).getCopy();
-    }
-
-    private void processTrainBundle() {
         Iterator batches = trainAfter.cargoBatchIterator();
-
-	StationModel station = (StationModel)w.get(KEY.STATIONS, stationId,
-		stationPrincipal);
-
         CargoBundle cargoDroppedOff = new CargoBundleImpl();
 
         //Unload the cargo that the station demands
         while (batches.hasNext()) {
             CargoBatch cb = (CargoBatch)((Entry) batches.next()).getKey();
 
-            //if the cargo is demanded and its not from this station originally...
+            //if the cargo is demanded.
             DemandAtStation demand = station.getDemand();
             int cargoType = cb.getCargoType();
 
-            if ((demand.isCargoDemanded(cargoType)) &&
-                    (stationId != cb.getStationOfOrigin())) {
+            if (demand.isCargoDemanded(cargoType)) {
                 int amount = trainAfter.getAmount(cb);
-                cargoDroppedOff.addCargo(cb, amount);
+		if (demand.isCargoDemanded(cargoType))
+		    cargoDroppedOff.addCargo(cb, amount);
 
                 //Now perform any conversions..
                 ConvertedAtStation converted = station.getConverted();
@@ -142,7 +92,7 @@ class DropOffAndPickupCargoMoveGenerator {
                 if (converted.isCargoConverted(cargoType)) {
                     int newCargoType = converted.getConversion(cargoType);
                     CargoBatch newCargoBatch = new CargoBatch(newCargoType,
-                            station.x, station.y, 0, stationId);
+                            station.x, station.y, 0, stationKey.index);
                     stationAfter.addCargo(newCargoBatch, amount);
                 }
 
@@ -150,40 +100,134 @@ class DropOffAndPickupCargoMoveGenerator {
             }
         }
 
-        payment = ProcessCargoAtStationMoveGenerator.processCargo(w,
-		cargoDroppedOff, trainPrincipal, this.stationId,
-		stationPrincipal);
+	AddTransactionMove payment =
+	    ProcessCargoAtStationMoveGenerator.processCargo(w,
+		    cargoDroppedOff, trainKey.principal, stationKey.index,
+		    stationKey.principal);
 
-        //Unload the cargo that there isn't space for on the train regardless of whether the station
-        // demands it.
-        int[] spaceAvailable = this.getSpaceAvailableOnTrain();
+	ChangeCargoBundleMove changeAtStation = new
+	    ChangeCargoBundleMove(stationBefore, stationAfter, stationBundleId);
+
+	ChangeCargoBundleMove changeOnTrain = new
+	    ChangeCargoBundleMove(trainBefore, trainAfter, trainBundleId);
+
+	System.out.println("stationAfter = " + stationAfter +
+	       	", stationBefore = " + stationBefore + ", trainAfter = " + 
+		trainAfter + ", trainBefore = " + trainBefore);
+
+	moveReceiver.processMove(TransferCargoAtStationMove.generateMove
+		(changeAtStation, changeOnTrain, payment));
+    }
+
+    /**
+     * Sell or dump all cargo which can't fit on the train
+     */
+    public void dumpSurplusCargo(ObjectKey trainKey, ObjectKey stationKey) {
+	TrainModel train = (TrainModel)w.get(trainKey.key, trainKey.index,
+		trainKey.principal);
+
+	int trainBundleId = train.getCargoBundleNumber();
+	CargoBundle trainBefore = (CargoBundle) w.get(KEY.CARGO_BUNDLES,
+		trainBundleId, Player.AUTHORITATIVE);
+	trainBefore = trainBefore.getCopy();
+	CargoBundle trainAfter = trainBefore.getCopy();
+
+	StationModel station = (StationModel) w.get(stationKey.key,
+		stationKey.index, stationKey.principal);
+	int stationBundleId = station.getCargoBundleNumber();
+	CargoBundle stationBefore = (CargoBundle) w.get(KEY.CARGO_BUNDLES,
+		stationBundleId, Player.AUTHORITATIVE);
+	stationBefore = stationBefore.getCopy();
+	CargoBundle stationAfter = stationBefore.getCopy();
+
+        CargoBundle cargoDroppedOff = new CargoBundleImpl();
+
+	//Unload the cargo that there isn't space for on the train regardless
+	//of whether the station demands it.
+        int[] spaceAvailable = this.getSpaceAvailableOnTrain(train);
 
         for (int cargoType = 0; cargoType < spaceAvailable.length;
                 cargoType++) {
             if (spaceAvailable[cargoType] < 0) {
                 int amount2transfer = -spaceAvailable[cargoType];
-                transferCargo(cargoType, amount2transfer, trainAfter,
-                    stationAfter);
+                transferCargoToStation(cargoType, amount2transfer, trainAfter,
+                    stationAfter, cargoDroppedOff, stationKey);
             }
         }
+
+	AddTransactionMove payment =
+	    ProcessCargoAtStationMoveGenerator.processCargo(w,
+		    cargoDroppedOff, trainKey.principal, stationKey.index,
+		    stationKey.principal);
+
+	ChangeCargoBundleMove changeAtStation = new
+	    ChangeCargoBundleMove(stationBefore, stationAfter, stationBundleId);
+
+	ChangeCargoBundleMove changeOnTrain = new
+	    ChangeCargoBundleMove(trainBefore, trainAfter, trainBundleId);
+
+	moveReceiver.processMove(TransferCargoAtStationMove.generateMove
+		(changeAtStation, changeOnTrain, payment));
     }
 
-    private void processStationBundle() {
-        int[] spaceAvailable = getSpaceAvailableOnTrain();
+    /**
+     * Load the train with as much cargo as is available and will fit on the
+     * train.
+     */
+    public void loadTrain(ObjectKey trainKey, ObjectKey stationKey) {
+	TrainModel train = (TrainModel)w.get(trainKey.key, trainKey.index,
+		trainKey.principal);
 
-        //Third, transfer cargo from the station to the train subject to the space available on the train.
+	int trainBundleId = train.getCargoBundleNumber();
+	CargoBundle trainBefore = (CargoBundle) w.get(KEY.CARGO_BUNDLES,
+		trainBundleId, Player.AUTHORITATIVE);
+	trainBefore = trainBefore.getCopy();
+	CargoBundle trainAfter = trainBefore.getCopy();
+
+	StationModel station = (StationModel) w.get(stationKey.key,
+		stationKey.index, stationKey.principal);
+	int stationBundleId = station.getCargoBundleNumber();
+	CargoBundle stationBefore = (CargoBundle) w.get(KEY.CARGO_BUNDLES,
+		stationBundleId, Player.AUTHORITATIVE);
+	stationBefore = stationBefore.getCopy();
+	CargoBundle stationAfter = stationBefore.getCopy();
+	
+        int[] spaceAvailable = getSpaceAvailableOnTrain(train);
+
+	//Transfer cargo from the station to the train subject to the space
+	//available on the train.
         for (int cargoType = 0; cargoType < w.size(KEY.CARGO_TYPES);
                 cargoType++) {
             int amount2transfer = Math.min(spaceAvailable[cargoType],
                     stationAfter.getAmount(cargoType));
-            transferCargo(cargoType, amount2transfer, stationAfter, trainAfter);
+	    transferCargo(cargoType, amount2transfer, stationAfter,
+		    trainAfter);
         }
+
+	ChangeCargoBundleMove changeAtStation = new
+	    ChangeCargoBundleMove(stationBefore, stationAfter, stationBundleId);
+
+	ChangeCargoBundleMove changeOnTrain = new
+	    ChangeCargoBundleMove(trainBefore, trainAfter, trainBundleId);
+
+	moveReceiver.processMove(TransferCargoAtStationMove.generateMove
+		(changeAtStation, changeOnTrain));
+    }
+
+    /**
+     * Contructor
+     * @param world The world object
+     */
+    public DropOffAndPickupCargoMoveGenerator(ReadOnlyWorld world,
+	    MoveReceiver mr) {
+        w = world;
+	moveReceiver = mr;
     }
 
     /**
      * @return array indexed by CARGO_TYPE indicating available space
      */
-    private int[] getSpaceAvailableOnTrain() {
+    private int[] getSpaceAvailableOnTrain(TrainModel train) {
         //This array will store the amount of space available on the train for each cargo type. 
         int[] spaceAvailable = new int[w.size(KEY.CARGO_TYPES)];
 
@@ -196,17 +240,64 @@ class DropOffAndPickupCargoMoveGenerator {
             spaceAvailable[cargoType] += wagonType.getCapacity();
         }
 
+	CargoBundle cb = (CargoBundle) w.get(KEY.CARGO_BUNDLES,
+		train.getCargoBundleNumber(), Player.AUTHORITATIVE);
         //Second, subtract the space taken up by cargo that the train is already carrying.
         for (int cargoType = 0; cargoType < w.size(KEY.CARGO_TYPES);
                 cargoType++) {
-            spaceAvailable[cargoType] -= trainAfter.getAmount(cargoType);
+            spaceAvailable[cargoType] -= cb.getAmount(cargoType);
         }
 
         return spaceAvailable;
     }
 
+    private void transferCargoToStation(int cargoType, int amountToTransfer,
+	    CargoBundle from, CargoBundle to, CargoBundle droppedOff,
+	    ObjectKey stationKey) {
+	if (0 == amountToTransfer)
+	    return;
+
+	StationModel station = (StationModel) w.get(KEY.STATIONS,
+		stationKey.index, stationKey.principal);
+	Iterator batches = from.cargoBatchIterator();
+	int amountTransferedSoFar = 0;
+	DemandAtStation demand = station.getDemand();
+	ConvertedAtStation converted = station.getConverted();
+	
+	while (batches.hasNext() &&
+		amountTransferedSoFar < amountToTransfer) {
+	    CargoBatch cb = (CargoBatch)((Entry) batches.next()).getKey();
+
+	    if (cb.getCargoType() == cargoType) {
+		int amount = from.getAmount(cb);
+		int amountOfThisBatchToTransfer;
+
+		if (amount < amountToTransfer - amountTransferedSoFar) {
+		    amountOfThisBatchToTransfer = amount;
+		    batches.remove();
+		} else {
+		    amountOfThisBatchToTransfer = amountToTransfer -
+			amountTransferedSoFar;
+		    from.addCargo(cb, -amountOfThisBatchToTransfer);
+		}
+
+		if (droppedOff != null && demand.isCargoDemanded(cargoType))
+		    droppedOff.addCargo(cb, amountOfThisBatchToTransfer);
+
+                if (converted.isCargoConverted(cargoType)) {
+                    int newCargoType = converted.getConversion(cargoType);
+                    CargoBatch newCargoBatch = new CargoBatch(newCargoType,
+                            station.x, station.y, 0, stationKey.index);
+                    to.addCargo(newCargoBatch, amountOfThisBatchToTransfer);
+                }
+		amountTransferedSoFar += amountOfThisBatchToTransfer;
+	    }
+	}
+    }
+
     /**
-     * Move the specified quantity of the specifed cargotype from one bundle to another.
+     * Move the specified quantity of the specifed cargotype from one bundle
+     * to another.
      */
     private static void transferCargo(int cargoTypeToTransfer,
         int amountToTransfer, CargoBundle from, CargoBundle to) {

@@ -31,8 +31,6 @@ import java.util.NoSuchElementException;
 import jfreerails.client.model.ModelRoot;
 import jfreerails.world.player.FreerailsPrincipal;
 import jfreerails.world.train.MutableSchedule;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.WorldListListener;
 import jfreerails.world.top.*;
 
 /**
@@ -202,14 +200,16 @@ WorldListListener {
             this.previousJButton.setEnabled(false);
         }
         
-        if (wi.getIndex() < (wi.size() - 1)) {
-            this.nextJButton.setEnabled(true);
-        } else {
+        if (wi.getIndex() >= (wi.size() - 1) || wi.getIndex() ==
+		WorldIterator.BEFORE_FIRST) {
             this.nextJButton.setEnabled(false);
+        } else {
+            this.nextJButton.setEnabled(true);
         }
         
         newTrainScheduleJPanel1.display(wi.getIndex());
         trainDetailsJPanel1.displayTrain(wi.getIndex());
+	repaint();
     }
     
     public void listUpdated(KEY key, int index, FreerailsPrincipal p) {

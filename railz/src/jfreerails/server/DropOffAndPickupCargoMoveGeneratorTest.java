@@ -23,6 +23,7 @@ package jfreerails.server;
 
 import junit.framework.TestCase;
 
+import jfreerails.controller.*;
 import jfreerails.move.Move;
 import jfreerails.move.MoveStatus;
 import jfreerails.world.accounts.BankAccount;
@@ -46,6 +47,8 @@ import jfreerails.world.player.Player;
  */
 public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
     private World w;
+    private MoveReceiver moveReceiver;
+    
     private final CargoBatch cargoType0FromStation2 = new CargoBatch(0, 0, 0,
             0, 2);
     private final CargoBatch cargoType1FromStation2 = new CargoBatch(1, 0, 0,
@@ -101,6 +104,7 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
         w.add(KEY.TRAINS, train, testPlayer.getPrincipal());
 
         w.add(KEY.BANK_ACCOUNTS, new BankAccount(), testPlayer.getPrincipal());
+	moveReceiver = new AuthoritativeMoveExecuter(w, null);
     }
 
     /** Tests picking up cargo from a station. */
@@ -327,12 +331,16 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
     }
 
     private void stopAtStation() {
+	ObjectKey trainKey = new ObjectKey(KEY.TRAINS,
+		testPlayer.getPrincipal(), 0);
+	ObjectKey stationKey = new ObjectKey(KEY.STATIONS,
+		testPlayer.getPrincipal(), 0);
+
         DropOffAndPickupCargoMoveGenerator moveGenerator = new
-	    DropOffAndPickupCargoMoveGenerator(testPlayer.getPrincipal(), 0,
-		    testPlayer.getPrincipal(), 0, w);
-        Move m = moveGenerator.generateMove();
-        MoveStatus ms = m.doMove(w, testPlayer.getPrincipal());
-        assertTrue(ms.isOk());
+	    DropOffAndPickupCargoMoveGenerator(w, moveReceiver);
+	moveGenerator.unloadTrain(trainKey, stationKey);
+	moveGenerator.dumpSurplusCargo(trainKey, stationKey);
+	moveGenerator.loadTrain(trainKey, stationKey);
     }
 
     /** Retrieves the cargo bundle that is waiting at the station from the world object.*/

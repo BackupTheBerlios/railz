@@ -28,25 +28,54 @@ import jfreerails.world.common.FreerailsSerializable;
 import jfreerails.world.top.ObjectKey;
 
 /**
- * This class encapsulates the orders for a train.
+ * This class encapsulates the orders for a train at a particular stop on its
+ * schedule.
  * @author  Luke
  */
 public class TrainOrdersModel implements FreerailsSerializable {
+    /**
+     * The maximum number of wagons that a train may consist of
+     */
     public static final int MAXIMUM_NUMBER_OF_WAGONS = 6;
+
+    /**
+     * Whether the train should wait for cargo at this stop.
+     */
     public final boolean waitUntilFull;
-    public final int[] consist; //The wagon types to add; if null, then no change.
-    public final ObjectKey station; //The station to goto.
+
+    /**
+     * Array of indices into the WAGON_TYPES table, or null if no change.
+     */
+    public final int[] consist;
+    
+    /**
+     * The station at this stop
+     */
+    public final ObjectKey station;
+
+    /**
+     * Whether cargo should be loaded at this stop
+     */
+    public final boolean loadTrain;
+
+    /**
+     * Whether cargo should be unloaded at this stop
+     */
+    public final boolean unloadTrain;
 
     /**
      *  Creates a new instance of TrainOrders
      */
-    public TrainOrdersModel(ObjectKey station, int[] newConsist, boolean wait) {
+    public TrainOrdersModel(ObjectKey station, int[] newConsist, boolean wait,
+	    boolean loadTrain, boolean unloadTrain) {
         //If there are no wagons, set wait = false.
         wait = (null == newConsist || 0 == newConsist.length) ? false : wait;
 
         waitUntilFull = wait;
         consist = newConsist;
         this.station = station;
+	this.loadTrain = loadTrain;
+	this.unloadTrain = unloadTrain;
     }
 
     public int[] getConsist() {
@@ -73,12 +102,18 @@ public class TrainOrdersModel implements FreerailsSerializable {
         return null == consist || consist.length < MAXIMUM_NUMBER_OF_WAGONS;
     }
 
+    public int hashCode() {
+	return station.hashCode();
+    }
+
     public boolean equals(Object obj) {
         if (obj instanceof TrainOrdersModel) {
             TrainOrdersModel test = (TrainOrdersModel)obj;
 
             return this.waitUntilFull == test.waitUntilFull &&
             this.station.equals(test.station) &&
+	    unloadTrain == test.unloadTrain &&
+	    loadTrain == test.loadTrain &&
             Arrays.equals(this.consist, test.consist);
         } else {
             return false;
