@@ -33,6 +33,9 @@ final public class EngineType implements FreerailsSerializable {
     private final long maintenance;
     private final int maxSpeed; //speed in mph
 
+    /**
+     * @return annual maintenance expense
+     */
     public long getMaintenance() {
         return maintenance;
     }

@@ -153,6 +153,20 @@ class UserMessageGenerator implements MoveReceiver {
 			       ("Income tax charge: $") + (-t.getValue()));
 		   }
 		   break;
+		case Transaction.CATEGORY_OPERATING_EXPENSE:
+		   switch (t.getSubcategory()) {
+		       case Bill.TRACK_MAINTENANCE:
+			   mr.getUserMessageLogger().println(Resources.get
+				   ("Track maintenance charge: $") +
+				   (-t.getValue()));
+			   break;
+		       case Bill.ROLLING_STOCK_MAINTENANCE:
+			   mr.getUserMessageLogger().println(Resources.get
+				   ("Train maintenance charge: $") + 
+				   (-t.getValue()));
+			   break;
+		   }
+		   break;
 		case Transaction.CATEGORY_INTEREST:
 		  switch (t.getSubcategory()) {
 		      case InterestTransaction.SUBCATEGORY_OVERDRAFT:

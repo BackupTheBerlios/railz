@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
-!=Project-Id-Version\: PACKAGE VERSION\nReport-Msgid-Bugs-To\: \nPOT-Creation-Date\: 2004-04-03 19\:43+0100\nPO-Revision-Date\: YEAR-MO-DA HO\:MI+ZONE\nLast-Translator\: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team\: LANGUAGE <LL@li.org>\nMIME-Version\: 1.0\nContent-Type\: text/plain; charset\=UTF-8\nContent-Transfer-Encoding\: 8bit\n
+!=Project-Id-Version\: PACKAGE VERSION\nReport-Msgid-Bugs-To\: \nPOT-Creation-Date\: 2004-04-03 20\:37+0100\nPO-Revision-Date\: YEAR-MO-DA HO\:MI+ZONE\nLast-Translator\: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team\: LANGUAGE <LL@li.org>\nMIME-Version\: 1.0\nContent-Type\: text/plain; charset\=UTF-8\nContent-Transfer-Encoding\: 8bit\n
 
 #: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/model/DebugModel.java:34
 !Client\ move\ debug=
@@ -19,9 +19,15 @@
 !Income\ tax\ charge\:\ $=
 
 #: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/model/UserMessageGenerator.java:160
-!Overdraft\ interest\ charge\:\ $=
+!Track\ maintenance\ charge\:\ $=
 
 #: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/model/UserMessageGenerator.java:165
+!Train\ maintenance\ charge\:\ $=
+
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/model/UserMessageGenerator.java:174
+!Overdraft\ interest\ charge\:\ $=
+
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/model/UserMessageGenerator.java:179
 !Account\ interest\ credited\:\ $=
 
 #: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/BalanceSheetJPanel.java:75

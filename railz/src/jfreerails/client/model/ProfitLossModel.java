@@ -98,9 +98,10 @@ public class ProfitLossModel {
 	/* calculate income for freight haulage */
 	/* TODO until accounting is changed, all cargo revenue is categorised
 	 * as freight */
-	int _freightRevenue = 0;
-	int _trackMaintenanceExpense = 0;
-	int _interestPayableExpense = 0;
+	long _freightRevenue = 0;
+	long _trackMaintenanceExpense = 0;
+	long _interestPayableExpense = 0;
+	long _rollingStockMaintenanceExpense = 0;
 	for (i = minIndex; i < maxIndex; i++) {
 	    Transaction t = account.getTransaction(i);
 	    switch (t.getCategory()) {
@@ -110,19 +111,26 @@ public class ProfitLossModel {
 		case Transaction.CATEGORY_OPERATING_EXPENSE:
 		    if (t.getSubcategory() == Bill.TRACK_MAINTENANCE)
 			_trackMaintenanceExpense -= t.getValue();
+		    else if (t.getSubcategory() ==
+			    Bill.ROLLING_STOCK_MAINTENANCE)
+			_rollingStockMaintenanceExpense -= t.getValue();
 		    break;
 		case Transaction.CATEGORY_INTEREST:
 		    _interestPayableExpense -= t.getValue();
 		    break;
 	    }
 	}
-	interestPayableExpense = _interestPayableExpense;
+	if (_interestPayableExpense < 0) {
+	    interestPayableExpense = 0;
+	} else {
+	    interestPayableExpense = _interestPayableExpense;
+	}
 	freightRevenue = _freightRevenue;
 	passengerRevenue = 0;
 	fuelExpenses = 0;
 	grossProfit = freightRevenue + passengerRevenue - fuelExpenses;
 	trackMaintenanceExpense = _trackMaintenanceExpense;
-	rollingStockMaintenanceExpense = 0;
+	rollingStockMaintenanceExpense = _rollingStockMaintenanceExpense;
 	profitBeforeTax = grossProfit - trackMaintenanceExpense -
 	    rollingStockMaintenanceExpense - interestPayableExpense;
 	incomeTax = profitBeforeTax > 0 ? profitBeforeTax *

@@ -75,6 +75,7 @@ public class ServerGameEngine implements GameModel, Runnable {
     private TaxationMoveFactory taxationMoveFactory;
     private BalanceSheetMoveFactory balanceSheetMoveFactory;
     private AccountInterestMoveFactory accountInterestMoveFactory;
+    private TrainMaintenanceMoveFactory trainMaintenanceMoveFactory;
 
     /**
      * List of the ServerAutomaton objects connected to this game
@@ -137,6 +138,8 @@ public class ServerGameEngine implements GameModel, Runnable {
 	balanceSheetMoveFactory = new BalanceSheetMoveFactory(w,
 		moveExecuter);
 	accountInterestMoveFactory = new AccountInterestMoveFactory(w,
+		moveExecuter);
+	trainMaintenanceMoveFactory = new TrainMaintenanceMoveFactory(w,
 		moveExecuter);
 
         for (int i = 0; i < serverAutomata.size(); i++) {
@@ -300,6 +303,7 @@ public class ServerGameEngine implements GameModel, Runnable {
         TrackMaintenanceMoveGenerator tmmg = new TrackMaintenanceMoveGenerator(moveExecuter);
         tmmg.update(world);
 	accountInterestMoveFactory.generateMoves();
+	trainMaintenanceMoveFactory.generateMoves();
 
         CargoAtStationsGenerator cargoAtStationsGenerator = new CargoAtStationsGenerator(moveExecuter);
         cargoAtStationsGenerator.update(world);

@@ -95,7 +95,7 @@ public class BalanceSheet implements FreerailsSerializable {
 	this.investedCapital = investedCapital;
 	retainedEarnings = totalAssets - totalLiabilities - stock -
 	    investedCapital;
-	totalEquity = stock + retainedEarnings;
+	totalEquity = investedCapital + stock + retainedEarnings;
     }
 
     /**

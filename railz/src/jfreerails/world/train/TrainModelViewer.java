@@ -68,6 +68,6 @@ public class TrainModelViewer implements FixedAsset {
     public long getMaintenance() {
 	return ((EngineType) world.get(KEY.ENGINE_TYPES,
 		    trainModel.getEngineType(),
-		    Player.AUTHORITATIVE)).getMaintenance();
+		    Player.AUTHORITATIVE)).getMaintenance() / 12;
     }
 }
