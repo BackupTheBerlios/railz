@@ -18,18 +18,13 @@
 
 package org.railz.client.view;
 
-import java.awt.Container;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
-import javax.swing.ListCellRenderer;
 
 import org.railz.client.common.PortablePopupAdapter;
 import org.railz.client.renderer.TrainImages;
@@ -50,8 +45,7 @@ import org.railz.world.train.*;
  * @author  Luke Lindsay
  */
 public class TrainScheduleJPanel extends javax.swing.JPanel implements
-WorldListListener, ListCellRenderer {
-    private ArrayList listCells = new ArrayList();
+WorldListListener {
     private ModelRoot modelRoot;
     private GUIRoot guiRoot;
 
@@ -72,7 +66,6 @@ WorldListListener, ListCellRenderer {
     /** Creates new form TrainScheduleJPanel */
     public TrainScheduleJPanel() {
         initComponents();
-	orders.setCellRenderer(this);
     }
     
     /** This method is called from within the constructor to
@@ -389,13 +382,8 @@ WorldListListener, ListCellRenderer {
 		    modelRoot.getPlayerPrincipal());
 	    scheduleIterator = train.getScheduleIterator();
 	    listModel = new TrainOrdersListModel(modelRoot, trainNumber);
-	    listCells.clear();
-	    for (int i = 0; i < listModel.getSize(); i++) {
-		TrainOrderJPanel toj = new TrainOrderJPanel();
-		toj.setup(modelRoot, null);
-		listCells.add(toj);
-	    }
 	    orders.setModel(listModel);
+	    orders.setCellRenderer(listModel);
 	    // orders.setFixedCellWidth(250);
 	    listModel.fireRefresh();
 	    enableButtons();
@@ -503,14 +491,6 @@ WorldListListener, ListCellRenderer {
         //do nothing.
     }
     
-    public Component getListCellRendererComponent(JList list, Object value,
-	    int index, boolean isSelected, boolean cellHasFocus) {
-	TrainOrderJPanel toj = (TrainOrderJPanel) listCells.get(index);
-	toj.update((TrainOrdersListModel.TrainOrdersListElement) value,
-		isSelected, index);
-	return toj;
-    }
-
     private SelectStationJPanel selectStationJPanel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     javax.swing.JButton addStationJButton;

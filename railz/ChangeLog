@@ -1,3 +1,6 @@
+September 26, 2004:
+-------------------
+Fix null pointer exception in Schedule changes
 September 25, 2004:
 -------------------
 Fix to bug where player was not being paid for cargo made by factories

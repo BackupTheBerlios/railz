@@ -23,6 +23,8 @@
 
 package org.railz.client.view;
 
+import java.awt.*;
+import java.util.*;
 import javax.swing.*;
 
 import org.railz.client.model.ModelRoot;
@@ -35,7 +37,11 @@ import org.railz.world.train.*;
  * @author  Luke Lindsay
  */
 
-public class TrainOrdersListModel extends AbstractListModel {
+public class TrainOrdersListModel extends AbstractListModel implements
+    ListCellRenderer{
+    /** ArrayList of TrainOrderJPanel */
+    private ArrayList listCells = new ArrayList();
+
     private int trainNumber;     
 
     private ReadOnlyWorld w;
@@ -75,8 +81,26 @@ public class TrainOrdersListModel extends AbstractListModel {
 	schedule = (Schedule) w.get(KEY.TRAIN_SCHEDULES,
 		trainModel.getScheduleIterator().getScheduleKey().index,
 	       trainModel.getScheduleIterator().getScheduleKey().principal);
+	updateCellRenderers();
     }
     
+    private void updateCellRenderers() {
+	listCells.clear();
+	for (int i = 0; i < getSize(); i++) {
+	    TrainOrderJPanel toj = new TrainOrderJPanel();
+	    toj.setup(modelRoot, null);
+	    listCells.add(toj);
+	}
+    }
+
+    public Component getListCellRendererComponent(JList list, Object value,
+	    int index, boolean isSelected, boolean cellHasFocus) {
+	TrainOrderJPanel toj = (TrainOrderJPanel) listCells.get(index);
+	toj.update((TrainOrdersListModel.TrainOrdersListElement) value,
+		isSelected, index);
+	return toj;
+    }
+
     public Object getElementAt(int index) {
 	if (trainModel == null)
 	    return null;
@@ -122,6 +146,8 @@ public class TrainOrdersListModel extends AbstractListModel {
 		tm.getScheduleIterator().getScheduleKey().index,
 		tm.getScheduleIterator().getScheduleKey().principal);
 	
+	updateCellRenderers();
+
 	if (s.getNumOrders() > schedule.getNumOrders()) {
 	    fireIntervalRemoved(this, s.getNumOrders() - 1,
 		    schedule.getNumOrders());

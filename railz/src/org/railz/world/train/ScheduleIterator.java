@@ -35,6 +35,7 @@ public class ScheduleIterator implements FreerailsSerializable {
     }
 
     public ScheduleIterator(ObjectKey scheduleKey, int currentOrder) {
+	assert scheduleKey != null;
 	this.scheduleKey = scheduleKey;
 	this.currentOrder = currentOrder;
     }
@@ -69,6 +70,7 @@ public class ScheduleIterator implements FreerailsSerializable {
     }
 
     public ScheduleIterator(ScheduleIterator i) {
+	assert i.scheduleKey != null;
 	currentOrder = i.currentOrder;
 	scheduleKey = i.scheduleKey;
 	priorityOrder = i.priorityOrder;
@@ -76,6 +78,7 @@ public class ScheduleIterator implements FreerailsSerializable {
 
     public ScheduleIterator(ScheduleIterator i, TrainOrdersModel
 	    priorityOrder) {
+	assert i.scheduleKey != null;
 	currentOrder = i.currentOrder;
 	scheduleKey = i.scheduleKey;
 	this.priorityOrder = priorityOrder;
@@ -129,8 +132,8 @@ public class ScheduleIterator implements FreerailsSerializable {
 
 	return currentOrder == i.currentOrder &&
 	    scheduleKey.equals(i.scheduleKey) &&
-	    (priorityOrder == null) ? (i.priorityOrder == null) :
-	    (priorityOrder.equals(i.priorityOrder));
+	    ((priorityOrder == null) ? (i.priorityOrder == null) :
+	    (priorityOrder.equals(i.priorityOrder)));
     }
 
     public int hashCode() {

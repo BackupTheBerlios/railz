@@ -237,10 +237,10 @@ public class TrainModel implements FreerailsSerializable {
 		(scheduleIterator != null ?
 		this.scheduleIterator.equals(test.scheduleIterator) :
 		test.scheduleIterator == null) &&
-		trainMotionModel == null ? test.trainMotionModel == null :
-		trainMotionModel.equals(test.trainMotionModel) &&
-		stateLastChanged == null ? test.stateLastChanged == null :
-		stateLastChanged.equals(test.stateLastChanged) &&
+		(trainMotionModel == null ? test.trainMotionModel == null :
+		trainMotionModel.equals(test.trainMotionModel)) &&
+		(stateLastChanged == null ? test.stateLastChanged == null :
+		stateLastChanged.equals(test.stateLastChanged)) &&
 		state == test.state &&
 		isBlocked == test.isBlocked &&
 		priority == test.priority;
