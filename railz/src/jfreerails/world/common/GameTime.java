@@ -28,6 +28,14 @@ package jfreerails.world.common;
  *
  */
 public class GameTime implements FreerailsSerializable {
+    /**
+     * A BigTick is defined to be this many Ticks. 
+     * A BigTick is the amount of time that the server will allow to pass
+     * before sending a time synchronization to the clients.
+     * XXX This is not yet implemented as described.
+     */
+    public static final int TICKS_PER_BIG_TICK = 30;
+
     private final int time;
 
     public String toString() {
@@ -38,6 +46,9 @@ public class GameTime implements FreerailsSerializable {
         this.time = l;
     }
 
+    /**
+     * @return the amount of elapsed game time in Ticks
+     */
     public int getTime() {
         return time;
     }

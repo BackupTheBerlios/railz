@@ -21,6 +21,7 @@
 package jfreerails.world.track;
 
 import jfreerails.world.common.*;
+import jfreerails.world.player.*;
 import jfreerails.world.top.*;
 
 public class TrackPieceViewer implements FixedAsset {
@@ -43,9 +44,8 @@ public class TrackPieceViewer implements FixedAsset {
      * Stations are accounted for elsewhere.
      */
     public long getBookValue() {
-	if (tile.getTrackRule().isStation())
-	    return 0;
-
-	return (long) (tile.getTrackRule().getPrice() * 0.25);
+	return (long) (((TrackRule) world.get(KEY.TRACK_RULES,
+			tile.getTrackRule(), Player.AUTHORITATIVE)).getPrice()
+		* 0.25);
     }
 }

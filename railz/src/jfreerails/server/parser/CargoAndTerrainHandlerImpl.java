@@ -31,10 +31,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import jfreerails.world.cargo.CargoType;
-import jfreerails.world.terrain.Consumption;
-import jfreerails.world.terrain.Conversion;
-import jfreerails.world.terrain.Production;
-import jfreerails.world.terrain.TileTypeImpl;
+import jfreerails.world.building.*;
+import jfreerails.world.terrain.TerrainType;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.World;
 import jfreerails.world.train.TransportCategory;
@@ -49,14 +47,16 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
     HashMap cargoName2cargoTypeNumber = new HashMap();
     HashSet rgbValuesAlreadyUsed = new HashSet();
 
-    //Parsing variables for Tile
     long tileBaseValue;
     String tileID;
-    String tileCategory;
+    int tileCategory;
     int tileRGB;
     ArrayList typeConsumes = new ArrayList();
     ArrayList typeProduces = new ArrayList();
     ArrayList typeConverts = new ArrayList();
+    boolean isStation;
+    long maintenance;
+    int stationRadius;
 
     public CargoAndTerrainHandlerImpl(World w) {
         world = w;
@@ -74,12 +74,18 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
     }
 
     public void start_Tile(final Attributes meta) throws SAXException {
-        typeConsumes.clear();
-        typeProduces.clear();
-        typeConverts.clear();
-
         tileID = meta.getValue("id");
-        tileCategory = meta.getValue("Category");
+        String category = meta.getValue("Category");
+	if ("River".equals(category))
+	    tileCategory = TerrainType.CATEGORY_RIVER;
+	else if ("Ocean".equals(category))
+	    tileCategory = TerrainType.CATEGORY_OCEAN;
+	else if ("Hill".equals(category))
+	    tileCategory = TerrainType.CATEGORY_HILL;
+	else if ("Country".equals(category))
+	    tileCategory = TerrainType.CATEGORY_COUNTRY;
+	else
+	    throw new SAXException("Unknown terrain type");
 
         String rgbString = meta.getValue("rgb");
         tileRGB = string2RGBValue(rgbString);
@@ -99,28 +105,10 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
     }
 
     public void end_Tile() throws SAXException {
-        Consumption[] consumes = new Consumption[typeConsumes.size()];
+	TerrainType terrainType = new TerrainType(tileRGB, tileCategory,
+		tileID, tileBaseValue);
 
-        for (int i = 0; i < typeConsumes.size(); i++) {
-            consumes[i] = (Consumption)typeConsumes.get(i);
-        }
-
-        Production[] produces = new Production[typeProduces.size()];
-
-        for (int i = 0; i < typeProduces.size(); i++) {
-            produces[i] = (Production)typeProduces.get(i);
-        }
-
-        Conversion[] converts = new Conversion[typeConverts.size()];
-
-        for (int i = 0; i < typeConverts.size(); i++) {
-            converts[i] = (Conversion)typeConverts.get(i);
-        }
-
-        TileTypeImpl tileType = new TileTypeImpl(tileRGB, tileCategory, tileID,
-                produces, consumes, converts, tileBaseValue);
-
-        world.add(KEY.TERRAIN_TYPES, tileType, Player.AUTHORITATIVE);
+        world.add(KEY.TERRAIN_TYPES, terrainType, Player.AUTHORITATIVE);
     }
 
     public void handle_Cargo(final Attributes meta) throws SAXException {
@@ -154,6 +142,67 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
     public void end_Terrain_Types() throws SAXException {
         //no need to do anything here.
     }
+
+    public void handle_Building_Types(final Attributes meta) throws
+	SAXException {
+	    // do nothing
+	}
+
+    public void end_Building_Type() throws SAXException {
+        Consumption[] consumes = new Consumption[typeConsumes.size()];
+
+        for (int i = 0; i < typeConsumes.size(); i++) {
+            consumes[i] = (Consumption)typeConsumes.get(i);
+        }
+
+        Production[] produces = new Production[typeProduces.size()];
+
+        for (int i = 0; i < typeProduces.size(); i++) {
+            produces[i] = (Production)typeProduces.get(i);
+        }
+
+        Conversion[] converts = new Conversion[typeConverts.size()];
+
+        for (int i = 0; i < typeConverts.size(); i++) {
+            converts[i] = (Conversion)typeConverts.get(i);
+        }
+
+	BuildingType buildingType;
+	if (isStation) {
+	    buildingType = new BuildingType(tileID, tileBaseValue,
+		    stationRadius);
+	} else {
+	    buildingType = new BuildingType(tileID, produces,
+		    consumes, converts, tileBaseValue, tileCategory);
+	}
+	world.add(KEY.BUILDING_TYPES, buildingType, Player.AUTHORITATIVE);
+    }
+
+    public void start_Building_Type(final Attributes meta) throws SAXException
+	{
+	    typeConsumes.clear();
+	    typeProduces.clear();
+	    typeConverts.clear();
+	    tileID = meta.getValue("id");
+	    String category = meta.getValue("category");
+	    if ("Urban".equals(category))
+		tileCategory = BuildingType.CATEGORY_URBAN;
+	    else if ("Resource".equals(category))
+		tileCategory = BuildingType.CATEGORY_RESOURCE;
+	    else if ("Industry".equals(category))
+		tileCategory = BuildingType.CATEGORY_INDUSTRY;
+	    else if ("Station".equals(category))
+		tileCategory = BuildingType.CATEGORY_STATION;
+	    else 
+		throw new SAXException("Unrecognised building type");
+	    tileBaseValue = Long.parseLong(meta.getValue("baseValue"));
+	    maintenance = Long.parseLong(meta.getValue("maintenance"));
+	    isStation = "Station".equals(category);
+	    if (isStation) {
+		stationRadius =
+		    Integer.parseInt(meta.getValue("stationRadius"));
+	    }
+	}
 
     public void start_Types(final Attributes meta) throws SAXException {
         //no need to do anything here.

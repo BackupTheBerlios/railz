@@ -27,10 +27,10 @@ import java.io.File;
 import jfreerails.client.common.ImageManager;
 import jfreerails.util.FreerailsProgressMonitor;
 import jfreerails.world.cargo.CargoType;
+import jfreerails.world.common.*;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.ReadOnlyWorld;
 import jfreerails.world.train.EngineType;
-import jfreerails.world.common.OneTileMoveVector;
 
 
 /**
@@ -125,6 +125,9 @@ public class TrainImages {
 	return getSideOnWagonImage(cargoTypeNumber, height, 100);
     }
 
+    /**
+     * @param direction a 3-bit CompassPoint 
+     */
     public Image getOverheadWagonImage(int cargoTypeNumber, int direction) {
         return overheadWagonImages[cargoTypeNumber][direction];
     }
@@ -146,15 +149,19 @@ public class TrainImages {
         }
     }
 
+    /**
+     * @param direction a 3-bits CompassPoints vector
+     */
     public Image getOverheadEngineImage(int engineTypeNumber, int direction) {
         return overheadEngineImages[engineTypeNumber][direction];
     }
 
+    /**
+     * @param i a 3-bit CompassPoints vector
+     */
     private static String generateOverheadFilename(String name, int i) {
-        OneTileMoveVector[] vectors = OneTileMoveVector.getList();
-
         return "trains" + File.separator + "overhead" + File.separator + name +
-        "_" + vectors[i].toAbrvString() + ".png";
+        "_" + CompassPoints.toAbrvString(i) + ".png";
     }
 
     private static String generateSideOnFilename(String name) {

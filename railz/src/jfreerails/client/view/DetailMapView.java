@@ -49,12 +49,10 @@ public class DetailMapView implements MapRenderer {
 
         if (OSXWorkaround) {
             //Don't buffer the mapviews background.
-            background = new MapBackgroundRender(world, vl.getTileViewList(),
-                    vl.getTrackPieceViewList());
+            background = new MapBackgroundRender(world, vl);
         } else {
-            background = new SquareTileBackgroundRenderer(new MapBackgroundRender(
-                        world, vl.getTileViewList(), vl.getTrackPieceViewList()),
-                    30);
+            background = new SquareTileBackgroundRenderer
+		(new MapBackgroundRender(world, vl), 30);
         }
 
         Dimension mapSize = new Dimension(world.getMapWidth(),

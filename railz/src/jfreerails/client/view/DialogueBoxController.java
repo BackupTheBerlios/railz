@@ -44,6 +44,8 @@ import jfreerails.controller.MoveChainFork;
 import jfreerails.controller.UntriedMoveReceiver;
 import jfreerails.move.ChangeProductionAtEngineShopMove;
 import jfreerails.move.Move;
+import jfreerails.world.building.*;
+import jfreerails.world.player.*;
 import jfreerails.world.station.ProductionAtEngineShop;
 import jfreerails.world.station.StationModel;
 import jfreerails.world.top.KEY;
@@ -349,22 +351,26 @@ public class DialogueBoxController {
     
     public void showStationOrTerrainInfo(int x, int y) {
         FreerailsTile tile = world.getTile(x, y);
-        if (tile.getTrackRule().isStation()) {
-	    for (int i = 0; i < world.size(KEY.STATIONS,
-			modelRoot.getPlayerPrincipal()); i++) {
-                StationModel station =
-		(StationModel) world.get(KEY.STATIONS, i,
-					 modelRoot.getPlayerPrincipal());
-                if (null != station && station.x == x && station.y == y) {
-                    this.showStationInfo(i);
-                    return;
-                }
-            }
-            throw new IllegalStateException(
-            "Could find station at " + x + ", " + y);
-        } else {
-            this.showTerrainInfo(x, y);
+	BuildingTile bTile = tile.getBuildingTile();
+	if (bTile != null) {
+	    BuildingType bType = (BuildingType) world.get(KEY.BUILDING_TYPES,
+		    tile.getTrackRule(), Player.AUTHORITATIVE);
+	    if (bType.getCategory() == BuildingType.CATEGORY_STATION) {
+		for (int i = 0; i < world.size(KEY.STATIONS,
+			    modelRoot.getPlayerPrincipal()); i++) {
+		    StationModel station =
+			(StationModel) world.get(KEY.STATIONS, i,
+						 modelRoot.getPlayerPrincipal());
+		    if (null != station && station.x == x && station.y == y) {
+			this.showStationInfo(i);
+			return;
+		    }
+		}
+		throw new IllegalStateException(
+			"Could find station at " + x + ", " + y);
+	    }
         }
+	this.showTerrainInfo(x, y);
     }
 
     public Component createDialog(JComponent content, String title) {

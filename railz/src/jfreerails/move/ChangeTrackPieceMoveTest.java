@@ -25,14 +25,11 @@ package jfreerails.move;
 
 import java.awt.Point;
 
+import jfreerails.world.common.*;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.MapFixtureFactory;
 import jfreerails.world.top.WorldImpl;
-import jfreerails.world.track.FreerailsTile;
-import jfreerails.world.track.TrackConfiguration;
-import jfreerails.world.track.TrackPiece;
-import jfreerails.world.track.TrackRule;
-
+import jfreerails.world.track.*;
 
 /**
  *
@@ -55,27 +52,27 @@ public class ChangeTrackPieceMoveTest extends AbstractMoveTestCase {
 
     protected void setUp() {
         setHasSetupBeenCalled(true);
-        setWorld(new WorldImpl(20, 20));
-        MapFixtureFactory.generateTrackRuleList(getWorld());
+	MapFixtureFactory mff = new MapFixtureFactory(20,20);
+        setWorld(mff.world);
     }
 
     public void testTryDoMove() {
         setUp();
 
-        TrackPiece oldTrackPiece;
-        TrackPiece newTrackPiece;
-        TrackConfiguration oldConfig;
-        TrackConfiguration newConfig;
+        TrackTile oldTrackPiece;
+        TrackTile newTrackPiece;
+        byte oldConfig;
+        byte newConfig;
         TrackMove move;
         MoveStatus moveStatus;
 
         //Try building the simplest piece of track.
-        newConfig = TrackConfiguration.getFlatInstance("000010000");
-        oldTrackPiece = (TrackPiece)getWorld().getTile(0, 0);
-	((FreerailsTile) oldTrackPiece).setOwner(testPlayer.getPrincipal());
+        newConfig = CompassPoints.NORTH;
+	FreerailsTile ft = getWorld().getTile(0, 0);
+	ft.setOwner(testPlayer.getPrincipal());
+        oldTrackPiece = ft.getTrackTile();
 
-        TrackRule r = (TrackRule)getWorld().get(KEY.TRACK_RULES, 0);
-        newTrackPiece = r.getTrackPiece(newConfig);
+        newTrackPiece = TrackTile.createTrackTile(getWorld(), newConfig, 0);
         move = new ChangeTrackPieceMove(oldTrackPiece, newTrackPiece,
                 new Point(0, 0), testPlayer.getPrincipal());
         moveStatus = move.tryDoMove(getWorld(), testPlayer.getPrincipal());
@@ -104,49 +101,37 @@ public class ChangeTrackPieceMoveTest extends AbstractMoveTestCase {
         assertEquals(false, moveStatus.isOk());
 
         //Try building an illegal track configuration.
-        newConfig = TrackConfiguration.getFlatInstance("000011111");
+	newConfig = CompassPoints.SOUTHEAST | CompassPoints.SOUTH |
+	    CompassPoints.SOUTHWEST | CompassPoints.WEST;
 
-        r = (TrackRule)getWorld().get(KEY.TRACK_RULES, 0);
-        newTrackPiece = r.getTrackPiece(newConfig);
+        newTrackPiece = TrackTile.createTrackTile(getWorld(), newConfig, 0);
         move = new ChangeTrackPieceMove(oldTrackPiece, newTrackPiece,
                 new Point(0, 0), testPlayer.getPrincipal());
         moveStatus = move.tryDoMove(getWorld(), testPlayer.getPrincipal());
         assertEquals(false, moveStatus.isOk());
     }
 
-    public void testTryUndoMove() {
-        setUp();
-
-        TrackPiece oldTrackPiece;
-        TrackPiece newTrackPiece;
-        TrackConfiguration oldConfig;
-        TrackConfiguration newConfig;
-        TrackMove move;
-        MoveStatus moveStatus;
-    }
-
     public void testDoMove() {
         setUp();
 
-        TrackPiece oldTrackPiece;
-        TrackPiece newTrackPiece;
-        TrackConfiguration oldConfig;
-        TrackConfiguration newConfig;
+        TrackTile oldTrackPiece;
+        TrackTile newTrackPiece;
+        byte oldConfig;
+        byte newConfig;
         TrackMove move;
         MoveStatus moveStatus;
 
         //Try building the simplest piece of track.
-        newConfig = TrackConfiguration.getFlatInstance("000010000");
-        oldTrackPiece = (TrackPiece)getWorld().getTile(0, 0);
+        newConfig = CompassPoints.NORTH;
+        oldTrackPiece = getWorld().getTile(0, 0).getTrackTile();
 
-        TrackRule r = (TrackRule)getWorld().get(KEY.TRACK_RULES, 0);
-        newTrackPiece = r.getTrackPiece(newConfig);
+        newTrackPiece = TrackTile.createTrackTile(getWorld(), newConfig, 0);
 
         assertMoveDoMoveIsOk(oldTrackPiece, newTrackPiece);
     }
 
-    protected void assertMoveDoMoveIsOk(TrackPiece oldTrackPiece,
-        TrackPiece newTrackPiece) {
+    protected void assertMoveDoMoveIsOk(TrackTile oldTrackPiece,
+        TrackTile newTrackPiece) {
         TrackMove move;
         MoveStatus moveStatus;
 
@@ -163,30 +148,29 @@ public class ChangeTrackPieceMoveTest extends AbstractMoveTestCase {
         //Exactly like testDoMove() v
         setUp();
 
-        TrackPiece oldTrackPiece;
-        TrackPiece newTrackPiece;
-        TrackConfiguration oldConfig;
-        TrackConfiguration newConfig;
+        TrackTile oldTrackPiece;
+        TrackTile newTrackPiece;
+        byte oldConfig;
+        byte newConfig;
         TrackMove move;
         MoveStatus moveStatus;
 
         //Try building the simplest piece of track.
-        newConfig = TrackConfiguration.getFlatInstance("000010000");
-        oldTrackPiece = (TrackPiece)getWorld().getTile(0, 0);
+        newConfig = CompassPoints.NORTH;
+        oldTrackPiece = getWorld().getTile(0, 0).getTrackTile();
 
         //  assertMoveDoMoveIsOk(oldTrackPiece, newConfig);
     }
 
     public void testMove() {
-        TrackPiece oldTrackPiece;
-        TrackPiece newTrackPiece;
-        TrackConfiguration oldConfig;
-        TrackConfiguration newConfig;
-        newConfig = TrackConfiguration.getFlatInstance("000010000");
-        oldTrackPiece = (TrackPiece)getWorld().getTile(0, 0);
+        TrackTile oldTrackPiece;
+        TrackTile newTrackPiece;
+        byte oldConfig;
+        byte newConfig;
+        newConfig = CompassPoints.NORTH;
+        oldTrackPiece = getWorld().getTile(0, 0).getTrackTile();
 
-        TrackRule r = (TrackRule)getWorld().get(KEY.TRACK_RULES, 0);
-        newTrackPiece = r.getTrackPiece(newConfig);
+        newTrackPiece = TrackTile.createTrackTile(getWorld(), newConfig, 0);
 
         Move move = new ChangeTrackPieceMove(oldTrackPiece, newTrackPiece,
                 new Point(0, 0), testPlayer.getPrincipal());

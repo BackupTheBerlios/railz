@@ -17,20 +17,20 @@
 package jfreerails.controller;
 
 import java.awt.Point;
+
 import jfreerails.move.ChangeTrackPieceCompositeMove;
 import jfreerails.move.Move;
 import jfreerails.move.MoveStatus;
 import jfreerails.move.UpgradeTrackMove;
-import jfreerails.world.common.OneTileMoveVector;
+import jfreerails.world.common.*;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.ReadOnlyWorld;
 import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.track.TrackPiece;
-import jfreerails.world.track.TrackRule;
+import jfreerails.world.track.*;
 
 
 final public class TrackMoveProducer {
-    private TrackRule trackRule;
+    private int trackRule;
     private ReadOnlyWorld w;
 
     /**
@@ -53,12 +53,17 @@ final public class TrackMoveProducer {
      */
     private TrackMoveTransactionsGenerator transactionsGenerator;
 
-    public MoveStatus buildTrack(Point from, OneTileMoveVector trackVector) {
+    /**
+     * @param trackVector a CompassPoints representing a single direction in
+     * which to add track
+     */
+    public MoveStatus buildTrack(Point from, byte trackVector) {
         ChangeTrackPieceCompositeMove move = null;
 	switch (trackBuilderMode) {
 	    case UPGRADE_TRACK:
-		Point point = new Point(from.x + trackVector.getDx(),
-			from.y + trackVector.getDy());
+		Point point = new Point(from.x +
+			CompassPoints.getUnitDeltaX(trackVector),
+			from.y + CompassPoints.getUnitDeltaY(trackVector));
 		return upgradeTrack(point, trackRule);
 	    case BUILD_TRACK:
 		move = ChangeTrackPieceCompositeMove.generateBuildTrackMove
@@ -97,7 +102,7 @@ final public class TrackMoveProducer {
      *@param  trackRuleNumber  The new trackRule value
      */
     public void setTrackRule(int trackRuleNumber) {
-        this.trackRule = (TrackRule)w.get(KEY.TRACK_RULES, trackRuleNumber);
+        trackRule = trackRuleNumber;
     }
 
     public void setTrackBuilderMode(int i) {
@@ -126,20 +131,16 @@ final public class TrackMoveProducer {
 
         this.moveTester = moveReceiver;
         this.w = world;
-        this.trackRule = (TrackRule)w.get(KEY.TRACK_RULES, 0);
+        this.trackRule = 0;
         principal = p;
         transactionsGenerator = new TrackMoveTransactionsGenerator(world,
                 principal);
     }
 
-    private MoveStatus upgradeTrack(Point point, TrackRule trackRule) {
-        TrackPiece before = (TrackPiece)w.getTile(point.x, point.y);
-        TrackPiece after = trackRule.getTrackPiece(before.getTrackConfiguration());
-
-        /* We don't want to 'upgrade' a station to track.  See bug 874416.*/
-        if (before.getTrackRule().isStation()) {
-            return MoveStatus.moveFailed("No need to upgrade track at station.");
-        }
+    private MoveStatus upgradeTrack(Point point, int trackRule) {
+        TrackTile before = w.getTile(point.x, point.y).getTrackTile();
+	TrackTile after = TrackTile.createTrackTile(w,
+		before.getTrackConfiguration(), trackRule);
 
         Move move = UpgradeTrackMove.generateMove(before, after, point,
 		principal);

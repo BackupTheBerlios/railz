@@ -16,6 +16,8 @@
 
 package jfreerails.world.top;
 
+import java.awt.Point;
+
 import jfreerails.world.common.FreerailsSerializable;
 import jfreerails.world.track.FreerailsTile;
 import jfreerails.world.player.FreerailsPrincipal;
@@ -79,9 +81,12 @@ public interface ReadOnlyWorld extends FreerailsSerializable {
      */
     int getMapHeight();
 
-    /** Returns the tile at the specified position on the map.
+    /**
+     * Returns the tile at the specified position on the map.
      */
     FreerailsTile getTile(int x, int y);
+
+    FreerailsTile getTile(Point p);
 
     boolean boundsContain(int x, int y);
 

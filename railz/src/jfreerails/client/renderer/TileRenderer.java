@@ -18,6 +18,7 @@
 package jfreerails.client.renderer;
 
 import java.awt.image.BufferedImage;
+import java.awt.Dimension;
 import jfreerails.client.common.ImageManager;
 import jfreerails.world.top.ReadOnlyWorld;
 
@@ -25,10 +26,15 @@ import jfreerails.world.top.ReadOnlyWorld;
 /**
 *  Description of the Interface
 *
-*@author     Luke Lindsay
+* @author     Luke Lindsay
 *     09 October 2001
 */
 public interface TileRenderer {
+    /**
+     * The size of a map tile in pixels.
+     */
+    public static final Dimension TILE_SIZE = new Dimension(30, 30);
+
     BufferedImage getDefaultIcon();
 
     void renderTile(java.awt.Graphics g, int renderX, int renderY, int mapX,

@@ -37,10 +37,7 @@ import jfreerails.client.renderer.ViewLists;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.ReadOnlyWorld;
 import jfreerails.world.top.WorldListListener;
-import jfreerails.world.train.ImmutableSchedule;
-import jfreerails.world.train.TrainModel;
-import jfreerails.world.train.TrainOrdersModel;
-import jfreerails.world.train.WagonType;
+import jfreerails.world.train.*;
 import jfreerails.world.cargo.CargoBundle;
 import jfreerails.world.cargo.CargoType;
 import jfreerails.world.player.FreerailsPrincipal;
@@ -61,7 +58,7 @@ public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldLi
     
     private int scheduleOrderNumber;
     
-    private int scheduleID=-1;
+    private ScheduleIterator scheduleIterator;
     
     private int height = 100;
     
@@ -171,9 +168,8 @@ public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldLi
         this.scheduleOrderNumber = scheduleOrderNumber;
 	TrainModel train = (TrainModel) w.get(KEY.TRAINS, trainNumber,
 		modelRoot.getPlayerPrincipal());
-        this.scheduleID = train.getScheduleID();
-        ImmutableSchedule s = (ImmutableSchedule)w.get(KEY.TRAIN_SCHEDULES, scheduleID);
-        TrainOrdersModel order = s.getOrder(scheduleOrderNumber);
+        scheduleIterator = train.getScheduleIterator();
+        TrainOrdersModel order = scheduleIterator.getCurrentOrder(w);
         
         //Set up the array of images.
         if (null != order.consist) {
@@ -254,7 +250,8 @@ public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldLi
     
     public void listUpdated(KEY key, int index, FreerailsPrincipal principal) {
         if(showingOrder){
-            if(KEY.TRAIN_SCHEDULES == key && this.scheduleID == index){
+            if(KEY.TRAIN_SCHEDULES == key &&
+		    scheduleIterator.getCurrentOrderIndex() == index){
                 this.display(this.trainNumber, this.scheduleOrderNumber);
             }
         }else{

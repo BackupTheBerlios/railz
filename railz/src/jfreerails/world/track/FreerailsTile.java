@@ -16,6 +16,7 @@
 
 package jfreerails.world.track;
 
+import jfreerails.world.building.*;
 import jfreerails.world.common.FreerailsSerializable;
 import jfreerails.world.player.FreerailsPrincipal;
 import jfreerails.world.player.Player;
@@ -24,65 +25,61 @@ import jfreerails.world.terrain.TerrainType;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.ReadOnlyWorld;
 
-public class FreerailsTile implements TrackPiece, TerrainTile,
+/**
+ * Encapsulates all information about a map tile
+ */
+public class FreerailsTile implements TerrainTile,
     FreerailsSerializable {
-    public static final FreerailsTile NULL = new FreerailsTile(0);
-    private final TrackPiece trackPiece;
-    private int terrainType;
+    private final TrackTile trackTile;
+    private final int terrainType;
+    private final BuildingTile buildingTile;
     private FreerailsPrincipal owner;
 
-    /**
-     * Create a tile. Initially it is owned by the server
-     */
-    public FreerailsTile(int terrainType) {
-	this(terrainType, NullTrackPiece.getInstance());
+    public FreerailsTile(int terrain, TrackTile track, BuildingTile
+	    building) {
+	this(terrain, track, building, Player.AUTHORITATIVE);
     }
 
-    public FreerailsTile(int terrainType, TrackPiece trackPiece) {
-	this(terrainType, trackPiece, Player.AUTHORITATIVE);
-    }
-
-    public FreerailsTile(int terrainType, TrackPiece trackPiece,
-	    FreerailsPrincipal owner) {
-        this.terrainType = terrainType;
-        this.trackPiece = trackPiece;
+    private FreerailsTile(int terrain, TrackTile track, BuildingTile
+	    building, FreerailsPrincipal owner) {
+	terrainType = terrain;
+	trackTile = track;
+	buildingTile = building;
 	this.owner = owner;
     }
 
-    /*
-     * @see TrackPiece#getTrackGraphicNumber()
-     */
-    public int getTrackGraphicNumber() {
-        return trackPiece.getTrackGraphicNumber();
+    public FreerailsTile(FreerailsTile tile, TrackTile track) {
+	this(tile.terrainType, track, tile.buildingTile, tile.owner);
+    }
+
+    public FreerailsTile(FreerailsTile tile, BuildingTile building) {
+	this(tile.terrainType, tile.trackTile, building, tile.owner);
     }
 
     /*
-     * @see TrackPiece#getTrackRule()
+     * @see TrackTile#getTrackRule()
      */
-    public TrackRule getTrackRule() {
-        return trackPiece.getTrackRule();
+    public int getTrackRule() {
+        return trackTile.getTrackRule();
     }
 
     /*
      * @see TrackPiece#getTrackConfiguration()
      */
-    public TrackConfiguration getTrackConfiguration() {
-        return trackPiece.getTrackConfiguration();
+    public byte getTrackConfiguration() {
+        return trackTile.getTrackConfiguration();
     }
 
     public boolean equals(Object o) {
         if (o instanceof FreerailsTile) {
             FreerailsTile test = (FreerailsTile)o;
 
-            boolean trackPieceFieldsEqual = (this.trackPiece.equals(test.trackPiece));
-
-            boolean terrainTypeFieldsEqual = (terrainType == test.getTerrainTypeNumber());
-
-            if (trackPieceFieldsEqual && terrainTypeFieldsEqual) {
-                return true;
-            } else {
-                return false;
-            }
+            return (terrainType == test.terrainType &&
+		    buildingTile == null ? test.buildingTile == null :
+		    (buildingTile.equals(test.buildingTile)) &&
+		    trackTile == null ? test.trackTile == null :
+		    (trackTile.equals(test.trackTile)) &&
+		     owner.equals(test.owner));
         } else {
             return false;
         }
@@ -91,14 +88,13 @@ public class FreerailsTile implements TrackPiece, TerrainTile,
     public int getTerrainTypeNumber() {
         return terrainType;
     }
-/*
-    public String toString() {
-        return "trackPiece=" + trackPiece.toString() + " and terrainType is " +
-        terrainType;
+
+    public TrackTile getTrackTile() {
+        return trackTile;
     }
-*/
-    public TrackPiece getTrackPiece() {
-        return trackPiece;
+
+    public BuildingTile getBuildingTile() {
+	return buildingTile;
     }
 
     public FreerailsPrincipal getOwner() {

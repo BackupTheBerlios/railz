@@ -22,6 +22,7 @@
 package jfreerails.move;
 
 import java.awt.Point;
+import jfreerails.world.building.*;
 import jfreerails.world.cargo.CargoBundleImpl;
 import jfreerails.world.common.GameTime;
 import jfreerails.world.station.StationModel;
@@ -43,8 +44,8 @@ public class AddStationMove extends CompositeMove {
     }
 
     public static AddStationMove generateMove(ReadOnlyWorld w,
-        String stationName, Point p, ChangeTrackPieceMove upgradeTrackMove,
-	FreerailsPrincipal owner) {
+	String stationName, Point p, FreerailsPrincipal owner, int
+	buildingType) {
         int cargoBundleNumber = w.size(KEY.CARGO_BUNDLES);
         Move addCargoBundleMove = new AddCargoBundleMove(cargoBundleNumber,
                 new CargoBundleImpl());
@@ -55,9 +56,12 @@ public class AddStationMove extends CompositeMove {
 
         Move addStation = new AddItemToListMove(KEY.STATIONS, stationNumber,
                 station, owner);
-        TrackRule typeAfter = upgradeTrackMove.getNewTrackPiece().getTrackRule();
+	BuildingTile oldBuilding = w.getTile(p).getBuildingTile();
+	BuildingTile newBuilding = new BuildingTile(buildingType);
+	ChangeBuildingMove cbm = new ChangeBuildingMove(p, oldBuilding,
+		newBuilding, owner);
         return new AddStationMove(new Move[] {
-                upgradeTrackMove, addCargoBundleMove, addStation
+                cbm, addCargoBundleMove, addStation
             });
     }
 }

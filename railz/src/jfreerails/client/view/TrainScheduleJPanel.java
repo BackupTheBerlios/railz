@@ -43,10 +43,7 @@ import jfreerails.world.top.ObjectKey;
 import jfreerails.world.top.NonNullElements;
 import jfreerails.world.top.ReadOnlyWorld;
 import jfreerails.world.top.WorldListListener;
-import jfreerails.world.train.ImmutableSchedule;
-import jfreerails.world.train.MutableSchedule;
-import jfreerails.world.train.TrainModel;
-import jfreerails.world.train.TrainOrdersModel;
+import jfreerails.world.train.*;
 
 /**
  *  This JPanel displays a train's schedule and provides controls that let you
@@ -63,7 +60,7 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
     
     private int trainNumber = -1;
     
-    private int scheduleID = -1;
+    private ScheduleIterator scheduleIterator = null;
     
     private TrainOrdersListModel listModel;
     private Component selectStationDialog;
@@ -386,7 +383,7 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
 	if (trainNumber >= 0) {
 	    TrainModel train = (TrainModel) w.get(KEY.TRAINS, trainNumber,
 		    modelRoot.getPlayerPrincipal());
-	    this.scheduleID = train.getScheduleID();
+	    scheduleIterator = train.getScheduleIterator();
 	    listModel = new TrainOrdersListModel(modelRoot, trainNumber);
 	    orders.setModel(listModel);
 	    // orders.setFixedCellWidth(250);
@@ -415,7 +412,7 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
     MutableSchedule getSchedule(){
 	TrainModel train = (TrainModel)w.get(KEY.TRAINS, trainNumber,
 		modelRoot.getPlayerPrincipal());
-        ImmutableSchedule immutableSchedule = (ImmutableSchedule)w.get(KEY.TRAIN_SCHEDULES, train.getScheduleID());
+        ImmutableSchedule immutableSchedule = (ImmutableSchedule)w.get(KEY.TRAIN_SCHEDULES, train.getScheduleIterator().getScheduleId());
         return new MutableSchedule(immutableSchedule);
     }
     
@@ -536,15 +533,16 @@ public class TrainScheduleJPanel extends javax.swing.JPanel implements WorldList
     void sendUpdateMove(MutableSchedule mutableSchedule ){
 	TrainModel train = (TrainModel)w.get(KEY.TRAINS, this.trainNumber,
 		modelRoot.getPlayerPrincipal());
-        int scheduleID = train.getScheduleID();
-        ImmutableSchedule before = (ImmutableSchedule)w.get(KEY.TRAIN_SCHEDULES, scheduleID);
+        ScheduleIterator si = train.getScheduleIterator();
+        ImmutableSchedule before = (ImmutableSchedule)w.get(KEY.TRAIN_SCHEDULES, si.getScheduleId());
         ImmutableSchedule after = mutableSchedule.toImmutableSchedule();
-        Move m = new ChangeTrainScheduleMove(scheduleID, before, after);
+        Move m = new ChangeTrainScheduleMove(si.getScheduleId(), before, after);
         modelRoot.getReceiver().processMove(m);
     }
     
     public void listUpdated(KEY key, int index, FreerailsPrincipal p) {
-        if(KEY.TRAIN_SCHEDULES == key && this.scheduleID == index){
+        if(KEY.TRAIN_SCHEDULES == key &&
+	       	scheduleIterator.getScheduleId() == index){
             listModel.fireRefresh();
             enableButtons();
         }

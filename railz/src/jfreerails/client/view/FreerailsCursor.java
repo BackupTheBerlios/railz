@@ -37,8 +37,7 @@ import jfreerails.client.model.MapCursor;
 import jfreerails.client.model.CursorEvent;
 import jfreerails.client.model.CursorEventListener;
 import jfreerails.client.renderer.MapRenderer;
-import jfreerails.world.common.OneTileMoveVector;
-
+import jfreerails.world.common.*;
 
 final public class FreerailsCursor implements KeyListener, MapCursor {
     public CursorRenderer cursorRenderer = new CursorRenderer();
@@ -105,42 +104,42 @@ final public class FreerailsCursor implements KeyListener, MapCursor {
     public void keyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getKeyCode()) {
         case KeyEvent.VK_NUMPAD1:
-            moveCursor(OneTileMoveVector.SOUTH_WEST);
+            moveCursor(CompassPoints.SOUTHWEST);
 
             break;
 
         case KeyEvent.VK_NUMPAD2:
-            moveCursor(OneTileMoveVector.SOUTH);
+            moveCursor(CompassPoints.SOUTH);
 
             break;
 
         case KeyEvent.VK_NUMPAD3:
-            moveCursor(OneTileMoveVector.SOUTH_EAST);
+            moveCursor(CompassPoints.SOUTHEAST);
 
             break;
 
         case KeyEvent.VK_NUMPAD4:
-            moveCursor(OneTileMoveVector.WEST);
+            moveCursor(CompassPoints.WEST);
 
             break;
 
         case KeyEvent.VK_NUMPAD6:
-            moveCursor(OneTileMoveVector.EAST);
+            moveCursor(CompassPoints.EAST);
 
             break;
 
         case KeyEvent.VK_NUMPAD7:
-            moveCursor(OneTileMoveVector.NORTH_WEST);
+            moveCursor(CompassPoints.NORTHWEST);
 
             break;
 
         case KeyEvent.VK_NUMPAD8:
-            moveCursor(OneTileMoveVector.NORTH);
+            moveCursor(CompassPoints.NORTH);
 
             break;
 
         case KeyEvent.VK_NUMPAD9:
-            moveCursor(OneTileMoveVector.NORTH_EAST);
+            moveCursor(CompassPoints.NORTHEAST);
 
             break;
 
@@ -168,9 +167,10 @@ final public class FreerailsCursor implements KeyListener, MapCursor {
             int deltaY = cursorMapPosition.y - oldCursorMapPosition.y;
 
             /*Build track! */
-            if (OneTileMoveVector.checkValidity(deltaX, deltaY)) {
-                fireOffCursorOneTileMove(OneTileMoveVector.getInstance(deltaX,
-                        deltaY), oldCursorMapPosition);
+            if (deltaX >= -1 && deltaX <= 1 && deltaY >= -1 && deltaY <= 1) {
+		fireOffCursorOneTileMove
+		    (CompassPoints.unitDeltasToDirection(deltaX,
+			    deltaY), oldCursorMapPosition);
             } else {
                 fireOffCursorJumped(oldCursorMapPosition, cursorMapPosition);
             }
@@ -202,9 +202,10 @@ final public class FreerailsCursor implements KeyListener, MapCursor {
         listeners.addElement(l);
     }
 
-    private void moveCursor(OneTileMoveVector v) {
-        tryMoveCursor(new Point(cursorMapPosition.x + v.getDx(),
-                cursorMapPosition.y + v.getDy()));
+    private void moveCursor(byte v) {
+        tryMoveCursor(new Point(cursorMapPosition.x +
+		    CompassPoints.getUnitDeltaX(v),
+                cursorMapPosition.y + CompassPoints.getUnitDeltaY(v)));
     }
 
     private void fireOffCursorJumped(Point oldPosition, Point newPosition) {
@@ -217,7 +218,7 @@ final public class FreerailsCursor implements KeyListener, MapCursor {
         }
     }
 
-    private void fireOffCursorOneTileMove(OneTileMoveVector v, Point oldPosition) {
+    private void fireOffCursorOneTileMove(byte v, Point oldPosition) {
         CursorEvent ce = new CursorEvent(this);
         ce.vector = v;
         ce.oldPosition = oldPosition;

@@ -35,7 +35,7 @@ public class AddTrainMoveTest extends AbstractMoveTestCase {
     public void testMove() {
 	GameTime now = (GameTime) getWorld().get(ITEM.TIME,
 		testPlayer.getPrincipal());
-        TrainModel train = new TrainModel(0, new int[] {0, 1, 0}, null, 0, 0,
+        TrainModel train = new TrainModel(0, new int[] {0, 1, 0}, 0,
 		now);
 
 	TrainOrdersModel orders = new TrainOrdersModel(new

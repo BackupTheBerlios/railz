@@ -24,9 +24,7 @@ import jfreerails.client.common.BinaryNumberFormatter;
 import jfreerails.client.common.ImageManager;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.track.TrackConfiguration;
 import jfreerails.world.track.TrackRule;
-
 
 /**
 *  This class renders a track piece.
@@ -35,16 +33,12 @@ import jfreerails.world.track.TrackRule;
 *     09 October 2001
 */
 final public class TrackPieceRendererImpl implements TrackPieceRenderer {
-    BufferedImage[] trackPieceIcons = new BufferedImage[512];
+    BufferedImage[] trackPieceIcons = new BufferedImage[256];
     private final String typeName;
 
-    public void drawTrackPieceIcon(int trackTemplate, java.awt.Graphics g,
+    public void drawTrackPieceIcon(byte trackConfig, java.awt.Graphics g,
         int x, int y, java.awt.Dimension tileSize) {
-        if ((trackTemplate > 511) || (trackTemplate < 0)) {
-            throw new java.lang.IllegalArgumentException("trackTemplate = " +
-                trackTemplate + ", it should be in the range 0-511");
-        }
-
+	int trackTemplate = (int) trackConfig & 0xFF;
         if (trackPieceIcons[trackTemplate] != null) {
             int drawX = x * tileSize.width - tileSize.width / 2;
             int drawY = y * tileSize.height - tileSize.height / 2;
@@ -55,40 +49,34 @@ final public class TrackPieceRendererImpl implements TrackPieceRenderer {
     public TrackPieceRendererImpl(ReadOnlyWorld w, ImageManager imageManager,
         int typeNumber) throws IOException {
         TrackRule trackRule = (TrackRule)w.get(KEY.TRACK_RULES, typeNumber);
-        this.typeName = trackRule.getTypeName();
+        this.typeName = trackRule.toString();
 
-        for (int i = 0; i < 512; i++) {
+        for (byte i = Byte.MIN_VALUE; i < Byte.MAX_VALUE; i++) {
             if (trackRule.testTrackPieceLegality(i)) {
-                TrackConfiguration config = TrackConfiguration.getFlatInstance(i);
                 String fileName = generateFilename(i);
                 trackPieceIcons[i] = imageManager.getImage(fileName);
             }
         }
     }
 
-    public BufferedImage getTrackPieceIcon(int trackTemplate) {
-        if ((trackTemplate > 511) || (trackTemplate < 0)) {
-            throw new java.lang.IllegalArgumentException("trackTemplate = " +
-                trackTemplate + ", it should be in the range 0-511");
-        }
-
+    public BufferedImage getTrackPieceIcon(byte trackConfig) {
+	int trackTemplate = (int) trackConfig & 0xFF;
         return trackPieceIcons[trackTemplate];
     }
 
     public void dumpImages(ImageManager imageManager) {
-        for (int i = 0; i < 512; i++) {
+        for (int i = 0; i < 256; i++) {
             if (trackPieceIcons[i] != null) {
-                String fileName = generateFilename(i);
+                String fileName = generateFilename((byte) i);
                 imageManager.setImage(fileName, trackPieceIcons[i]);
             }
         }
     }
 
-    private String generateFilename(int i) {
+    private String generateFilename(byte trackTemplate) {
         String relativeFileNameBase = "track" + File.separator +
             this.getTrackTypeName();
-        int newTemplate = TrackConfiguration.getFlatInstance(i)
-                                            .getNewTemplateNumber();
+        int newTemplate = (int) trackTemplate & 0xFF;
         String fileName = relativeFileNameBase + "_" +
             BinaryNumberFormatter.formatWithLowBitOnLeft(newTemplate, 8) +
             ".png";

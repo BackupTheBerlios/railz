@@ -27,13 +27,12 @@ import jfreerails.move.ChangeTrackPieceMove;
 import jfreerails.move.Move;
 import jfreerails.move.MoveStatus;
 import jfreerails.move.TrackMove;
+import jfreerails.world.common.*;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.MapFixtureFactory;
 import jfreerails.world.top.World;
 import jfreerails.world.top.WorldImpl;
-import jfreerails.world.track.TrackConfiguration;
-import jfreerails.world.track.TrackPiece;
-import jfreerails.world.track.TrackRule;
+import jfreerails.world.track.*;
 import jfreerails.world.player.Player;
 
 
@@ -47,8 +46,9 @@ public class TrackMoveTransactionsGeneratorTest extends TestCase {
     private Player player;
 
     protected void setUp() throws Exception {
-        world = new WorldImpl(20, 20);
-        MapFixtureFactory.generateTrackRuleList(world);
+        MapFixtureFactory mff = 
+	    new MapFixtureFactory(20, 20);
+	world = mff.world;
         player = new Player("test player",
                 (new Player("test player")).getPublicKey(), 0);
         world.add(KEY.PLAYERS, player, Player.AUTHORITATIVE);
@@ -57,19 +57,18 @@ public class TrackMoveTransactionsGeneratorTest extends TestCase {
     }
 
     public void testAddTrackMove() {
-        TrackPiece oldTrackPiece;
-        TrackPiece newTrackPiece;
-        TrackConfiguration oldConfig;
-        TrackConfiguration newConfig;
+        TrackTile oldTrackPiece;
+        TrackTile newTrackPiece;
+        byte oldConfig;
+        byte newConfig;
         TrackMove move;
         MoveStatus moveStatus;
 
         //Try building the simplest piece of track.
-        newConfig = TrackConfiguration.getFlatInstance("000010000");
-        oldTrackPiece = (TrackPiece)world.getTile(0, 0);
+        newConfig = CompassPoints.NORTH;
+        oldTrackPiece = world.getTile(0, 0).getTrackTile();
 
-        TrackRule r = (TrackRule)world.get(KEY.TRACK_RULES, 0);
-        newTrackPiece = r.getTrackPiece(newConfig);
+        newTrackPiece = TrackTile.createTrackTile(world, newConfig, 0);
         move = new ChangeTrackPieceMove(oldTrackPiece, newTrackPiece,
                 new Point(0, 0), player.getPrincipal());
 

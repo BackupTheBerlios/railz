@@ -29,10 +29,9 @@ import jfreerails.world.top.ReadOnlyWorld;
 
 
 /**
-*@author           Luke Lindsay
-*           09 October 2001
-* public    class TileViewListImplrsion
-*/
+ * @author           Luke Lindsay
+ *           09 October 2001
+ */
 final public class TileRendererListImpl implements TileRendererList {
     private TileRenderer[] tiles;
 

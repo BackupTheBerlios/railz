@@ -40,14 +40,15 @@ import jfreerails.client.renderer.TileRendererListImpl;
 import jfreerails.client.renderer.TrackPieceRendererList;
 import jfreerails.client.renderer.TrainImages;
 import jfreerails.client.renderer.ViewLists;
-import jfreerails.util.FreerailsProgressMonitor;
+import jfreerails.util.*;
+import jfreerails.world.building.*;
+import jfreerails.world.player.*;
 import jfreerails.world.terrain.TerrainType;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
-
+import jfreerails.world.top.*;
 
 public class ViewListsImpl implements ViewLists {
     private final TileRendererList tiles;
+    private final TileRendererList buildingRenderers;
     private final TrackPieceRendererList trackPieceViewList;
     private final TrainImages trainImages;
     private final ImageManager imageManager;
@@ -64,24 +65,65 @@ public class ViewListsImpl implements ViewLists {
 	imageManager = new
 	    ImageManagerImpl(guiRoot.getClientJFrame(),
 		    "/jfreerails/client/graphics/");
-        tiles = loadNewTileViewList(w, pm);
+        tiles = loadTerrainRenderers(w, pm);
+	buildingRenderers = loadBuildingRenderers(w, pm);
 
         trackPieceViewList = loadTrackViews(w, pm);
 
         trainImages = new TrainImages(w, imageManager, pm);
     }
 
-    public TrackPieceRendererList loadTrackViews(ReadOnlyWorld w,
+    private TrackPieceRendererList loadTrackViews(ReadOnlyWorld w,
         FreerailsProgressMonitor pm) throws IOException {
         return new TrackPieceRendererList(w, imageManager, pm);
     }
 
-    public TileRendererList loadNewTileViewList(ReadOnlyWorld w,
+    private TileRendererList loadBuildingRenderers(ReadOnlyWorld w,
+	    FreerailsProgressMonitor pm) throws IOException {
+	ArrayList buildingRenderers = new ArrayList();
+	pm.setMessage(Resources.get("Loading building graphics..."));
+	int nBuildingTypes = w.size(KEY.BUILDING_TYPES, Player.AUTHORITATIVE);
+	pm.setMax(nBuildingTypes);
+	NonNullElements i = new NonNullElements(KEY.BUILDING_TYPES, w,
+		Player.AUTHORITATIVE);
+	while (i.next()) {
+	    BuildingType buildingType = (BuildingType) i.getElement();
+	    int tileTypes[] = new int[]{i.getIndex()};
+	    pm.setValue(i.getIndex());
+	    /* try loading as a standard tile */
+	    try {
+		StandardTileRenderer tr = new
+		    StandardTileRenderer(imageManager, tileTypes,
+			    buildingType);
+		buildingRenderers.add(tr);
+		continue;
+		
+	    } catch (IOException e) {
+		// ignore
+	    }
+	    /* try loading as a chequered tile */
+	    try {
+		ChequeredTileRenderer tr = new
+		    ChequeredTileRenderer(imageManager, buildingType,
+			    tileTypes);
+		buildingRenderers.add(tr);
+		continue;
+	    } catch (IOException e) {
+		// no more renderers to try
+		pm.setMessage(Resources.get("Problem loading building " +
+			   "graphics"));
+		throw e;
+	    }
+	}
+	return new TileRendererListImpl(buildingRenderers);
+    }
+
+    private TileRendererList loadTerrainRenderers(ReadOnlyWorld w,
         FreerailsProgressMonitor pm) throws IOException {
         ArrayList tileRenderers = new ArrayList();
 
         //Setup progress monitor..
-        pm.setMessage("Loading terrain graphics.");
+        pm.setMessage(Resources.get("Loading terrain graphics."));
 
         int numberOfTypes = w.size(KEY.TERRAIN_TYPES);
         pm.setMax(numberOfTypes);
@@ -94,26 +136,23 @@ public class ViewListsImpl implements ViewLists {
             int[] typesTreatedAsTheSame = new int[] {i};
 
             TileRenderer tr = null;
-            Integer rgb = new Integer(t.getRGB());
             pm.setValue(++progress);
 
             try {
-                //XXX hack to make rivers flow into ocean and habours & occean
-                // treate habours as the same type.
-                String thisTerrainCategory = t.getTerrainCategory();
+                //XXX hack to make rivers flow into ocean
+                int thisTerrainCategory = t.getTerrainCategory();
 
-                if (thisTerrainCategory.equalsIgnoreCase("River") ||
-                        thisTerrainCategory.equalsIgnoreCase("Ocean")) {
+                if (thisTerrainCategory == TerrainType.CATEGORY_RIVER ||
+                        thisTerrainCategory == TerrainType.CATEGORY_OCEAN) {
                     //Count number of types with category "water"
                     int count = 0;
 
                     for (int j = 0; j < numberOfTypes; j++) {
                         TerrainType t2 = (TerrainType)w.get(KEY.TERRAIN_TYPES, j);
-                        String terrainCategory = t2.getTerrainCategory();
+                        int terrainCategory = t2.getTerrainCategory();
 
-                        if (terrainCategory.equalsIgnoreCase("Ocean") ||
-                                terrainCategory.equalsIgnoreCase(
-                                    thisTerrainCategory)) {
+                        if (terrainCategory == TerrainType.CATEGORY_OCEAN ||
+                                terrainCategory == thisTerrainCategory) {
                             count++;
                         }
                     }
@@ -123,11 +162,10 @@ public class ViewListsImpl implements ViewLists {
 
                     for (int j = 0; j < numberOfTypes; j++) {
                         TerrainType t2 = (TerrainType)w.get(KEY.TERRAIN_TYPES, j);
-                        String terrainCategory = t2.getTerrainCategory();
+                        int terrainCategory = t2.getTerrainCategory();
 
-                        if (terrainCategory.equalsIgnoreCase("Ocean") ||
-                                terrainCategory.equalsIgnoreCase(
-                                    thisTerrainCategory)) {
+                        if (terrainCategory == TerrainType.CATEGORY_OCEAN ||
+                                terrainCategory == thisTerrainCategory) {
                             typesTreatedAsTheSame[count] = j;
                             count++;
                         }
@@ -167,25 +205,8 @@ public class ViewListsImpl implements ViewLists {
 
                 continue;
             } catch (IOException io) {
-                // If the image is missing, we generate it.
                 System.err.println("No tile renderer for " +
                     t.getTerrainTypeName());
-
-                String filename = StandardTileRenderer.generateFilename(t.getTerrainTypeName());
-                BufferedImage image = QuickRGBTileRendererList.createImageFor(t);
-                imageManager.setImage(filename, image);
-
-                //generatedImages.setImage(filename, image);
-                try {
-                    tr = new StandardTileRenderer(imageManager,
-                            typesTreatedAsTheSame, t);
-                    tileRenderers.add(tr);
-
-                    continue;
-                } catch (IOException io2) {
-                    io2.printStackTrace();
-                    throw new IllegalStateException();
-                }
             }
         }
 
@@ -224,6 +245,10 @@ public class ViewListsImpl implements ViewLists {
 
     public TileRendererList getTileViewList() {
         return this.tiles;
+    }
+
+    public TileRendererList getBuildingViewList() {
+	return buildingRenderers;
     }
 
     public TrackPieceRendererList getTrackPieceViewList() {

@@ -29,7 +29,6 @@ import jfreerails.world.terrain.TerrainType;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.ReadOnlyWorld;
 import jfreerails.world.track.FreerailsTile;
-import jfreerails.world.track.NullTrackPiece;
 
 /**
  * This class draws the voerview map.
@@ -90,7 +89,7 @@ final public class ZoomedOutMapRenderer implements MapRenderer {
 
         FreerailsTile tt = w.getTile(tile.x, tile.y);
 
-        if (tt.getTrackPiece().equals(NullTrackPiece.getInstance())) {
+        if (tt.getTrackTile() == null) {
 		int typeNumber = tt.getTerrainTypeNumber();
 		TerrainType terrainType = (TerrainType)w.get(KEY.TERRAIN_TYPES,
 			typeNumber);
@@ -138,7 +137,7 @@ final public class ZoomedOutMapRenderer implements MapRenderer {
 
 		FreerailsTile tt = w.getTile(tile.x, tile.y);
 
-		if (tt.getTrackPiece().equals(NullTrackPiece.getInstance())) {
+		if (tt.getTrackTile() == null) {
 		    int typeNumber = tt.getTerrainTypeNumber();
 		    TerrainType terrainType = (TerrainType)w.get(KEY.TERRAIN_TYPES,
 			    typeNumber);

@@ -25,10 +25,7 @@ import jfreerails.world.player.Player;
 import jfreerails.world.terrain.TerrainType;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.World;
-import jfreerails.world.track.FreerailsTile;
-import jfreerails.world.track.TrackConfiguration;
-import jfreerails.world.track.TrackPiece;
-import jfreerails.world.track.TrackRule;
+import jfreerails.world.track.*;
 
 /**
  * This Move adds, removes, or upgrades the track on a single tile.
@@ -36,8 +33,8 @@ import jfreerails.world.track.TrackRule;
  *
  */
 final public class ChangeTrackPieceMove implements TrackMove, MapUpdateMove {
-    final TrackPiece trackPieceBefore;
-    final TrackPiece trackPieceAfter;
+    final TrackTile trackPieceBefore;
+    final TrackTile trackPieceAfter;
     final FreerailsPrincipal trackOwner;
     final Point location;
 
@@ -49,16 +46,20 @@ final public class ChangeTrackPieceMove implements TrackMove, MapUpdateMove {
         return location;
     }
 
-    public TrackPiece getOldTrackPiece() {
+    public TrackTile getOldTrackPiece() {
         return trackPieceBefore;
     }
 
-    public TrackPiece getNewTrackPiece() {
+    public TrackTile getNewTrackPiece() {
         return trackPieceAfter;
     }
 
-    public ChangeTrackPieceMove(TrackPiece before, TrackPiece after, Point p,
+    public ChangeTrackPieceMove(TrackTile before, TrackTile after, Point p,
 	    FreerailsPrincipal trackOwner) {
+	if ((before != null && before.equals(after)) ||
+		before == null && after == null)
+	    throw new IllegalArgumentException(); 
+
         trackPieceBefore = before;
         trackPieceAfter = after;
 	this.trackOwner = trackOwner;
@@ -69,8 +70,8 @@ final public class ChangeTrackPieceMove implements TrackMove, MapUpdateMove {
         return tryMove(w, this.trackPieceBefore, this.trackPieceAfter, p);
     }
 
-    private MoveStatus tryMove(World w, TrackPiece oldTrackPiece,
-        TrackPiece newTrackPiece, FreerailsPrincipal p) {
+    private MoveStatus tryMove(World w, TrackTile oldTrackPiece,
+        TrackTile newTrackPiece, FreerailsPrincipal p) {
         //Check that location is on the map.
         if (!w.boundsContain(location.x, location.y)) {
             return MoveStatus.moveFailed(
@@ -84,57 +85,40 @@ final public class ChangeTrackPieceMove implements TrackMove, MapUpdateMove {
 
         //Check that the current track piece at this.location is
         //the same as this.oldTrackPiece.
-	TrackPiece currentTrackPieceAtLocation = currentTile.getTrackPiece();
-
-        TrackRule expectedTrackRule = oldTrackPiece.getTrackRule();
-        TrackRule actualTrackRule = currentTrackPieceAtLocation.getTrackRule();
-
-        if (!expectedTrackRule.equals(actualTrackRule)) {
-            return MoveStatus.moveFailed("Expected '" +
-                expectedTrackRule.getTypeName() + "' but found '" +
-                actualTrackRule.getTypeName() + "' at " + location.x + " ," +
-                location.y);
+	TrackTile currentTrackPieceAtLocation = currentTile.getTrackTile();
+	if ((oldTrackPiece == null && currentTrackPieceAtLocation != null) ||
+		!oldTrackPiece.equals(currentTrackPieceAtLocation)) {
+            return MoveStatus.moveFailed("Somebody else changed the track " +
+		    "piece.");
         }
 
-        if (currentTrackPieceAtLocation.getTrackConfiguration() != oldTrackPiece.getTrackConfiguration()) {
-            return MoveStatus.moveFailed(
-                "Unexpected track piece found at location: " + location.x +
-                " ," + location.y);
-        }
+	if (oldTrackPiece != null) {
+	    TrackRule oldTrackRule = (TrackRule) w.get(KEY.TRACK_RULES,
+		    oldTrackPiece.getTrackRule(), Player.AUTHORITATIVE);
+	    if (!oldTrackRule.testTrackPieceLegality
+		    (oldTrackPiece.getTrackConfiguration()))
+		    return MoveStatus.moveFailed("Illegal track " +
+			    "configuration.");
+	}
+	if (newTrackPiece != null) {
+	    TrackRule newTrackRule = (TrackRule) w.get(KEY.TRACK_RULES,
+		    newTrackPiece.getTrackRule(), Player.AUTHORITATIVE);
+	    if (!newTrackRule.testTrackPieceLegality
+		    (newTrackPiece.getTrackConfiguration()))
+		    return MoveStatus.moveFailed("Illegal track " +
+			    "configuration.");
+	    TerrainType tt = (TerrainType) w.get(KEY.TERRAIN_TYPES,
+		    currentTile.getTerrainTypeNumber(), Player.AUTHORITATIVE);
+	    if (!newTrackRule.canBuildOnThisTerrainType
+		    (tt.getTerrainCategory())) {
+		String thisTrackType = newTrackRule.toString();
+		int terrainCategory = tt.getTerrainCategory();
 
-        //Check that oldTrackPiece is not the same as newTrackPiece
-        if ((oldTrackPiece.getTrackConfiguration() == newTrackPiece.getTrackConfiguration()) &&
-                (oldTrackPiece.getTrackRule() == newTrackPiece.getTrackRule())) {
-            return MoveStatus.moveFailed("Already track here!");
-        }
-
-        //Check for illegal track configurations.
-        if (!(oldTrackPiece.getTrackRule().trackPieceIsLegal(oldTrackPiece.getTrackConfiguration()) &&
-                newTrackPiece.getTrackRule().trackPieceIsLegal(newTrackPiece.getTrackConfiguration()))) {
-            return MoveStatus.moveFailed("Illegal track configuration.");
-        }
-
-        //Check for diagonal conflicts.
-        if (!(noDiagonalTrackConflicts(location,
-                    oldTrackPiece.getTrackGraphicNumber(), w) &&
-                noDiagonalTrackConflicts(location,
-                    newTrackPiece.getTrackGraphicNumber(), w))) {
-            return MoveStatus.moveFailed(
-                "Illegal track configuration - diagonal conflict");
-        }
-
-        int terrainType = w.getTile(location.x, location.y)
-                           .getTerrainTypeNumber();
-        TerrainType tt = (TerrainType)w.get(KEY.TERRAIN_TYPES, terrainType);
-
-        if (!newTrackPiece.getTrackRule().canBuildOnThisTerrainType(tt.getTerrainCategory())) {
-            String thisTrackType = newTrackPiece.getTrackRule().getTypeName();
-            String terrainCategory = tt.getTerrainCategory().toLowerCase();
-
-            return MoveStatus.moveFailed("Can't build " + thisTrackType +
-                " on " + terrainCategory);
-        }
-
+		return MoveStatus.moveFailed("Can't build " + thisTrackType +
+			" on " + terrainCategory);
+	    }
+	}
+	
         return MoveStatus.MOVE_OK;
     }
 
@@ -154,12 +138,10 @@ final public class ChangeTrackPieceMove implements TrackMove, MapUpdateMove {
         }
     }
 
-    private void move(World w, TrackPiece oldTrackPiece,
-        TrackPiece newTrackPiece, FreerailsPrincipal p) {
-        FreerailsTile oldTile = (FreerailsTile)w.getTile(location.x, location.y);
-        int terrain = oldTile.getTerrainTypeNumber();
-        FreerailsTile newTile = new FreerailsTile(terrain, newTrackPiece,
-		oldTile.getOwner());
+    private void move(World w, TrackTile oldTrackPiece,
+        TrackTile newTrackPiece, FreerailsPrincipal p) {
+        FreerailsTile oldTile = w.getTile(location.x, location.y);
+        FreerailsTile newTile = new FreerailsTile(oldTile, newTrackPiece);
         w.setTile(location.x, location.y, newTile);
     }
 
@@ -172,49 +154,6 @@ final public class ChangeTrackPieceMove implements TrackMove, MapUpdateMove {
             move(w, this.trackPieceAfter, this.trackPieceBefore, p);
 
             return moveStatus;
-        }
-    }
-
-    private boolean noDiagonalTrackConflicts(Point point, int trackTemplate,
-        World w) {
-        /*This method is needs replacing.  It only deals with flat track pieces, and
-         *is rather hard to make sense of.  LL
-         */
-
-        //int trackTemplate = (1 << (3 * (1 + tv.getY()) + (1 + tv.getX())));
-        int trackTemplateAbove;
-        int trackTemplateBelow;
-        int cornersTemplate = TrackConfiguration.stringTemplate2Int("101000101");
-        trackTemplate = trackTemplate & cornersTemplate;
-
-        Dimension mapSize = new Dimension(w.getMapWidth(), w.getMapHeight());
-
-        //Avoid array-out-of-bounds exceptions.
-        if (point.y > 0) {
-            TrackPiece tp = (TrackPiece)w.getTile(point.x, point.y - 1);
-            trackTemplateAbove = tp.getTrackGraphicNumber();
-        } else {
-            trackTemplateAbove = 0;
-        }
-
-        if ((point.y + 1) < mapSize.height) {
-            TrackPiece tp = (TrackPiece)w.getTile(point.x, point.y + 1);
-            trackTemplateBelow = tp.getTrackGraphicNumber();
-        } else {
-            trackTemplateBelow = 0;
-        }
-
-        trackTemplateAbove = trackTemplateAbove >> 6;
-        trackTemplateBelow = trackTemplateBelow << 6;
-        trackTemplate = trackTemplate &
-            (trackTemplateAbove | trackTemplateBelow);
-
-        if (trackTemplate != 0) {
-            return false;
-            //There is a clash.
-        } else {
-            return true;
-            //Things are ok.
         }
     }
 

@@ -33,12 +33,13 @@ import jfreerails.move.ListMove;
 import jfreerails.move.Move;
 import jfreerails.world.cargo.CargoBundle;
 import jfreerails.world.cargo.CargoType;
+import jfreerails.world.player.*;
 import jfreerails.world.station.StationModel;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.NonNullElements;
 import jfreerails.world.top.ReadOnlyWorld;
 import jfreerails.world.top.WorldIterator;
-import jfreerails.world.track.FreerailsTile;
+import jfreerails.world.track.*;
 import jfreerails.world.train.WagonType;
 
 /** 
@@ -197,7 +198,9 @@ implements MoveReceiver {
 	    (StationModel) world.get(KEY.STATIONS, stationNumber,
 				     modelRoot.getPlayerPrincipal());
             FreerailsTile tile = world.getTile(station.x, station.y);
-            String stationTypeName = tile.getTrackRule().getTypeName();
+	    String stationTypeName = ((TrackRule) world.get(KEY.TRACK_RULES,
+			tile.getTrackRule(),
+			Player.AUTHORITATIVE)).toString();
             cargoBundleIndex = station.getCargoBundleNumber();
             CargoBundle cargoWaiting =
             (CargoBundle) world.get(

@@ -47,10 +47,10 @@ public class TrackMaintenanceMoveGeneratorTest extends TestCase {
 	Player p = new Player("testPlayer");
 	p = new Player("testPlayer", p.getPublicKey(), 0);
 	player = p;
-        w = new WorldImpl(20, 20);
+	MapFixtureFactory mff = new MapFixtureFactory(20, 20);
+        w = mff.world;
 	w.add(KEY.PLAYERS, p, Player.AUTHORITATIVE);
         w.add(KEY.BANK_ACCOUNTS, new BankAccount(), p.getPrincipal());
-        MapFixtureFactory.generateTrackRuleList(w);
     }
 
     public void testGenerateMove() {

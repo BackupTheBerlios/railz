@@ -28,7 +28,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import jfreerails.world.terrain.TerrainTile;
 import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.track.TrackPiece;
+import jfreerails.world.track.*;
 
 /**
  * This class encapsulates the objects that make-up and paint the background
@@ -41,15 +41,19 @@ import jfreerails.world.track.TrackPiece;
  */
 final public class MapBackgroundRender implements MapLayerRenderer {
     /**
+     * The building layer.
+     */
+    private BuildingLayerRenderer buildingLayer;
+
+    /**
      * The terrain layer.
      */
-    protected TerrainLayer terrainLayer;
+    private TerrainLayer terrainLayer;
 
     /**
      * The track layer.
      */
-    protected TrackLayer trackLayer;
-    private Dimension tileSize = new Dimension(30, 30);
+    private TrackLayer trackLayer;
     private Dimension mapSize;
 
     /*Used to avoid having to create a new rectangle for each call to
@@ -94,15 +98,16 @@ final public class MapBackgroundRender implements MapLayerRenderer {
                         tile.y++) {
                     if ((tile.x >= 0) && (tile.x < mapSize.width) &&
                             (tile.y >= 0) && (tile.y < mapSize.height)) {
-                        TrackPiece tp = (TrackPiece)w.getTile(tile.x, tile.y);
-
-                        int graphicsNumber = tp.getTrackGraphicNumber();
-
-                        int ruleNumber = tp.getTrackRule().getRuleNumber();
-                        jfreerails.client.renderer.TrackPieceRenderer trackPieceView =
+                        TrackTile tp = (TrackTile)w.getTile(tile.x,
+				tile.y).getTrackTile();
+			if (tp == null)
+			    continue;
+                        byte trackConfig = tp.getTrackConfiguration();
+                        int ruleNumber = tp.getTrackRule();
+                        TrackPieceRenderer trackPieceView =
                             trackPieceViewList.getTrackPieceView(ruleNumber);
-                        trackPieceView.drawTrackPieceIcon(graphicsNumber,
-                            tempG, tile.x, tile.y, tileSize);
+                        trackPieceView.drawTrackPieceIcon(trackConfig,
+                            tempG, tile.x, tile.y, TileRenderer.TILE_SIZE);
                     }
                 }
             }
@@ -148,8 +153,8 @@ final public class MapBackgroundRender implements MapLayerRenderer {
         private ReadOnlyWorld w;
 
         public void paintTile(Graphics g, Point tile) {
-            int screenX = tileSize.width * tile.x;
-            int screenY = tileSize.height * tile.y;
+            int screenX = TileRenderer.TILE_SIZE.width * tile.x;
+            int screenY = TileRenderer.TILE_SIZE.height * tile.y;
 
             if ((tile.x >= 0) && (tile.x < mapSize.width) && (tile.y >= 0) &&
                     (tile.y < mapSize.height)) {
@@ -217,15 +222,16 @@ final public class MapBackgroundRender implements MapLayerRenderer {
         }
     }
 
-    public MapBackgroundRender(ReadOnlyWorld w, TileRendererList tiles,
-        TrackPieceRendererList trackPieceViewList) {
-        trackLayer = new TrackLayer(w, trackPieceViewList);
-        terrainLayer = new TerrainLayer(w, tiles);
+    public MapBackgroundRender(ReadOnlyWorld w, ViewLists vl) {
+        trackLayer = new TrackLayer(w, vl.getTrackPieceViewList());
+        terrainLayer = new TerrainLayer(w, vl.getTileViewList());
+	buildingLayer = new BuildingLayerRenderer(w, vl);
         mapSize = new Dimension(w.getMapWidth(), w.getMapHeight());
     }
 
     public void paintTile(Graphics g, int x, int y) {
         terrainLayer.paintTile(g, x, y);
+	buildingLayer.paintTile(g, x, y);
         trackLayer.paintTile(g, x, y);
     }
 
@@ -236,13 +242,10 @@ final public class MapBackgroundRender implements MapLayerRenderer {
      * origin 0,0 at top left of map, measured in pixels.
      */
     public void paintRect(Graphics g, Rectangle visibleRect) {
-        int tileWidth = 30;
-        int tileHeight = 30;
-
-        int x = visibleRect.x / tileWidth;
-        int y = visibleRect.y / tileHeight;
-        int width = visibleRect.width / tileWidth + 2;
-        int height = visibleRect.height / tileHeight + 2;
+        int x = visibleRect.x / TileRenderer.TILE_SIZE.width;
+        int y = visibleRect.y / TileRenderer.TILE_SIZE.height;
+        int width = visibleRect.width / TileRenderer.TILE_SIZE.width + 2;
+        int height = visibleRect.height / TileRenderer.TILE_SIZE.height + 2;
         paintRectangleOfTiles(g, x, y, width, height);
     }
 
@@ -257,6 +260,7 @@ final public class MapBackgroundRender implements MapLayerRenderer {
     private void paintRectangleOfTiles(Graphics g, int x, int y, int width,
         int height) {
         terrainLayer.paintRectangleOfTiles(g, x, y, width, height);
+	buildingLayer.paintRectangleOfTiles(g, x, y, width, height);
         trackLayer.paintRectangleOfTiles(g, x, y, width, height);
     }
 

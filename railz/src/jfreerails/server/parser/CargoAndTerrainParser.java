@@ -114,7 +114,11 @@ public class CargoAndTerrainParser implements ContentHandler {
             handler.handle_Consumes(attrs);
         } else if ("Produces".equals(name)) {
             handler.handle_Produces(attrs);
-        }
+        } else if ("Building_Types".equals(name)) {
+	    handler.handle_Building_Types(attrs);
+	} else if ("Building_Type".equals(name)) {
+	    handler.start_Building_Type(attrs);
+	}
     }
 
     /**
@@ -134,7 +138,9 @@ public class CargoAndTerrainParser implements ContentHandler {
             handler.end_Terrain_Types();
         } else if ("Types".equals(name)) {
             handler.end_Types();
-        }
+        } else if ("Building_Type".equals(name)) {
+	    handler.end_Building_Type();
+	}
     }
 
     /**

@@ -78,7 +78,7 @@ public class MapFactory {
                         " at location " + x + ", " + y);
                 }
 
-                tile = new FreerailsTile(type.intValue());
+                tile = new FreerailsTile(type.intValue(), null, null);
                 w.setTile(x, y, tile);
             }
         }

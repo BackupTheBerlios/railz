@@ -27,17 +27,14 @@
 package jfreerails.controller;
 
 import java.awt.Point;
-import jfreerails.move.AddStationMove;
-import jfreerails.move.ChangeTrackPieceMove;
-import jfreerails.move.Move;
+import jfreerails.move.*;
+import jfreerails.world.building.*;
+import jfreerails.world.common.*;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.ReadOnlyWorld;
 import jfreerails.world.track.FreerailsTile;
-import jfreerails.world.track.NullTrackType;
-import jfreerails.world.track.TrackPiece;
 import jfreerails.world.track.TrackRule;
-import jfreerails.world.player.FreerailsPrincipal;
-
+import jfreerails.world.player.*;
 
 public class StationBuilder {
     private UntriedMoveReceiver moveReceiver;
@@ -52,14 +49,14 @@ public class StationBuilder {
 	stationOwner = p;
         w = world;
 
-        TrackRule trackRule;
+        BuildingType bType;
 
         int i = -1;
 
         do {
             i++;
-            trackRule = (TrackRule)w.get(KEY.TRACK_RULES, i);
-        } while (!trackRule.isStation());
+            bType = (BuildingType)w.get(KEY.BUILDING_TYPES, i);
+        } while (bType.getCategory() != BuildingType.CATEGORY_STATION);
 
         ruleNumber = i;
         transactionsGenerator = new TrackMoveTransactionsGenerator(w, p);
@@ -68,7 +65,27 @@ public class StationBuilder {
     public boolean canBuiltStationHere(Point p) {
         FreerailsTile oldTile = w.getTile(p.x, p.y);
 
-        return !oldTile.getTrackRule().equals(NullTrackType.getInstance());
+        if (oldTile.getTrackTile() == null)
+	    return false;
+
+	/* if there is a building present, it must be a station */
+	BuildingTile bTile = oldTile.getBuildingTile();
+	if (bTile != null) {
+	   BuildingType bType = (BuildingType) w.get(KEY.BUILDING_TYPES,
+		   bTile.getType(), Player.AUTHORITATIVE);
+		if (bType.getCategory() != BuildingType.CATEGORY_STATION)
+		    return false;
+	}
+
+	/* further condition is that track must be straight with no branches */
+	byte reference = (byte) (CompassPoints.NORTH | CompassPoints.SOUTH);
+	byte currentLayout = oldTile.getTrackTile().getTrackConfiguration();
+	for (int i = 0; i < 3; i++) {
+	    if (currentLayout == reference)
+		return true;
+	    currentLayout = CompassPoints.rotateClockwise(currentLayout);
+	}
+	return false;
     }
 
     public void buildStation(Point p) {
@@ -79,50 +96,49 @@ public class StationBuilder {
             String cityName;
             String stationName;
 
-            TrackPiece before = (TrackPiece)w.getTile(p.x, p.y);
-            TrackRule trackRule = (TrackRule)w.get(KEY.TRACK_RULES,
-                    this.ruleNumber);
-            TrackPiece after = trackRule.getTrackPiece(before.getTrackConfiguration());
-            ChangeTrackPieceMove upgradeTrackMove = new ChangeTrackPieceMove(before,
-                    after, p, stationOwner);
+	    BuildingTile bTile = oldTile.getBuildingTile();
+	    BuildingType bType = null;
+	    if (bTile != null) {
+		bType = (BuildingType) w.get(KEY.BUILDING_TYPES,
+			bTile.getType(), Player.AUTHORITATIVE);
 
-            //Check whether we can upgrade the track to a station here.
-            if (!moveReceiver.tryDoMove(upgradeTrackMove).ok) {
-                System.err.println("Cannot upgrade this track to a station!");
+		if (bTile == null || bType.getCategory() !=
+			BuildingType.CATEGORY_STATION) {
+		    //There isn't already a station here, we need to pick a name
+		    //and add an entry to the station list.
+		    CalcNearestCity cNC = new CalcNearestCity(w, p.x, p.y);
+		    cityName = cNC.findNearestCity();
 
-                return;
-            }
+		    VerifyStationName vSN = new VerifyStationName(w, cityName);
+		    stationName = vSN.getName();
 
-            if (!oldTile.getTrackRule().isStation()) {
-                //There isn't already a station here, we need to pick a name and add an entry
-                //to the station list.
-                CalcNearestCity cNC = new CalcNearestCity(w, p.x, p.y);
-                cityName = cNC.findNearestCity();
+		    if (stationName == null) {
+			//there are no cities, this should never happen
+			stationName = "Central Station";
+		    }
 
-                VerifyStationName vSN = new VerifyStationName(w, cityName);
-                stationName = vSN.getName();
+		    //check the terrain to see if we can build a station on it...
+		    Move m = AddStationMove.generateMove(w, stationName, p,
+			    stationOwner, ruleNumber);
 
-                if (stationName == null) {
-                    //there are no cities, this should never happen
-                    stationName = "Central Station";
-                }
-
-                //check the terrain to see if we can build a station on it...
-                Move m = AddStationMove.generateMove(w, stationName, p,
-                        upgradeTrackMove, stationOwner);
-
-                this.moveReceiver.processMove(transactionsGenerator.addTransactions(
-                        m));
-            } else {
-                //Upgrade an existing station.
-                this.moveReceiver.processMove(upgradeTrackMove);
+		    this.moveReceiver.processMove
+		    (transactionsGenerator.addTransactions(m));
+		} else {
+		    //Upgrade an existing station.
+		    ChangeBuildingMove cbm = new ChangeBuildingMove(p, bTile,
+			    new BuildingTile(ruleNumber), stationOwner);
+		    this.moveReceiver.processMove(cbm);
+		}
             }
         } else {
             System.err.println(
-                "Can't build station since there is no track here!");
+                "Can't build station here");
         }
     }
 
+	/**
+	 * @param ruleNumber an index into the BUILDING_TYPES table
+	 */
     public void setStationType(int ruleNumber) {
         this.ruleNumber = ruleNumber;
     }

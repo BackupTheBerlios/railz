@@ -26,17 +26,12 @@ import java.util.ArrayList;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import jfreerails.world.common.OneTileMoveVector;
+import jfreerails.world.building.*;
+import jfreerails.world.common.*;
 import jfreerails.world.player.FreerailsPrincipal;
 import jfreerails.world.player.Player;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.track.FreerailsTile;
-import jfreerails.world.track.NullTrackPiece;
-import jfreerails.world.track.NullTrackType;
-import jfreerails.world.track.TrackConfiguration;
-import jfreerails.world.track.TrackPiece;
-import jfreerails.world.track.TrackRule;
-
+import jfreerails.world.top.*;
+import jfreerails.world.track.*;
 
 /**
  * This Move changes adds, removes, or upgrades the track between two tiles.
@@ -72,11 +67,12 @@ public final class ChangeTrackPieceCompositeMove extends CompositeMove
     }
 
     public static ChangeTrackPieceCompositeMove generateBuildTrackMove(
-        Point from, OneTileMoveVector direction, TrackRule trackRule,
+        Point from, byte direction, int trackRule,
         ReadOnlyWorld w, FreerailsPrincipal p) {
 	// Check to see whether we need to purchase land on either of the two
 	// connected tiles
-	Point to = direction.createRelocatedPoint(from);
+	Point to = new Point (from.x + CompassPoints.getUnitDeltaX(direction),
+		from.y + CompassPoints.getUnitDeltaY(direction));
 	ArrayList moves = new ArrayList();
 	if (w.getTile(from.x, from.y).getOwner().equals(Player.AUTHORITATIVE))
 	    moves.add(new PurchaseTileMove(w, from, p));
@@ -88,48 +84,50 @@ public final class ChangeTrackPieceCompositeMove extends CompositeMove
         ChangeTrackPieceMove b;
 
         a = getBuildTrackChangeTrackPieceMove(from, direction, trackRule, w, p);
-	b = getBuildTrackChangeTrackPieceMove(to, direction.getOpposite(),
-		trackRule, w, p);
+	b = getBuildTrackChangeTrackPieceMove(to,
+		CompassPoints.invert(direction), trackRule, w, p);
 
         return new ChangeTrackPieceCompositeMove((Move []) moves.toArray(new
 		Move[moves.size()]), a, b);
     }
 
     public static ChangeTrackPieceCompositeMove generateRemoveTrackMove(
-        Point from, OneTileMoveVector direction, ReadOnlyWorld w,
+        Point from, byte direction, ReadOnlyWorld w,
 	FreerailsPrincipal p) {
         TrackMove a;
         TrackMove b;
 
         a = getRemoveTrackChangeTrackPieceMove(from, direction, w, p);
-        b = getRemoveTrackChangeTrackPieceMove(direction.createRelocatedPoint(
-                    from), direction.getOpposite(), w, p);
+        b = getRemoveTrackChangeTrackPieceMove
+	    (new Point(from.x + CompassPoints.getUnitDeltaX(direction),
+		       from.y + CompassPoints.getUnitDeltaY(direction)),
+	     CompassPoints.invert(direction), w, p);
 
         return new ChangeTrackPieceCompositeMove(a, b);
     }
 
     //utility method.
     private static ChangeTrackPieceMove getBuildTrackChangeTrackPieceMove(
-        Point p, OneTileMoveVector direction, TrackRule trackRule,
+        Point p, byte direction, int trackRule,
         ReadOnlyWorld w, FreerailsPrincipal owner) {
-        TrackPiece oldTrackPiece;
-        TrackPiece newTrackPiece;
+        TrackTile oldTrackPiece;
+        TrackTile newTrackPiece;
 
         if (w.boundsContain(p.x, p.y)) {
-            oldTrackPiece = ((FreerailsTile)w.getTile(p.x, p.y)).getTrackPiece();
+            oldTrackPiece = w.getTile(p.x, p.y).getTrackTile();
 
-            if (oldTrackPiece.getTrackRule() != NullTrackType.getInstance()) {
-                TrackConfiguration trackConfiguration = TrackConfiguration.add(oldTrackPiece.getTrackConfiguration(),
-                        direction);
-                newTrackPiece = oldTrackPiece.getTrackRule().getTrackPiece(trackConfiguration);
+            if (oldTrackPiece != null) {
+		byte trackConfiguration =
+		    (byte) (oldTrackPiece.getTrackConfiguration() | direction);
+		newTrackPiece = TrackTile.createTrackTile(w,
+			trackConfiguration, oldTrackPiece.getTrackRule());
             } else {
-                newTrackPiece = getTrackPieceWhenOldTrackPieceIsNull(direction,
-                        trackRule);
+		newTrackPiece = TrackTile.createTrackTile(w, direction,
+			trackRule);
             }
         } else {
-            newTrackPiece = getTrackPieceWhenOldTrackPieceIsNull(direction,
-                    trackRule);
-            oldTrackPiece = NullTrackPiece.getInstance();
+            newTrackPiece = TrackTile.createTrackTile(w, direction, trackRule);
+            oldTrackPiece = null;
         }
 
         return new ChangeTrackPieceMove(oldTrackPiece, newTrackPiece, p, owner);
@@ -137,51 +135,44 @@ public final class ChangeTrackPieceCompositeMove extends CompositeMove
 
     //utility method.
     private static TrackMove getRemoveTrackChangeTrackPieceMove(Point p,
-        OneTileMoveVector direction, ReadOnlyWorld w, FreerailsPrincipal owner) {
-        TrackPiece oldTrackPiece;
-        TrackPiece newTrackPiece;
+        byte direction, ReadOnlyWorld w, FreerailsPrincipal owner) {
+        TrackTile oldTrackPiece;
+        TrackTile newTrackPiece;
 
         if (w.boundsContain(p.x, p.y)) {
-            oldTrackPiece = (TrackPiece)w.getTile(p.x, p.y);
+            oldTrackPiece = w.getTile(p.x, p.y).getTrackTile();
 
-            if (oldTrackPiece.getTrackRule() != NullTrackType.getInstance()) {
-                TrackConfiguration trackConfiguration = TrackConfiguration.subtract(oldTrackPiece.getTrackConfiguration(),
-                        direction);
+            if (oldTrackPiece != null) {
+		byte trackConfiguration =
+		    (byte) (oldTrackPiece.getTrackConfiguration() & ~direction);
 
-                if (trackConfiguration != TrackConfiguration.getFlatInstance(
-                            "000010000")) {
-                    newTrackPiece = oldTrackPiece.getTrackRule().getTrackPiece(trackConfiguration);
+                if (trackConfiguration != 0) {
+		    newTrackPiece = TrackTile.createTrackTile(w,
+			    trackConfiguration, oldTrackPiece.getTrackRule());
                 } else {
-                    newTrackPiece = NullTrackPiece.getInstance();
+                    newTrackPiece = null;
                 }
             } else {
-                newTrackPiece = NullTrackPiece.getInstance();
+                newTrackPiece = null;
             }
         } else {
-            newTrackPiece = NullTrackPiece.getInstance();
-            oldTrackPiece = NullTrackPiece.getInstance();
+            newTrackPiece = null;
+            oldTrackPiece = null;
         }
 
         ChangeTrackPieceMove m = new ChangeTrackPieceMove(oldTrackPiece,
                 newTrackPiece, p, owner);
 
-        //If we are removing a station, we also need to remove the station from the staiton list.
-        if (oldTrackPiece.getTrackRule().isStation() &&
-                !newTrackPiece.getTrackRule().isStation()) {
+	//If we are removing a station, we also need to remove the station
+	//from the staiton list.
+	BuildingTile bt = w.getTile(p).getBuildingTile();
+        if (bt != null && ((BuildingType) w.get(KEY.BUILDING_TYPES,
+		       	bt.getType(), Player.AUTHORITATIVE)).getCategory()
+	       	== BuildingType.CATEGORY_STATION) {
             return RemoveStationMove.getInstance(w, m, owner);
         } else {
             return m;
         }
-    }
-
-    private static TrackPiece getTrackPieceWhenOldTrackPieceIsNull(
-        OneTileMoveVector direction, TrackRule trackRule) {
-        TrackConfiguration simplestConfig = TrackConfiguration.getFlatInstance(
-                "000010000");
-        TrackConfiguration trackConfiguration = TrackConfiguration.add(simplestConfig,
-                direction);
-
-        return trackRule.getTrackPiece(trackConfiguration);
     }
 
     public Rectangle getUpdatedTiles() {

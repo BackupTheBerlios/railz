@@ -21,7 +21,7 @@
 package jfreerails.client.view;
 
 import jfreerails.client.model.ModelRoot;
-import jfreerails.world.common.OneTileMoveVector;
+import jfreerails.world.common.*;
 import jfreerails.world.station.StationModel;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.NonNullElements;
@@ -70,7 +70,7 @@ public class NearestStationFinder {
 
     public int findNearestStationInDirection(
 	    int startStation,
-	    OneTileMoveVector direction) {
+	    byte direction) {
 	int distanceToClosestSquared = Integer.MAX_VALUE;
 	NonNullElements it = new NonNullElements(KEY.STATIONS, world,
 		modelRoot.getPlayerPrincipal());
@@ -86,7 +86,7 @@ public class NearestStationFinder {
 	    int deltaX = station.x - currentStation.x;
 	    int deltaY = station.y - currentStation.y;
 	    int distanceSquared = deltaX * deltaX + deltaY * deltaY;			
-	    OneTileMoveVector directionOfStation;						
+	    byte directionOfStation;						
 	    boolean closer = distanceSquared < distanceToClosestSquared;
 	    boolean notTheSameStation = startStation != it.getIndex();
 	    boolean inRightDirection = isInRightDirection(direction, deltaX, deltaY);
@@ -102,18 +102,20 @@ public class NearestStationFinder {
      * Returns true if the angle between direction and the vector (deltaX,
      * deltaY) is less than 45 degrees.
      */
-    private boolean isInRightDirection(OneTileMoveVector direction, int deltaX,
+    private boolean isInRightDirection(byte direction, int deltaX,
 	    int deltaY) {
-	boolean isDiagonal = direction.deltaX * direction.deltaY != 0;
-	boolean sameXDirection = (direction.deltaX * deltaX) > 0;
-	boolean sameYDirection = (direction.deltaY * deltaY > 0);
+	int dx = CompassPoints.getUnitDeltaX(direction);
+	int dy = CompassPoints.getUnitDeltaY(direction);
+	boolean isDiagonal = dx * dy != 0;
+	boolean sameXDirection = (dx * deltaX) > 0;
+	boolean sameYDirection = (dy * deltaY > 0);
 	boolean deltaXisLongerThanDeltaY = deltaX * deltaX < deltaY * deltaY;
 
 	if(isDiagonal){		
 	    return sameXDirection && sameYDirection;
 	}else{
 
-	    if(0 == direction.deltaX){				
+	    if(0 == CompassPoints.getUnitDeltaX(direction)){				
 		return deltaXisLongerThanDeltaY && sameYDirection;
 	    }else{
 		return !deltaXisLongerThanDeltaY && sameXDirection;

@@ -28,12 +28,10 @@ import junit.framework.TestSuite;
 
 import java.awt.Point;
 import jfreerails.world.accounts.BankAccount;
-import jfreerails.world.common.OneTileMoveVector;
+import jfreerails.world.common.*;
 import jfreerails.world.player.Player;
 import jfreerails.world.top.KEY;
-import jfreerails.world.track.NullTrackPiece;
 import jfreerails.world.track.TrackRule;
-
 
 /**
  *
@@ -59,71 +57,59 @@ public class ChangeTrackPieceCompositeMoveTest extends AbstractMoveTestCase {
     }
 
     public void testRemoveTrack() {
-        OneTileMoveVector east = OneTileMoveVector.EAST;
-        OneTileMoveVector west = OneTileMoveVector.WEST;
+        byte east = CompassPoints.EAST;
+        byte west = CompassPoints.WEST;
 
-        TrackRule trackRule = (TrackRule)getWorld().get(KEY.TRACK_RULES, 0);
+        assertBuildTrackSuceeds(new Point(0, 5), east, 0);
 
-        assertBuildTrackSuceeds(new Point(0, 5), east, trackRule);
+        assertBuildTrackSuceeds(new Point(0, 6), east, 0);
+        assertBuildTrackSuceeds(new Point(1, 6), east, 0);
 
-        assertBuildTrackSuceeds(new Point(0, 6), east, trackRule);
-        assertBuildTrackSuceeds(new Point(1, 6), east, trackRule);
-
-        assertBuildTrackSuceeds(new Point(0, 7), east, trackRule);
-        assertBuildTrackSuceeds(new Point(1, 7), east, trackRule);
-        assertBuildTrackSuceeds(new Point(2, 7), east, trackRule);
+        assertBuildTrackSuceeds(new Point(0, 7), east, 0);
+        assertBuildTrackSuceeds(new Point(1, 7), east, 0);
+        assertBuildTrackSuceeds(new Point(2, 7), east, 0);
 
         //Remove only track piece built.
         assertRemoveTrackSuceeds(new Point(0, 5), east);
-        assertEquals(NullTrackPiece.getInstance().getTrackConfiguration(),
-            getWorld().getTile(0, 5).getTrackConfiguration());
-        assertEquals(NullTrackPiece.getInstance().getTrackConfiguration(),
-            getWorld().getTile(1, 5).getTrackConfiguration());
+        assertTrue(null == getWorld().getTile(0, 5).getTrackTile());
+        assertTrue(null == getWorld().getTile(1, 5).getTrackTile());
     }
 
     public void testBuildTrack() {
         Point pointA = new Point(0, 0);
         Point pointB = new Point(1, 1);
         Point pointC = new Point(1, 0);
-        OneTileMoveVector southeast = OneTileMoveVector.SOUTH_EAST;
-        OneTileMoveVector east = OneTileMoveVector.EAST;
-        OneTileMoveVector northeast = OneTileMoveVector.NORTH_EAST;
-        OneTileMoveVector south = OneTileMoveVector.SOUTH;
-        OneTileMoveVector west = OneTileMoveVector.WEST;
 
-        TrackRule trackRule = (TrackRule)getWorld().get(KEY.TRACK_RULES, 0);
+        int trackRule = 0;
 
         //First track piece built
-        assertBuildTrackSuceeds(pointA, southeast, trackRule);
+        assertBuildTrackSuceeds(pointA, CompassPoints.SOUTHEAST, trackRule);
 
         //Track connected from one existing track piece
-        assertBuildTrackSuceeds(pointB, northeast, trackRule);
+        assertBuildTrackSuceeds(pointB, CompassPoints.NORTHEAST, trackRule);
 
         //Track connected to one existing track piece
-        assertBuildTrackSuceeds(pointC, east, trackRule);
+        assertBuildTrackSuceeds(pointC, CompassPoints.EAST, trackRule);
 
         //Track connecting two existing track pieces.
-        assertBuildTrackSuceeds(pointA, east, trackRule);
+        assertBuildTrackSuceeds(pointA, CompassPoints.EAST, trackRule);
 
         //Track already there.
-        assertBuildTrackFails(pointA, southeast, trackRule);
+        assertBuildTrackFails(pointA, CompassPoints.SOUTHEAST, trackRule);
 
         //Illegal config. connecting from one existing track piece
-        assertBuildTrackFails(pointA, south, trackRule);
+        assertBuildTrackFails(pointA, CompassPoints.SOUTH, trackRule);
 
         //Illegal config. connecting to one existing track piece
-        assertBuildTrackFails(new Point(0, 1), northeast, trackRule);
+	assertBuildTrackFails(new Point(0, 1), CompassPoints.NORTHEAST,
+		trackRule);
 
         //Illegal config. connecting between two existing track pieces
-        assertBuildTrackFails(pointC, south, trackRule);
-
-        //Not allowed on this terrain type, from existing track.
-        //assertBuildTrackFails(new Point(2, 0), northeast,
-        //    (TrackRule)getWorld().get(KEY.TRACK_RULES, 1));
+        assertBuildTrackFails(pointC, CompassPoints.SOUTH, trackRule);
     }
 
-    private void assertBuildTrackFails(Point p, OneTileMoveVector v,
-        TrackRule rule) {
+    private void assertBuildTrackFails(Point p, byte v,
+        int rule) {
         ChangeTrackPieceCompositeMove move =
 	    ChangeTrackPieceCompositeMove.generateBuildTrackMove(p,
                 v, rule, getWorld(), testPlayer.getPrincipal());
@@ -131,8 +117,8 @@ public class ChangeTrackPieceCompositeMoveTest extends AbstractMoveTestCase {
         assertEquals(false, status.isOk());
     }
 
-    private void assertBuildTrackSuceeds(Point p, OneTileMoveVector v,
-        TrackRule rule) {
+    private void assertBuildTrackSuceeds(Point p, byte v,
+        int rule) {
 	ChangeTrackPieceCompositeMove move =
 	    ChangeTrackPieceCompositeMove.generateBuildTrackMove(p,
                 v, rule, getWorld(), testPlayer.getPrincipal());
@@ -140,7 +126,7 @@ public class ChangeTrackPieceCompositeMoveTest extends AbstractMoveTestCase {
         assertEquals(true, status.isOk());
     }
 
-    private void assertRemoveTrackSuceeds(Point p, OneTileMoveVector v) {
+    private void assertRemoveTrackSuceeds(Point p, byte v) {
 	ChangeTrackPieceCompositeMove move =
 	    ChangeTrackPieceCompositeMove.generateRemoveTrackMove(p, v,
 		    getWorld(), testPlayer.getPrincipal());
@@ -152,17 +138,13 @@ public class ChangeTrackPieceCompositeMoveTest extends AbstractMoveTestCase {
         Point pointA = new Point(0, 0);
         Point pointB = new Point(1, 1);
         Point pointC = new Point(1, 0);
-        OneTileMoveVector southeast = OneTileMoveVector.SOUTH_EAST;
-        OneTileMoveVector east = OneTileMoveVector.EAST;
-        OneTileMoveVector northeast = OneTileMoveVector.NORTH_EAST;
-        OneTileMoveVector south = OneTileMoveVector.SOUTH;
-        OneTileMoveVector west = OneTileMoveVector.WEST;
 
-        TrackRule trackRule = (TrackRule)getWorld().get(KEY.TRACK_RULES, 0);
+        int trackRule = 0;
 
 	ChangeTrackPieceCompositeMove move =
 	    ChangeTrackPieceCompositeMove.generateBuildTrackMove(pointA,
-                southeast, trackRule, getWorld(), testPlayer.getPrincipal());
+		CompassPoints.SOUTHEAST, trackRule, getWorld(),
+		testPlayer.getPrincipal());
 
         assertEqualsSurvivesSerialisation(move);
         assertOkButNotRepeatable(move);

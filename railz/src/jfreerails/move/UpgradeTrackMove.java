@@ -24,7 +24,7 @@ package jfreerails.move;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import jfreerails.world.track.TrackPiece;
+import jfreerails.world.track.*;
 import jfreerails.world.player.FreerailsPrincipal;
 
 /**
@@ -40,8 +40,8 @@ public class UpgradeTrackMove extends CompositeMove implements TrackMove {
         super(new Move[] {trackMove});
     }
 
-    public static UpgradeTrackMove generateMove(TrackPiece before,
-        TrackPiece after, Point p, FreerailsPrincipal trackOwner) {
+    public static UpgradeTrackMove generateMove(TrackTile before,
+        TrackTile after, Point p, FreerailsPrincipal trackOwner) {
         ChangeTrackPieceMove m = new ChangeTrackPieceMove(before, after, p,
 		trackOwner);
 

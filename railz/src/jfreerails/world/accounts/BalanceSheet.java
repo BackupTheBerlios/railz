@@ -144,7 +144,7 @@ public class BalanceSheet implements FreerailsSerializable {
 		    tpv.setFreerailsTile(x, y);
 		    property += ttv.getBookValue();
 		    property += tpv.getBookValue();
-		    trackRules[tile.getTrackRule().getRuleNumber()]++;
+		    trackRules[tile.getTrackRule()]++;
 		}
 	    }
 	}

@@ -38,7 +38,6 @@ public class StationRadiusRenderer implements Painter {
      * Colour of the highlighted border
      */
     private Color borderColor = COLOR_OK;
-    static final int tileSize = 30;
     int radius = 2;
     int x;
     int y;
@@ -70,8 +69,8 @@ public class StationRadiusRenderer implements Painter {
             g.setStroke(new BasicStroke(2f));
             g.setColor(borderColor);
 
-            g.drawRect(tileSize * (x - radius), tileSize * (y - radius),
-                tileSize * (2 * radius + 1), tileSize * (2 * radius + 1));
+            g.drawRect(TileRenderer.TILE_SIZE.width * (x - radius), TileRenderer.TILE_SIZE.height * (y - radius),
+                TileRenderer.TILE_SIZE.width * (2 * radius + 1), TileRenderer.TILE_SIZE.height * (2 * radius + 1));
         }
     }
 }

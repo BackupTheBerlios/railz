@@ -28,9 +28,15 @@ import jfreerails.client.common.ImageManager;
 *     09 October 2001
 */
 public interface TrackPieceRenderer {
-    BufferedImage getTrackPieceIcon(int trackTemplate);
+    /**
+     * @param trackConfig a byte representing a set of CompassPoints
+     */
+    BufferedImage getTrackPieceIcon(byte trackConfig);
 
-    void drawTrackPieceIcon(int trackTemplate, java.awt.Graphics g, int x,
+    /**
+     * @param trackConfig a byte representing a set of CompassPoints
+     */
+    void drawTrackPieceIcon(byte trackConfig, java.awt.Graphics g, int x,
         int y, java.awt.Dimension tileSize);
 
     /** Adds the images this TileRenderer uses to the specified ImageManager. */

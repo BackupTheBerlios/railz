@@ -94,8 +94,7 @@ public interface World extends ReadOnlyWorld {
      * Replaces the tile at the specified position on the map with the
      * specified tile.
      *
-     * @deprecated in favour of setTile(int, int, FreerailsSerializable,
-     * FreerailsPrincipal)
+     * @deprecated in favour of setTile(int, int, FreerailsSerializable)
      */
     void setTile(int x, int y, FreerailsTile tile);
 

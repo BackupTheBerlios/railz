@@ -33,13 +33,11 @@ import javax.swing.JComponent;
 
 import jfreerails.client.renderer.*;
 import jfreerails.client.model.ModelRoot;
-import jfreerails.world.common.OneTileMoveVector;
 import jfreerails.world.station.StationModel;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.NonNullElements;
 import jfreerails.world.top.ReadOnlyWorld;
 import jfreerails.world.track.FreerailsTile;
-import jfreerails.world.track.NullTrackPiece;
 import jfreerails.world.train.Schedule;
 import jfreerails.world.train.TrainModel;
 import jfreerails.world.train.TrainOrdersModel;
@@ -332,7 +330,12 @@ public class SelectStationJPanel extends javax.swing.JPanel {
     }//GEN-END:initComponents
             
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+	/* Not sure if we should support this feature - it's not consistent
+	 * with "normal" dialog box behaviour...
+	 */
+	/* ... for now TODO re-implement using configurable client key mapper
         try{
+	    
             int lastSelectedStationId = this.selectedStationID;
 	    OneTileMoveVector v =
 		OneTileMoveVector.getInstanceMappedToKey(evt.getKeyCode());
@@ -356,6 +359,7 @@ public class SelectStationJPanel extends javax.swing.JPanel {
             }
             //The key pressed isn't mapped to a OneTileMoveVector so do nothing.
         }
+	*/
     }//GEN-LAST:event_formKeyPressed
             
     public void display(int newTrainID, int orderNumber){
@@ -365,7 +369,8 @@ public class SelectStationJPanel extends javax.swing.JPanel {
         //Set the selected station to the current station for the specified order.
 	TrainModel train = (TrainModel)world.get(KEY.TRAINS, this.trainID,
 		modelRoot.getPlayerPrincipal());
-        Schedule schedule = (Schedule)world.get(KEY.TRAIN_SCHEDULES, train.getScheduleID());
+	Schedule schedule = (Schedule)world.get(KEY.TRAIN_SCHEDULES,
+		train.getScheduleIterator().getScheduleId());
 	stationMapJPanel.setStationSchedule(schedule);
 
         TrainOrdersModel order = schedule.getOrder(selectedOrderNumber);

@@ -27,6 +27,11 @@ import jfreerails.world.common.FreerailsSerializable;
  * @author Luke
  */
 final public class EngineType implements FreerailsSerializable {
+    /**
+     * This is the conversion factor between "real" units and game-world ones
+     */
+    public static final int TILE_HOURS_PER_MILE_BIGTICKS = 20;
+
     private final String engineTypeName;
     private final int powerAtDrawbar;
     private final long price;

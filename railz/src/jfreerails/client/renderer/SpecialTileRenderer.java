@@ -61,21 +61,18 @@ final public class SpecialTileRenderer extends AbstractTileRenderer {
     public SpecialTileRenderer(ImageManager imageManager, int[] rgbValues,
         TerrainType tileModel, TileRenderer parentTileView)
         throws IOException {
-        super(tileModel, rgbValues);
+        super(tileModel.getTerrainTypeName(), rgbValues, LAYER_TERRAIN);
         this.setTileIcons(new BufferedImage[1]);
-        this.getTileIcons()[0] = imageManager.getImage(generateFilename());
+	this.getTileIcons()[0] =
+	    imageManager.getImage(generateRelativeFileName(0));
         this.parentTileView = parentTileView;
     }
 
     public void dumpImages(ImageManager imageManager) {
-        imageManager.setImage(generateFilename(), this.getTileIcons()[0]);
-    }
-
-    private String generateFilename() {
-        return "terrain" + File.separator + this.getTerrainType() + ".png";
+        imageManager.setImage(generateRelativeFileName(0), this.getTileIcons()[0]);
     }
 
     protected String generateFileNameNumber(int i) {
-        throw new UnsupportedOperationException();
+	return null;
     }
 }

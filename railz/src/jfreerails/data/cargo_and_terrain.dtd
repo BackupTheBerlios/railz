@@ -28,12 +28,23 @@
 
 <!ELEMENT Terrain_Types (Tile)*>
 
-<!ELEMENT Tile (Converts|Consumes|Produces)*>
+<!ELEMENT Tile>
 <!ATTLIST Tile
-    Category (Urban | River | Ocean | Hill | Country | Special | Industry | Resource) #REQUIRED
+    Category (River | Ocean | Hill | Country) #REQUIRED
     rgb CDATA #REQUIRED
     id ID #REQUIRED
     baseValue CDATA #REQUIRED
   >
 
-<!ELEMENT Types (Cargo_Types, Terrain_Types)>
+<!ELEMENT Building_Types (Building_Type)*>
+<!ELEMENT Building_Type (Converts|Consumes|Produces)*>
+<!ATTLIST Building_Type
+	id ID #REQUIRED
+	baseValue CDATA #REQUIRED
+	maintenance CDATA #REQUIRED
+	stationRadius CDATA
+	category (Urban | Resource | Industry | Station) CDATA #REQUIRED
+>
+
+<!ELEMENT Types (Cargo_Types, Terrain_Types, Building_Types)>
+

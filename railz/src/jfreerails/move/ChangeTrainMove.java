@@ -33,8 +33,8 @@ import jfreerails.world.train.TrainModel;
  *
  */
 public class ChangeTrainMove extends ChangeItemInListMove {
-    private ChangeTrainMove(int index, FreerailsSerializable before,
-        FreerailsSerializable after, FreerailsPrincipal p) {
+    protected ChangeTrainMove(int index, TrainModel before,
+        TrainModel after, FreerailsPrincipal p) {
         super(KEY.TRAINS, index, before, after, p);
     }
 

@@ -25,15 +25,25 @@ package jfreerails.client.renderer;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
-
 /**
 *
 * @author  Luke Lindsay
 */
 public interface MapLayerRenderer {
+    /**
+     * @param g Graphics context with origin at top left corner of map.
+     * @param tileX map x coord of tile to paint
+     * @param tileY map y coord of tile to paint
+     */
     void paintTile(Graphics g, int tileX, int tileY);
 
     void refreshTile(int x, int y);
 
+    /**
+     * @param g Graphics context with origin pointing to top left corner of
+     * viewport.
+     * @param visibleRect rectangle defining area of map to draw relative to
+     * origin 0,0 at top left of map, measured in pixels.
+     */
     void paintRect(Graphics g, Rectangle visibleRect);
 }

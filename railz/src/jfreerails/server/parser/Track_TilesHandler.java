@@ -57,37 +57,6 @@ public interface Track_TilesHandler {
      * A container element start event handling method.
      * @param meta attributes
      */
-    void start_ListOfLegalRoutesAcrossNode(final Attributes meta)
-        throws SAXException;
-
-    /**
-     * A container element end event handling method.
-     */
-    void end_ListOfLegalRoutesAcrossNode() throws SAXException;
-
-    /**
-     * An empty element event handling method.
-     * @param data value or null
-     */
-    void handle_LegalRouteAcrossNode(final Attributes meta)
-        throws SAXException;
-
-    /**
-     * A container element start event handling method.
-     * @param meta attributes
-     */
-    void start_CannotBuildOnTheseTerrainTypes(final Attributes meta)
-        throws SAXException;
-
-    /**
-     * A container element end event handling method.
-     */
-    void end_CannotBuildOnTheseTerrainTypes() throws SAXException;
-
-    /**
-     * A container element start event handling method.
-     * @param meta attributes
-     */
     void start_TrackType(final Attributes meta) throws SAXException;
 
     /**
@@ -123,15 +92,4 @@ public interface Track_TilesHandler {
      * A container element end event handling method.
      */
     void end_TrackPieceTemplate() throws SAXException;
-
-    /**
-     * A container element start event handling method.
-     * @param meta attributes
-     */
-    void start_TrackSet(final Attributes meta) throws SAXException;
-
-    /**
-     * A container element end event handling method.
-     */
-    void end_TrackSet() throws SAXException;
 }

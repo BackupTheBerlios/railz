@@ -16,6 +16,7 @@
 
 package jfreerails.world.top;
 
+import java.awt.Point;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -55,12 +56,6 @@ public class WorldImpl implements World {
 
     public void setupMap(int mapWidth, int mapHeight) {
         map = new FreerailsTile[mapWidth][mapHeight];
-
-        for (int x = 0; x < mapWidth; x++) {
-            for (int y = 0; y < mapHeight; y++) {
-                map[x][y] = FreerailsTile.NULL;
-            }
-        }
     }
 
     public void setupLists() {
@@ -160,6 +155,10 @@ public class WorldImpl implements World {
 
     public FreerailsTile getTile(int x, int y) {
         return map[x][y];
+    }
+
+    public FreerailsTile getTile(Point p) {
+	return map[p.x][p.y];
     }
 
     public boolean boundsContain(int x, int y) {

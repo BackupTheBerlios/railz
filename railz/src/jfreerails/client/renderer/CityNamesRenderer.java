@@ -46,8 +46,9 @@ public class CityNamesRenderer implements Painter {
         //draw city names onto map
         for (int i = 0; i < w.size(KEY.CITIES); i++) {
             CityModel tempCity = (CityModel)w.get(KEY.CITIES, i);
-            g.drawString(tempCity.getCityName(), tempCity.getCityX() * 30,
-                tempCity.getCityY() * 30 + 10);
+            g.drawString(tempCity.getCityName(), tempCity.getCityX() *
+		    TileRenderer.TILE_SIZE.width,
+                tempCity.getCityY() * TileRenderer.TILE_SIZE.height + 10);
         }
     }
 }

@@ -79,12 +79,6 @@ final public class Track_TilesParser implements org.xml.sax.ContentHandler {
             handler.start_CanOnlyBuildOnTheseTerrainTypes(attrs);
         } else if ("ListOfTrackPieceTemplates".equals(qname)) {
             handler.start_ListOfTrackPieceTemplates(attrs);
-        } else if ("ListOfLegalRoutesAcrossNode".equals(qname)) {
-            handler.start_ListOfLegalRoutesAcrossNode(attrs);
-        } else if ("LegalRouteAcrossNode".equals(qname)) {
-            handler.handle_LegalRouteAcrossNode(attrs);
-        } else if ("CannotBuildOnTheseTerrainTypes".equals(qname)) {
-            handler.start_CannotBuildOnTheseTerrainTypes(attrs);
         } else if ("TrackType".equals(qname)) {
             handler.start_TrackType(attrs);
         } else if ("TerrainType".equals(qname)) {
@@ -93,8 +87,6 @@ final public class Track_TilesParser implements org.xml.sax.ContentHandler {
             handler.start_Tiles(attrs);
         } else if ("TrackPieceTemplate".equals(qname)) {
             handler.start_TrackPieceTemplate(attrs);
-        } else if ("TrackSet".equals(qname)) {
-            handler.start_TrackSet(attrs);
         }
     }
 
@@ -107,18 +99,12 @@ final public class Track_TilesParser implements org.xml.sax.ContentHandler {
             handler.end_CanOnlyBuildOnTheseTerrainTypes();
         } else if ("ListOfTrackPieceTemplates".equals(qname)) {
             handler.end_ListOfTrackPieceTemplates();
-        } else if ("ListOfLegalRoutesAcrossNode".equals(qname)) {
-            handler.end_ListOfLegalRoutesAcrossNode();
-        } else if ("CannotBuildOnTheseTerrainTypes".equals(qname)) {
-            handler.end_CannotBuildOnTheseTerrainTypes();
         } else if ("TrackType".equals(qname)) {
             handler.end_TrackType();
         } else if ("Tiles".equals(qname)) {
             handler.end_Tiles();
         } else if ("TrackPieceTemplate".equals(qname)) {
             handler.end_TrackPieceTemplate();
-        } else if ("TrackSet".equals(qname)) {
-            handler.end_TrackSet();
         }
     }
 

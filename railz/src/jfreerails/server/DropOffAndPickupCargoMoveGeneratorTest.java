@@ -97,8 +97,7 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
 
         //3 wagons to carry cargo type 0.
         int[] wagons = new int[] {0, 0, 0};
-        TrainModel train = new TrainModel(0, wagons, null, 
-		0, trainCargoBundleId, now);
+        TrainModel train = new TrainModel(0, wagons, trainCargoBundleId, now);
         w.add(KEY.TRAINS, train, testPlayer.getPrincipal());
 
         w.add(KEY.BANK_ACCOUNTS, new BankAccount(), testPlayer.getPrincipal());

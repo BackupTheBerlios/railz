@@ -32,8 +32,7 @@ import jfreerails.world.common.GameTime;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.ITEM;
 import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.track.NullTrackType;
-import jfreerails.world.track.TrackRule;
+import jfreerails.world.track.*;
 import jfreerails.world.player.FreerailsPrincipal;
 
 
@@ -108,22 +107,29 @@ public class TrackMoveTransactionsGenerator {
     }
 
     private void processMove(ChangeTrackPieceMove move) {
-        final int after = move.getNewTrackPiece().getTrackRule().getRuleNumber();
-        final int before = move.getOldTrackPiece().getTrackRule().getRuleNumber();
-
-        if (after == before) {
-            return;
+	TrackTile trAfter = move.getNewTrackPiece();
+	TrackTile trBefore = move.getOldTrackPiece();
+	 int after = -1;
+	 int before = -1;
+        if (trAfter != null) {
+	    after = trAfter.getTrackRule();
         }
 
-        if (after != NullTrackType.NULL_TRACK_TYPE_RULE_NUMBER) {
-            trackAdded[after]++;
+        if (trBefore != null) {
+	    before = trBefore.getTrackRule();
         }
-
-        if (before != NullTrackType.NULL_TRACK_TYPE_RULE_NUMBER) {
-            trackRemoved[before]++;
-        }
+	if (after == before)
+	    return;
+	if (after >= 0)
+	    trackAdded[after]++;
+	if (before >= 0)
+	    trackRemoved[before]++;
     }
 
+    /**
+     * Charge or credit player according to amount of track added/removed.
+     * TODO Charge diagonals at sqrt(2) of straight track
+     */
     private void generateTransactions() {
         transactions.clear();
 

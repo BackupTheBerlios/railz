@@ -45,7 +45,7 @@ public class AddTrainMove extends CompositeMove {
 	    train, long price, ImmutableSchedule s, FreerailsPrincipal p) {
         Move m = new AddItemToListMove(KEY.TRAINS, i, train, p);
         Move m2 = new AddItemToListMove(KEY.TRAIN_SCHEDULES,
-                train.getScheduleID(), s);
+                train.getScheduleIterator().getScheduleId(), s);
 	GameTime now = (GameTime) w.get(ITEM.TIME, p);
 	AddItemTransaction t = new AddItemTransaction(now,
 		AddItemTransaction.ROLLING_STOCK, 0, 1, -price);

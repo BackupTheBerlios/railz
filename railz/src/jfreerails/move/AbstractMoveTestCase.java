@@ -54,10 +54,11 @@ public abstract class AbstractMoveTestCase extends TestCase {
 
     protected void setUp() {
         setHasSetupBeenCalled(true);
-        setWorld(new WorldImpl(10, 10));
+	MapFixtureFactory mff = new MapFixtureFactory(10, 10);
+        setWorld(mff.world);
 	for (int x = 0; x < 10; x++)
 	    for (int y = 0; y < 10; y++)
-		getWorld().setTile(x, y, new FreerailsTile(0));
+		getWorld().setTile(x, y, new FreerailsTile(0, null, null));
 
 	getWorld().add(KEY.PLAYERS, testPlayer, Player.AUTHORITATIVE);
         //		Set the time..
@@ -65,7 +66,6 @@ public abstract class AbstractMoveTestCase extends TestCase {
         getWorld().set(ITEM.TIME, new GameTime(0));
 	getWorld().add(KEY.BANK_ACCOUNTS, new BankAccount(),
 		testPlayer.getPrincipal());
-        MapFixtureFactory.generateTrackRuleList(getWorld());
     }
 
     abstract public void testMove();

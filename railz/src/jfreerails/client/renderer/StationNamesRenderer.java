@@ -84,8 +84,10 @@ public class StationNamesRenderer implements Painter {
 		tempStation = (StationModel)wi.getElement();
 
 		stationName = tempStation.getStationName();
-		positionX = (tempStation.getStationX() * 30) + 15;
-		positionY = (tempStation.getStationY() * 30) + 30;
+		positionX = (tempStation.getStationX() *
+			TileRenderer.TILE_SIZE.width) + 15;
+		positionY = (tempStation.getStationY() *
+			TileRenderer.TILE_SIZE.height) + 30;
 
 		layout = new TextLayout(stationName, font, frc);
 		visibleAdvance = layout.getVisibleAdvance();

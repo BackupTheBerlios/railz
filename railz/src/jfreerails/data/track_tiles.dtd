@@ -12,51 +12,36 @@
 
   <!ELEMENT CanOnlyBuildOnTheseTerrainTypes (TerrainType)*>
 
-  <!ELEMENT CannotBuildOnTheseTerrainTypes (TerrainType)*>
-  
   <!ELEMENT ListOfTrackPieceTemplates (TrackPieceTemplate)*>
 
-  <!ELEMENT LegalRouteAcrossNode EMPTY>
-  <!ATTLIST LegalRouteAcrossNode
-    RouteTemplate CDATA #REQUIRED
-  >
-
-  <!ELEMENT ListOfLegalRoutesAcrossNode (LegalRouteAcrossNode)*>
-
-
-
-  <!ELEMENT Tiles (TrackSet)>
+  <!ELEMENT Tiles (TrackType)*>
 
   <!ELEMENT TerrainType EMPTY>
   <!ATTLIST TerrainType
     name CDATA #REQUIRED
   >
 
-  <!ELEMENT TrackType ((CannotBuildOnTheseTerrainTypes|CanOnlyBuildOnTheseTerrainTypes),ListOfTrackPieceTemplates)>
+  <!ELEMENT TrackType (CanOnlyBuildOnTheseTerrainTypes,ListOfTrackPieceTemplates)>
   <!ATTLIST TrackType
     RGBvalue CDATA #REQUIRED
     doubleTrack (true|false)  #REQUIRED
-    maxConsecuativePieces CDATA #REQUIRED
-    station (true|false) #REQUIRED
-    stationRadius (0|1|2|3) #IMPLIED
+    maxConsecutivePieces CDATA #REQUIRED
     type CDATA #REQUIRED
     Y CDATA #REQUIRED
-    signalTower (true|false)  #REQUIRED
     X CDATA #REQUIRED
     price CDATA #REQUIRED
     maintenance CDATA #REQUIRED
   >
 
-  <!ELEMENT TrackPieceTemplate (ListOfLegalRoutesAcrossNode)>
+  <!ELEMENT TrackPieceTemplate>
+  <!--
+    -- trackTemplate is a 9 bit binary number which encodes a track template.
+    -- A 1 indicates the presence of track.
+    -- Bit 8(MSB)   7	6   5	4   3	2   1	0(LSB)
+    --     NW	    N	NE  W	N/A E	SW  S	SE
+    -->
+
   <!ATTLIST TrackPieceTemplate
     trackTemplate CDATA #REQUIRED
   >
 
-  <!ELEMENT TrackSet (TrackType)*>
-  <!ATTLIST TrackSet
-    Width CDATA #REQUIRED
-    Class CDATA #REQUIRED
-    Y CDATA #REQUIRED
-    Height CDATA #REQUIRED
-    X CDATA #REQUIRED
-  >

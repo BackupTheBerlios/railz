@@ -28,8 +28,6 @@ import jfreerails.client.common.ImageManager;
 import jfreerails.util.FreerailsProgressMonitor;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.track.NullTrackType;
-import jfreerails.world.track.TrackConfiguration;
 import jfreerails.world.track.TrackRule;
 
 
@@ -37,11 +35,7 @@ final public class TrackPieceRendererList {
     private final TrackPieceRenderer[] trackPieceViewArray;
 
     public TrackPieceRenderer getTrackPieceView(int i) {
-        if (NullTrackType.NULL_TRACK_TYPE_RULE_NUMBER == i) {
-            return NullTrackPieceRenderer.instance;
-        } else {
-            return trackPieceViewArray[i];
-        }
+	return trackPieceViewArray[i];
     }
 
     public TrackPieceRendererList(ReadOnlyWorld w, ImageManager imageManager,
@@ -68,26 +62,24 @@ final public class TrackPieceRendererList {
 
         for (int i = 0; i < w.size(KEY.TRACK_RULES); i++) {
             TrackRule trackRule = (TrackRule)w.get(KEY.TRACK_RULES, i);
-            Iterator legalConfigurationsIterator = trackRule.getLegalConfigurationsIterator();
             TrackPieceRenderer trackPieceView = this.getTrackPieceView(i);
 
             if (null == trackPieceView) {
                 System.err.println(
                     "No track piece view for the following track type: " +
-                    trackRule.getTypeName());
+                    trackRule.toString());
 
                 return false;
             } else {
-                while (legalConfigurationsIterator.hasNext()) {
-                    TrackConfiguration trackConfig = (TrackConfiguration)legalConfigurationsIterator.next();
-                    int trackGraphicsNo = trackConfig.getTrackGraphicsNumber();
-                    Image img = trackPieceView.getTrackPieceIcon(trackGraphicsNo);
-
+		for (byte j = Byte.MIN_VALUE; j < Byte.MAX_VALUE; j++) {
+			if (!trackRule.testTrackPieceLegality(j))
+			    continue;
+                    Image img = trackPieceView.getTrackPieceIcon(j);
                     if (null == img) {
                         System.err.println(
                             "No track piece image for the following track type: " +
-                            trackRule.getTypeName() + ", with configuration: " +
-                            trackGraphicsNo);
+                            trackRule.toString() + ", with configuration: " +
+                            j);
                         okSoFar = false;
                     }
                 }

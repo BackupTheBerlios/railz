@@ -25,9 +25,11 @@ package jfreerails.client.renderer;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import jfreerails.client.common.ImageManager;
+import jfreerails.world.building.*;
 import jfreerails.world.terrain.TerrainTile;
 import jfreerails.world.terrain.TerrainType;
 import jfreerails.world.top.ReadOnlyWorld;
+import jfreerails.world.track.*;
 
 
 /**
@@ -35,19 +37,21 @@ import jfreerails.world.top.ReadOnlyWorld;
 * @author  Luke Lindsay
 */
 public abstract class AbstractTileRenderer implements TileRenderer {
+    private final int layer;
     protected final int[] typeNumbers;
     private BufferedImage[] tileIcons;
-    protected final TerrainType tileModel;
+    private final String terrainType;
 
-    public AbstractTileRenderer(TerrainType t, int[] rgbValues) {
-        tileModel = t;
-        this.typeNumbers = rgbValues;
+    public final static int LAYER_BUILDING = 1;
+    public final static int LAYER_TERRAIN = 2;
 
-        if (null == t) {
-            throw new NullPointerException();
-        }
+    public AbstractTileRenderer(String terrainType, int[] matchingTypes, 
+	    int layer) {
+	this.layer = layer;
+        this.terrainType = terrainType;
+        this.typeNumbers = matchingTypes;
 
-        if (null == rgbValues) {
+        if (null == matchingTypes) {
             throw new NullPointerException();
         }
     }
@@ -63,10 +67,6 @@ public abstract class AbstractTileRenderer implements TileRenderer {
 
     public BufferedImage getDefaultIcon() {
         return getTileIcons()[0];
-    }
-
-    public String getTerrainType() {
-        return tileModel.getTerrainTypeName();
     }
 
     /** Returns an icon for the tile at x,y, which may depend on the terrain types of
@@ -87,36 +87,57 @@ public abstract class AbstractTileRenderer implements TileRenderer {
         return 0;
     }
 
+    /**
+     * @return 1 if the tile at the specified location matches any of our
+     * specified types otherwise return 0. (we return an int to facilitate
+     * bitwise operations)
+     */
     protected int checkTile(int x, int y, ReadOnlyWorld w) {
-        int match = 0;
-
         if (((x < w.getMapWidth()) && (x >= 0)) && (y < w.getMapHeight()) &&
                 (y >= 0)) {
+	    int type;
+	    FreerailsTile tt = w.getTile(x, y);
+	    if (layer == LAYER_TERRAIN) {
+		type = tt.getTerrainTypeNumber();
+	    } else {
+		BuildingTile bt = tt.getBuildingTile();
+		if (bt == null)
+		    return 0;
+		type = bt.getType();
+	    }
+
             for (int i = 0; i < typeNumbers.length; i++) {
-                TerrainTile tt = (TerrainTile)w.getTile(x, y);
-
                 if (tt.getTerrainTypeNumber() == typeNumbers[i]) {
-                    match = 1;
-
+                    return 1;
                     //A match
                 }
             }
-        } else {
-            match = 1; //A match
-
-            /*If the tile we are checking is off the map, let it be a match.
-            This stops coast appearing where the ocean meets the map edge.
-            */
         }
+       return 1;
+       //A match
 
-        return match;
+       /*
+	* If the tile we are checking is off the map, let it be a match.
+	* This stops coast appearing where the ocean meets the map edge.
+	*/
     }
 
     abstract public void dumpImages(ImageManager imageManager);
 
     protected String generateRelativeFileName(int i) {
-        return "terrain" + File.separator + this.getTerrainType() + "_" +
+	String dir;
+	if (layer == LAYER_BUILDING)
+	    dir = "buildings";
+	else
+	    dir = "terrain";
+
+	String num = generateFileNameNumber(i);
+	if (num == null) { 
+	    return dir + File.separator + terrainType + ".png";
+	} else {
+	    return dir + File.separator + terrainType + "_" +
         generateFileNameNumber(i) + ".png";
+	}
     }
 
     protected abstract String generateFileNameNumber(int i);

@@ -29,9 +29,8 @@ import jfreerails.controller.CargoElementObject;
 import jfreerails.world.cargo.CargoType;
 import jfreerails.world.station.ConvertedAtStation;
 import jfreerails.world.station.DemandAtStation;
-import jfreerails.world.terrain.Consumption;
-import jfreerails.world.terrain.Conversion;
-import jfreerails.world.terrain.Production;
+import jfreerails.world.building.*;
+import jfreerails.world.player.*;
 import jfreerails.world.terrain.TerrainType;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.ReadOnlyWorld;
@@ -93,8 +92,12 @@ class CalcCargoSupplyRateAtStation {
     Vector scanAdjacentTiles() {
         //Find the station radius.
         FreerailsTile tile = w.getTile(this.x, this.y);
-        TrackRule trackRule = tile.getTrackRule();
-        int stationRadius = trackRule.getStationRadius();
+	BuildingTile bTile = tile.getBuildingTile();
+	if (bTile == null)
+	    throw new IllegalStateException();
+	BuildingType bType = (BuildingType) w.get(KEY.BUILDING_TYPES,
+		bTile.getType(), Player.AUTHORITATIVE);
+        int stationRadius = bType.getStationRadius();
 
         //Look at the terrain type of each tile and retrieve the cargo supplied.
         //The station radius determines how many tiles each side we look at. 		
@@ -125,13 +128,17 @@ class CalcCargoSupplyRateAtStation {
     }
 
     private void incrementSupplyAndDemand(int i, int j) {
-        int tileTypeNumber = w.getTile(i, j).getTerrainTypeNumber();
+	BuildingTile bTile = w.getTile(i, j).getBuildingTile();
+	if (bTile == null)
+	    return;
 
-        TerrainType terrainType = (TerrainType)w.get(KEY.TERRAIN_TYPES,
-                tileTypeNumber);
+        int tileTypeNumber = bTile.getType();
+
+        BuildingType buildingType = (BuildingType)w.get(KEY.BUILDING_TYPES,
+                tileTypeNumber, Player.AUTHORITATIVE);
 
         //Calculate supply.
-        Production[] production = terrainType.getProduction();
+        Production[] production = buildingType.getProduction();
 
         //loop throught the production array and increment 
         //the supply rates for the station
@@ -144,7 +151,7 @@ class CalcCargoSupplyRateAtStation {
         }
 
         //Now calculate demand.
-        Consumption[] consumption = terrainType.getConsumption();
+        Consumption[] consumption = buildingType.getConsumption();
 
         for (int m = 0; m < consumption.length; m++) {
             int type = consumption[m].getCargoType();
@@ -155,7 +162,7 @@ class CalcCargoSupplyRateAtStation {
             demand[type] += PREREQUISITE_FOR_DEMAND / prerequisite;
         }
 
-        Conversion[] conversion = terrainType.getConversion();
+        Conversion[] conversion = buildingType.getConversion();
 
         for (int m = 0; m < conversion.length; m++) {
             int type = conversion[m].getInput();

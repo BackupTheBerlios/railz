@@ -24,6 +24,8 @@ import jfreerails.world.top.ReadOnlyWorld;
 public interface ViewLists {
     TileRendererList getTileViewList();
 
+    TileRendererList getBuildingViewList();
+
     TrackPieceRendererList getTrackPieceViewList();
 
     TrainImages getTrainImages();

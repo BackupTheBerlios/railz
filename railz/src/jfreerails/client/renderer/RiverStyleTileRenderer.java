@@ -41,7 +41,7 @@ final public class RiverStyleTileRenderer
 
     public RiverStyleTileRenderer(ImageManager imageManager, int[] rgbValues,
         TerrainType tileModel) throws IOException {
-        super(tileModel, rgbValues);
+        super(tileModel.getTerrainTypeName(), rgbValues, LAYER_TERRAIN);
         this.setTileIcons(new BufferedImage[16]);
 
         for (int i = 0; i < this.getTileIcons().length; i++) {

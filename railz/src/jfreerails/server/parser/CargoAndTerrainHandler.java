@@ -113,4 +113,12 @@ public interface CargoAndTerrainHandler {
      */
     public void handle_Produces(final Attributes meta)
         throws SAXException;
+
+    public void handle_Building_Types(final Attributes meta) throws
+	SAXException;
+
+    public void start_Building_Type(final Attributes meta) throws
+	SAXException;
+
+    public void end_Building_Type() throws SAXException;
 }

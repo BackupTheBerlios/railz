@@ -30,10 +30,8 @@ import java.util.Vector;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import jfreerails.controller.MoveChainFork;
-import jfreerails.controller.SourcedMoveReceiver;
+import jfreerails.controller.*;
 import jfreerails.move.ChangeProductionAtEngineShopMove;
-import jfreerails.move.ChangeTrainPositionMove;
 import jfreerails.move.TimeTickMove;
 import jfreerails.util.FreerailsProgressMonitor;
 import jfreerails.util.GameModel;
@@ -90,7 +88,8 @@ public class ServerGameEngine implements GameModel, Runnable {
      * number of ticks since baseTime
      */
     private int n;
-    ArrayList trainMovers = new ArrayList();
+    TrainMover trainMover;
+    TrainController trainController;
     private int currentYearLastTick = -1;
     private int currentMonthLastTick = -1;
     private boolean keepRunning = true;
@@ -107,23 +106,21 @@ public class ServerGameEngine implements GameModel, Runnable {
      * Start a game on a new instance of a named map
      */
     public ServerGameEngine(String mapName, FreerailsProgressMonitor pm) {
-        this(new ArrayList(), OldWorldImpl.createWorldFromMapFile(mapName, pm),
+        this(WorldFactory.createWorldFromMapFile(mapName, pm),
             new Vector());
     }
 
     /**
      * Starts a game with the specified world state
-     * @param trainMovers ArrayList of TrainMover objects.
      * @param serverAutomata Vector of ServerAutomaton representing internal
      * clients of this game.
      * @param p an IdentityProvider which correlates a ConnectionToServer
      * object with a Principal.
      */
-    private ServerGameEngine(ArrayList trainMovers, World w,
+    private ServerGameEngine(World w,
         Vector serverAutomata) {
         this.world = w;
         this.serverAutomata = serverAutomata;
-        this.trainMovers = trainMovers;
 
         moveChainFork = new MoveChainFork();
 
@@ -141,6 +138,8 @@ public class ServerGameEngine implements GameModel, Runnable {
 		moveExecuter);
 	trainMaintenanceMoveFactory = new TrainMaintenanceMoveFactory(w,
 		moveExecuter);
+	trainMover = new TrainMover(w);
+	trainController = new TrainController(w, moveExecuter);
 
         for (int i = 0; i < serverAutomata.size(); i++) {
             ((ServerAutomaton)serverAutomata.get(i)).initAutomaton(moveExecuter);
@@ -214,9 +213,6 @@ public class ServerGameEngine implements GameModel, Runnable {
             //now do the other updates
             moveTrains();
 
-            /*  Note, an Exception gets thrown if moveTrains() is called after buildTrains()
-             * without first calling moveExecuter.executeOutstandingMoves()
-             */
             buildTrains();
 
             //Check whether we have just started a new year..
@@ -336,14 +332,9 @@ public class ServerGameEngine implements GameModel, Runnable {
 		    ProductionAtEngineShop production = station.getProduction();
 		    Point p = new Point(station.x, station.y);
 		    
-		    TrainMover trainMover = tb.buildTrain
-			(production.getEngineType(),
+		    tb.buildTrain (production.getEngineType(),
 			 production.getWagonTypes(), p, principal);
 
-		    //FIXME, at some stage 'ServerAutomaton' and 'trainMovers' should be combined.
-		    TrainPathFinder tpf = trainMover.getTrainPathFinder();
-		    this.addServerAutomaton(tpf);
-		    this.addTrainMover(trainMover);
 		    moveExecuter.processMove(new ChangeProductionAtEngineShopMove(
 				production, null, i, principal));
 		}
@@ -352,26 +343,12 @@ public class ServerGameEngine implements GameModel, Runnable {
     }
 
     private void moveTrains() {
-        int deltaDistance = 5;
-
-        ChangeTrainPositionMove m = null;
-
-        Iterator i = trainMovers.iterator();
-
-        while (i.hasNext()) {
-            Object o = i.next();
-            TrainMover trainMover = (TrainMover)o;
-            m = trainMover.update(deltaDistance);
-            moveExecuter.processMove(m);
-        }
+	trainMover.moveTrains();
+	trainController.updateTrains();
     }
 
     private void updateGameTime() {
         moveExecuter.processMove(TimeTickMove.getMove(world));
-    }
-
-    public void addTrainMover(TrainMover m) {
-        trainMovers.add(m);
     }
 
     public synchronized void saveGame(File filename) {
@@ -384,7 +361,6 @@ public class ServerGameEngine implements GameModel, Runnable {
 
             ObjectOutputStream objectOut = new ObjectOutputStream(zipout);
 
-            objectOut.writeObject(trainMovers);
             objectOut.writeObject(world);
             objectOut.writeObject(serverAutomata);
 
@@ -420,7 +396,6 @@ public class ServerGameEngine implements GameModel, Runnable {
 		FileInputStream(filename.getCanonicalPath());
             GZIPInputStream zipin = new GZIPInputStream(in);
             ObjectInputStream objectIn = new ObjectInputStream(zipin);
-            ArrayList trainMovers = (ArrayList)objectIn.readObject();
             World world = (World)objectIn.readObject();
             Vector serverAutomata = (Vector)objectIn.readObject();
 
@@ -434,7 +409,7 @@ public class ServerGameEngine implements GameModel, Runnable {
                 ((Player)i.getElement()).loadSession(objectIn);
             }
 
-            engine = new ServerGameEngine(trainMovers, world, serverAutomata);
+            engine = new ServerGameEngine(world, serverAutomata);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

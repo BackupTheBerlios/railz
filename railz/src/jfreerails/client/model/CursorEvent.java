@@ -40,11 +40,12 @@ final public class CursorEvent extends java.util.EventObject {
     public java.awt.event.KeyEvent keyEvent;
 
     
-    /** If the event was triggered by a movement of
-    * precisely one tile, its vector is stored in this
-    * variable.
-    */
-    public jfreerails.world.common.OneTileMoveVector vector;
+    /**
+     * If the event was triggered by a movement of
+     * precisely one tile, its vector is stored as a CompassPoints in this
+     * variable.
+     */
+    public byte vector;
 
     
     /** The new cursor coordinate in tiles.

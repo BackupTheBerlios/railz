@@ -69,6 +69,6 @@ public class GameServer {
      * @return a list of possible map names that could be used to start a game
      */
     public static String[] getMapNames() {
-        return OldWorldImpl.getMapNames();
+        return WorldFactory.getMapNames();
     }
 }

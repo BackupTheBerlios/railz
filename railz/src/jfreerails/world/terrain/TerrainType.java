@@ -16,66 +16,77 @@
 
 package jfreerails.world.terrain;
 
-import java.io.ObjectStreamException;
-
 import jfreerails.world.common.FreerailsSerializable;
 
-public interface TerrainType extends FreerailsSerializable {
-    String getTerrainTypeName();
+/**
+ * This class represents a type of terrain
+ *
+ * @author     Luke Lindsay
+ *     16 August 2001
+ * @version    1.0
+ */
+public class TerrainType implements FreerailsSerializable {
+    public static final int CATEGORY_RIVER = 0;
+    public static final int CATEGORY_OCEAN = 1;
+    public static final int CATEGORY_HILL = 2;
+    public static final int CATEGORY_COUNTRY = 3;
+    public static final int MAX_CATEGORIES = 3;
 
-    String getTerrainCategory();
+    private final int rgb;
+    private final int terrainCategory;
+    private final String terrainType;
+    private final long baseValue;
 
-    int getRGB();
+    public String getTerrainTypeName() {
+        return terrainType;
+    }
 
-    Production[] getProduction();
+    public int getTerrainCategory() {
+        return terrainCategory;
+    }
 
-    Consumption[] getConsumption();
+    /**
+     * @param terrainType The name of the terrain type
+     */
+    public TerrainType(int rgb, int terrainCategory, String terrainType,
+        long baseValue) {
+        this.terrainType = terrainType;
+        this.terrainCategory = terrainCategory;
+        this.rgb = rgb;
+	this.baseValue = baseValue;
+    }
 
-    Conversion[] getConversion();
+    /**
+     *@return    The RGB value mapped to this terrain type.
+     */
+    public int getRGB() {
+        return rgb;
+    }
 
-    String getDisplayName();
+    public boolean equals(Object o) {
+        if (o instanceof TerrainType) {
+            TerrainType test = (TerrainType)o;
 
-    long getBaseValue();
-
-    static final TerrainType NULL = (new TerrainType() {
-            public Production[] getProduction() {
-                return new Production[0];
+            if (rgb == test.getRGB() &&
+                    terrainType.equals(test.getTerrainTypeName()) &&
+                    terrainCategory == test.getTerrainCategory()) {
+                return true;
+            } else {
+                return false;
             }
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Returns the name, replacing any underscores with spaces.
+    */
+    public String getDisplayName() {
+        return this.terrainType.replace('_', ' ');
+    }
 
-            public Consumption[] getConsumption() {
-                return new Consumption[0];
-            }
-
-            public Conversion[] getConversion() {
-                return new Conversion[0];
-            }
-
-            public String getTerrainTypeName() {
-                return null;
-            }
-
-            public String getTerrainCategory() {
-                return "TerrainType NULL";
-            }
-
-            public int getRGB() {
-                return 0;
-            }
-
-            public int getRightOfWay() {
-                return 0;
-            }
-
-            public String getDisplayName() {
-                return "";
-            }
-
-            private Object readResolve() throws ObjectStreamException {
-                return NULL;
-            }
-
-	    public long getBaseValue() {
-		return 0;
-	    }
-        });
+    public long getBaseValue() {
+	return baseValue;
+    }
 }

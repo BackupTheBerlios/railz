@@ -46,6 +46,7 @@ public class KEY implements FreerailsSerializable {
     public static final KEY CARGO_BUNDLES = new KEY(true);
     public static final KEY TRAIN_SCHEDULES = new KEY(true);
     public static final KEY PLAYERS = new KEY(true);
+    public static final KEY BUILDING_TYPES = new KEY(true);
 
     //END OF KEYS		
     private static int numberOfKeys;

@@ -30,20 +30,17 @@ import jfreerails.client.renderer.TrackPieceRenderer;
 import jfreerails.client.renderer.TrackPieceRendererList;
 import jfreerails.client.renderer.ViewLists;
 import jfreerails.controller.TrackMoveProducer;
+import jfreerails.world.common.*;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.track.TrackConfiguration;
 import jfreerails.world.track.TrackRule;
 
 /**
  * provides the models for the TrackMoveProducer build mode
  */
 public class TrackBuildModel {
-    /*
-     * 100 010 001 = 0x111
-     */
-    private static final int trackTemplate =
-        TrackConfiguration.getFlatInstance(0x111).getTemplate();
+    private static final byte trackTemplate =
+        CompassPoints.NORTHWEST | CompassPoints.SOUTHEAST;
  
     private ActionAdapter buildModeAdapter;
 
@@ -91,7 +88,7 @@ public class TrackBuildModel {
 	    this.actionId = actionId;
             TrackRule trackRule = (TrackRule) world.get(KEY.TRACK_RULES,
 		    actionId);
-            int ruleNumber = trackRule.getRuleNumber();
+            int ruleNumber = actionId;
             TrackPieceRenderer renderer =
 		trackPieceRendererList.getTrackPieceView(ruleNumber);
 	    /* create a scaled image */
@@ -102,7 +99,7 @@ public class TrackBuildModel {
 		 3 / 4, Image.SCALE_SMOOTH);
 
 	    putValue(SMALL_ICON, new ImageIcon(scaledImage));
-            putValue(SHORT_DESCRIPTION, trackRule.getTypeName() + " @ $" +
+            putValue(SHORT_DESCRIPTION, trackRule.toString() + " @ $" +
 		    trackRule.getPrice());
 	}
 	    
@@ -131,9 +128,7 @@ public class TrackBuildModel {
 	Vector actionsVector = new Vector();
 	for (int i = 0; i < world.size(KEY.TRACK_RULES); i++) {
 	    TrackRule trackRule = (TrackRule)world.get(KEY.TRACK_RULES, i);
-	    if (!trackRule.isStation()) { 
-		actionsVector.add(new TrackRuleAction(i, trackRule.getTypeName()));
-	    }
+	    actionsVector.add(new TrackRuleAction(i, trackRule.toString()));
 	}
 	trackRuleAdapter = new ActionAdapter((Action[]) actionsVector.toArray(new Action[0]));
     }

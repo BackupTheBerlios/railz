@@ -41,7 +41,7 @@ final public class ForestStyleTileRenderer
 
     public ForestStyleTileRenderer(ImageManager imageManager, int[] rgbValues,
         TerrainType tileModel) throws IOException {
-        super(tileModel, rgbValues);
+        super(tileModel.getTerrainTypeName(), rgbValues, LAYER_TERRAIN);
         this.setTileIcons(new BufferedImage[4]);
 
         for (int i = 0; i < this.getTileIcons().length; i++) {
@@ -54,8 +54,7 @@ final public class ForestStyleTileRenderer
         int iconNumber = 0;
 
         for (int i = 0; i < 2; i++) {
-            iconNumber = iconNumber |
-                checkTile(x + X_LOOK_AT[i], y + Y_LOOK_AT[i], w);
+            iconNumber |= checkTile(x + X_LOOK_AT[i], y + Y_LOOK_AT[i], w);
             iconNumber = iconNumber << 1;
         }
 

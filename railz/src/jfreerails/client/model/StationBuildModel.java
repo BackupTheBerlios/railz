@@ -23,13 +23,13 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import java.util.Vector;
 
-import jfreerails.client.renderer.TrackPieceRendererList;
-import jfreerails.client.renderer.TrackPieceRenderer;
-import jfreerails.client.renderer.ViewLists;
+import jfreerails.client.renderer.*;
 import jfreerails.controller.StationBuilder;
+import jfreerails.world.building.*;
+import jfreerails.world.common.*;
+import jfreerails.world.player.*;
 import jfreerails.world.top.ReadOnlyWorld;
 import jfreerails.world.top.KEY;
-import jfreerails.world.track.TrackConfiguration;
 import jfreerails.world.track.TrackRule;
 
 /**
@@ -44,12 +44,6 @@ import jfreerails.world.track.TrackRule;
  * </ol>
  */
 public class StationBuildModel {
-    /*
-     * 100 010 001 = 0x111
-     */
-    private static final int trackTemplate =
-        TrackConfiguration.getFlatInstance(0x111).getTemplate();
-
     /**
      * Vector of StationBuildAction.
      * Actions which represent stations which can be built
@@ -73,20 +67,21 @@ public class StationBuildModel {
 	    world, ViewLists vl) {
 	stationBuilder = sb;
 	this.world = world;
-	TrackPieceRendererList trackPieceRendererList =
-	    vl.getTrackPieceViewList();
-	for (int i = 0; i < world.size(KEY.TRACK_RULES); i++) {
-	    TrackRule trackRule = (TrackRule)world.get(KEY.TRACK_RULES, i);
-	    if (trackRule.isStation()) {
-		TrackPieceRenderer renderer =
-		    trackPieceRendererList.getTrackPieceView(i);
+	TileRendererList tileRendererList =
+	    vl.getBuildingViewList();
+	for (int i = 0; i < world.size(KEY.BUILDING_TYPES); i++) {
+	    BuildingType buildingType =
+		(BuildingType)world.get(KEY.BUILDING_TYPES, i);
+	    if (buildingType.getCategory() == BuildingType.CATEGORY_STATION) {
+		TileRenderer renderer =
+		    tileRendererList.getTileViewWithNumber(i);
 		StationChooseAction action = new StationChooseAction(i);
-		String trackType = trackRule.getTypeName();
-		action.putValue(Action.SHORT_DESCRIPTION, trackType + " @ $" +
-			trackRule.getPrice());
-		action.putValue(Action.NAME, "Build " + trackType);
+		String stationType = buildingType.getName();
+		action.putValue(Action.SHORT_DESCRIPTION, stationType + " @ $" +
+			buildingType.getBaseValue());
+		action.putValue(Action.NAME, "Build " + stationType);
 		action.putValue(Action.SMALL_ICON, new
-			ImageIcon(renderer.getTrackPieceIcon(trackTemplate)));
+			ImageIcon(renderer.getDefaultIcon()));
 		stationChooseActions.add(action);	
 	    }
 	}
@@ -106,12 +101,12 @@ public class StationBuildModel {
 	public void actionPerformed(
 		java.awt.event.ActionEvent actionEvent) {
 	    stationBuilder.setStationType(actionId);
-	    TrackRule trackRule = (TrackRule) world.get(KEY.TRACK_RULES,
-		    actionId);
+	    BuildingType buildingType = (BuildingType)
+		world.get(KEY.BUILDING_TYPES, actionId);
 	    //Show the relevant station radius when the station type's menu item
 	    //gets focus.
 	    stationBuildAction.putValue(StationBuildAction.STATION_RADIUS_KEY,
-		    new Integer(trackRule.getStationRadius()));
+		    new Integer(buildingType.getStationRadius()));
 	    stationBuildAction.setEnabled(true);    
 	}
     }

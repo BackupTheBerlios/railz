@@ -24,10 +24,11 @@ package jfreerails.client.renderer;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+
 import jfreerails.client.common.ImageManager;
 import jfreerails.world.terrain.TerrainType;
 import jfreerails.world.top.ReadOnlyWorld;
-
+import jfreerails.world.building.*;
 
 /**
 *
@@ -40,12 +41,22 @@ final public class ChequeredTileRenderer extends AbstractTileRenderer {
 
     public ChequeredTileRenderer(ImageManager imageManager, int[] rgbValues,
         TerrainType tileModel) throws IOException {
-        super(tileModel, rgbValues);
+        super(tileModel.getTerrainTypeName(), rgbValues, LAYER_TERRAIN);
         this.setTileIcons(new BufferedImage[2]);
         this.getTileIcons()[0] = imageManager.getImage(generateRelativeFileName(
                     0));
         this.getTileIcons()[1] = imageManager.getImage(generateRelativeFileName(
                     1));
+    }
+
+    public ChequeredTileRenderer(ImageManager imageManager, BuildingType
+	    buildingType, int [] tileTypes) throws IOException {
+	super(buildingType.getName(), tileTypes, LAYER_BUILDING);
+	BufferedImage images[] = new BufferedImage[2];
+	for (int i = 0; i < images.length; i++) {
+	    images[i] = imageManager.getImage(generateRelativeFileName(i));
+	}
+	setTileIcons(images);
     }
 
     public void dumpImages(ImageManager imageManager) {

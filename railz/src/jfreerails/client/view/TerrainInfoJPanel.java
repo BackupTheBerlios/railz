@@ -28,12 +28,10 @@ import java.awt.Point;
 import javax.swing.ImageIcon;
 
 import jfreerails.client.renderer.ViewLists;
+import jfreerails.world.building.*;
 import jfreerails.world.cargo.CargoType;
 import jfreerails.world.player.Player;
 import jfreerails.world.track.FreerailsTile;
-import jfreerails.world.terrain.Consumption;
-import jfreerails.world.terrain.Conversion;
-import jfreerails.world.terrain.Production;
 import jfreerails.world.terrain.TerrainType;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.NonNullElements;
@@ -120,7 +118,7 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
 
 	TerrainType type = (TerrainType)w.get(KEY.TERRAIN_TYPES,
 		tile.getTerrainTypeNumber());
-      
+	
 	String row = "";
 	if (! tile.getOwner().equals(Player.AUTHORITATIVE)) {
 	    NonNullElements i = new NonNullElements(KEY.PLAYERS, w,
@@ -133,21 +131,32 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
 		}
 	    }
 	} else {
-	    row = "<p>Purchase cost: $" +
+	    row = "<p>Land Purchase cost: $" +
 	       	terrainTileViewer.getTerrainValue() + "</p>";
 	}
 	
+	/* TODO print cost for building demolition/purchase */
+	/* TODO display building name */
         String tableString = "";
-        int cargosProduced = type.getProduction().length;
-        int cargosConsumed = type.getConsumption().length;
-        int cargosConverted = type.getConversion().length;
+	int cargosProduced = 0;
+	int cargosConsumed = 0;
+	int cargosConverted = 0;
+	BuildingType bt = null;
+	if (tile.getBuildingTile() != null) {
+	    bt = (BuildingType) w.get(KEY.BUILDING_TYPES,
+		    tile.getBuildingTile().getType(), Player.AUTHORITATIVE);
+      
+	    cargosProduced = bt.getProduction().length;
+	    cargosConsumed = bt.getConsumption().length;
+	    cargosConverted = bt.getConversion().length;
+	}
         if((cargosProduced +  cargosConsumed+ cargosConverted) > 0){
             //if the terrain type produces, consumes, or converts anything.
             tableString = "<table width=\"75%\" >";
             if(cargosProduced != 0){
                 tableString += "<tr> <td><strong>Supplies</strong></td> <td>&nbsp;</td> </tr>";
                 for(int i = 0; i < cargosProduced ; i++){
-                    Production p = type.getProduction()[i];
+                    Production p = bt.getProduction()[i];
                     CargoType c = (CargoType)w.get(KEY.CARGO_TYPES, p.getCargoType());
                     String supply = String.valueOf(p.getRate());
                     tableString += "<tr> <td>"+c.getDisplayName()+" </td><td>"+supply+"</td></tr>";
@@ -156,7 +165,7 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
             if(cargosConsumed != 0){
                 tableString += "<tr> <td><strong>Demands</strong></td> <td>&nbsp;</td> </tr>";
                 for(int i = 0; i < cargosConsumed ; i++){
-                    Consumption p = type.getConsumption()[i];
+                    Consumption p = bt.getConsumption()[i];
                     CargoType c = (CargoType)w.get(KEY.CARGO_TYPES, p.getCargoType());
                     tableString += "<tr> <td>"+c.getDisplayName()+" </td><td>&nbsp;</td></tr>";
                 }                
@@ -164,7 +173,7 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
             if(cargosConverted != 0){
                 tableString += "<tr> <td><strong>Converts</strong></td> <td>&nbsp;</td> </tr>";
                 for(int i = 0; i < cargosConverted ; i++){
-                    Conversion p = type.getConversion()[i];
+                    Conversion p = bt.getConversion()[i];
                     CargoType input = (CargoType)w.get(KEY.CARGO_TYPES, p.getInput());
                     CargoType output = (CargoType)w.get(KEY.CARGO_TYPES, p.getOutput());
                     tableString += "<tr> <td colspan=\"2\">"+input.getDisplayName()+" to "+output.getDisplayName()+"</td></tr>";

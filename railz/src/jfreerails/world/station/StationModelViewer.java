@@ -23,7 +23,8 @@ package jfreerails.world.station;
 import jfreerails.world.common.*;
 import jfreerails.world.player.*;
 import jfreerails.world.top.*;
-import jfreerails.world.track.FreerailsTile;
+import jfreerails.world.track.*;
+
 public class StationModelViewer implements FixedAsset {
     private ReadOnlyWorld world;
     private StationModel stationModel;
@@ -54,7 +55,8 @@ public class StationModelViewer implements FixedAsset {
 	FreerailsTile tile = world.getTile(stationModel.getStationX(),
 		stationModel.getStationY());
 
-	long initialPrice = tile.getTrackRule().getPrice();
+	long initialPrice = ((TrackRule) world.get(KEY.TRACK_RULES,
+		    tile.getTrackRule(), Player.AUTHORITATIVE)).getPrice();
 	if (elapsedYears >= 25) {
 	    return (long) (initialPrice * 0.50);
 	}
