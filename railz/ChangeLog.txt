@@ -1,3 +1,6 @@
+January 30, 2005:
+-----------------
+Updated Grasshopper graphics.
 January 28, 2005:
 -----------------
 Fix for bug 11 - freight and passenger revenues are not separated
