@@ -125,7 +125,6 @@ public class TrainPathFinder {
 	    exploredTiles.clear();
 	    exploredTiles.add(currentPosition);
 	    do {
-		System.out.println("exploring tile " + currentPosition);
 		/* move to next tile along current direction */
 		oldPosition.x = currentPosition.x;
 		oldPosition.y = currentPosition.y;
@@ -160,13 +159,8 @@ public class TrainPathFinder {
 
 		/* add the current position to the current path */
 		byte trackLayout = 0;
-		try {
-		    trackLayout = world.getTile(currentPosition.x,
+		trackLayout = world.getTile(currentPosition.x,
 			currentPosition.y).getTrackConfiguration();
-		} catch (NullPointerException e) {
-		    System.out.println("caught null pointer exception");
-		    dumpState(currentPath);
-		}
 		byte initialDirection =
 		    CompassPoints.invert(currentElement.direction);
 
@@ -199,8 +193,6 @@ public class TrainPathFinder {
 	if (bestPath.isEmpty())
 	    return null;
 
-	System.out.println("best path:");
-	dumpState(bestPath);
 	/* convert the ArrayList to a TrainPath. bestPath always contains the
 	 * target tile and the start tile */
 	Point oldp = new Point();

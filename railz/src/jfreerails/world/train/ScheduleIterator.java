@@ -68,7 +68,6 @@ public class ScheduleIterator implements FreerailsSerializable {
     }
 
     public ScheduleIterator nextOrder(ReadOnlyWorld w) {
-	Thread.currentThread().dumpStack();
 	if (priorityOrder != null) {
 	    return new ScheduleIterator(this, null);
 	} else {

@@ -96,6 +96,10 @@ class DropOffAndPickupCargoMoveGenerator {
 	    ChangeCargoBundleMove(trainBefore,
                 trainAfter, trainBundleId);
 
+	System.out.println("stationAfter = " + stationAfter +
+	       	", stationBefore = " + stationBefore + ", trainAfter = " + 
+		trainAfter + ", trainBefore = " + trainBefore);
+
         return TransferCargoAtStationMove.generateMove(changeAtStation,
             changeOnTrain, payment);
     }

@@ -82,8 +82,9 @@ class TrainController {
 	    case TrainModel.STATE_RUNNABLE:
 		/* check to see whether the train has reached its destination
 		 */
-		if (tm.getTrainMotionModel().getPathToDestination().
-			getLength() == 0) {
+		TrainPath tp =
+		    tm.getTrainMotionModel().getPathToDestination();
+		if (tp != null && tp.getLength() == 0) {
 		    setState(trainIndex, p, TrainModel.STATE_UNLOADING);
 		}
 		return;
@@ -106,6 +107,7 @@ class TrainController {
 	/* get the details of the station the train is at */
 	Point point = new Point();
 	tm.getPosition().getHead(point);
+	TrackTile.deltasToTileCoords(point);
 	FreerailsPrincipal sp = null;
 	NonNullElements j = new NonNullElements(KEY.PLAYERS, world,
 		Player.AUTHORITATIVE);
@@ -132,12 +134,10 @@ class TrainController {
 	    moveReceiver.processMove(m);
 	}
 	// set the trains new destination
-	System.out.println("Before CTDM: " + tm.getTrainMotionModel());
 	Move ctdm = ChangeTrainDestinationMove.generateMove(world,
 		new ObjectKey(KEY.TRAINS, p, trainIndex),
 		tm.getScheduleIterator().nextOrder(world));
 	moveReceiver.processMove(ctdm);
-	System.out.println("After CTDM: " + ((TrainModel) world.get(KEY.TRAINS, trainIndex, p)).getTrainMotionModel());
 	setState(trainIndex, p, TrainModel.STATE_RUNNABLE);
 	return;
     }
