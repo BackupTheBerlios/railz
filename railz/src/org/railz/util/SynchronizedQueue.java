@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2003 Luke Lindsay
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -14,28 +15,35 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+/*
+ * Created on Dec 25, 2003
+ */
 package org.railz.util;
 
-public interface GameModel {
-    public static final GameModel NULL_MODEL = new GameModel() {
-	private Object mutex = new Integer(1);
+import java.util.LinkedList;
+import org.railz.world.common.FreerailsSerializable;
 
-            public void update() {
-            }
 
-	    public Object getMutex() {
-		return mutex;
-	    }
-        };
+/**
+ *
+ *  @author Luke
+ *
+ */
+public class SynchronizedQueue {
+    private LinkedList queue = new LinkedList();
 
-    /**
-     * Call to update the game world with any pending moves
-     */
-    void update();
+    public synchronized void write(FreerailsSerializable f) {
+        queue.add(f);
+    }
 
-    /**
-     * @return an object which can be used to synchronize against in order to
-     * prevent changes to the game world.
-     */
-    public Object getMutex();
+    public synchronized FreerailsSerializable[] read() {
+        int length = queue.size();
+        FreerailsSerializable[] read = new FreerailsSerializable[length];
+
+        for (int i = 0; i < length; i++) {
+            read[i] = (FreerailsSerializable)queue.removeFirst();
+        }
+
+        return read;
+    }
 }

@@ -90,7 +90,7 @@ public class WorldView implements World {
     }
 
     public void setTile(int x, int y, FreerailsTile tile) {
-	setTile(x, y, tile);
+	world.setTile(x, y, tile);
     }
 
     public FreerailsSerializable get(ITEM item) {

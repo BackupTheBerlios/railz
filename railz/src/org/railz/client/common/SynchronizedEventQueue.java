@@ -23,7 +23,8 @@ import java.awt.Toolkit;
 
 
 /**
- * This event queue is synchronized on the MUTEX. This lets one control when events can be dispatched.
+ * This event queue is synchronized on the MUTEX. This lets one control when
+ * events can be dispatched.
  *
  * Note, changed to be a singleton to get it working on pre 1.4.2 VMs.
  *
@@ -31,27 +32,33 @@ import java.awt.Toolkit;
  *
  */
 final public class SynchronizedEventQueue extends EventQueue {
-    public static final Object MUTEX = new Object();
-    private static SynchronizedEventQueue instance = new SynchronizedEventQueue();
-    private static boolean alreadyInUse = false;
+    private final Object MUTEX;
+    private static SynchronizedEventQueue instance;
 
     /** Enforce singleton property */
-    private SynchronizedEventQueue() {
+    private SynchronizedEventQueue(Object mutex) {
+	EventQueue eventQueue = Toolkit.getDefaultToolkit()
+	    .getSystemEventQueue();
+	MUTEX = mutex;
+	eventQueue.push(this);
     }
 
-    public static synchronized void use() {
-        if (!alreadyInUse) {
-            /* set up the synchronized event queue */
-            EventQueue eventQueue = Toolkit.getDefaultToolkit()
-                                           .getSystemEventQueue();
-            eventQueue.push(instance);
-            alreadyInUse = true;
-        }
+    public static synchronized void use(Object mutex) {
+	assert instance == null;
+
+	/* set up the synchronized event queue */
+	instance = new SynchronizedEventQueue(mutex);
     }
 
     protected void dispatchEvent(AWTEvent aEvent) {
         synchronized (MUTEX) {
             super.dispatchEvent(aEvent);
         }
+    }
+
+    public synchronized static void stopUse() {
+	if (instance != null) {
+	    instance.pop();
+	}
     }
 }

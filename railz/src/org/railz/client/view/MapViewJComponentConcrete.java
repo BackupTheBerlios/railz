@@ -44,7 +44,6 @@ import org.railz.client.model.CursorEvent;
 import org.railz.client.model.CursorEventListener;
 import org.railz.client.model.ModelRoot;
 import org.railz.client.top.*;
-import org.railz.client.top.NonAuthoritativeMoveExecuter.PendingQueue;
 import org.railz.client.common.FPSCounter;
 import org.railz.client.common.Stats;
 import org.railz.client.renderer.MapRenderer;

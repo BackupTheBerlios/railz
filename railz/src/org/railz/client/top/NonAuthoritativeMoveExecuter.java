@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.logging.*;
 
+import org.railz.client.common.*;
 import org.railz.client.model.ModelRoot;
 import org.railz.controller.*;
 import org.railz.move.*;
@@ -31,9 +32,7 @@ import org.railz.world.common.*;
 import org.railz.world.player.*;
 import org.railz.world.top.*;
 import org.railz.world.train.*;
-import org.railz.util.GameModel;
-import org.railz.util.SychronizedQueue;
-
+import org.railz.util.*;
 
 /**
  * A move executer which pre-commits moves on the outward trip
@@ -55,29 +54,26 @@ import org.railz.util.SychronizedQueue;
  *
  * @author rtuck99@users.sourceforge.net
  */
-public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
-    GameModel {
+final class NonAuthoritativeMoveExecuter extends ClientMoveExecuter {
     private PendingQueue pendingQueue = new PendingQueue();
-    private ModelRoot modelRoot;
     private MoveReceiver moveReceiver;
     private World world;
-    private final SychronizedQueue sychronizedQueue = new SychronizedQueue();
+    private final SynchronizedQueue synchronizedQueue = new SynchronizedQueue();
     private static final Logger logger = Logger.getLogger("global");
+    private UserMessageLogger userMessageLogger;
 
     public NonAuthoritativeMoveExecuter(World w, MoveReceiver mr,
-        ModelRoot modelRoot) {
-        this.modelRoot = modelRoot;
+	    UserMessageLogger uml) {
         moveReceiver = mr;
         world = w;
-	modelRoot.getDebugModel().getClientMoveDebugModel().
-	    getAction().addPropertyChangeListener(debugChangeListener);
+	userMessageLogger = uml;
     }
 
     /**
      * @see MoveReceiver#processMove(Move)
      */
     public void processMove(Move move) {
-        sychronizedQueue.write(move);
+        synchronizedQueue.write(move);
     }
 
     /**
@@ -90,7 +86,7 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
      * Processes moves confirmed or rejected by the server.
      */
     private void executeOutstandingMoves() {
-        FreerailsSerializable[] items = sychronizedQueue.read();
+        FreerailsSerializable[] items = synchronizedQueue.read();
 
         for (int i = 0; i < items.length; i++) {
             Move move = (Move)items[i];
@@ -114,6 +110,11 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
         return pendingQueue;
     }
 
+    /** For debug purposes */
+    public int getNumBlockedMoves() {
+	return pendingQueue.approvedMoves.size();
+    }
+
     public class PendingQueue implements UncommittedMoveReceiver {
         /**
          * synchronize access to this list of unverified moves
@@ -126,11 +127,6 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
 	/** moves approved by server but not yet committed */
         private LinkedList approvedMoves = new LinkedList();
         private UncommittedMoveReceiver moveReceiver;
-
-	/** For debug purposes */
-	int getNumBlockedMoves() {
-	    return approvedMoves.size();
-	}
 
         private boolean undoMoves() {
             int n = 0;
@@ -167,7 +163,7 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
             }
 
             if (n > 0) {
-                modelRoot.getUserMessageLogger().println("Undid " + n +
+                userMessageLogger.println("Undid " + n +
                     " moves rejected by " + "server!");
             }
 
@@ -316,16 +312,12 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
                 }
             }
         }
-
-        public void addMoveReceiver(UncommittedMoveReceiver mr) {
-            if (moveReceiver == null) {
-                moveReceiver = mr;
-            }
-        }
     }
 
-    public void undoLastMove() {
-        assert false : "attempted to undo move in client on return from server";
+    public void addMoveReceiver(UncommittedMoveReceiver mr) {
+	if (pendingQueue.moveReceiver == null) {
+	    pendingQueue.moveReceiver = mr;
+	}
     }
 
     /**
@@ -351,10 +343,15 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
         executeOutstandingMoves();
     }
 
+    public Object getMutex() {
+	return world;
+    }
+
     private PropertyChangeListener debugChangeListener = new
 	PropertyChangeListener() {
 	    public void propertyChange(PropertyChangeEvent e) {
-		if (modelRoot.getDebugModel().getClientMoveDebugModel()
+		if (modelRoot != null &&
+			modelRoot.getDebugModel().getClientMoveDebugModel()
 			.isSelected()) {
 		    System.out.println("finer logging");
 		    logger.setLevel(Level.FINER);
@@ -364,4 +361,14 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
 		}
 	    }
 	};
+
+    private ModelRoot modelRoot = null;
+
+    public void setModelRoot(ModelRoot mr) {
+	modelRoot = mr;
+	if (modelRoot != null) {
+	    modelRoot.getDebugModel().getClientMoveDebugModel().
+		getAction().addPropertyChangeListener(debugChangeListener);
+	}
+    }
 }

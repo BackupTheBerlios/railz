@@ -21,9 +21,7 @@ import java.util.logging.*;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-import org.railz.client.view.GUIRoot;
-import org.railz.client.renderer.ViewLists;
-import org.railz.client.model.ModelRoot;
+import org.railz.client.common.*;
 import org.railz.controller.*;
 import org.railz.move.Move;
 import org.railz.move.MoveStatus;
@@ -34,49 +32,43 @@ import org.railz.world.player.PlayerPrincipal;
 import org.railz.world.top.KEY;
 import org.railz.world.top.World;
 
-
 /**
  * This class receives moves from the client. This class tries out moves on the
  * world if necessary, and passes them to the connection.
  */
 public class ConnectionAdapter implements UntriedMoveReceiver,
     ConnectionListener {
-    private NonAuthoritativeMoveExecuter moveExecuter;
-    private ModelRoot modelRoot;
+    private ClientMoveExecuter moveExecuter;
     private Player player;
     ConnectionToServer connection;
     private Object authMutex = new Integer(1);
     private boolean authenticated;
-    private GUIClient guiClient;
     private static final Logger logger = Logger.getLogger("global");
+    private UserMessageLogger userMessageLogger;
 
     /**
-     * The GameLoop providing the move execution thread for this
-     * ConnectionAdapter's Move Executer
-     */
-    private GameLoop gameLoop;
-
-    /**
-     * we forward outbound moves from the client to this.
+     * we forward outbound moves from the client to this via the
+     * ClientMoveExecuter.
      */
     UncommittedMoveReceiver uncommittedReceiver;
+
+    /**
+     * Moves from the server are forwarded to this via the ClientMoveExecuter.
+     */
     MoveReceiver moveReceiver;
     World world;
     private FreerailsProgressMonitor progressMonitor;
-    private GUIRoot guiRoot;
 
     public int getNumBlockedMoves() {
-	return ((NonAuthoritativeMoveExecuter.PendingQueue)
-	    moveExecuter.getUncommittedMoveReceiver()).getNumBlockedMoves();
+	return moveExecuter.getNumBlockedMoves();
     }
 
-    public ConnectionAdapter(ModelRoot mr, GUIRoot gr, Player
-	    player, FreerailsProgressMonitor pm, GUIClient gc) {
-        modelRoot = mr;
+    public ConnectionAdapter(Player
+	    player, FreerailsProgressMonitor pm,
+	    UserMessageLogger uml) {
         this.player = player;
         this.progressMonitor = pm;
-        guiClient = gc;
-	guiRoot = gr;
+	userMessageLogger = uml;
     }
 
     /**
@@ -89,19 +81,24 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
         /**
          * TODO get rid of this
          */
-        public synchronized void undoLastMove() {
+        public void undoLastMove() {
             // do nothing
         }
 
-        public synchronized void processMove(Move move, ConnectionToServer c) {
+        public void processMove(Move move, ConnectionToServer c) {
             processMove(move);
         }
 
         /**
          * Processes inbound moves from the server
          */
-        public synchronized void processMove(Move move) {
-	    if (moveReceiver == null)
+        public void processMove(Move move) {
+	    MoveReceiver mr;
+	    synchronized (this) {
+		mr = moveReceiver;
+	    }
+
+	    if (mr == null)
 		return;
 
             if (move instanceof TimeTickMove) {
@@ -112,7 +109,7 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
                 connection.flush();
             }
 
-            moveReceiver.processMove(move);
+            mr.processMove(move);
         }
 
         public synchronized void setMoveReceiver(MoveReceiver moveReceiver) {
@@ -126,6 +123,7 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
      * Processes outbound moves to the server
      */
     public synchronized void processMove(Move move) {
+	logger.log(Level.FINEST, "sending move to server");
         if (uncommittedReceiver != null) {
             uncommittedReceiver.processMove(move);
         }
@@ -148,7 +146,7 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
     private void closeConnection() {
         connection.close();
         connection.removeMoveReceiver(worldUpdater);
-        modelRoot.getUserMessageLogger().println
+        userMessageLogger.println
 	    (Resources.get("Connection to server closed"));
     }
 
@@ -165,11 +163,8 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
      */
     private synchronized void setConnectionImpl(ConnectionToServer c)
         throws IOException, GeneralSecurityException {
-        if (gameLoop != null) {
-            gameLoop.stop();
-        }
-
         if (connection != null) {
+	    connectionAdapterListener.worldDisconnected();
             closeConnection();
             connection.removeMoveReceiver(worldUpdater);
             connection.removeConnectionListener(this);
@@ -182,14 +177,14 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
 	connection.addConnectionListener(this);
 
 	/* attempt to authenticate the player */
-	modelRoot.getUserMessageLogger().println
+	userMessageLogger.println
 	    (Resources.get("Attempting to authenticate player: ") +
 	     player.getName());
 	authenticated = false;
 	connection.sendCommand(new AddPlayerCommand(player, player.sign()));
 	synchronized (authMutex) {
 	    if (!authenticated) {
-		modelRoot.getUserMessageLogger().println
+		userMessageLogger.println
 		    (Resources.get("Waiting for authentication"));
 
 		try {
@@ -211,66 +206,18 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
             world = connection.loadWorldFromServer();
 
             /* plumb in a new Move Executer */
-            moveExecuter = new NonAuthoritativeMoveExecuter(world,
-                    moveReceiver, modelRoot);
+	    if (connection instanceof LocalConnection) {
+		moveExecuter = new DummyMoveExecuter(moveReceiver, world);
+	    } else {
+		moveExecuter = new NonAuthoritativeMoveExecuter(world,
+			moveReceiver, userMessageLogger);
+	    }
             worldUpdater.setMoveReceiver(moveExecuter);
             uncommittedReceiver = moveExecuter.getUncommittedMoveReceiver();
-            ((NonAuthoritativeMoveExecuter.PendingQueue)uncommittedReceiver).addMoveReceiver(connection);
+            moveExecuter.addMoveReceiver(connection);
         }
 
-        /* start a new game loop */
-	gameLoop = new GameLoop(guiRoot.getScreenHandler(),
-		moveExecuter);
-
-	/* send a command to set up server-specific resources */
-	connection.sendCommand(new ResourceBundleManager.GetResourceCommand
-		("org.railz.data.l10n.server", Locale.getDefault()));
-
-	playerConfirmed();
-    }
-
-    private void playerConfirmed() {
-        try {
-            /* create the models */
-            assert world != null;
-
-            modelRoot.setWorld(world);
-	    ViewLists viewLists = new ViewListsImpl(modelRoot,
-		    guiRoot, progressMonitor);
-
-            if (!viewLists.validate(world)) {
-		/* most likely reason for failure is that the server's object
-		 * set is different to what the client is expecting */
-                modelRoot.getUserMessageLogger().println
-		    (Resources.get("Your client is not compatible with " +
-				   "the server."));
-            }
-
-            /*
-             * wait until the player the client represents has been created in
-             * the model (this may not occur until we process the move creating
-             * the player from the server
-             */
-            while (!world.boundsContain(KEY.PLAYERS,
-                        ((PlayerPrincipal)modelRoot.getPlayerPrincipal()).getId(),
-                        modelRoot.getPlayerPrincipal())) {
-                moveExecuter.update();
-            }
-
-            modelRoot.setWorld(this, viewLists);
-
-            /* start the game loop */
-            String threadName = "Railz client: " + guiClient.getTitle();
-            Thread t = new Thread(gameLoop, threadName);
-            t.start();
-        } catch (IOException e) {
-	    String s = Resources.get
-		("There was a problem reading in the graphics "
-			       + "data");
-            modelRoot.getUserMessageLogger().println
-		(s);
-	    logger.log(Level.WARNING, s, e);
-        }
+	connectionAdapterListener.worldInitialized(world, moveExecuter);
     }
 
     public void setMoveReceiver(MoveReceiver m) {
@@ -281,7 +228,7 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
     }
 
     public void connectionClosed(ConnectionToServer c) {
-        // ignore
+	connectionAdapterListener.worldDisconnected();
     }
 
     public void connectionOpened(ConnectionToServer c) {
@@ -298,12 +245,13 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
                 authenticated = !((AddPlayerResponseCommand)s).isRejected();
 
                 if (authenticated) {
-                    modelRoot.getUserMessageLogger().println
+                    userMessageLogger.println
 			(Resources.get
 			 ("Player was successfully authenticated"));
-                    modelRoot.setPlayerPrincipal(((AddPlayerResponseCommand)s).getPrincipal());
+                    connectionAdapterListener.setPlayerPrincipal
+			(((AddPlayerResponseCommand)s).getPrincipal());
                 } else {
-                    modelRoot.getUserMessageLogger().println
+                    userMessageLogger.println
 			(Resources.get("Authentication was rejected"));
                 }
 
@@ -313,7 +261,7 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
 		Runnable r = new ConnectionHelper(c);
 		(new Thread(r)).start();
         } else if (s instanceof ServerMessageCommand) {
-	    modelRoot.getUserMessageLogger().println
+	    userMessageLogger.println
 		(Resources.get(((ServerMessageCommand) s).getMessage()));
 	} else if (s instanceof
 		ResourceBundleManager.GetResourceResponseCommand) {
@@ -341,14 +289,24 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
 	    try {
 		setConnectionImpl(c);
 	    } catch (IOException e) {
-		modelRoot.getUserMessageLogger().println
+		userMessageLogger.println
 		    (Resources.get("Unable to open remote connection"));
 		closeConnection();
 	    } catch (GeneralSecurityException e) {
-		modelRoot.getUserMessageLogger().println
+		userMessageLogger.println
 		    (Resources.get("Unable to authenticate with server: ")
 		     + e.toString());
 	    }
 	}
+    }
+
+    private ConnectionAdapterListener connectionAdapterListener;
+
+    public void addConnectionAdapterListener(ConnectionAdapterListener l) {
+	connectionAdapterListener = l;
+    }
+
+    public void removeConnectionAdapterListener(ConnectionAdapterListener l) {
+	connectionAdapterListener = null;
     }
     }

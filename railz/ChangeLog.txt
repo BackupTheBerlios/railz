@@ -1,3 +1,8 @@
+February 6, 2005:
+-----------------
+Removed the need for local clients to maintain their own copy of the game
+world, thus saving memory. Added infrastructure for the implementation of an AI
+client. Started preliminary work on the AI route building.
 January 30, 2005:
 -----------------
 Fix for bug 6 - Top-down engine gfx are just black rectangles.

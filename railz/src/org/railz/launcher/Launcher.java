@@ -34,10 +34,11 @@ import java.io.ObjectOutputStream;
 import java.security.GeneralSecurityException;
 import java.util.logging.*;
 
+import org.railz.client.ai.*;
 import org.railz.client.common.FileUtils;
 import org.railz.client.common.ScreenHandler;
 import org.railz.client.top.GUIClient;
-import org.railz.controller.ServerControlInterface;
+import org.railz.controller.*;
 import org.railz.server.GameServer;
 import org.railz.util.FreerailsProgressMonitor;
 import org.railz.util.Resources;
@@ -50,11 +51,17 @@ import org.railz.world.player.Player;
  */
 public class Launcher extends javax.swing.JFrame implements
 FreerailsProgressMonitor {
+    private static final int TAB_MAIN_MENU = 0;
+    private static final int TAB_MAP_SELECTION = 1;
+    private static final int TAB_CLIENT_OPTIONS = 2;
+    private static final int TAB_CONNECTION_STATUS = 3;
+
     private static final int GAME_SPEED_PAUSED = 0;
     private static final int GAME_SPEED_SLOW = 10;
+    private static final Logger logger = Logger.getLogger("global");
     
-	private Component[] wizardPages = new Component[4];
-    int currentPage = 0;
+    private Component[] wizardPages = new Component[4];
+    int currentPage = TAB_MAIN_MENU;
 
     public void setMessage(String s) {
 	setInfoText(s);
@@ -85,16 +92,47 @@ FreerailsProgressMonitor {
     
     private ServerControlInterface sci;
 
+    private void startAIClients(ServerControlInterface sci) throws
+	IOException, GeneralSecurityException {
+	MapSelectionPanel msp = (MapSelectionPanel)
+	    wizardPages[TAB_MAP_SELECTION];
+	
+	for (int i = 0; i < msp.getNumAIPlayers(); i++) {
+	    AIConfiguration aiConfig = new AIConfiguration
+		(getNewConnection(sci),
+		 getPlayer("AI Player " + String.valueOf(i + 1)));
+	    // starts the AI Player
+	    new AIClient(aiConfig);
+	}
+    }
+
+    private ConnectionToServer getNewConnection(ServerControlInterface sci)
+	throws IOException {
+	LauncherPanel1 lp = (LauncherPanel1) wizardPages[TAB_MAIN_MENU];
+	if (sci != null && 
+		(lp.getMode() == LauncherPanel1.MODE_SINGLE_PLAYER ||
+		lp.getMode() == LauncherPanel1.MODE_START_NETWORK_GAME ||
+		lp.getMode() == LauncherPanel1.MODE_SERVER_ONLY)) {
+	    return new LocalConnection(sci.getLocalConnection());
+	} else {
+	    // client only - connect to remote server
+	    return new InetConnection(lp.getRemoteServerAddress());
+	}
+    }
+
     /** TODO handle loading errors gracefully */
     private void startGame() {
 	jProgressBar1.setVisible(true);
 	setNextEnabled(false);
-	LauncherPanel1 lp = (LauncherPanel1) wizardPages[0];
-	MapSelectionPanel msp = (MapSelectionPanel) wizardPages[1];
-	ClientOptionsJPanel cop = (ClientOptionsJPanel) wizardPages[2];
-	ServerStatusPanel ssp = (ServerStatusPanel) wizardPages[3];
+	LauncherPanel1 lp = (LauncherPanel1) wizardPages[TAB_MAIN_MENU];
+	MapSelectionPanel msp = (MapSelectionPanel)
+	    wizardPages[TAB_MAP_SELECTION];
+	ClientOptionsJPanel cop = (ClientOptionsJPanel)
+	    wizardPages[TAB_CLIENT_OPTIONS];
+	ServerStatusPanel ssp = (ServerStatusPanel)
+	    wizardPages[TAB_CONNECTION_STATUS];
 
-	boolean recover = false;
+	boolean recover = true;
 	int port, mode;
 	GameServer gs = new GameServer();
 	GUIClient gc;
@@ -120,12 +158,15 @@ FreerailsProgressMonitor {
 		    gc = new GUIClient(sci, sci.getLocalConnection(), mode,
 			    cop.getDisplayMode(), Resources.get
 			    ("Railz Client"), this, p);
+		    startAIClients(sci);
+		    recover = false;
 		} catch (IOException e) {
 		    setInfoText(e.getMessage());
-		    recover = true;
+		    logger.log(Level.SEVERE, "Caught IOException:", e);
 		} catch (GeneralSecurityException e) {
 		    setInfoText(e.getMessage());
-		    recover = true;
+		    logger.log(Level.SEVERE, "Caught " +
+			    "GeneralSecurityException", e);
 		} finally {
 		    if (recover) {
 			sci.quitGame();
@@ -158,13 +199,19 @@ FreerailsProgressMonitor {
 			gc.getGUIRoot().getDialogueBoxController().
 			    createDialog(contentJPanel, Resources.get
 				    ("Railz Launcher"));
+		    startAIClients(sci);
+		    recover = false;
 		} catch (IOException e) {
-		    recover = true;
 		    setInfoText(e.getMessage());
+		    logger.log(Level.SEVERE, "Caught IOException", e);
 		} catch (GeneralSecurityException e) {
-		    recover = true;
 		    setInfoText(e.getMessage());
-		} finally {
+		    logger.log(Level.SEVERE, "Caught " + 
+			    "GeneralSecurityException", e);
+		} catch (Exception e) {
+		    logger.log(Level.SEVERE, "Caught " + 
+			    "Exception", e);
+		}finally {
 		    if (recover) {
 			sci.quitGame();
 			cop.setControlsEnabled(true);
@@ -175,8 +222,8 @@ FreerailsProgressMonitor {
 		}
 		ssp.setTableModel(sci.getClientConnectionTableModel());
 		/* show the connection status screen */
-		currentPage = 3;
-		cl.show(jPanel1, "3");
+		currentPage = TAB_CONNECTION_STATUS;
+		showTab(currentPage);
 		setNextEnabled(false);
 		break;
 	    case LauncherPanel1.MODE_JOIN_NETWORK_GAME:
@@ -186,16 +233,18 @@ FreerailsProgressMonitor {
 		    p = getPlayer(cop.getPlayerName());
 		    if (mode == ScreenHandler.FULL_SCREEN)
 			hide();
-		    gc = new
-			GUIClient(lp.getRemoteServerAddress().getAddress(),
+		    gc = new GUIClient(lp.getRemoteServerAddress(),
 				mode, cop.getDisplayMode(), Resources.get
 				("Railz Client"), this, p);
+		    startAIClients(null);
+		    recover = false;
 		} catch (IOException e) {
 		    setInfoText(e.getMessage());
-		    recover = true;
+		    logger.log(Level.SEVERE, "Caught IOException", e);
 		} catch (GeneralSecurityException e) {
 		    setInfoText(e.getMessage());
-		    recover = true;
+		    logger.log(Level.SEVERE, "Caught " +
+			    "GeneralSecurityException", e);
 		} finally {
 		    if (recover) {
 			cop.setControlsEnabled(true);
@@ -214,13 +263,25 @@ FreerailsProgressMonitor {
 		    sci = gs.getSavedGame(this, lp.getServerPort(),
 			    msp.getLoadFilename());
 		}
+		try {
+		    startAIClients(sci);
+		    /* TODO additional server control screen including game
+		     * speed controls */
+		} catch (IOException e) {
+		    setInfoText(e.getMessage());
+		    logger.log(Level.SEVERE, "Caught IOException", e);
+		    return;
+		} catch (GeneralSecurityException e) {
+		    setInfoText(e.getMessage());
+		    logger.log(Level.SEVERE, "Caught " + 
+			    "GeneralSecurityException", e);
+		    return;
+		}
 		ssp.setTableModel(sci.getClientConnectionTableModel());
 		nextIsStart = true;
 		setNextEnabled(true);
-		currentPage = 3;
-		cl.show(jPanel1, "3");
-		/* TODO additional server control screen including game speed
-		 * controls */
+		currentPage = TAB_CONNECTION_STATUS;
+		showTab(currentPage);
 	}
     }
 
@@ -285,19 +346,24 @@ FreerailsProgressMonitor {
 	 * Add the necessary wizard panes
 	 */
 	CardLayout cl = (CardLayout) jPanel1.getLayout();
-	wizardPages[0] = new LauncherPanel1(this);
-	wizardPages[1] = new MapSelectionPanel(this);
-	wizardPages[2] = new ClientOptionsJPanel(this);
-	wizardPages[3] = new ServerStatusPanel(this);
+	wizardPages[TAB_MAIN_MENU] = new LauncherPanel1(this);
+	wizardPages[TAB_MAP_SELECTION] = new MapSelectionPanel(this);
+	wizardPages[TAB_CLIENT_OPTIONS] = new ClientOptionsJPanel(this);
+	wizardPages[TAB_CONNECTION_STATUS] = new ServerStatusPanel(this);
 
-	jPanel1.add(wizardPages[0], "0");
-	jPanel1.add(wizardPages[1], "1");
-	jPanel1.add(wizardPages[2], "2");
-	jPanel1.add(wizardPages[3], "3");
+	jPanel1.add(wizardPages[TAB_MAIN_MENU], String.valueOf(TAB_MAIN_MENU));
+	jPanel1.add(wizardPages[TAB_MAP_SELECTION],
+		String.valueOf(TAB_MAP_SELECTION));
+	jPanel1.add(wizardPages[TAB_CLIENT_OPTIONS],
+		String.valueOf(TAB_CLIENT_OPTIONS));
+	jPanel1.add(wizardPages[TAB_CONNECTION_STATUS],
+		String.valueOf(TAB_CONNECTION_STATUS));
 	pack();
 
 	/* hide the progress bar until needed */
 	jProgressBar1.setVisible(false);
+
+	showTab(TAB_MAIN_MENU);
     }
     
     /** This method is called from within the constructor to
@@ -397,50 +463,51 @@ FreerailsProgressMonitor {
 	CardLayout cl = (CardLayout) jPanel1.getLayout();
 	nextIsStart = false;
 	switch (currentPage) {
-	    case 1:
-		cl.previous(jPanel1);
+	    case TAB_MAP_SELECTION:
 		currentPage--;
+		showTab(currentPage);
 		prevButton.setEnabled(false);
 		break;
-	    case 2:
-		LauncherPanel1 panel = (LauncherPanel1) wizardPages[0];
+	    case TAB_CLIENT_OPTIONS:
+		LauncherPanel1 panel = (LauncherPanel1)
+		    wizardPages[TAB_MAIN_MENU];
 		if (panel.getMode() == LauncherPanel1.MODE_JOIN_NETWORK_GAME) {
-		    currentPage = 0;
-		    cl.show(jPanel1, "0");
+		    currentPage = TAB_MAIN_MENU;
+		    showTab(currentPage);
 		    prevButton.setEnabled(false);
 		} else {
 		    currentPage--;
-		    cl.previous(jPanel1);
+		    showTab(currentPage);
 		}
 	}
     }//GEN-LAST:event_prevButtonActionPerformed
 
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
 	CardLayout cl = (CardLayout) jPanel1.getLayout();
-	LauncherPanel1 panel = (LauncherPanel1) wizardPages[0];
+	LauncherPanel1 panel = (LauncherPanel1) wizardPages[TAB_MAIN_MENU];
 	switch (currentPage) {
-	    case 0:
+	    case TAB_MAIN_MENU:
 		/* Initial game selection page */
 		switch (panel.getMode()) {
 		    case LauncherPanel1.MODE_SERVER_ONLY:
 		    case LauncherPanel1.MODE_SINGLE_PLAYER:
 		    case LauncherPanel1.MODE_START_NETWORK_GAME:
 			/* go to map selection screen */
-			cl.next(jPanel1);
 			currentPage++;
+			showTab(currentPage);
 			break;
 		    case LauncherPanel1.MODE_JOIN_NETWORK_GAME:
 			/* client display options */
 			nextIsStart = true;
-			cl.show(jPanel1, "2");
-			currentPage = 2;
+			currentPage = TAB_CLIENT_OPTIONS;
+			showTab(currentPage);
 			break;
 		}
 		prevButton.setEnabled(true);
 		break;
-	    case 1:
+	    case TAB_MAP_SELECTION:
 		((MapSelectionPanel)
-		 wizardPages[1]).submitScenarioSettings();
+		 wizardPages[TAB_MAP_SELECTION]).submitScenarioSettings();
 		/* map selection page */
 		if (panel.getMode() == LauncherPanel1.MODE_SERVER_ONLY) {
 		    prevButton.setEnabled(false);
@@ -450,17 +517,17 @@ FreerailsProgressMonitor {
 		    prevButton.setEnabled(true);
 		    setNextEnabled(true);
 		    currentPage++;
-		    cl.next(jPanel1);
+		    showTab(currentPage);
 		}
 		break;
-	    case 2:
+	    case TAB_CLIENT_OPTIONS:
 		/* display mode selection */
 		prevButton.setEnabled(false);
-		((ClientOptionsJPanel) wizardPages[2])
+		((ClientOptionsJPanel) wizardPages[TAB_CLIENT_OPTIONS])
 		    .setControlsEnabled(false);
 		startGame();
 		break;
-	    case 3:
+	    case TAB_CONNECTION_STATUS:
 		/* Connection status screen */
 		prevButton.setEnabled(false);
 		sci.setTargetTicksPerSecond(GAME_SPEED_SLOW);
@@ -484,4 +551,21 @@ FreerailsProgressMonitor {
     private javax.swing.JButton prevButton;
     // End of variables declaration//GEN-END:variables
     
+    private void showTab(int tab) {
+	((CardLayout) jPanel1.getLayout()).show(jPanel1, String.valueOf(tab));
+	switch (tab) {
+	    case TAB_MAIN_MENU:
+		setTitle(Resources.get("Launcher Main Menu"));
+		break;
+	    case TAB_MAP_SELECTION:
+		setTitle(Resources.get("Server Options"));
+		break;
+	    case TAB_CLIENT_OPTIONS:
+		setTitle(Resources.get("Client Options"));
+		break;
+	    case TAB_CONNECTION_STATUS:
+		setTitle(Resources.get("Connection Status"));
+		break;
+	}
+    }
 }

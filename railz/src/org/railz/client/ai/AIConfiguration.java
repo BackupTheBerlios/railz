@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2005 Robert Tuck
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -13,29 +14,31 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+package org.railz.client.ai;
 
-package org.railz.util;
+import org.railz.controller.*;
+import org.railz.world.player.*;
 
-public interface GameModel {
-    public static final GameModel NULL_MODEL = new GameModel() {
-	private Object mutex = new Integer(1);
+/**
+ * This class specifies any configuration options the AI client is passed at
+ * startup. (e.g. difficulty level, player name, etc.)
+ */
+public final class AIConfiguration {
+    /** The player this acts on behalf of */
+    private Player player;
 
-            public void update() {
-            }
+    private ConnectionToServer serverConnection;
 
-	    public Object getMutex() {
-		return mutex;
-	    }
-        };
+    public AIConfiguration(ConnectionToServer c, Player p) {
+	player = p;
+	serverConnection = c;
+    }
 
-    /**
-     * Call to update the game world with any pending moves
-     */
-    void update();
+    public Player getPlayer() {
+	return player;
+    }
 
-    /**
-     * @return an object which can be used to synchronize against in order to
-     * prevent changes to the game world.
-     */
-    public Object getMutex();
+    public ConnectionToServer getConnection() {
+	return serverConnection;
+    }
 }

@@ -18,22 +18,22 @@ package org.railz.client.top;
 
 import java.awt.DisplayMode;
 import java.io.IOException;
-import java.net.InetAddress;
+import java.net.*;
 import java.security.GeneralSecurityException;
+import java.util.*;
+import java.util.logging.*;
 import javax.swing.JFrame;
+
 import org.railz.client.common.ScreenHandler;
 import org.railz.client.common.SynchronizedEventQueue;
 import org.railz.client.common.UpdatedComponent;
 import org.railz.client.view.GUIRoot;
 import org.railz.client.model.ModelRoot;
-import org.railz.controller.ConnectionToServer;
-import org.railz.controller.InetConnection;
-import org.railz.controller.LocalConnection;
-import org.railz.controller.MoveChainFork;
-import org.railz.controller.ServerControlInterface;
-import org.railz.util.FreerailsProgressMonitor;
-import org.railz.world.player.Player;
-
+import org.railz.client.renderer.*;
+import org.railz.controller.*;
+import org.railz.util.*;
+import org.railz.world.player.*;
+import org.railz.world.top.*;
 
 /**
  * This class implements a GUI-driven client to be used by human players.
@@ -42,19 +42,22 @@ import org.railz.world.player.Player;
  * maps etc?). Currently we will do this over the local connection only, by
  * the client having access to a ServerControlInterface object
  */
-public class GUIClient extends Client {
+public class GUIClient extends Client implements ConnectionAdapterListener {
     private String title;
     private ModelRoot modelRoot;
     private GUIRoot guiRoot;
+    private ConnectionToServer connection;
+    private FreerailsProgressMonitor progressMonitor;
+    private ConnectionAdapter connectionAdapter;
 
     private GUIClient(ConnectionToServer server, int mode, DisplayMode dm,
         String title, FreerailsProgressMonitor pm, Player player, ModelRoot mr)
         throws IOException, GeneralSecurityException {
         super(player);
-        setMoveChainFork(new MoveChainFork());
+	connection = server;
+	progressMonitor = pm;
         modelRoot = mr;
         this.title = title;
-        SynchronizedEventQueue.use();
 	
         modelRoot.setMoveFork(getMoveChainFork());
 
@@ -62,8 +65,10 @@ public class GUIClient extends Client {
 	guiRoot = new
 	    GUIRoot(modelRoot);
 
-	setReceiver(new ConnectionAdapter(mr, guiRoot, player, pm,
-		    this));
+	connectionAdapter = new ConnectionAdapter(player, pm,
+		modelRoot.getUserMessageLogger());
+	connectionAdapter.addConnectionAdapterListener(this);
+	setReceiver(connectionAdapter);
         modelRoot.setMoveReceiver(getReceiver());
         getReceiver().setMoveReceiver(getMoveChainFork());
 
@@ -89,7 +94,7 @@ public class GUIClient extends Client {
     /**
      * Start a client with an internet connection to a server
      */
-    public GUIClient(InetAddress server, int mode, DisplayMode dm,
+    public GUIClient(InetSocketAddress server, int mode, DisplayMode dm,
         String title, FreerailsProgressMonitor pm, Player player)
         throws IOException, GeneralSecurityException {
         this(new InetConnection(server), mode, dm, title, pm, player,
@@ -115,5 +120,83 @@ public class GUIClient extends Client {
 
     public GUIRoot getGUIRoot() {
 	return guiRoot;
+    }
+
+    /**
+     * The GameLoop providing the move execution thread for the
+     * ConnectionAdapter's Move Executer
+     */
+    private GameLoop gameLoop;
+
+    public void worldInitialized(ReadOnlyWorld world, ClientMoveExecuter
+	    moveExecuter) {
+        SynchronizedEventQueue.use(world);
+
+	if (moveExecuter instanceof NonAuthoritativeMoveExecuter) {
+	    ((NonAuthoritativeMoveExecuter) moveExecuter)
+		.setModelRoot(modelRoot);
+	}
+
+        /* start a new game loop */
+	gameLoop = new GameLoop(guiRoot.getScreenHandler(),
+		moveExecuter);
+
+	/* send a command to set up server-specific resources */
+	connection.sendCommand(new ResourceBundleManager.GetResourceCommand
+		("org.railz.data.l10n.server", Locale.getDefault()));
+
+        try {
+            /* create the models */
+            assert world != null;
+
+            modelRoot.setWorld(world);
+	    ViewLists viewLists = new ViewListsImpl(modelRoot,
+		    guiRoot, progressMonitor);
+
+            if (!viewLists.validate(world)) {
+		/* most likely reason for failure is that the server's object
+		 * set is different to what the client is expecting */
+                modelRoot.getUserMessageLogger().println
+		    (Resources.get("Your client is not compatible with " +
+				   "the server."));
+            }
+
+            /*
+             * wait until the player the client represents has been created in
+             * the model (this may not occur until we process the move creating
+             * the player from the server
+             */
+            while (!world.boundsContain (KEY.PLAYERS,
+		       	((PlayerPrincipal) modelRoot.getPlayerPrincipal())
+			.getId(), modelRoot.getPlayerPrincipal())) {
+                moveExecuter.update();
+            }
+
+            modelRoot.setWorld(connectionAdapter, viewLists);
+
+            /* start the game loop */
+            String threadName = "Railz client: " + getTitle();
+            Thread t = new Thread(gameLoop, threadName);
+            t.start();
+        } catch (IOException e) {
+	    String s = Resources.get
+		("There was a problem reading in the graphics "
+			       + "data");
+            modelRoot.getUserMessageLogger().println
+		(s);
+	    Logger.getLogger("global").log(Level.WARNING, s, e);
+        }
+    }
+
+    public void worldDisconnected() {
+        if (gameLoop != null) {
+            gameLoop.stop();
+	    SynchronizedEventQueue.stopUse();
+	    gameLoop = null;
+        }
+    }
+
+    public void setPlayerPrincipal(FreerailsPrincipal p) {
+	modelRoot.setPlayerPrincipal(p);
     }
 }

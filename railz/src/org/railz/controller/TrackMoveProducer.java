@@ -17,6 +17,7 @@
 package org.railz.controller;
 
 import java.awt.Point;
+import java.util.logging.*;
 
 import org.railz.move.ChangeTrackPieceCompositeMove;
 import org.railz.move.Move;
@@ -67,8 +68,12 @@ final public class TrackMoveProducer {
 		return upgradeTrack(point, trackRule);
 	    case BUILD_TRACK:
 		try {
+		    Logger.getLogger("global").log(Level.INFO, "generating " +
+			    "build track");
 		    move = ChangeTrackPieceCompositeMove.generateBuildTrackMove
 			(from, trackVector, trackRule, w, principal);
+		    Logger.getLogger("global").log(Level.INFO, "generated " +
+			    "build track");
 		} catch (IllegalArgumentException e) {
 		    return MoveStatus.moveFailed("Track already exists");
 		}
@@ -84,9 +89,18 @@ final public class TrackMoveProducer {
 			trackBuilderMode);
         }
 
+	Logger.getLogger("global").log(Level.INFO, "adding transactions " +
+		"to build track move");
         Move moveAndTransaction = transactionsGenerator.addTransactions(move);
+	Logger.getLogger("global").log(Level.INFO, "trying " +
+		"build track move" + move.toString());
         MoveStatus ms = moveTester.tryDoMove(moveAndTransaction);
+
+	Logger.getLogger("global").log(Level.INFO, "processing " +
+		"build track move");
         moveTester.processMove(moveAndTransaction);
+	Logger.getLogger("global").log(Level.INFO, "processed " +
+		"build track move");
         return ms;
     }
 

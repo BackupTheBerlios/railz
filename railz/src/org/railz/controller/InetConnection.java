@@ -17,11 +17,7 @@
 package org.railz.controller;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.net.*;
 import org.railz.move.Move;
 import org.railz.move.TimeTickMove;
 import org.railz.world.common.FreerailsSerializable;
@@ -40,7 +36,7 @@ public class InetConnection implements ConnectionToServer {
      */
     public static final int SERVER_PORT = 55000;
     private ConnectionState state = ConnectionState.CLOSED;
-    private InetAddress serverAddress;
+    private InetSocketAddress serverAddress;
     private ServerSocket serverSocket;
     Socket socket;
     World world;
@@ -50,6 +46,10 @@ public class InetConnection implements ConnectionToServer {
 
     public InetAddress getRemoteAddress() {
         return socket.getInetAddress();
+    }
+
+    public int getRemotePort() {
+	return socket.getPort();
     }
 
     public void addConnectionListener(ConnectionListener l) {
@@ -103,7 +103,7 @@ public class InetConnection implements ConnectionToServer {
     /**
      * called by the client to create a new connection
      */
-    public InetConnection(InetAddress serverAddress) {
+    public InetConnection(InetSocketAddress serverAddress) {
         this.serverAddress = serverAddress;
 	world = null;
         dispatcher = new Dispatcher(this);
@@ -216,7 +216,8 @@ public class InetConnection implements ConnectionToServer {
      * connect to the remote peer
      */
     public void open() throws IOException {
-        socket = new Socket(serverAddress, SERVER_PORT);
+        socket = new Socket(serverAddress.getAddress(),
+		serverAddress.getPort());
         sender = new Sender(this.socket.getOutputStream());
         dispatcher.open();
         System.out.println("Successfully opened connection to remote peer");

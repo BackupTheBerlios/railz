@@ -26,6 +26,7 @@ package org.railz.launcher;
 import java.awt.*;
 import java.beans.*;
 import javax.swing.*;
+import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.event.*;
 import java.io.File;
 
@@ -47,6 +48,9 @@ class MapSelectionPanel extends javax.swing.JPanel {
 
     private JPanel scenarioControlPanel;
     private Scenario scenario;
+
+    private SpinnerModel aiPlayersModel = new SpinnerNumberModel
+		(0, 0, 6, 1);
 
     private ListSelectionListener scenarioListener = new
 	ListSelectionListener() {
@@ -93,6 +97,10 @@ class MapSelectionPanel extends javax.swing.JPanel {
 	}
     }
     
+    int getNumAIPlayers() {
+	return ((Number) aiPlayersModel.getValue()).intValue();
+    }
+
     private void validateSettings() {
 	boolean isValid = true;
 	String infoText = "";
@@ -149,6 +157,12 @@ class MapSelectionPanel extends javax.swing.JPanel {
 	scenarioJList.addListSelectionListener(scenarioListener);
 	scenarioJList.setModel(ScenarioManager.getScenarioListModel());
 	scenarioJList.setSelectedIndex(0);
+
+	/* initialise the number of AI Players spinner */
+	aiPlayersJSpinner.setModel(aiPlayersModel);
+	JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) 
+	    aiPlayersJSpinner.getEditor();
+	editor.getTextField().setColumns(2);
     }
     
     /** This method is called from within the constructor to
@@ -161,10 +175,14 @@ class MapSelectionPanel extends javax.swing.JPanel {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel2 = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        aiPlayersJSpinner = new javax.swing.JSpinner();
         jPanel3 = new javax.swing.JPanel();
         loadMapButton = new javax.swing.JRadioButton();
         fileNameJTextField = new javax.swing.JTextField();
         chooseFileNameJButton = new javax.swing.JButton();
+        jPanel7 = new javax.swing.JPanel();
         newMapButton = new javax.swing.JRadioButton();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -184,11 +202,22 @@ class MapSelectionPanel extends javax.swing.JPanel {
 
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.Y_AXIS));
 
+        jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        jPanel6.setAlignmentX(0.0F);
+        jLabel1.setText(org.railz.util.Resources.get("Number of Computer Players"));
+        jPanel6.add(jLabel1);
+
+        aiPlayersJSpinner.setName("aiPlayersJSpinner");
+        jPanel6.add(aiPlayersJSpinner);
+
+        jPanel2.add(jPanel6);
+
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 4));
 
         jPanel3.setAlignmentX(0.0F);
-        loadMapButton.setText(org.railz.util.Resources.get("Load a saved game"));
         buttonGroup1.add(loadMapButton);
+        loadMapButton.setText(org.railz.util.Resources.get("Load a saved game"));
         loadMapButton.setMargin(new java.awt.Insets(2, 0, 2, 2));
         loadMapButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -218,11 +247,13 @@ class MapSelectionPanel extends javax.swing.JPanel {
 
         jPanel3.add(chooseFileNameJButton);
 
+        jPanel3.add(jPanel7);
+
         jPanel2.add(jPanel3);
 
+        buttonGroup1.add(newMapButton);
         newMapButton.setSelected(true);
         newMapButton.setText(org.railz.util.Resources.get("Start a new map"));
-        buttonGroup1.add(newMapButton);
         newMapButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         newMapButton.setMargin(new java.awt.Insets(2, 4, 2, 2));
         newMapButton.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -327,15 +358,19 @@ class MapSelectionPanel extends javax.swing.JPanel {
     private JTextArea scenarioDescription;
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSpinner aiPlayersJSpinner;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton chooseFileNameJButton;
     private javax.swing.JTextField fileNameJTextField;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JList jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JRadioButton loadMapButton;

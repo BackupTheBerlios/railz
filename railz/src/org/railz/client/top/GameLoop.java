@@ -17,6 +17,7 @@
 package org.railz.client.top;
 
 import java.awt.Toolkit;
+import java.util.logging.*;
 import org.railz.client.common.ScreenHandler;
 import org.railz.client.common.SynchronizedEventQueue;
 import org.railz.util.GameModel;
@@ -60,13 +61,14 @@ final public class GameLoop implements Runnable {
 
             gameNotDone = false;
 
-            if (Thread.holdsLock(SynchronizedEventQueue.MUTEX)) {
+	    Object mutex = model.getMutex();
+            if (Thread.holdsLock(mutex)) {
                 /*
                  * we might be executing in the event queue so give up the
                  * mutex temporarily to allow the loop to exit
                  */
                 try {
-                    SynchronizedEventQueue.MUTEX.wait();
+                    mutex.wait();
                 } catch (InterruptedException e) {
                     assert false;
                 }
@@ -107,15 +109,27 @@ final public class GameLoop implements Runnable {
                 Toolkit.getDefaultToolkit().sync();
 
 		frameStartTime = System.currentTimeMillis();
-                synchronized (SynchronizedEventQueue.MUTEX) {
+		// don't allow input events to be processed
+		// while we are updating our copy of the game world
+		Object mutex = model.getMutex();
+                synchronized (mutex) {
                     if (!gameNotDone) {
-                        SynchronizedEventQueue.MUTEX.notify();
+			// if there is a thread waiting for us to finish, wake
+			// it up
+                        mutex.notifyAll();
 
                         break;
                     }
 
                     if (model != null) {
-                        model.update();
+			try {
+			    // update the game world with any moves we have
+			    // received
+			    model.update();
+			} catch (Exception e) {
+			    Logger.getLogger("global").log
+				(Level.SEVERE, "Caught exception:", e);
+			}
                     }
                 }
 

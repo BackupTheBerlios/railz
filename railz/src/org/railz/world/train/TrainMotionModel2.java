@@ -141,8 +141,7 @@ public final class TrainMotionModel2 implements FreerailsSerializable {
     private int distanceToDestination(GameTime t) {
 	assert pathToDestination != null;
 	if (t.getTime() < t0) {
-	    /* time is going backwards ! */
-	    throw new IllegalArgumentException();
+	    t = new GameTime(t0);
 	}
 
 	final PathLength pl = new PathLength();

@@ -15,7 +15,7 @@
  */
 package org.railz.world.common;
 
-public final class PathLength implements FreerailsSerializable {
+public final class PathLength implements FreerailsSerializable, Comparable {
     public int straightLength;
     public int diagLength;
 
@@ -81,6 +81,33 @@ public final class PathLength implements FreerailsSerializable {
 
     public String toString() {
 	return "PathLength(s = " + straightLength + ", d = " + diagLength + ")";
+    }
+
+    public int compareTo(Object o) {
+	if (!(o instanceof PathLength))
+	    throw new ClassCastException();
+
+	PathLength pl = (PathLength) o;
+
+	if (getLength() < pl.getLength())
+	    return -1;
+	if (getLength() > pl.getLength())
+	    return 1;
+	return 0;
+    }
+
+    public boolean equals(Object o) {
+	if (!(o instanceof PathLength))
+	    return false;
+
+	PathLength pl = (PathLength) o;
+
+	return (straightLength == pl.straightLength) && 
+	    (diagLength == pl.diagLength);
+    }
+
+    public int hashCode() {
+	return straightLength ^ diagLength;
     }
 }
 

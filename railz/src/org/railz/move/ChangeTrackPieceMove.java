@@ -149,7 +149,6 @@ final public class ChangeTrackPieceMove implements TrackMove, MapUpdateMove {
             return moveStatus;
         } else {
             move(w, this.trackPieceBefore, this.trackPieceAfter, p);
-
             return moveStatus;
         }
     }

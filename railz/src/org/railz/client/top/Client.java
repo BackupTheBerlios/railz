@@ -30,6 +30,7 @@ public abstract class Client {
     private ConnectionAdapter receiver;
 
     protected Client(Player p) {
+	moveChainFork = new MoveChainFork();
     }
 
     public ConnectionAdapter getReceiver() {

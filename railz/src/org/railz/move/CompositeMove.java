@@ -22,6 +22,8 @@
 package org.railz.move;
 
 import java.util.ArrayList;
+import java.util.logging.*;
+
 import org.railz.world.top.World;
 import org.railz.world.player.FreerailsPrincipal;
 import org.railz.world.player.Player;
@@ -36,6 +38,8 @@ import org.railz.world.player.Player;
  *  @author Luke
  */
 public class CompositeMove implements Move {
+    private static final Logger logger = Logger.getLogger("global");
+
     private Move[] moves;
 
     /**
@@ -106,6 +110,8 @@ public class CompositeMove implements Move {
         MoveStatus ms = MoveStatus.MOVE_OK;
 
         for (int i = 0; i < moves.length; i++) {
+	    logger.log(Level.INFO, "doing move " + i + " of " + moves.length +
+		    ":" + moves[i].toString());
             ms = moves[i].doMove(w, p);
 
             if (!ms.ok) {
@@ -177,7 +183,7 @@ public class CompositeMove implements Move {
     }
 
     public String toString() {
-        String s = "";
+        String s = this.getClass().getName() + ":-";
 
         for (int i = 0; i < moves.length; i++) {
             s += moves[i].toString() + ((i > 0) ? ", " : "");

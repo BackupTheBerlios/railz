@@ -158,8 +158,8 @@ public class LocalConnection implements ConnectionToServer {
 
         assert peer.world != null;
 
-        /* create a copy of the world */
-	return (World)defensiveCopy(peer.world);
+        /* return the same copy of the world */
+	return peer.world;
     }
 
     public void open() {
