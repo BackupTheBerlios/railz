@@ -22,12 +22,35 @@ import jfreerails.world.train.TransportCategory;
 
 /** This class represents a type of cargo */
 final public class CargoType implements FreerailsSerializable {
-    private final int unitWeight;
     private final String name;
     private final TransportCategory category;
+    /** Base value of 1 unit of cargo */
+    private final long baseValue;
+    /** Time in Ticks over which the value of cargo depreciates by 50% */
+    private final int halfLife;
+    /** Time in Ticks after which a CargoBatch of this cargo type will expire */
+    private final int expiryTime;
 
-    public int getUnitWeight() {
-        return unitWeight;
+    public int getExpiryTime() {
+	return expiryTime;
+    }
+
+    /**
+     * @param elapsedTime the elapsed time in TimeTicks since the cargo was
+     * made.
+     * @return the unit value of the cargo adjusted for the specified amount
+     * of elapsed time.
+     */
+    public long getAgeAdjustedValue(int elapsedTime) {
+	return (long) (baseValue * Math.pow(2, -((double) elapsedTime /
+			halfLife)));
+    }
+
+    /**
+     * @return the value of a single unit of the cargo type
+     */
+    public long getBaseValue() {
+	return baseValue;
     }
 
     public String getName() {
@@ -39,15 +62,19 @@ final public class CargoType implements FreerailsSerializable {
         return this.name.replace('_', ' ');
     }
 
-    public CargoType(int weight, String name, TransportCategory category) {
-        this.unitWeight = weight;
+    public CargoType(String name, TransportCategory category, long
+	    baseValue, int halfLife, int expiryTime) {
         this.category = category;
         this.name = name;
+	this.baseValue = baseValue;
+	this.halfLife = halfLife;
+	this.expiryTime = expiryTime;
     }
 
     public String toString() {
-       return "CargoType: weight=" + unitWeight + ", category=" + category +
-       ", name=" + name;
+       return "CargoType: category=" + category +
+	   ", name=" + name + ", halfLife = " + halfLife + ", baseValue = " +
+	   baseValue;
     }
 
     public TransportCategory getCategory() {

@@ -88,4 +88,8 @@ public abstract class Transaction implements FreerailsSerializable {
 	return time.hashCode() ^ (new Long(value)).hashCode() ^
 	    getCategory() ^ getSubcategory();
     }
+
+    public String toString() {
+	return "Transaction " + value;
+    }
 }

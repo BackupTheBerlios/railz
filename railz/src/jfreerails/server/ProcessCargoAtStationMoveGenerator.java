@@ -26,8 +26,7 @@ import java.util.Map.Entry;
 
 import jfreerails.move.AddTransactionMove;
 import jfreerails.world.accounts.DeliverCargoReceipt;
-import jfreerails.world.cargo.CargoBatch;
-import jfreerails.world.cargo.CargoBundle;
+import jfreerails.world.cargo.*;
 import jfreerails.world.common.GameTime;
 import jfreerails.world.station.StationModel;
 import jfreerails.world.top.KEY;
@@ -55,15 +54,21 @@ public class ProcessCargoAtStationMoveGenerator {
         int amountOfCargo = 0;
         double amount = 0;
 
+	GameTime now = (GameTime) w.get(ITEM.TIME, tp);
         while (batches.hasNext()) {
             CargoBatch batch = (CargoBatch)((Entry) batches.next()).getKey();
 	    int dx = (batch.getSourceX() - thisStation.x);
 	    int dy = (batch.getSourceY() - thisStation.y);
             double dist = Math.sqrt(dx*dx + dy*dy);
-            amount += cargoBundle.getAmount(batch) * Math.log(dist) * 100;
+	    int elapsedTime = now.getTime() - (int) batch.getTimeCreated();
+	    CargoType ct = (CargoType) w.get(KEY.CARGO_TYPES,
+		    batch.getCargoType(), Player.AUTHORITATIVE);
+	    System.out.println("age adjusted value (" + elapsedTime + ") = " +
+		    ct.getAgeAdjustedValue(elapsedTime));
+            amount += cargoBundle.getAmount(batch) * Math.log(dist) *
+		ct.getAgeAdjustedValue(elapsedTime);
         }
 	System.out.println("amount for cargo is " + amount);
-	GameTime now = (GameTime) w.get(ITEM.TIME, tp);
 
         DeliverCargoReceipt receipt = new DeliverCargoReceipt(now, (long)
 		amount, cargoBundle);

@@ -143,6 +143,9 @@ final public class TrackMoveProducer {
 
     private MoveStatus upgradeTrack(Point point, int trackRule) {
         TrackTile before = w.getTile(point.x, point.y).getTrackTile();
+	if (before == null)
+	    return MoveStatus.moveFailed("Can't upgrade non-existent track");
+
 	TrackTile after = TrackTile.createTrackTile(w,
 		before.getTrackConfiguration(), trackRule);
 	if (before.equals(after))

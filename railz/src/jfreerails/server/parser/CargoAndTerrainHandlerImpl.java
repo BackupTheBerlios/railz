@@ -137,11 +137,14 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
     public void handle_Cargo(final Attributes meta) throws SAXException {
         String cargoID = meta.getValue("id");
         String cargoCategory = meta.getValue("Category");
-        int unitWeight = Integer.parseInt(meta.getValue("unitWeight"));
+	long baseValue = Long.parseLong(meta.getValue("baseValue"));
+	int halfLife = Integer.parseInt(meta.getValue("halfLife"));
+	int expiryTime = Integer.parseInt(meta.getValue("expiryTime"));
 
 	cargoCategory = cargoCategory.replace('_', ' ');
-	CargoType cargoType = new CargoType(unitWeight, cargoID,
-		TransportCategory.parseString(cargoCategory));
+	CargoType cargoType = new CargoType(cargoID,
+		TransportCategory.parseString(cargoCategory), baseValue,
+		halfLife, expiryTime);
 
         int cargoNumber = world.size(KEY.CARGO_TYPES);
         cargoName2cargoTypeNumber.put(cargoID, new Integer(cargoNumber));

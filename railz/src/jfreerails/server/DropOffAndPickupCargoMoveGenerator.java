@@ -115,6 +115,7 @@ class DropOffAndPickupCargoMoveGenerator {
 	       	", stationBefore = " + stationBefore + ", trainAfter = " + 
 		trainAfter + ", trainBefore = " + trainBefore);
 
+	System.out.println("payment = " + payment);
 	moveReceiver.processMove(TransferCargoAtStationMove.generateMove
 		(changeAtStation, changeOnTrain, payment));
     }

@@ -1,18 +1,30 @@
 <!DOCTYPE Types SYSTEM "cargo_and_terrain.dtd">
 <Types>
    <Cargo_Types>
-      <Cargo id="Mail" Category="Mail" unitWeight="1" />
-      <Cargo id="Passengers" Category="Passengers" unitWeight="2" />
-      <Cargo id="Food" Category="Fast_Freight" unitWeight="2" />
-      <Cargo id="Livestock" Category="Fast_Freight" unitWeight="3" />
-      <Cargo id="Mfg._Goods" Category="Fast_Freight" unitWeight="3" />
-      <Cargo id="Grain" Category="Slow_Freight" unitWeight="5" />
-      <Cargo id="Coffee" Category="Slow_Freight" unitWeight="5" />
-      <Cargo id="Export_Goods" Category="Slow_Freight" unitWeight="5" />
-      <Cargo id="Petroleum" Category="Bulk_Freight" unitWeight="8" />
-      <Cargo id="Oil" Category="Bulk_Freight" unitWeight="8" />
-      <Cargo id="Wood" Category="Bulk_Freight" unitWeight="8" />
-      <Cargo id="Sugar" Category="Bulk_Freight" unitWeight="8" />
+      <Cargo id="Mail" Category="Mail" baseValue="50" halfLife="900"
+      expiryTime="1400" />
+      <Cargo id="Passengers" Category="Passengers" baseValue="40"
+      halfLife="900" expiryTime="1400" />
+      <Cargo id="Food" Category="Fast_Freight" baseValue="30" halfLife="1500"
+      expiryTime="2000"/>
+      <Cargo id="Livestock" Category="Fast_Freight" baseValue="30"
+      halfLife="1500" expiryTime="2000" />
+      <Cargo id="Mfg._Goods" Category="Fast_Freight" baseValue="30"
+      halfLife="1500" expiryTime="2000" />
+      <Cargo id="Grain" Category="Slow_Freight" baseValue="20" halfLife="2000"
+      expiryTime="3000" />
+      <Cargo id="Coffee" Category="Slow_Freight" baseValue="25"
+      halfLife="2000" expiryTime="3000" />
+      <Cargo id="Export_Goods" Category="Slow_Freight" baseValue="35"
+      halfLife="1500" expiryTime="2000" />
+      <Cargo id="Petroleum" Category="Bulk_Freight" baseValue="30"
+      halfLife="1500" expiryTime="2500" />
+      <Cargo id="Oil" Category="Bulk_Freight" baseValue="20" halfLife="1800"
+      expiryTime="3000" />
+      <Cargo id="Wood" Category="Bulk_Freight" baseValue="15" halfLife="1800"
+      expiryTime="3000" />
+      <Cargo id="Sugar" Category="Bulk_Freight" baseValue="20" halfLife="1800"
+      expiryTime="3000" />
    </Cargo_Types>
    <Terrain_Types>
 <!-- Don't include slums for now, LL
@@ -57,8 +69,8 @@
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
 	</NeighbouringTerrainTypes>
-         <Produces Cargo="Mail" Rate="40" />
-         <Produces Cargo="Passengers" Rate="80" />
+         <Produces Cargo="Mail" Rate="250" />
+         <Produces Cargo="Passengers" Rate="500" />
          <Consumes Cargo="Mail" Prerequisite="2" />
 	 <Consumes Cargo="Passengers" Prerequisite="2" />
          <Consumes Cargo="Mfg._Goods" Prerequisite="2" />
@@ -77,8 +89,8 @@
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
 	</NeighbouringTerrainTypes>
-         <Produces Cargo="Mail" Rate="10" />
-         <Produces Cargo="Passengers" Rate="40" />
+         <Produces Cargo="Mail" Rate="120" />
+         <Produces Cargo="Passengers" Rate="250" />
          <Consumes Cargo="Mfg._Goods" Prerequisite="4" />
          <Consumes Cargo="Mail" Prerequisite="4" />
          <Consumes Cargo="Passengers" Prerequisite="4" />
@@ -114,9 +126,9 @@
 	<NeighbouringTerrainTypes>
 	    <TerrainType terrainType="Ocean" />
 	</NeighbouringTerrainTypes>
-         <Produces Cargo="Mail" Rate="40" />
-         <Produces Cargo="Passengers" Rate="40" />
-         <Produces Cargo="Mfg._Goods" Rate="160" />
+         <Produces Cargo="Mail" Rate="120" />
+         <Produces Cargo="Passengers" Rate="250" />
+         <Produces Cargo="Mfg._Goods" Rate="500" />
          <Converts input="Grain" output="Food" />
          <Converts input="Export_Goods" output="Export_Goods" />
          <Consumes Cargo="Grain" />
@@ -167,7 +179,7 @@
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
 	</NeighbouringTerrainTypes>
-         <Produces Cargo="Livestock" Rate="160" />
+         <Produces Cargo="Livestock" Rate="500" />
       </Building_Type>
       <Building_Type id="Farm" baseValue="3000" category="Resource"
 	maintenance="0">
@@ -182,7 +194,7 @@
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
 	</NeighbouringTerrainTypes>
-	<Produces Cargo="Grain" Rate="100" />
+	<Produces Cargo="Grain" Rate="500" />
 	</Building_Type>
       <Building_Type id="Grain_Elevator" baseValue="3000" category="Resource"
       maintenance="0">
@@ -197,7 +209,7 @@
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
 	</NeighbouringTerrainTypes>
-         <Produces Cargo="Grain" Rate="160" />
+         <Produces Cargo="Grain" Rate="500" />
       </Building_Type>
       <Building_Type id="Oil_Well" baseValue="3000" category="Resource"
       maintenance="0">
@@ -212,7 +224,7 @@
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
 	</NeighbouringTerrainTypes>
-         <Produces Cargo="Oil" Rate="160" />
+         <Produces Cargo="Oil" Rate="500" />
       </Building_Type>
       <Building_Type id="Lumber_Mill" baseValue="3000" category="Resource"
       maintenance="0">
@@ -227,7 +239,7 @@
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
 	</NeighbouringTerrainTypes>
-         <Produces Cargo="Wood" Rate="160" />
+         <Produces Cargo="Wood" Rate="500" />
       </Building_Type>
       <Building_Type id="Sugar_Plant." baseValue="3000" category="Resource"
       maintenance="0">
@@ -242,7 +254,7 @@
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
 	</NeighbouringTerrainTypes>
-         <Produces Cargo="Sugar" Rate="160" />
+         <Produces Cargo="Sugar" Rate="500" />
       </Building_Type>
       <!-- Ignore landing for now since gfx is just a blue square ands I don't
       know what it is...

@@ -31,13 +31,12 @@ import jfreerails.move.Move;
 import jfreerails.world.cargo.CargoBatch;
 import jfreerails.world.cargo.CargoBundle;
 import jfreerails.world.cargo.CargoType;
+import jfreerails.world.common.*;
 import jfreerails.world.player.FreerailsPrincipal;
 import jfreerails.world.player.Player;
 import jfreerails.world.station.StationModel;
 import jfreerails.world.station.SupplyAtStation;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.NonNullElements;
-import jfreerails.world.top.World;
+import jfreerails.world.top.*;
 
 
 /**
@@ -52,6 +51,25 @@ public class CargoAtStationsGenerator implements FreerailsServerSerializable {
 
     public CargoAtStationsGenerator(MoveReceiver moveExecuter) {
         moveReceiver = moveExecuter;
+    }
+
+    /**
+     * Remove all cargo from the bundle older than the expiry time
+     * @return a new CargoBundle without the expired cargo
+     */
+    private CargoBundle expireOldCargo(CargoBundle cb, ReadOnlyWorld w) {
+	CargoBundle newCb = cb.getCopy();
+	Iterator i = newCb.cargoBatchIterator();
+	int now = ((GameTime) w.get(ITEM.TIME,
+		    Player.AUTHORITATIVE)).getTime();
+	while (i.hasNext()) {
+	    CargoBatch batch = (CargoBatch) ((Entry) i.next()).getKey();
+	    CargoType ct = (CargoType) w.get(KEY.CARGO_TYPES,
+		    batch.getCargoType(), Player.AUTHORITATIVE);
+	    if (now - batch.getTimeCreated() > ct.getExpiryTime())
+		i.remove();
+	}
+	return newCb;
     }
 
     /**
@@ -73,31 +91,19 @@ public class CargoAtStationsGenerator implements FreerailsServerSerializable {
 		CargoBundle cargoBundle = (CargoBundle)w.get(KEY.CARGO_BUNDLES,
 			station.getCargoBundleNumber());
 		CargoBundle before = cargoBundle.getCopy();
-		CargoBundle after = cargoBundle.getCopy();
+		CargoBundle after = expireOldCargo(cargoBundle, w);
 		int stationNumber = nonNullStations.getIndex();
 
-		/* Let the cargo have a half life of one year, so half the
-		 * existing cargo wastes away.*/
-		Iterator it = after.cargoBatchIterator();
-
-		while (it.hasNext()) {
-		    Entry entry = (Entry) it.next();
-		    CargoBatch cb = (CargoBatch)entry.getKey();
-		    int amount = after.getAmount(cb);
-
-		    if (amount > 0) {
-			entry.setValue(new Integer((int) ((1.0 - Math.pow(0.5,
-						1.0 / 12)) * amount)));
-		    }
-		}
-
+		GameTime gt = (GameTime) w.get(ITEM.TIME,
+			Player.AUTHORITATIVE);
+		int now = gt.getTime();
 		for (int i = 0; i < w.size(KEY.CARGO_TYPES); i++) {
 		    int amountSupplied = supply.getSupply(i);
 		    CargoType cargoType = (CargoType) w.get(KEY.CARGO_TYPES, i);
 
 		    if (amountSupplied > 0) {
 			CargoBatch cb = new CargoBatch(i, station.x,
-				station.y, 0, stationNumber);
+				station.y, now, stationNumber);
 			int amountAlready = after.getAmount(cb);
 			after.setAmount(cb, (amountSupplied / 12) + amountAlready);
 		    }

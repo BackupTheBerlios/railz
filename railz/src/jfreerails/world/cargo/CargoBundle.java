@@ -74,7 +74,7 @@ public interface CargoBundle extends FreerailsSerializable {
     boolean contains(CargoBatch cb);
 
     /**
-     * @return an iterator over a set of Map.Entry. The keys are CargoBundle
+     * @return an iterator over a set of Map.Entry. The keys are CargoBatch
      * instances, the values are Integer amounts
      */
     Iterator cargoBatchIterator();
