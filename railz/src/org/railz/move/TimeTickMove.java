@@ -38,7 +38,7 @@ public class TimeTickMove implements Move {
 
     public static TimeTickMove getMove(ReadOnlyWorld w) {
         TimeTickMove timeTickMove = new TimeTickMove();
-        timeTickMove.oldTime = (GameTime)w.get(ITEM.TIME);
+        timeTickMove.oldTime = (GameTime)w.get(ITEM.TIME, Player.AUTHORITATIVE);
         timeTickMove.newTime = new GameTime(timeTickMove.oldTime.getTime() + 1);
 
         return timeTickMove;
@@ -49,19 +49,22 @@ public class TimeTickMove implements Move {
     }
 
     public MoveStatus tryDoMove(World w, FreerailsPrincipal p) {
-        if (((GameTime)w.get(ITEM.TIME)).equals(oldTime)) {
+	if (((GameTime)w.get(ITEM.TIME,
+			Player.AUTHORITATIVE)).equals(oldTime)) {
             return MoveStatus.MOVE_OK;
         } else {
 	    logger.log(Level.FINER, "oldTime = " + oldTime.getTime() +
 		    " <=> " + "currentTime " +
-		    ((GameTime)w.get(ITEM.TIME)).getTime());
+		    ((GameTime)w.get(ITEM.TIME,
+				     Player.AUTHORITATIVE)).getTime());
 
             return MoveStatus.MOVE_FAILED;
         }
     }
 
     public MoveStatus tryUndoMove(World w, FreerailsPrincipal p) {
-        if (((GameTime)w.get(ITEM.TIME)).equals(newTime)) {
+        if (((GameTime)w.get(ITEM.TIME, Player.AUTHORITATIVE))
+		.equals(newTime)) {
             return MoveStatus.MOVE_OK;
         } else {
             return MoveStatus.MOVE_FAILED;
@@ -70,7 +73,7 @@ public class TimeTickMove implements Move {
 
     public MoveStatus doMove(World w, FreerailsPrincipal p) {
         if (tryDoMove(w, p).equals(MoveStatus.MOVE_OK)) {
-            w.set(ITEM.TIME, newTime);
+            w.set(ITEM.TIME, newTime, Player.AUTHORITATIVE);
 
             return MoveStatus.MOVE_OK;
         } else {
@@ -80,7 +83,7 @@ public class TimeTickMove implements Move {
 
     public MoveStatus undoMove(World w, FreerailsPrincipal p) {
         if (tryUndoMove(w, p).equals(MoveStatus.MOVE_OK)) {
-            w.set(ITEM.TIME, oldTime);
+            w.set(ITEM.TIME, oldTime, Player.AUTHORITATIVE);
 
             return MoveStatus.MOVE_OK;
         } else {

@@ -22,6 +22,7 @@
 package org.railz.move;
 
 import org.railz.world.cargo.CargoBundle;
+import org.railz.world.player.*;
 import org.railz.world.top.KEY;
 
 
@@ -34,6 +35,7 @@ import org.railz.world.top.KEY;
 public class ChangeCargoBundleMove extends ChangeItemInListMove {
     public ChangeCargoBundleMove(CargoBundle before, CargoBundle after,
         int bundleNumber) {
-        super(KEY.CARGO_BUNDLES, bundleNumber, before, after);
+	super(KEY.CARGO_BUNDLES, bundleNumber, before, after,
+		Player.AUTHORITATIVE);
     }
 }

@@ -205,7 +205,8 @@ class DropOffAndPickupCargoMoveGenerator {
 		sm.getCargoBundleNumber(), Player.AUTHORITATIVE);
 	
 	int[] spaceLeft = getSpaceAvailableOnTrain(tm);
-	for (int cargoType = 0; cargoType < w.size(KEY.CARGO_TYPES);
+	for (int cargoType = 0; cargoType < w.size(KEY.CARGO_TYPES,
+		    Player.AUTHORITATIVE);
 		cargoType++) {
 	    if (stationBundle.getAmount(cargoType) < spaceLeft[cargoType])
 		return false;
@@ -240,7 +241,8 @@ class DropOffAndPickupCargoMoveGenerator {
 
 	//Transfer cargo from the station to the train subject to the space
 	//available on the train.
-        for (int cargoType = 0; cargoType < w.size(KEY.CARGO_TYPES);
+	for (int cargoType = 0; cargoType < w.size(KEY.CARGO_TYPES,
+		    Player.AUTHORITATIVE);
                 cargoType++) {
             int amount2transfer = Math.min(spaceAvailable[cargoType],
                     stationAfter.getAmount(cargoType));
@@ -273,7 +275,8 @@ class DropOffAndPickupCargoMoveGenerator {
      */
     private int[] getSpaceAvailableOnTrain(TrainModel train) {
         //This array will store the amount of space available on the train for each cargo type. 
-        int[] spaceAvailable = new int[w.size(KEY.CARGO_TYPES)];
+	int[] spaceAvailable = new int[w.size(KEY.CARGO_TYPES,
+		Player.AUTHORITATIVE)];
 
         //First calculate the train's total capacity.
         for (int j = 0; j < train.getNumberOfWagons(); j++) {
@@ -287,7 +290,8 @@ class DropOffAndPickupCargoMoveGenerator {
 	CargoBundle cb = (CargoBundle) w.get(KEY.CARGO_BUNDLES,
 		train.getCargoBundleNumber(), Player.AUTHORITATIVE);
         //Second, subtract the space taken up by cargo that the train is already carrying.
-        for (int cargoType = 0; cargoType < w.size(KEY.CARGO_TYPES);
+        for (int cargoType = 0; cargoType < w.size(KEY.CARGO_TYPES,
+		    Player.AUTHORITATIVE);
                 cargoType++) {
             spaceAvailable[cargoType] -= cb.getAmount(cargoType);
         }

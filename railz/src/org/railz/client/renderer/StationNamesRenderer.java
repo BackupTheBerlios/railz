@@ -74,7 +74,8 @@ public class StationNamesRenderer implements Painter {
         TextLayout layout;
 
         //draw station names onto map
-	NonNullElements i = new NonNullElements(KEY.PLAYERS, w);
+	NonNullElements i = new NonNullElements(KEY.PLAYERS, w,
+		Player.AUTHORITATIVE);
 	while (i.next()) {
 	    FreerailsPrincipal p = (FreerailsPrincipal) ((Player)
 		    i.getElement()).getPrincipal();

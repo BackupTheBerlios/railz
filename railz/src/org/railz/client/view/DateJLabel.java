@@ -33,6 +33,7 @@ import org.railz.client.model.ModelRoot;
 import org.railz.client.renderer.ViewLists;
 import org.railz.world.common.GameCalendar;
 import org.railz.world.common.GameTime;
+import org.railz.world.player.*;
 import org.railz.world.top.ITEM;
 import org.railz.world.top.ReadOnlyWorld;
 
@@ -54,8 +55,10 @@ public class DateJLabel extends JLabel {
 
 	public void paint(Graphics g) {
 		if (null != w) {
-			GameTime time = (GameTime) w.get(ITEM.TIME);
-			GameCalendar gameCalendar = (GameCalendar) w.get(ITEM.CALENDAR);
+			GameTime time = (GameTime) w.get(ITEM.TIME,
+				Player.AUTHORITATIVE);
+			GameCalendar gameCalendar = (GameCalendar)
+			    w.get(ITEM.CALENDAR, Player.AUTHORITATIVE);
 			Calendar c = gameCalendar.getCalendar(time);
 				    
 			String s = dateFormat.format(c.getTime());

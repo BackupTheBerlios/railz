@@ -31,6 +31,7 @@ import org.railz.client.renderer.TrackPieceRendererList;
 import org.railz.client.renderer.ViewLists;
 import org.railz.controller.TrackMoveProducer;
 import org.railz.world.common.*;
+import org.railz.world.player.*;
 import org.railz.world.top.KEY;
 import org.railz.world.top.ReadOnlyWorld;
 import org.railz.world.track.TrackRule;
@@ -87,7 +88,7 @@ public class TrackBuildModel {
 	    putValue(ACTION_COMMAND_KEY, name);
 	    this.actionId = actionId;
             TrackRule trackRule = (TrackRule) world.get(KEY.TRACK_RULES,
-		    actionId);
+		    actionId, Player.AUTHORITATIVE);
             int ruleNumber = actionId;
             TrackPieceRenderer renderer =
 		trackPieceRendererList.getTrackPieceView(ruleNumber);
@@ -126,8 +127,10 @@ public class TrackBuildModel {
 	buildModeAdapter = new ActionAdapter(actions);    
 	/* set up track actions */
 	Vector actionsVector = new Vector();
-	for (int i = 0; i < world.size(KEY.TRACK_RULES); i++) {
-	    TrackRule trackRule = (TrackRule)world.get(KEY.TRACK_RULES, i);
+	for (int i = 0; i < world.size(KEY.TRACK_RULES, Player.AUTHORITATIVE);
+		i++) {
+	    TrackRule trackRule = (TrackRule)world.get(KEY.TRACK_RULES, i,
+		    Player.AUTHORITATIVE);
 	    actionsVector.add(new TrackRuleAction(i, trackRule.toString()));
 	}
 	trackRuleAdapter = new ActionAdapter((Action[]) actionsVector.toArray(new Action[0]));

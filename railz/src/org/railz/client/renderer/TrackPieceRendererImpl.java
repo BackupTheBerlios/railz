@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import org.railz.client.common.BinaryNumberFormatter;
 import org.railz.client.common.ImageManager;
+import org.railz.world.player.*;
 import org.railz.world.top.KEY;
 import org.railz.world.top.ReadOnlyWorld;
 import org.railz.world.track.TrackRule;
@@ -48,7 +49,8 @@ final public class TrackPieceRendererImpl implements TrackPieceRenderer {
 
     public TrackPieceRendererImpl(ReadOnlyWorld w, ImageManager imageManager,
         int typeNumber) throws IOException {
-        TrackRule trackRule = (TrackRule)w.get(KEY.TRACK_RULES, typeNumber);
+        TrackRule trackRule = (TrackRule)w.get(KEY.TRACK_RULES, typeNumber,
+		Player.AUTHORITATIVE);
         this.typeName = trackRule.toString();
 
         for (byte i = Byte.MIN_VALUE; i < Byte.MAX_VALUE; i++) {

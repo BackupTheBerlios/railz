@@ -150,7 +150,8 @@ implements MoveReceiver {
 		    wi.getIndex(), modelRoot.getPlayerPrincipal());
 	    CargoBundle cb = (CargoBundle) world.get(KEY.CARGO_BUNDLES,
 		    station.getCargoBundleNumber(), Player.AUTHORITATIVE);
-	    for (int i = 0; i < world.size(KEY.CARGO_TYPES); i++) {
+	    for (int i = 0; i < world.size(KEY.CARGO_TYPES,
+			Player.AUTHORITATIVE); i++) {
 		if (station.getSupply().getSupply(i) == 0)
 		    continue;
 
@@ -410,10 +411,12 @@ implements MoveReceiver {
 			Player.AUTHORITATIVE)).getName();
             cargoBundleIndex = station.getCargoBundleNumber();
             CargoBundle cargoWaiting = (CargoBundle) world.get
-		(KEY.CARGO_BUNDLES, station.getCargoBundleNumber());
+		(KEY.CARGO_BUNDLES, station.getCargoBundleNumber(),
+		 Player.AUTHORITATIVE);
             String title = station.getStationName()
 		+ " (" + stationTypeName + ")";
-            for (int i = 0; i < world.size(KEY.CARGO_TYPES); i++) {
+            for (int i = 0; i < world.size(KEY.CARGO_TYPES,
+			Player.AUTHORITATIVE); i++) {
                 //get the values
 		boolean isDemanded = station.getDemand().isCargoDemanded(i);
 		if (! isDemanded)

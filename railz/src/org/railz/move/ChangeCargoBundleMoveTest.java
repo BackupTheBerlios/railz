@@ -24,6 +24,7 @@ package org.railz.move;
 import org.railz.world.cargo.CargoBatch;
 import org.railz.world.cargo.CargoBundle;
 import org.railz.world.cargo.CargoBundleImpl;
+import org.railz.world.player.*;
 import org.railz.world.top.KEY;
 
 
@@ -45,6 +46,6 @@ public class ChangeCargoBundleMoveTest extends AbstractMoveTestCase {
 
         assertTryMoveFails(m);
         assertTryUndoMoveFails(m);
-        getWorld().add(KEY.CARGO_BUNDLES, before);
+        getWorld().add(KEY.CARGO_BUNDLES, before, Player.AUTHORITATIVE);
     }
 }

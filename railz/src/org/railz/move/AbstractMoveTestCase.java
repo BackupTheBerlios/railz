@@ -62,8 +62,9 @@ public abstract class AbstractMoveTestCase extends TestCase {
 
 	getWorld().add(KEY.PLAYERS, testPlayer, Player.AUTHORITATIVE);
         //		Set the time..
-        getWorld().set(ITEM.CALENDAR, new GameCalendar(12000, 1840, 30));
-        getWorld().set(ITEM.TIME, new GameTime(0));
+	getWorld().set(ITEM.CALENDAR, new GameCalendar(12000, 1840, 30),
+		Player.AUTHORITATIVE);
+        getWorld().set(ITEM.TIME, new GameTime(0), Player.AUTHORITATIVE);
 	getWorld().add(KEY.BANK_ACCOUNTS, new BankAccount(),
 		testPlayer.getPrincipal());
     }

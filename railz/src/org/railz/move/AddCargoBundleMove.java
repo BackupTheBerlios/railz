@@ -22,6 +22,7 @@
 package org.railz.move;
 
 import org.railz.world.cargo.CargoBundle;
+import org.railz.world.player.*;
 import org.railz.world.top.KEY;
 
 
@@ -33,6 +34,6 @@ import org.railz.world.top.KEY;
  */
 public class AddCargoBundleMove extends AddItemToListMove {
     public AddCargoBundleMove(int i, CargoBundle item) {
-        super(KEY.CARGO_BUNDLES, i, item);
+        super(KEY.CARGO_BUNDLES, i, item, Player.AUTHORITATIVE);
     }
 }

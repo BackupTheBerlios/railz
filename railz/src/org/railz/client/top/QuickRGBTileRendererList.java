@@ -28,6 +28,7 @@ import java.util.HashMap;
 import org.railz.client.common.ImageManager;
 import org.railz.client.renderer.TileRenderer;
 import org.railz.client.renderer.TileRendererList;
+import org.railz.world.player.*;
 import org.railz.world.terrain.TerrainType;
 import org.railz.world.top.KEY;
 import org.railz.world.top.ReadOnlyWorld;
@@ -49,12 +50,14 @@ public class QuickRGBTileRendererList implements TileRendererList {
                                                                                                      .getDefaultConfiguration();
 
     public QuickRGBTileRendererList(ReadOnlyWorld w) {
-        int numberOfTerrainTypes = w.size(KEY.TERRAIN_TYPES);
+        int numberOfTerrainTypes = w.size(KEY.TERRAIN_TYPES,
+		Player.AUTHORITATIVE);
         rgbValues = new int[numberOfTerrainTypes];
         images = new BufferedImage[numberOfTerrainTypes];
 
         for (int i = 0; i < numberOfTerrainTypes; i++) {
-            TerrainType t = (TerrainType)w.get(KEY.TERRAIN_TYPES, i);
+            TerrainType t = (TerrainType)w.get(KEY.TERRAIN_TYPES, i,
+		    Player.AUTHORITATIVE);
             rgbValues[i] = t.getRGB();
             images[i] = createImageFor(t);
             rgb2index.put(new Integer(t.getRGB()), new Integer(i));

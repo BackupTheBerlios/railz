@@ -56,11 +56,13 @@ public class ChangeProductionAtEngineShopMoveTest extends AbstractMoveTestCase {
 		testPlayer.getPrincipal());
 
 	getWorld().add(KEY.WAGON_TYPES, new WagonType("WagonType1",
-		    TransportCategory.MAIL, 10, 0, 10));
+		    TransportCategory.MAIL, 10, 0, 10), Player.AUTHORITATIVE);
 	getWorld().add(KEY.WAGON_TYPES, new WagonType("WagonType2",
-		    TransportCategory.PASSENGER, 10, 0, 10));
+		    TransportCategory.PASSENGER, 10, 0, 10),
+		Player.AUTHORITATIVE);
 	getWorld().add(KEY.WAGON_TYPES, new WagonType("WagonType3",
-		    TransportCategory.FAST_FREIGHT, 10, 0, 10));
+		    TransportCategory.FAST_FREIGHT, 10, 0, 10),
+		Player.AUTHORITATIVE);
         engineType = 0;
         wagonType = 0;
         wagons = new int[] {wagonType, wagonType};

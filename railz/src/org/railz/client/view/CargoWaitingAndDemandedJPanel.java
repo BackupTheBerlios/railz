@@ -33,6 +33,7 @@ import org.railz.client.model.ModelRoot;
 import org.railz.client.renderer.ViewLists;
 import org.railz.world.cargo.CargoBundle;
 import org.railz.world.cargo.CargoType;
+import org.railz.world.player.*;
 import org.railz.world.station.StationModel;
 import org.railz.world.top.KEY;
 import org.railz.world.top.ReadOnlyWorld;
@@ -137,17 +138,18 @@ public class CargoWaitingAndDemandedJPanel extends javax.swing.JPanel {
 		newStationID, modelRoot.getPlayerPrincipal());
         this.stationName.setText(station.getStationName());
         int cargoBundleIndex = station.getCargoBundleNumber();
-        final CargoBundle cargoWaiting =
-        (CargoBundle) world.get(
-        KEY.CARGO_BUNDLES,
-        station.getCargoBundleNumber());
+        final CargoBundle cargoWaiting = (CargoBundle) world.get
+	    (KEY.CARGO_BUNDLES, station.getCargoBundleNumber(),
+	     Player.AUTHORITATIVE);
         
         //count the number of cargo types waiting and demanded.
         final ArrayList typeWaiting = new ArrayList();
         final ArrayList quantityWaiting = new ArrayList();
         final Vector typeDemanded = new Vector();
-        for (int i = 0; i < world.size(KEY.CARGO_TYPES); i++) {
-              CargoType cargoType = (CargoType)world.get(KEY.CARGO_TYPES, i);
+	for (int i = 0; i < world.size(KEY.CARGO_TYPES, Player.AUTHORITATIVE);
+		i++) {
+              CargoType cargoType = (CargoType)world.get(KEY.CARGO_TYPES, i,
+		      Player.AUTHORITATIVE);
               int amountWaiting = cargoWaiting.getAmount(i);
               
               if(0 !=amountWaiting){

@@ -24,6 +24,7 @@ package org.railz.move;
 import org.railz.world.cargo.CargoBatch;
 import org.railz.world.cargo.CargoBundle;
 import org.railz.world.cargo.CargoBundleImpl;
+import org.railz.world.player.*;
 import org.railz.world.top.KEY;
 
 
@@ -43,7 +44,8 @@ public class AddCargoBundleMoveTest extends AbstractMoveTestCase {
 
         Move m = new AddCargoBundleMove(0, bundleA);
         assertDoMoveIsOk(m);
-        assertEquals(getWorld().size(KEY.CARGO_BUNDLES), 1);
+	assertEquals(getWorld().size(KEY.CARGO_BUNDLES, Player.AUTHORITATIVE),
+		1);
         assertUndoMoveIsOk(m);
         assertEqualsSurvivesSerialisation(m);
         assertOkButNotRepeatable(m);

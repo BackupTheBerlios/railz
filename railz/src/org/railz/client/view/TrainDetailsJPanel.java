@@ -202,7 +202,7 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements
 	    this.bundleID = train.getCargoBundleNumber();
 
 	    CargoBundle cb = (CargoBundle)w.get(KEY.CARGO_BUNDLES,
-		    train.getCargoBundleNumber());
+		    train.getCargoBundleNumber(), Player.AUTHORITATIVE);
 	    s="Train #"+trainNumber+": ";
 	    ScheduleIterator si = train.getScheduleIterator();
 	    TrainOrdersModel tom = si.getCurrentOrder(w);

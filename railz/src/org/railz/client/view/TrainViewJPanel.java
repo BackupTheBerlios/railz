@@ -111,10 +111,11 @@ public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldLi
 	    TrainModel train = (TrainModel) w.get(KEY.TRAINS, trainNumber,
 		    modelRoot.getPlayerPrincipal());
 	    CargoBundle cargoBundle = (CargoBundle) w.get(KEY.CARGO_BUNDLES,
-		    train.getCargoBundleNumber());
+		    train.getCargoBundleNumber(), Player.AUTHORITATIVE);
 
 	    //evaluate amount of each cargo on the train
-	    int cargoAmounts[] = new int [w.size(KEY.CARGO_TYPES)];
+	    int cargoAmounts[] = new int [w.size(KEY.CARGO_TYPES,
+		    Player.AUTHORITATIVE)];
 	    String cargoText = "Empty train";
 	    int totalAmount = 0;
 	    for (int i = 0; i < cargoAmounts.length; i++) {
@@ -142,7 +143,7 @@ public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldLi
 			height);
 	    for (int i = 0; i < train.getNumberOfWagons(); i++) {
 		WagonType wagonType = (WagonType) w.get(KEY.WAGON_TYPES,
-			train.getWagon(i));
+			train.getWagon(i), Player.AUTHORITATIVE);
 		int wagonCapacity = wagonType.getCapacity();
 		int x = (cargoAmounts[wagonType.getCargoType()] >
 			wagonCapacity) ? wagonCapacity :

@@ -147,7 +147,7 @@ class CargoAndTerrainHandler {
 		TransportCategory.parseString(cargoCategory), baseValue,
 		halfLife, expiryTime);
 
-        int cargoNumber = world.size(KEY.CARGO_TYPES);
+        int cargoNumber = world.size(KEY.CARGO_TYPES, Player.AUTHORITATIVE);
         cargoName2cargoTypeNumber.put(cargoID, new Integer(cargoNumber));
         world.add(KEY.CARGO_TYPES, cargoType, Player.AUTHORITATIVE);
     }

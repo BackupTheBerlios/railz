@@ -89,7 +89,7 @@ public class CargoAtStationsGenerator implements FreerailsServerSerializable {
 		    (StationModel)nonNullStations.getElement();
 		SupplyAtStation supply = station.getSupply();
 		CargoBundle cargoBundle = (CargoBundle)w.get(KEY.CARGO_BUNDLES,
-			station.getCargoBundleNumber());
+			station.getCargoBundleNumber(), Player.AUTHORITATIVE);
 		CargoBundle before = cargoBundle.getCopy();
 		CargoBundle after = expireOldCargo(cargoBundle, w);
 		int stationNumber = nonNullStations.getIndex();
@@ -97,9 +97,11 @@ public class CargoAtStationsGenerator implements FreerailsServerSerializable {
 		GameTime gt = (GameTime) w.get(ITEM.TIME,
 			Player.AUTHORITATIVE);
 		int now = gt.getTime();
-		for (int i = 0; i < w.size(KEY.CARGO_TYPES); i++) {
+		for (int i = 0; i < w.size(KEY.CARGO_TYPES,
+			    Player.AUTHORITATIVE); i++) {
 		    int amountSupplied = supply.getSupply(i);
-		    CargoType cargoType = (CargoType) w.get(KEY.CARGO_TYPES, i);
+		    CargoType cargoType = (CargoType) w.get(KEY.CARGO_TYPES, i,
+			    Player.AUTHORITATIVE);
 
 		    if (amountSupplied > 0) {
 			CargoBatch cb = new CargoBatch(i, station.x,

@@ -108,11 +108,12 @@ public class TrainViewJPanel2 extends JPanel {
      */
     public void display() {
         showingOrder = false;
-	int cargoAmounts[] = new int [w.size(KEY.CARGO_TYPES)];
+	int cargoAmounts[] = new int [w.size(KEY.CARGO_TYPES,
+		Player.AUTHORITATIVE)];
 	if (train != null) {
 	    if (showCargo) {
 		CargoBundle cargoBundle = (CargoBundle) w.get(KEY.CARGO_BUNDLES,
-			train.getCargoBundleNumber());
+			train.getCargoBundleNumber(), Player.AUTHORITATIVE);
 
 		//evaluate amount of each cargo on the train
 		String cargoText = "Empty train";
@@ -143,7 +144,7 @@ public class TrainViewJPanel2 extends JPanel {
 			height);
 	    for (int i = 0; i < train.getNumberOfWagons(); i++) {
 		WagonType wagonType = (WagonType) w.get(KEY.WAGON_TYPES,
-			train.getWagon(i));
+			train.getWagon(i), Player.AUTHORITATIVE);
 		if (showCargo) {
 		    int wagonCapacity = wagonType.getCapacity();
 		    int x = (cargoAmounts[wagonType.getCargoType()] >

@@ -33,7 +33,7 @@ import org.railz.controller.StationBuilder;
 import org.railz.controller.TrackMoveProducer;
 import org.railz.controller.UntriedMoveReceiver;
 import org.railz.move.Move;
-import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.*;
 import org.railz.world.top.KEY;
 import org.railz.world.top.ReadOnlyWorld;
 import org.railz.world.top.WorldListListener;
@@ -137,7 +137,7 @@ public final class ModelRoot {
     public void setWorld(UntriedMoveReceiver receiver,
     ViewLists vl) {
 	viewLists = vl;
-    	if(world.size(KEY.TRACK_RULES)> 0){
+    	if(world.size(KEY.TRACK_RULES, Player.AUTHORITATIVE)> 0){
 	    assert playerPrincipal != null;
 	    trackMoveProducer = new TrackMoveProducer(world, receiver,
 		    playerPrincipal);

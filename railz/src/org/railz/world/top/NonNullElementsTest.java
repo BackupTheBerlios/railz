@@ -61,7 +61,7 @@ public class NonNullElementsTest extends TestCase {
         w = new WorldImpl();
 	w.add(KEY.PLAYERS, testPlayer, Player.AUTHORITATIVE);
 	GameTime now = new GameTime(0);
-	w.set(ITEM.TIME, now);
+	w.set(ITEM.TIME, now, Player.AUTHORITATIVE);
 
         station1 = new StationModel(10, 20, "Station1", 4, 0, now);
         station2 = new StationModel(15, 16, "Station2", 4, 1, now);
@@ -95,7 +95,8 @@ public class NonNullElementsTest extends TestCase {
         assertEquals(1, wi.getRowNumber());
         assertEquals(station2, wi.getElement());
 
-        WorldIterator wi2 = new NonNullElements(KEY.TRACK_RULES, w);
+	WorldIterator wi2 = new NonNullElements(KEY.TRACK_RULES, w,
+		Player.AUTHORITATIVE);
         assertTrue(!wi2.next());
     }
 

@@ -71,33 +71,39 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
 
         //set up the cargo types.
         w.add(KEY.CARGO_TYPES, new CargoType("Mail", TransportCategory.MAIL,
-		    100, 100, 100));
+		    100, 100, 100), Player.AUTHORITATIVE);
         w.add(KEY.CARGO_TYPES, new CargoType("Passengers",
-                   TransportCategory.PASSENGER, 100, 100, 100));
+		   TransportCategory.PASSENGER, 100, 100, 100),
+		Player.AUTHORITATIVE);
         w.add(KEY.CARGO_TYPES, new CargoType("Goods",
-                   TransportCategory.FAST_FREIGHT, 100, 100, 100));
+		   TransportCategory.FAST_FREIGHT, 100, 100, 100),
+		Player.AUTHORITATIVE);
 
        w.add(KEY.WAGON_TYPES, new WagonType("Mail Wagon",
-                   TransportCategory.MAIL, 40, 0, 10));
+                   TransportCategory.MAIL, 40, 0, 10), Player.AUTHORITATIVE);
        w.add(KEY.WAGON_TYPES, new WagonType("1at class carriage",
-                   TransportCategory.PASSENGER, 40, 1, 10));
+		   TransportCategory.PASSENGER, 40, 1, 10),
+	       Player.AUTHORITATIVE);
        w.add(KEY.WAGON_TYPES, new WagonType("Goods van",
-                   TransportCategory.FAST_FREIGHT, 40, 1, 10));
+		   TransportCategory.FAST_FREIGHT, 40, 1, 10),
+	       Player.AUTHORITATIVE);
 
 
         //Set up station
         int x = 10;
         int y = 10;
         int stationCargoBundleId = w.add(KEY.CARGO_BUNDLES,
-                new CargoBundleImpl());
+                new CargoBundleImpl(), Player.AUTHORITATIVE);
         String stationName = "Station 1";
 	GameTime now = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
         StationModel station = new StationModel(x, y, stationName,
-                w.size(KEY.CARGO_TYPES), stationCargoBundleId, now);
+		w.size(KEY.CARGO_TYPES, Player.AUTHORITATIVE),
+		stationCargoBundleId, now);
         w.add(KEY.STATIONS, station, testPlayer.getPrincipal());
 
         //Set up train
-        int trainCargoBundleId = w.add(KEY.CARGO_BUNDLES, new CargoBundleImpl());
+	int trainCargoBundleId = w.add(KEY.CARGO_BUNDLES, new
+		CargoBundleImpl(), Player.AUTHORITATIVE);
 
         //3 wagons to carry cargo type 0.
         int[] wagons = new int[] {0, 0, 0};
@@ -349,7 +355,7 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
 	StationModel station = (StationModel)w.get(KEY.STATIONS, 0,
 		testPlayer.getPrincipal());
         CargoBundle cargoAtStation = (CargoBundle)w.get(KEY.CARGO_BUNDLES,
-                station.getCargoBundleNumber());
+                station.getCargoBundleNumber(), Player.AUTHORITATIVE);
 
         return cargoAtStation;
     }
@@ -359,7 +365,7 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
         TrainModel train = (TrainModel)w.get(KEY.TRAINS, 0,
 		testPlayer.getPrincipal());
         CargoBundle cargoOnTrain = (CargoBundle)w.get(KEY.CARGO_BUNDLES,
-                train.getCargoBundleNumber());
+                train.getCargoBundleNumber(), Player.AUTHORITATIVE);
 
         return cargoOnTrain;
     }

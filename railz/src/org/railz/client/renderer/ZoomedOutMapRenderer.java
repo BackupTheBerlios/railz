@@ -26,6 +26,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import org.railz.world.player.*;
 import org.railz.world.terrain.TerrainType;
 import org.railz.world.top.KEY;
 import org.railz.world.top.ReadOnlyWorld;
@@ -100,7 +101,7 @@ final public class ZoomedOutMapRenderer implements MapRenderer {
 	} else {
 	    int typeNumber = tt.getTerrainTypeNumber();
 	    TerrainType terrainType = (TerrainType)w.get(KEY.TERRAIN_TYPES,
-		    typeNumber);
+		    typeNumber, Player.AUTHORITATIVE);
 	    one2oneImage.setRGB(tile.x, tile.y, terrainType.getRGB());
         }
 	int scaledX = (tile.x - mapX) * imageWidth / mapWidth;
@@ -151,8 +152,9 @@ final public class ZoomedOutMapRenderer implements MapRenderer {
 			    tile.y - mapY, BUILDING_COLOR);
 		} else {
 		    int typeNumber = tt.getTerrainTypeNumber();
-		    TerrainType terrainType = (TerrainType)w.get(KEY.TERRAIN_TYPES,
-			    typeNumber);
+		    TerrainType terrainType =
+			(TerrainType)w.get(KEY.TERRAIN_TYPES, typeNumber,
+					   Player.AUTHORITATIVE);
 		    one2oneImage.setRGB(tile.x - mapX, tile.y - mapY,
 			    terrainType.getRGB());
 		}

@@ -26,6 +26,7 @@
 package org.railz.controller;
 
 import org.railz.world.city.CityModel;
+import org.railz.world.player.*;
 import org.railz.world.top.KEY;
 import org.railz.world.top.ReadOnlyWorld;
 
@@ -47,13 +48,14 @@ public class CalcNearestCity {
         double tempDistance;
         CityModel tempCity;
 
-        if (w.size(KEY.CITIES) > 0) {
-            tempCity = (CityModel)w.get(KEY.CITIES, 0);
+        if (w.size(KEY.CITIES, Player.AUTHORITATIVE) > 0) {
+            tempCity = (CityModel)w.get(KEY.CITIES, 0, Player.AUTHORITATIVE);
             cityDistance = getDistance(tempCity.getCityX(), tempCity.getCityY());
             cityName = tempCity.getCityName();
 
-            for (int i = 1; i < w.size(KEY.CITIES); i++) {
-                tempCity = (CityModel)w.get(KEY.CITIES, i);
+            for (int i = 1; i < w.size(KEY.CITIES, Player.AUTHORITATIVE); i++) {
+		tempCity = (CityModel)w.get(KEY.CITIES, i,
+			Player.AUTHORITATIVE);
                 tempDistance = getDistance(tempCity.getCityX(),
                         tempCity.getCityY());
 

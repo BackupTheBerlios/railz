@@ -47,13 +47,14 @@ public class AddStationMove extends CompositeMove {
     public static AddStationMove generateMove(ReadOnlyWorld w,
 	String stationName, Point p, FreerailsPrincipal owner, int
 	buildingType) {
-        int cargoBundleNumber = w.size(KEY.CARGO_BUNDLES);
+        int cargoBundleNumber = w.size(KEY.CARGO_BUNDLES, Player.AUTHORITATIVE);
         Move addCargoBundleMove = new AddCargoBundleMove(cargoBundleNumber,
                 new CargoBundleImpl());
         int stationNumber = w.size(KEY.STATIONS, owner);
 	GameTime now = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
         StationModel station = new StationModel(p.x, p.y, stationName,
-                w.size(KEY.CARGO_TYPES), cargoBundleNumber, now);
+		w.size(KEY.CARGO_TYPES, Player.AUTHORITATIVE),
+		cargoBundleNumber, now);
 
         Move addStation = new AddItemToListMove(KEY.STATIONS, stationNumber,
                 station, owner);

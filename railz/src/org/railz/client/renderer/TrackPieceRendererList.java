@@ -28,6 +28,7 @@ import java.util.logging.*;
 
 import org.railz.client.common.ImageManager;
 import org.railz.util.FreerailsProgressMonitor;
+import org.railz.world.player.*;
 import org.railz.world.top.KEY;
 import org.railz.world.top.ReadOnlyWorld;
 import org.railz.world.track.TrackRule;
@@ -46,12 +47,12 @@ final public class TrackPieceRendererList {
         FreerailsProgressMonitor pm) throws IOException {
         //		Setup progress monitor..
         pm.setMessage("Loading track graphics.");
-        pm.setMax(w.size(KEY.TRACK_RULES));
+        pm.setMax(w.size(KEY.TRACK_RULES, Player.AUTHORITATIVE));
 
         int progress = 0;
         pm.setValue(progress);
 
-        int numberOfTrackTypes = w.size(KEY.TRACK_RULES);
+        int numberOfTrackTypes = w.size(KEY.TRACK_RULES, Player.AUTHORITATIVE);
         trackPieceViewArray = new TrackPieceRenderer[numberOfTrackTypes];
 
         for (int i = 0; i < numberOfTrackTypes; i++) {
@@ -64,8 +65,10 @@ final public class TrackPieceRendererList {
     public boolean validate(ReadOnlyWorld w) {
         boolean okSoFar = true;
 
-        for (int i = 0; i < w.size(KEY.TRACK_RULES); i++) {
-            TrackRule trackRule = (TrackRule)w.get(KEY.TRACK_RULES, i);
+	for (int i = 0; i < w.size(KEY.TRACK_RULES, Player.AUTHORITATIVE);
+		i++) {
+            TrackRule trackRule = (TrackRule)w.get(KEY.TRACK_RULES, i,
+		    Player.AUTHORITATIVE);
             TrackPieceRenderer trackPieceView = this.getTrackPieceView(i);
 
             if (null == trackPieceView) {

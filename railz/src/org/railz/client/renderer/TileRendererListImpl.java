@@ -23,6 +23,7 @@
 package org.railz.client.renderer;
 
 import java.util.ArrayList;
+import org.railz.world.player.*;
 import org.railz.world.terrain.TerrainType;
 import org.railz.world.top.KEY;
 import org.railz.world.top.ReadOnlyWorld;
@@ -50,8 +51,10 @@ final public class TileRendererListImpl implements TileRendererList {
     public boolean validate(ReadOnlyWorld w) {
         boolean okSoFar = true;
 
-        for (int i = 0; i < w.size(KEY.TERRAIN_TYPES); i++) {
-            TerrainType terrainType = (TerrainType)w.get(KEY.TERRAIN_TYPES, i);
+	for (int i = 0; i < w.size(KEY.TERRAIN_TYPES, Player.AUTHORITATIVE);
+		i++) {
+	    TerrainType terrainType = (TerrainType)w.get(KEY.TERRAIN_TYPES, i,
+		    Player.AUTHORITATIVE);
         }
 
         return okSoFar;

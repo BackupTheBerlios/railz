@@ -73,7 +73,8 @@ class TrainBuilder {
             //Add train to train list.
 
             CargoBundle cb = new CargoBundleImpl();
-            int cargoBundleNumber = world.size(KEY.CARGO_BUNDLES);
+	    int cargoBundleNumber = world.size(KEY.CARGO_BUNDLES,
+		    Player.AUTHORITATIVE);
             Move addCargoBundleMove = new AddCargoBundleMove(cargoBundleNumber,
                     cb);
 	    ObjectKey scheduleKey = new ObjectKey 
@@ -86,7 +87,7 @@ class TrainBuilder {
                     cargoBundleNumber, now);
 
             EngineType engineType = (EngineType)world.get(KEY.ENGINE_TYPES,
-                    engineTypeNumber);
+                    engineTypeNumber, Player.AUTHORITATIVE);
             int trainNumber = world.size(KEY.TRAINS, tp);
 
             WorldIterator wi = new NonNullElements(KEY.STATIONS, world, tp);

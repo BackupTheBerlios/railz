@@ -77,7 +77,7 @@ class UserMessageGenerator implements MoveReceiver {
 	    NonNullElements trains = new NonNullElements(KEY.TRAINS, world,
 		    mr.getPlayerPrincipal());
 	    NonNullElements players = new NonNullElements(KEY.PLAYERS,
-		    world);
+		    world, Player.AUTHORITATIVE);
 
 	    int trainNumber = -1;
 	    int statonNumber = -1;
@@ -111,8 +111,9 @@ class UserMessageGenerator implements MoveReceiver {
 		}
 	    }
 
-	    GameTime gt = (GameTime)world.get(ITEM.TIME);
-	    GameCalendar gc = (GameCalendar)world.get(ITEM.CALENDAR);
+	    GameTime gt = (GameTime)world.get(ITEM.TIME, Player.AUTHORITATIVE);
+	    GameCalendar gc = (GameCalendar)world.get(ITEM.CALENDAR,
+		    Player.AUTHORITATIVE);
 	    GregorianCalendar cal = gc.getCalendar(gt);
 	    DateFormat df =
 		DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
@@ -141,12 +142,14 @@ class UserMessageGenerator implements MoveReceiver {
 		if (0 < revenue) {
 		    CargoBundle cb = deliverCargoReceipt.getCargoDelivered();
 
-		    for (int i = 0; i < world.size(KEY.CARGO_TYPES); i++) {
+		    for (int i = 0; i < world.size(KEY.CARGO_TYPES,
+				Player.AUTHORITATIVE); i++) {
 			int amount = cb.getAmount(i);
 
 			if (amount > 0) {
 			    CargoType ct =
-				(CargoType)world.get(KEY.CARGO_TYPES, i);
+				(CargoType)world.get(KEY.CARGO_TYPES, i,
+						     Player.AUTHORITATIVE);
 			    message += amount + " " + ct.getDisplayName() +
 				"\n";
 			}

@@ -27,6 +27,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import org.railz.client.common.Painter;
+import org.railz.world.player.*;
 import org.railz.world.top.KEY;
 import org.railz.world.top.ReadOnlyWorld;
 import org.railz.world.city.CityModel;
@@ -44,8 +45,9 @@ public class CityNamesRenderer implements Painter {
         g.setFont(new Font("Arial", 0, 20));
 
         //draw city names onto map
-        for (int i = 0; i < w.size(KEY.CITIES); i++) {
-            CityModel tempCity = (CityModel)w.get(KEY.CITIES, i);
+        for (int i = 0; i < w.size(KEY.CITIES, Player.AUTHORITATIVE); i++) {
+            CityModel tempCity = (CityModel)w.get(KEY.CITIES, i,
+		    Player.AUTHORITATIVE);
             g.drawString(tempCity.getCityName(), tempCity.getCityX() *
 		    TileRenderer.TILE_SIZE.width,
                 tempCity.getCityY() * TileRenderer.TILE_SIZE.height + 10);

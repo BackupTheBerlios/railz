@@ -20,6 +20,7 @@ package org.railz.world.top;
 import java.util.HashSet;
 
 import org.railz.world.common.*;
+import org.railz.world.player.*;
 import org.railz.world.terrain.TerrainType;
 import org.railz.world.track.*;
 
@@ -93,13 +94,15 @@ public class MapFixtureFactory {
 
         //Add track rules to world
         for (int i = 0; i < trackRulesArray.length; i++) {
-            world.add(KEY.TRACK_RULES, trackRulesArray[i]);
+	    world.add(KEY.TRACK_RULES, trackRulesArray[i],
+		    Player.AUTHORITATIVE);
         }
 
         //Add a single terrain type..		
         //We need this since when we built track, the terrain type gets check to see if we can
         //built track on it and an exception is thrown if terrain type 0 does not exist.
 	world.add(KEY.TERRAIN_TYPES, new TerrainType(0,
-		    TerrainType.CATEGORY_COUNTRY, "Dummy Terrain", 0L, 10, 10));
+		    TerrainType.CATEGORY_COUNTRY, "Dummy Terrain", 0L, 10,
+		    10), Player.AUTHORITATIVE);
     }
 }

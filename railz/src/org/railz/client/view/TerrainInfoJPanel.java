@@ -125,7 +125,7 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
 	terrainTileViewer.setFreerailsTile(point.x, point.y);
 
 	TerrainType type = (TerrainType)w.get(KEY.TERRAIN_TYPES,
-		tile.getTerrainTypeNumber());
+		tile.getTerrainTypeNumber(), Player.AUTHORITATIVE);
 	
 	String row = "";
 	if (! tile.getOwner().equals(Player.AUTHORITATIVE)) {
@@ -172,7 +172,8 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
                 tableString += "<tr> <td><strong>Supplies</strong></td> <td>&nbsp;</td> </tr>";
                 for(int i = 0; i < cargosProduced ; i++){
                     Production p = bt.getProduction()[i];
-                    CargoType c = (CargoType)w.get(KEY.CARGO_TYPES, p.getCargoType());
+		    CargoType c = (CargoType)w.get(KEY.CARGO_TYPES,
+			    p.getCargoType(), Player.AUTHORITATIVE);
                     String supply = String.valueOf(p.getRate());
                     tableString += "<tr> <td>"+c.getDisplayName()+" </td><td>"+supply+"</td></tr>";
                 }
@@ -181,7 +182,8 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
                 tableString += "<tr> <td><strong>Demands</strong></td> <td>&nbsp;</td> </tr>";
                 for(int i = 0; i < cargosConsumed ; i++){
                     Consumption p = bt.getConsumption()[i];
-                    CargoType c = (CargoType)w.get(KEY.CARGO_TYPES, p.getCargoType());
+		    CargoType c = (CargoType)w.get(KEY.CARGO_TYPES,
+			    p.getCargoType(), Player.AUTHORITATIVE);
                     tableString += "<tr> <td>"+c.getDisplayName()+" </td><td>&nbsp;</td></tr>";
                 }                
             }
@@ -189,8 +191,10 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
                 tableString += "<tr> <td><strong>Converts</strong></td> <td>&nbsp;</td> </tr>";
                 for(int i = 0; i < cargosConverted ; i++){
                     Conversion p = bt.getConversion()[i];
-                    CargoType input = (CargoType)w.get(KEY.CARGO_TYPES, p.getInput());
-                    CargoType output = (CargoType)w.get(KEY.CARGO_TYPES, p.getOutput());
+		    CargoType input = (CargoType)w.get(KEY.CARGO_TYPES,
+			    p.getInput(), Player.AUTHORITATIVE);
+		    CargoType output = (CargoType)w.get(KEY.CARGO_TYPES,
+			    p.getOutput(), Player.AUTHORITATIVE);
                     tableString += "<tr> <td colspan=\"2\">"+input.getDisplayName()+" to "+output.getDisplayName()+"</td></tr>";
                 }                    
             }

@@ -69,9 +69,11 @@ public class StationBuildModel {
 	this.world = world;
 	TileRendererList tileRendererList =
 	    vl.getBuildingViewList();
-	for (int i = 0; i < world.size(KEY.BUILDING_TYPES); i++) {
+	for (int i = 0; i < world.size(KEY.BUILDING_TYPES,
+		    Player.AUTHORITATIVE); i++) {
 	    BuildingType buildingType =
-		(BuildingType)world.get(KEY.BUILDING_TYPES, i);
+		(BuildingType)world.get(KEY.BUILDING_TYPES, i,
+					Player.AUTHORITATIVE);
 	    if (buildingType.getCategory() == BuildingType.CATEGORY_STATION) {
 		TileRenderer renderer =
 		    tileRendererList.getTileViewWithNumber(i);
@@ -102,7 +104,7 @@ public class StationBuildModel {
 		java.awt.event.ActionEvent actionEvent) {
 	    stationBuilder.setStationType(actionId);
 	    BuildingType buildingType = (BuildingType)
-		world.get(KEY.BUILDING_TYPES, actionId);
+		world.get(KEY.BUILDING_TYPES, actionId, Player.AUTHORITATIVE);
 	    //Show the relevant station radius when the station type's menu item
 	    //gets focus.
 	    stationBuildAction.putValue(StationBuildAction.STATION_RADIUS_KEY,

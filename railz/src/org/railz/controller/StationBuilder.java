@@ -54,7 +54,8 @@ public class StationBuilder {
 
         do {
             i++;
-            bType = (BuildingType)w.get(KEY.BUILDING_TYPES, i);
+            bType = (BuildingType)w.get(KEY.BUILDING_TYPES, i,
+		    Player.AUTHORITATIVE);
         } while (bType.getCategory() != BuildingType.CATEGORY_STATION);
 
         ruleNumber = i;
