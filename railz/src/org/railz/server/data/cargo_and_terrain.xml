@@ -328,4 +328,8 @@
    <Economy incomeTaxRate="25" baseRate="5.0">
 	<FuelPrice fuelType="Coal" unitPrice="20" />
     </Economy>
+	<StationImprovements>
+		<StationImprovement id="WaterTower" description=
+	"Provides water for steam engines." basePrice="10000" />
+	</StationImprovements>
 </Types>

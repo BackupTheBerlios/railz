@@ -55,6 +55,7 @@ public class CargoAndTerrainParser implements ContentHandler {
     private EngineTypesHandler engineTypesHandler;
     private String currentSection;
     private EconomyHandler economyHandler;
+    private StationImprovementsHandler stationImprovementsHandler;
 
     /**
      * Creates a parser instance.
@@ -67,6 +68,7 @@ public class CargoAndTerrainParser implements ContentHandler {
         handler = new CargoAndTerrainHandlerImpl(w);
 	engineTypesHandler = new EngineTypesHandler(w);
 	economyHandler = new EconomyHandler(w);
+	stationImprovementsHandler = new StationImprovementsHandler(w);
         this.resolver = resolver;
 
         buffer = new StringBuffer(111);
@@ -139,8 +141,11 @@ public class CargoAndTerrainParser implements ContentHandler {
 	    engineTypesHandler.startElement(ns, name, qname, attrs);
 	} else if ("Economy".equals(currentSection)) {
 	   economyHandler.startElement(ns, name, qname, attrs);
+	} else if ("StationImprovements".equals(currentSection)) {
+	    stationImprovementsHandler.startElement(ns, name, qname, attrs);
 	} else if ("EngineTypes".equals(name) ||
-		"Economy".equals(name)) {
+		"Economy".equals(name) ||
+		"StationImprovements".equals(name)) {
 	    currentSection = name;
 	    // recurse
 	    startElement(ns, name, qname, attrs);
@@ -174,9 +179,12 @@ public class CargoAndTerrainParser implements ContentHandler {
 	    engineTypesHandler.endElement(ns, name, qname);
 	} else if ("Economy".equals(currentSection)) {
 	    economyHandler.endElement(ns, name, qname);
+	} else if ("StationImprovements".equals(currentSection)) {
+	    stationImprovementsHandler.endElement(ns, name, qname);
 	}
         if ("EngineTypes".equals(name) ||
-		"Economy".equals(name)) {
+		"Economy".equals(name) ||
+		"StationImprovements".equals(name)) {
 	    currentSection = null;
 	}
     }
