@@ -1,6 +1,7 @@
 January 28, 2005:
 -----------------
 Fix for bug 11 - freight and passenger revenues are not separated
+Fix for bug 43 - small_south_america map does not work
 January 27, 2005:
 -----------------
 Fix for bug 25 - Station cargo delivery doesn't account for multiple stations
