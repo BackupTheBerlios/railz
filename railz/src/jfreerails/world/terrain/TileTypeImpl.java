@@ -3,7 +3,10 @@
 *
 *  Created on 04 July 2001, 06:42
 */
+
 package jfreerails.world.terrain;
+
+import jfreerails.world.common.Money;
 
 /**
  * This class represents a type of terrain
@@ -20,6 +23,7 @@ final public class TileTypeImpl implements TerrainType {
     private final Production[] production;
     private final Consumption[] consumption;
     private final Conversion[] conversion;
+    private final Money baseValue;
 
     public String getTerrainTypeName() {
         return terrainType;
@@ -31,7 +35,7 @@ final public class TileTypeImpl implements TerrainType {
 
     public TileTypeImpl(int rgb, String terrainCategory, String terrainType,
         int rightOfWay, Production[] production, Consumption[] consumption,
-        Conversion[] conversion) {
+        Conversion[] conversion, Money baseValue) {
         this.terrainType = terrainType;
         this.terrainCategory = terrainCategory;
         this.rgb = rgb;
@@ -39,6 +43,7 @@ final public class TileTypeImpl implements TerrainType {
         this.production = production;
         this.consumption = consumption;
         this.conversion = conversion;
+	this.baseValue = baseValue;
     }
 
     /**
@@ -83,5 +88,9 @@ final public class TileTypeImpl implements TerrainType {
     /** Returns the name, replacing any underscores with spaces. */
     public String getDisplayName() {
         return this.terrainType.replace('_', ' ');
+    }
+
+    public Money getBaseValue() {
+	return baseValue;
     }
 }

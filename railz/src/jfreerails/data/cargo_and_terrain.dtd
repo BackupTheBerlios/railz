@@ -34,6 +34,7 @@
     right-of-way CDATA #REQUIRED
     rgb CDATA #REQUIRED
     id ID #REQUIRED
+    baseValue CDATA #REQUIRED
   >
 
 <!ELEMENT Types (Cargo_Types, Terrain_Types)>

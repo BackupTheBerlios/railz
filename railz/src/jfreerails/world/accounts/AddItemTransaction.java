@@ -6,7 +6,6 @@ package jfreerails.world.accounts;
 
 import jfreerails.world.common.Money;
 
-
 /**
  * This Transaction represents the charge/credit for buying/selling an item.
  *
@@ -16,6 +15,7 @@ import jfreerails.world.common.Money;
 public class AddItemTransaction implements Transaction {
     /** Constants to specify the category. */
     public static final int TRACK = 0;
+    public static final int LAND = 1;
 
     /** For example track. */
     private final int category;
@@ -39,7 +39,8 @@ public class AddItemTransaction implements Transaction {
         }
     }
 
-    public AddItemTransaction(int category, int type, int quantity, Money amount) {
+    public AddItemTransaction(int category, int type, int quantity, Money
+	    amount) {
         this.category = category;
         this.type = type;
         this.quantity = quantity;

@@ -7,6 +7,7 @@
 package jfreerails.client.view;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.NoSuchElementException;
@@ -223,15 +224,9 @@ public class DialogueBoxController {
         showContent(selectWagons);
     }
     
-    public void showTerrainInfo(int terrainType) {
-        this.terrainInfo.setTerrainType(terrainType);
-        showContent(terrainInfo);
-    }
-    
     public void showTerrainInfo(int x, int y) {
-        FreerailsTile tile = world.getTile(x, y);
-        int terrainType = tile.getTerrainTypeNumber();
-        showTerrainInfo(terrainType);
+        terrainInfo.setLocation(new Point (x, y));
+	showContent(terrainInfo);
     }
     
     public void showStationInfo(int stationNumber) {

@@ -67,7 +67,7 @@ public class StationBuilder {
                     this.ruleNumber);
             TrackPiece after = trackRule.getTrackPiece(before.getTrackConfiguration());
             ChangeTrackPieceMove upgradeTrackMove = new ChangeTrackPieceMove(before,
-                    after, p);
+                    after, p, stationOwner);
 
             //Check whether we can upgrade the track to a station here.
             if (!moveReceiver.tryDoMove(upgradeTrackMove).ok) {

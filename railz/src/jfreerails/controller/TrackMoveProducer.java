@@ -46,7 +46,7 @@ final public class TrackMoveProducer {
 		return upgradeTrack(point, trackRule);
 	    case BUILD_TRACK:
 		move = ChangeTrackPieceCompositeMove.generateBuildTrackMove
-		    (from, trackVector, trackRule, w);
+		    (from, trackVector, trackRule, w, principal);
 		break;
 	    case REMOVE_TRACK:
 		move = ChangeTrackPieceCompositeMove.generateRemoveTrackMove
@@ -125,7 +125,8 @@ final public class TrackMoveProducer {
             return MoveStatus.moveFailed("No need to upgrade track at station.");
         }
 
-        Move move = UpgradeTrackMove.generateMove(before, after, point);
+        Move move = UpgradeTrackMove.generateMove(before, after, point,
+		principal);
         moveTester.processMove(transactionsGenerator.addTransactions(move));
 
         return moveTester.tryDoMove(move);
