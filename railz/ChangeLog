@@ -6,6 +6,7 @@ Fix for bug 15 - units in station info dialog now accurate
 Fix for bug 22 - train purchase dialog now shows maintenance cost
 Subtotals on Profit + Loss dialog
 Fix for depreciation bug
+Fix for bug 13 - Added overview map scaling
 Apr 03, 2004:
 -------------
 Bank account interest

@@ -50,7 +50,7 @@ public class OverviewMapJComponent extends JPanel {
 	}	
 
 	public void setup(ModelRoot mr){
-	    mapView = new ZoomedOutMapRenderer(mr.getWorld());
+	    mapView = new ZoomedOutMapRenderer(mr.getWorld(), 240);
 	    this.setPreferredSize(mapView.getMapSizeInPixels());
 	    this.setMinimumSize(this.getPreferredSize());
 	    this.setSize(this.getPreferredSize());
