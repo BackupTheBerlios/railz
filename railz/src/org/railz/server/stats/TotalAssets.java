@@ -21,7 +21,7 @@ import org.railz.world.accounts.*;
 import org.railz.world.player.*;
 import org.railz.world.top.*;
 /**
- * Calculates a players total stats.
+ * Calculates a players total assets.
  */
 public class TotalAssets implements StatMonitor {
     public String getName() {

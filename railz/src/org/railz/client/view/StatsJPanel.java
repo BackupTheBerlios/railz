@@ -414,6 +414,7 @@ final class StatsJPanel extends javax.swing.JPanel {
 		if (itemName.equals(Resources.get(s.getName()))) {
 		    statisticKey = new ObjectKey(KEY.STATISTICS,
 			    modelRoot.getPlayerPrincipal(), i.getIndex());
+		    StatsJPanel.this.repaint();
 		    return;
 		}
 	    }

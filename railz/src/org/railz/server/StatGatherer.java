@@ -34,7 +34,8 @@ class StatGatherer {
 
     private StatMonitor[] monitors = new StatMonitor[] {
 	/* XXX insert StatMonitor instances here */
-	new TotalAssets()
+	new TotalAssets(),
+	new Revenue()
     };
 
     public StatGatherer(ReadOnlyWorld w, MoveReceiver mr) {
@@ -67,17 +68,28 @@ class StatGatherer {
 	    FreerailsPrincipal p = (FreerailsPrincipal) ((Player)
 		    i.getElement()).getPrincipal();
 	    for (int j = 0; j < monitors.length; j++) {
+		Statistic stat = null; 
 		NonNullElements k = new NonNullElements(KEY.STATISTICS, world,
 			p);
-		Statistic stat = null;
+		ObjectKey ok = null;
 		while (k.next()) {
 		    Statistic s = (Statistic) k.getElement();
 		    if (s.getName().equals(monitors[j].getName())) {
+			ok = new ObjectKey(KEY.STATISTICS, p, k.getIndex());
 			stat = s;
 			break;
 		    }
 		}
-		ObjectKey ok = new ObjectKey(KEY.STATISTICS, p, k.getIndex());
+		if (stat == null) {
+		    // statistic doesn't exist
+		    stat = new Statistic(monitors[j].getName(),
+			    monitors[j].getDescription(),
+			    monitors[j].getYUnit());
+		    ok = new ObjectKey(KEY.STATISTICS, p,
+			    world.size(KEY.STATISTICS, p));
+		    moveReceiver.processMove(new AddStatisticMove
+			    (new ObjectKey(KEY.STATISTICS, p, ok.index), stat));
+		}
 		moveReceiver.processMove(new AddDataPointMove(ok, t,
 			    monitors[j].calculateDataPoint(world, p), world));
 	    }
