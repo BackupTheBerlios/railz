@@ -21,22 +21,13 @@ package jfreerails.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Vector;
 import javax.swing.table.TableModel;
 
-import jfreerails.controller.AddPlayerCommand;
-import jfreerails.controller.AddPlayerResponseCommand;
-import jfreerails.controller.ConnectionListener;
-import jfreerails.controller.ConnectionToServer;
-import jfreerails.controller.InetConnection;
-import jfreerails.controller.LocalConnection;
-import jfreerails.controller.MoveChainFork;
-import jfreerails.controller.MoveReceiver;
-import jfreerails.controller.ServerCommand;
-import jfreerails.controller.ServerControlInterface;
-import jfreerails.controller.WorldChangedCommand;
+import jfreerails.controller.*;
+import jfreerails.world.player.*;
 import jfreerails.util.FreerailsProgressMonitor;
-
 
 /**
  * associates an instance of ServerGameEngine with a set of game controls.
@@ -69,6 +60,25 @@ class ServerGameController implements ServerControlInterface,
         }
     }
 
+    private synchronized void sendMessageToClients(String message,
+	    Serializable[] objects) {
+	ServerMessageCommand smc = new ServerMessageCommand(message, objects);
+	for (int i = 0; i < connections.size(); i++) {
+	    ConnectionToServer c = (ConnectionToServer) connections.get(i);
+	    c.sendCommand(smc);
+	}
+    }
+
+    private String getPlayerName(ConnectionToServer c) {
+	IdentityProvider ip = gameEngine.getIdentityProvider();
+	FreerailsPrincipal p = ip.getPrincipal(c);
+	if (p != Player.NOBODY &&
+		ip.getPlayer(p) != null)
+	    return (p.getName());
+	else 
+	    return "Unknown player";
+    }
+
     /**
      * return a brand new local connection.
      */
@@ -91,12 +101,15 @@ class ServerGameController implements ServerControlInterface,
          * connection, but the player must re-authenticate themselves
          * in order to play
          */
+	String playerName = getPlayerName(c);
 	if (!(c instanceof LocalConnection)) {
 	    removeConnection(c);
 	} else {
 	    gameEngine.getIdentityProvider().removeConnection(c);
 	    tableModel.stateChanged(c, connections.indexOf(c));
 	}
+	sendMessageToClients("{0} left the game.",
+		new Serializable[] { playerName });
     }
 
     private synchronized void removeConnection(ConnectionToServer c) {
@@ -143,6 +156,8 @@ class ServerGameController implements ServerControlInterface,
 		setTargetTicksPerSecond(ticksPerSec);
 	    }
 	};
+	sendMessageToClients("Server is loading new saved game: {0}", new
+		Serializable[]{filename.toString()});
 	t.file = filename;
 	t.start();
     }
@@ -154,6 +169,8 @@ class ServerGameController implements ServerControlInterface,
 	    }
 	};
 	t.file = filename;
+	sendMessageToClients("Server is saving the game...", new
+		Serializable[0]);
 	t.start();
     }
 
@@ -181,6 +198,8 @@ class ServerGameController implements ServerControlInterface,
 		setTargetTicksPerSecond(ticksPerSec);
 	    }
 	};
+	sendMessageToClients("Server is starting a new map: {0}", new
+		Serializable[]{map});
 	t.start();
     }
 
@@ -242,6 +261,8 @@ class ServerGameController implements ServerControlInterface,
     }
 
     public synchronized void quitGame() {
+	sendMessageToClients("Server is shutting down. Bye...", new
+		Serializable[0]);
         while (!connections.isEmpty()) {
             ConnectionToServer c = (ConnectionToServer)connections.get(0);
 
@@ -257,15 +278,21 @@ class ServerGameController implements ServerControlInterface,
             AddPlayerCommand apc = (AddPlayerCommand)s;
 
             synchronized (this) {
-                System.out.println("Received request to authenticate player" +
-                    " " + apc.getPlayer());
+                sendMessageToClients("Server received request to authenticate " +
+			"player {0}", new
+			Serializable[]{apc.getPlayer().getName()});
 
                 if (!gameEngine.getIdentityProvider().addConnection(c,
                             apc.getPlayer(), apc.getSignature())) {
                     c.sendCommand(new AddPlayerResponseCommand(apc, ""));
+		    sendMessageToClients("{0}''s attempt to join was "
+			    + "rejected by the server", new
+			    Serializable[]{apc.getPlayer().getName()});
                 } else {
                     c.sendCommand(new AddPlayerResponseCommand(
                             gameEngine.getIdentityProvider().getPrincipal(c)));
+		    sendMessageToClients("{0} joined the game", new
+			    Serializable[]{apc.getPlayer().getName()});
                 }
 
                 tableModel.stateChanged(c, connections.indexOf(c));

@@ -264,22 +264,24 @@ final public class MapViewJComponentConcrete extends MapViewJComponent
 		messages.removeFirst();
 
 	    Rectangle visRect = this.getVisibleRect();
-	    if (! messages.isEmpty()) {
-		if (textAreaWidth != visRect.width ||
-			textAreaHeight != visRect.height) {
-		    textAreaWidth = visRect.width;
-		    textAreaHeight = visRect.height;
-		    textArea.setSize(textAreaWidth, textAreaHeight);
+	    synchronized (messages) {
+		if (! messages.isEmpty()) {
+		    if (textAreaWidth != visRect.width ||
+			    textAreaHeight != visRect.height) {
+			textAreaWidth = visRect.width;
+			textAreaHeight = visRect.height;
+			textArea.setSize(textAreaWidth, textAreaHeight);
+		    }
+		    StringBuffer buf = new StringBuffer();
+		    for (int i = 0; i < messages.size() ; i++) {
+			buf.append(((UserMessage) messages.get(i)).message);
+			buf.append("\n");
+		    }
+		    textArea.setText(buf.toString());
+		    myGraphics.translate(visRect.x, visRect.y);
+		    textArea.paint(myGraphics);
+		    myGraphics.translate(-visRect.x, -visRect.y);
 		}
-		StringBuffer buf = new StringBuffer();
-		for (int i = 0; i < messages.size() ; i++) {
-		    buf.append(((UserMessage) messages.get(i)).message);
-		    buf.append("\n");
-		}
-		textArea.setText(buf.toString());
-		myGraphics.translate(visRect.x, visRect.y);
-		textArea.paint(myGraphics);
-		myGraphics.translate(-visRect.x, -visRect.y);
 	    }
 	//	    myGraphics.drawString(this.userMessage[i], 10+visRect.x,
 	//		    10+visRect.y+i*20);
@@ -401,19 +403,9 @@ final public class MapViewJComponentConcrete extends MapViewJComponent
 	}
 
 	public void println(String s) {
-	    messages.add(new UserMessage(s));
-/*
-	    StringTokenizer st = new StringTokenizer(s, "\n");
-	    this.userMessage = new String[st.countTokens()];
-	    int i = 0;
-	    while(st.hasMoreTokens()){
-		userMessage[i]=st.nextToken();
-		i++;
+	    synchronized (messages) {
+		messages.add(new UserMessage(s));
 	    }
-
-	    //Display the message for 5 seconds.
-	    displayMessageUntil = System.currentTimeMillis() + 1000 * 5;
- */
 	}
 
 	public void doFrameUpdate(Graphics g) {
