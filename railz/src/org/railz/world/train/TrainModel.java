@@ -29,6 +29,10 @@ import org.railz.world.top.*;
 import org.railz.world.track.*;
 
 public class TrainModel implements FreerailsSerializable {
+    /** Path length traversed since we last loaded water, as of the last
+     * resync */
+    private int costTraversedSinceLoadingWater;
+
     /**
      * The time at which the state of the train was last changed. Used for
      * determining delays at stations when loading/unloading etc.
@@ -95,7 +99,8 @@ public class TrainModel implements FreerailsSerializable {
 	    ", wagons=" + s + 
 	    ", cargoBundleNo=" + cargoBundleNumber + 
 	    ", priority=" + priority +
-	    ", ticksInService=" + ticksInService;
+	    ", ticksInService=" + ticksInService +
+	    ", ptslw=" + costTraversedSinceLoadingWater;
     }
 
     /**
@@ -108,7 +113,7 @@ public class TrainModel implements FreerailsSerializable {
 	    GameTime creationDate) {
 	this(engine, wagons, bundleId, creationDate,
 		STATE_UNLOADING, null, null, PRIORITY_NORMAL, false,
-		creationDate, 0);
+		creationDate, 0, 0);
     }
 
     /**
@@ -121,7 +126,12 @@ public class TrainModel implements FreerailsSerializable {
 		trainModel.creationDate, trainModel.state,
 		trainModel.scheduleIterator, null,
 		trainModel.priority, trainModel.isBlocked,
-		trainModel.stateLastChanged, trainModel.ticksInService);
+		trainModel.stateLastChanged, trainModel.ticksInService,
+		trainModel.costTraversedSinceLoadingWater);
+	if (trainMotionModel != null)
+	    costTraversedSinceLoadingWater +=
+		trainMotionModel.getCostTraversed(now);
+
 	TrainMotionModel2 tmm = trainModel.trainMotionModel == null ? null :
 	    new TrainMotionModel2(trainModel.trainMotionModel,
 		    pathToDestination, now);
@@ -137,7 +147,7 @@ public class TrainModel implements FreerailsSerializable {
 		tm.trainMotionModel == null ? null :
 		tm.trainMotionModel.clearPathToDestination(t),
 		tm.priority, tm.isBlocked, tm.stateLastChanged,
-		tm.ticksInService);
+		tm.ticksInService, tm.getCostTraversedSinceLoadingWater(t));
     }
 
     /**
@@ -147,7 +157,8 @@ public class TrainModel implements FreerailsSerializable {
 	this(tm.engineType, tm.wagonTypes, tm.cargoBundleNumber,
 		tm.creationDate, tm.state, tm.scheduleIterator,
 		tm.trainMotionModel, tm.priority, tm.isBlocked,
-		tm.stateLastChanged, tm.ticksInService);
+		tm.stateLastChanged, tm.ticksInService,
+		tm.costTraversedSinceLoadingWater);
     }
 
     /**
@@ -157,7 +168,7 @@ public class TrainModel implements FreerailsSerializable {
 	return new TrainModel(engineType, wagonTypes,
 		cargoBundleNumber, creationDate, state, scheduleIterator,
 		trainMotionModel, priority, isBlocked, stateLastChanged,
-		ticksInService);
+		ticksInService, costTraversedSinceLoadingWater);
     }
 
     public int getPriority() {
@@ -174,7 +185,8 @@ public class TrainModel implements FreerailsSerializable {
 	       	tm.trainMotionModel.clearPathToDestination(now)), tm.priority,
 		false, now,
 	       	tm.state == STATE_RUNNABLE ? tm.ticksInService + now.getTime() -
-		tm.stateLastChanged.getTime() : tm.ticksInService);
+		tm.stateLastChanged.getTime() : tm.ticksInService,
+		tm.getCostTraversedSinceLoadingWater(now));
     }
 
     /**
@@ -184,7 +196,8 @@ public class TrainModel implements FreerailsSerializable {
     public TrainModel getNewInstance(int newEngine, int[] newWagons) {
         return new TrainModel(newEngine, newWagons, this.getCargoBundleNumber(),
 	    creationDate, state, scheduleIterator, trainMotionModel,
-	    priority, isBlocked, stateLastChanged, ticksInService);
+	    priority, isBlocked, stateLastChanged, ticksInService,
+	    costTraversedSinceLoadingWater);
     }
 
     /**
@@ -198,7 +211,8 @@ public class TrainModel implements FreerailsSerializable {
 	    int bundleId, GameTime creationDate,
 	    int state, ScheduleIterator
 	    scheduleIterator, TrainMotionModel2 motionModel, int priority,
-	    boolean isBlocked, GameTime stateLastChanged, long ticksInService) {
+	    boolean isBlocked, GameTime stateLastChanged, long ticksInService,
+	    int costTraversedSinceLoadingWater) {
 	engineType = engine;
 	wagonTypes = wagons;
 	cargoBundleNumber = bundleId;
@@ -212,6 +226,7 @@ public class TrainModel implements FreerailsSerializable {
 	    TrainMotionModel2(motionModel);
 	this.stateLastChanged = stateLastChanged;
 	this.ticksInService = ticksInService;
+	this.costTraversedSinceLoadingWater = costTraversedSinceLoadingWater;
     }
 
     /**
@@ -264,7 +279,9 @@ public class TrainModel implements FreerailsSerializable {
 		state == test.state &&
 		isBlocked == test.isBlocked &&
 		priority == test.priority &&
-		ticksInService == test.ticksInService;
+		ticksInService == test.ticksInService &&
+		costTraversedSinceLoadingWater ==
+		test.costTraversedSinceLoadingWater;
 
 	    if (b == false) {
 	    }
@@ -299,7 +316,8 @@ public class TrainModel implements FreerailsSerializable {
 		creationDate, state, scheduleIterator,
 	       trainMotionModel == null ? null :
 	       trainMotionModel.clearPathToDestination(now),
-       	       priority, blocked, stateLastChanged, ticksInService);
+       	       priority, blocked, stateLastChanged, ticksInService,
+	       getCostTraversedSinceLoadingWater(now));
     }
 	    
     public TrainPath getPosition(GameTime t) {
@@ -312,7 +330,8 @@ public class TrainModel implements FreerailsSerializable {
 	return new TrainModel(engineType, wagonTypes, cargoBundleNumber,
 		creationDate, state, scheduleIterator, new
 		TrainMotionModel2(null, position, t, maxSpeed), priority,
-		isBlocked, stateLastChanged, ticksInService);
+		isBlocked, stateLastChanged, ticksInService,
+		costTraversedSinceLoadingWater);
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
@@ -327,6 +346,7 @@ public class TrainModel implements FreerailsSerializable {
 	out.writeInt(state);
 	out.writeInt(priority);
 	out.writeLong(ticksInService);
+	out.writeInt(costTraversedSinceLoadingWater);
 	out.flush();
     }
 
@@ -343,6 +363,7 @@ public class TrainModel implements FreerailsSerializable {
 	state = in.readInt();
 	priority = in.readInt();
 	ticksInService = in.readLong();
+	costTraversedSinceLoadingWater = in.readInt();
     }
 
     public long getTicksInService() {
@@ -352,6 +373,25 @@ public class TrainModel implements FreerailsSerializable {
     public TrainModel resetTicksInService() {
 	return new TrainModel(engineType, wagonTypes, cargoBundleNumber,
 		creationDate, state, scheduleIterator, trainMotionModel,
-		priority, isBlocked, stateLastChanged, 0);
+		priority, isBlocked, stateLastChanged, 0,
+		costTraversedSinceLoadingWater);
+    }
+
+    /** @return the total path cost expended since loading water */
+    int getCostTraversedSinceLoadingWater(GameTime now) {
+	if (trainMotionModel == null)
+	    return costTraversedSinceLoadingWater;
+
+	return costTraversedSinceLoadingWater +
+	    trainMotionModel.getCostTraversed(now);
+    }
+
+    /** Change the full/empty state of the trains water */
+    public TrainModel loadWater(GameTime t0, boolean empty) {
+	TrainMotionModel2 tmm = trainMotionModel.setOutOfWater(empty, t0);
+	return new TrainModel(engineType, wagonTypes, cargoBundleNumber,
+		creationDate, state, scheduleIterator, tmm,
+		priority, isBlocked, stateLastChanged, ticksInService,
+		empty ? costTraversedSinceLoadingWater : 0);
     }
 }

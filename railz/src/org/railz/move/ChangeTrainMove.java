@@ -79,6 +79,7 @@ public class ChangeTrainMove extends ChangeItemInListMove {
 	TrainModel after = before.setPriority(newPriority);
 	return new ChangeTrainMove(id, before, after, p);
     }
+
     /**
      * Change path to destination.
      */
@@ -115,6 +116,16 @@ public class ChangeTrainMove extends ChangeItemInListMove {
 	    TrainModel tm, GameTime t, boolean blocked) {
 	TrainModel newTm = tm.setBlocked(blocked, t);
 	return new ChangeTrainMove(ok.index, tm, newTm, ok.principal);
+    }
+
+    public static ChangeTrainMove generateOutOfWaterMove(ObjectKey trainKey,
+	    ReadOnlyWorld w, boolean outOfWater) {
+	TrainModel before = (TrainModel) w.get(KEY.TRAINS, trainKey.index,
+		trainKey.principal);
+	GameTime now = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
+	TrainModel after = before.loadWater(now, outOfWater);
+	return new ChangeTrainMove(trainKey.index, before, after,
+		trainKey.principal);
     }
 
     public MoveStatus doMove(World w, FreerailsPrincipal p) {

@@ -32,6 +32,7 @@ class EngineTypesHandler {
     private long maintenance;
     private int annualFuelConsumption;
     private int fuelType;
+    private int waterCapacity;
 
     public EngineTypesHandler(World w) {
 	world = w;
@@ -42,6 +43,7 @@ class EngineTypesHandler {
 	price = Long.parseLong(meta.getValue("price"));
 	speed = Integer.parseInt(meta.getValue("maxSpeed"));
 	maintenance = Long.parseLong(meta.getValue("maintenance"));
+	waterCapacity = Integer.parseInt(meta.getValue("waterCapacity"));
 	annualFuelConsumption =
 	    Integer.parseInt(meta.getValue("annualFuelConsumption"));
 	String ft = meta.getValue("fuelType");
@@ -63,7 +65,8 @@ class EngineTypesHandler {
 	SAXException {
 	    if ("EngineType".equals(name)) {
 		EngineType et = new EngineType(this.name, price, speed,
-			maintenance, annualFuelConsumption, fuelType);
+			maintenance, annualFuelConsumption, fuelType,
+			waterCapacity);
 		world.add(KEY.ENGINE_TYPES, et, Player.AUTHORITATIVE);
 	    }
 	}

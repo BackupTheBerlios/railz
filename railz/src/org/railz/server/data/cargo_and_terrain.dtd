@@ -90,7 +90,8 @@
     price CDATA #REQUIRED
     maintenance CDATA #REQUIRED
     maxSpeed CDATA #REQUIRED
-    annualFuelConsumption CDATA #REQUIRED>
+    annualFuelConsumption CDATA #REQUIRED
+    waterCapacity CDATA #REQUIRED>
 
 <!ELEMENT FuelPrice EMPTY>
 <!ATTLIST FuelPrice

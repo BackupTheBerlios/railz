@@ -322,7 +322,7 @@ class StationJPanel extends javax.swing.JPanel {
         jSeparator1 = new javax.swing.JSeparator();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        availableImprovementsJPanel = new javax.swing.JPanel();
+        availableImprovementsJPanel = new ButtonPanel();
         purchaseInfoJPanel = new javax.swing.JPanel();
         impNameJLabel = new javax.swing.JLabel();
         impCostJLabel = new javax.swing.JLabel();
@@ -349,8 +349,8 @@ class StationJPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
         jPanel1.add(stationStatusJPanel, gridBagConstraints);
 
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.X_AXIS));
@@ -358,6 +358,7 @@ class StationJPanel extends javax.swing.JPanel {
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setMinimumSize(new java.awt.Dimension(200, 150));
         currentImprovementsJList.setFixedCellWidth(300);
+        currentImprovementsJList.setVisibleRowCount(3);
         jScrollPane1.setViewportView(currentImprovementsJList);
 
         jPanel2.add(jScrollPane1);
@@ -368,6 +369,7 @@ class StationJPanel extends javax.swing.JPanel {
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
 
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        availableImprovementsJPanel.setMinimumSize(new java.awt.Dimension(100, 100));
         jScrollPane2.setViewportView(availableImprovementsJPanel);
 
         jPanel3.add(jScrollPane2);
@@ -391,6 +393,7 @@ class StationJPanel extends javax.swing.JPanel {
 
         impDescrJTextArea.setEditable(false);
         impDescrJTextArea.setLineWrap(true);
+        impDescrJTextArea.setRows(4);
         impDescrJTextArea.setWrapStyleWord(true);
         impDescrJTextArea.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -410,9 +413,9 @@ class StationJPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(2, 4, 4, 4);
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 4, 4, 4);
         jPanel1.add(jPanel2, gridBagConstraints);
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -439,10 +442,44 @@ class StationJPanel extends javax.swing.JPanel {
     private javax.swing.JPanel supplyJPanel;
     // End of variables declaration//GEN-END:variables
     
-
-    public Dimension getPreferredSize() {
-	Dimension d = super.getPreferredSize();
+    private class ButtonPanel extends JPanel implements Scrollable {
+	public Dimension getPreferredScrollableViewportSize() {
+	Dimension d = getPreferredSize();
 	System.out.println("preferred size is " + d);
 	return d;
+	}
+
+	public int getScrollableBlockIncrement(Rectangle visibleRect, int
+		orientation, int direction) {
+	    switch (direction) {
+		case SwingConstants.VERTICAL:
+		    return getHeight() / 2;
+		default:
+		    return 0;
+	    }
+	}
+
+	public boolean getScrollableTracksViewportHeight() {
+	    return false;
+	}
+
+	public boolean getScrollableTracksViewportWidth() {
+	    return true;
+	}
+
+	public int getScrollableUnitIncrement(Rectangle visibleRect, int
+		orientation, int direction) {
+	    return 10;
+	}
+
+	public Dimension getPreferredSize() {
+	    Dimension pSize = super.getPreferredSize();
+	    Dimension mSize = getMinimumSize();
+	    if (pSize.width < mSize.width)
+		pSize.width = mSize.width;
+	    if (pSize.height < mSize.height)
+		pSize.height = mSize.height;
+	    return pSize;
+	}
     }
 }

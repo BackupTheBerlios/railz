@@ -41,6 +41,7 @@ final public class EngineType implements FreerailsSerializable {
     private final long price;
     private final long maintenance;
     private final int maxSpeed; //speed in mph
+    private final int waterCapacity; // waterCapacity in units
 
     /** fuel consumption in units per year */
     private final int annualFuelConsumption;
@@ -68,13 +69,15 @@ final public class EngineType implements FreerailsSerializable {
     }
 
     public EngineType(String name, long m, int speed,
-        long maintenance, int annualFuelConsumption, int fuelType) {
+        long maintenance, int annualFuelConsumption, int fuelType,
+	int waterCapacity) {
         engineTypeName = name;
         price = m;
         this.maxSpeed = speed;
         this.maintenance = maintenance;
 	this.annualFuelConsumption = annualFuelConsumption;
 	this.fuelType = fuelType;
+	this.waterCapacity = waterCapacity;
     }
 
     public int getFuelType() {
@@ -83,5 +86,9 @@ final public class EngineType implements FreerailsSerializable {
 
     public int getAnnualFuelConsumption() {
 	return annualFuelConsumption;
+    }
+
+    public int getWaterCapacity() {
+	return waterCapacity;
     }
 }

@@ -54,6 +54,7 @@ class TrainController {
 	moveReceiver = mr;
 	dopucmg = new DropOffAndPickupCargoMoveGenerator(world, moveReceiver);
 	pathFinder = new TrainPathFinder(world);
+	trainModelViewer = new TrainModelViewer(world);
     }
 
     public void updateTrains() {
@@ -103,6 +104,9 @@ class TrainController {
 		}
 		return;
 	    case TrainModel.STATE_RUNNABLE:
+		if (checkWater(new ObjectKey(KEY.TRAINS, p, trainIndex), tm))
+		    tm = (TrainModel) world.get(KEY.TRAINS, trainIndex, p); 
+
 		/* check to see whether the train has reached its destination
 		 */
 		if (tm.getTrainMotionModel().reachedDestination(now)) {
@@ -182,6 +186,7 @@ class TrainController {
 	return;
     }
 
+    /** Change wagons and load water if any */
     private void changeWagons(ObjectKey trainKey) {
 	TrainModel tm = (TrainModel) world.get(trainKey.key, trainKey.index,
 		trainKey.principal);
@@ -197,8 +202,16 @@ class TrainController {
 
 	    // dump or sell any surplus cargo
 	    dopucmg.dumpSurplusCargo(trainKey, stationKey);
-	}
 
+	    // check to see if there is a water tower
+	    StationModel sm = (StationModel) world.get(KEY.STATIONS,
+		    stationKey.index, stationKey.principal);
+	    if (sm.hasImprovement(WorldConstants.SI_WATER_TOWER)) {
+		m = ChangeTrainMove.generateOutOfWaterMove(trainKey, world,
+			false);
+		moveReceiver.processMove(m);
+	    }
+	}
     }
 
     private void setState(int trainIndex, FreerailsPrincipal p, int newState) {
@@ -268,5 +281,24 @@ class TrainController {
 	moveReceiver.processMove(ctm);
 
 	return TrainModel.STATE_RUNNABLE;
+    }
+
+    private TrainModelViewer trainModelViewer;
+
+    /** @return true if we changed the trains state */
+    private boolean checkWater(ObjectKey trainKey, TrainModel train) {
+	trainModelViewer.setTrainModel(train);
+	// get current water state
+
+	boolean isOutOfWater = train.getTrainMotionModel().isOutOfWater();
+
+	if (!isOutOfWater && trainModelViewer.getWaterRemaining() == 0) {
+	    // send a move to set out of water
+	    Move m = ChangeTrainMove.generateOutOfWaterMove(trainKey, world,
+		    true);
+	    moveReceiver.processMove(m);
+	    return true;
+	}
+	return false;
     }
 }

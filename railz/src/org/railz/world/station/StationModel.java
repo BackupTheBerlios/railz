@@ -157,6 +157,13 @@ public class StationModel implements FreerailsSerializable {
 	return (int[]) improvements.clone();
     }
 
+    public boolean hasImprovement(int improvementId) {
+	for (int i = 0; i < improvements.length; i++)
+	    if (improvements[i] == improvementId)
+		return true;
+	return false;
+    }
+
     /** @param improvements Indices into the STATION_IMPROVEMENTS table */
     public StationModel setImprovements(int[] improvements) {
 	StationModel sm = new StationModel(this);

@@ -89,6 +89,7 @@
                 <Component class="javax.swing.JList" name="currentImprovementsJList">
                   <Properties>
                     <Property name="fixedCellWidth" type="int" value="300"/>
+                    <Property name="visibleRowCount" type="int" value="3"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -112,6 +113,14 @@
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
                     <Container class="javax.swing.JPanel" name="availableImprovementsJPanel">
+                      <Properties>
+                        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[100, 100]"/>
+                        </Property>
+                      </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ButtonPanel();"/>
+                      </AuxValues>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
                     </Container>
@@ -150,6 +159,7 @@
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="lineWrap" type="boolean" value="true"/>
+                        <Property name="rows" type="int" value="4"/>
                         <Property name="wrapStyleWord" type="boolean" value="true"/>
                         <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
