@@ -42,9 +42,14 @@ final public class EngineType implements FreerailsSerializable {
     private final long maintenance;
     private final int maxSpeed; //speed in mph
     private final int waterCapacity; // waterCapacity in units
+    private final int mass; // mass in tonnes
 
     /** fuel consumption in units per year */
     private final int annualFuelConsumption;
+    private final int powerOutput;
+    private final int maxTractiveForce;
+    private final float dragCoefficient;
+    private final float rollingFrictionCoefficient;
 
     /**
      * @return annual maintenance expense
@@ -70,7 +75,8 @@ final public class EngineType implements FreerailsSerializable {
 
     public EngineType(String name, long m, int speed,
         long maintenance, int annualFuelConsumption, int fuelType,
-	int waterCapacity) {
+	int waterCapacity, int mass, int powerOutput, int maxTractiveForce,
+	float rollingFrictionCoefficient, float dragCoefficient) {
         engineTypeName = name;
         price = m;
         this.maxSpeed = speed;
@@ -78,6 +84,11 @@ final public class EngineType implements FreerailsSerializable {
 	this.annualFuelConsumption = annualFuelConsumption;
 	this.fuelType = fuelType;
 	this.waterCapacity = waterCapacity;
+	this.mass = mass;
+	this.powerOutput = powerOutput;
+	this.maxTractiveForce = maxTractiveForce;
+	this.dragCoefficient = dragCoefficient;
+	this.rollingFrictionCoefficient = rollingFrictionCoefficient;
     }
 
     public int getFuelType() {
@@ -90,5 +101,25 @@ final public class EngineType implements FreerailsSerializable {
 
     public int getWaterCapacity() {
 	return waterCapacity;
+    }
+
+    public int getMass() {
+	return mass;
+    }
+
+    public int getPowerOutput() {
+	return powerOutput;
+    }
+
+    public int getMaxTractiveForce() {
+	return maxTractiveForce;
+    }
+
+    public float getDragCoeff() {
+	return dragCoefficient;
+    }
+
+    public float getRollingFrictionCoeff() {
+	return rollingFrictionCoefficient;
     }
 }

@@ -22,14 +22,13 @@ import java.util.HashMap;
 
 import org.railz.world.common.*;
 import org.railz.world.track.*;
+
 /**
  * This class encapsulates portion of a trains state required for the
  * prediction of its position at future points in time.
  * @author rtuck99@users.berlios.de
  */
 public final class TrainMotionModel2 implements FreerailsSerializable {
-    static final long serialVersionUID = 5346946015054030059L;
-
     /** whether or not we are out of water */
     private boolean outOfWater;
 
@@ -61,6 +60,12 @@ public final class TrainMotionModel2 implements FreerailsSerializable {
     private TrainPath pathToDestination;
 
     /**
+     * Describes the distance along the pathToDestination as a function of
+     * time
+     */
+    private TrainPathFunction pathFunction;
+    
+    /**
      * True if this train holds locks for all tracks it is on
      * TODO mark as transient
      */
@@ -68,33 +73,34 @@ public final class TrainMotionModel2 implements FreerailsSerializable {
     
     public TrainMotionModel2(TrainMotionModel2 tmm) {
 	this(tmm.pathToDestination, tmm.trainPath, tmm.t0, tmm.speed,
-		tmm.hasLock, tmm.outOfWater);
+		tmm.hasLock, tmm.outOfWater, tmm.pathFunction);
     }
 
     public TrainMotionModel2 clearPathToDestination(GameTime now) {
 	return new TrainMotionModel2(null, getPosition(now), now.getTime(),
-	       	speed, hasLock, outOfWater);
+	       	speed, hasLock, outOfWater, null);
     }
 
     public TrainMotionModel2(TrainMotionModel2 tmm, TrainPath
-	    pathToDestination, GameTime t0) {
+	    pathToDestination, TrainPathFunction pathFunction, GameTime t0) {
 	this(pathToDestination, tmm.getPosition(t0), t0.getTime(), tmm.speed,
-		tmm.hasLock, tmm.outOfWater);
+		tmm.hasLock, tmm.outOfWater, pathFunction);
     }
 
     /**
      * @param maxSpeed speed pf the train in tiles per BigTick
      */
     public TrainMotionModel2(TrainPath pathToDestination, TrainPath posAtT0,
-	    GameTime t0, int maxSpeed) {
+	    GameTime t0, int maxSpeed, TrainPathFunction pathFunction) {
 	this(pathToDestination, posAtT0, t0.getTime(),
 	       	((float) (maxSpeed / EngineType.TILE_HOURS_PER_MILE_BIGTICKS)) *
 	       	TrackTile.DELTAS_PER_TILE / GameTime.TICKS_PER_BIG_TICK, false,
-		false);
+		false, pathFunction);
     }
 
     private TrainMotionModel2(TrainPath pathToDestination, TrainPath posAtT0,
-	    int t0, float speed, boolean hasLock, boolean outOfWater) {
+	    int t0, float speed, boolean hasLock, boolean outOfWater,
+	    TrainPathFunction pathFunction) {
 	this.t0 = t0;
 	this.pathToDestination = pathToDestination == null ? null : 
 	    new TrainPath(pathToDestination);
@@ -102,6 +108,8 @@ public final class TrainMotionModel2 implements FreerailsSerializable {
 	this.trainPath = new TrainPath(posAtT0);
 	this.hasLock = hasLock;
 	this.outOfWater = outOfWater;
+	this.pathFunction = pathFunction == null ? null :
+	    new TrainPathFunction(pathFunction);
     }
 
     /**
@@ -152,13 +160,10 @@ public final class TrainMotionModel2 implements FreerailsSerializable {
 	}
 
 	final PathLength pl = new PathLength();
-	/* work out where we should be */
-	int ticksSinceLastSync = t.getTime() - t0;
-
-	float sp = outOfWater ? (speed / 4) : speed;
 	pl.setLength(pathToDestination.getActualLength());
-	int distanceToTarget = (int) (pl.getLength() - sp *
-	    ticksSinceLastSync);
+	int distanceToTarget = (int) (pl.getLength() -
+		pathFunction.getDistance(t.getTime()));
+
 	if (distanceToTarget < 0)
 	    distanceToTarget = 0;
 
@@ -201,28 +206,25 @@ public final class TrainMotionModel2 implements FreerailsSerializable {
 
     /** @return the path 'cost' expended by time t from t0 */
     int getCostTraversed(GameTime t) {
-	float sp = outOfWater ? (speed / 4) : speed;
-	return (int) (sp * (t.getTime() - t0));
+	return t.getTime() - t0;
     }
 
-    public TrainMotionModel2 setOutOfWater(boolean outOfWater, GameTime t0) {
-	TrainPath newP2D;
-	if (pathToDestination != null) {
-	    double newP2DLength = distanceToDestination(t0);
-	    newP2D = new TrainPath(pathToDestination);
-	    newP2D.truncateTail(newP2DLength);
-	} else {
-	    newP2D = null;
-	}
+    public TrainMotionModel2 setOutOfWater(boolean outOfWater, GameTime t0,
+	    TrainPath pathToDestination, TrainPathFunction pathFunction) {
 	TrainPath newTP = getPosition(t0);
+	System.out.println("setOutOfWater - new tp=" + newTP + ", t0=" + t0);
 
-	TrainMotionModel2 tmm = new TrainMotionModel2(newP2D, newTP,
-		t0.getTime(), speed, hasLock, outOfWater);
+	TrainMotionModel2 tmm = new TrainMotionModel2(pathToDestination, newTP,
+		t0.getTime(), speed, hasLock, outOfWater, pathFunction);
 
 	return tmm;
     }
 
     public boolean isOutOfWater() {
 	return outOfWater;
+    }
+
+    public TrainPathFunction getPathFunction() {
+	return pathFunction;
     }
 }

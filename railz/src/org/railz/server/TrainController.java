@@ -17,6 +17,7 @@
 package org.railz.server;
 
 import java.awt.Point;
+import java.util.*;
 
 import org.railz.move.*;
 import org.railz.controller.*;
@@ -24,9 +25,11 @@ import org.railz.world.common.*;
 import org.railz.world.building.*;
 import org.railz.world.player.*;
 import org.railz.world.station.*;
+import org.railz.world.terrain.*;
 import org.railz.world.top.*;
 import org.railz.world.track.*;
 import org.railz.world.train.*;
+import org.railz.world.train.TrainPathFunction.TrainPathSegment;
 
 /**
  * Responsible for controlling the state of trains. This package controls the
@@ -207,8 +210,22 @@ class TrainController {
 	    StationModel sm = (StationModel) world.get(KEY.STATIONS,
 		    stationKey.index, stationKey.principal);
 	    if (sm.hasImprovement(WorldConstants.SI_WATER_TOWER)) {
-		m = ChangeTrainMove.generateOutOfWaterMove(trainKey, world,
-			false);
+		Point head = new Point();
+		GameTime now = (GameTime) world.get(ITEM.TIME,
+			Player.AUTHORITATIVE);
+		tm.getPosition(now).getHead(head);
+		Point dest = getCurrentDestination(tm);
+		if (dest == null) {
+		    m = ChangeTrainMove.generateOutOfWaterMove(trainKey,
+			    world, false, null, null);
+		} else {
+		    TrainPath pathToDestination = pathFinder.findPath(dest,
+			    head);
+		    TrainPathFunction pathFunction = buildPathFunction
+			(pathToDestination, tm, false);
+		    m = ChangeTrainMove.generateOutOfWaterMove(trainKey, world,
+			    false, pathToDestination, pathFunction);
+		}
 		moveReceiver.processMove(m);
 	    }
 	}
@@ -254,36 +271,190 @@ class TrainController {
 	}
     }
 
+    private static double ROOT_TWO = Math.sqrt(2.0);
+    
+    private static float getSMax(float s0, Point p1, Point p2) {
+	if (p1.x != p2.x && p1.y != p2.y) {
+	    return (float) (s0 + ROOT_TWO * TrackTile.DELTAS_PER_TILE);
+	} else {
+	    return (float) (s0 + TrackTile.DELTAS_PER_TILE);
+	}
+    }
+
+    private TrainPathSegment getNewSegment(Point p1, Point p2,
+	    float t0, float v0, float s0, int mass, int power, EngineType et) {
+	float sMax = getSMax(s0, p1, p1);
+	return getNewSegment(p1, p2, t0, v0, s0, mass, power, sMax, et);
+    }
+
+    /** @return the TrainPathSegment for the traversal from the centre of tile
+     * at point p1 to centre of tile at point p2 */
+    private TrainPathSegment getNewSegment(Point p1, Point p2,
+	    float t0, float v0, float s0, int mass, int power, float sMax,
+	    EngineType et) {
+	int maxTractiveForce = et.getMaxTractiveForce();
+	FreerailsTile ft = world.getTile(p1);
+	int ttn = ft.getTerrainTypeNumber();
+	TerrainType tt1 = (TerrainType)
+	    world.get(KEY.TERRAIN_TYPES, ttn, Player.AUTHORITATIVE);
+	ft = world.getTile(p2);
+	ttn = ft.getTerrainTypeNumber();
+	TerrainType tt2 = (TerrainType) world.get(KEY.TERRAIN_TYPES, ttn,
+		Player.AUTHORITATIVE);
+	float effectiveIncline = (float) (tt2.getElevation() -
+		tt1.getElevation() + (tt1.getRoughness() + tt2.getRoughness())
+		/ 2) / 100;
+	// if we are on a diagonal then our incline is divided by root 2
+	if (p1.x != p2.x && p1.y != p2.y) {
+	    effectiveIncline /= ROOT_TWO;
+	}
+	// at low speeds, acceleration is limited by traction
+	// calculate acceleration
+	// since mass is on the order of 100, and v is of the order of 1, and
+	// mass is of the order of 1, then power should be in the region of
+	// 100
+	float tractiveForce = power / (100 * v0);
+	if (tractiveForce > (float) maxTractiveForce / 10)
+	    tractiveForce = (float) maxTractiveForce / 10;
+	float a = tractiveForce / mass - effectiveIncline
+	    - v0 * v0 * et.getDragCoeff() / mass - v0 *
+	    et.getRollingFrictionCoeff();
+	System.out.println("a=" + a + ", tf=" + tractiveForce + ", mass=" +
+		mass + ", incline=" + effectiveIncline + ", v0" + v0 +
+	       	", s0=" + s0 + ", t0=" + t0);
+	
+	return new TrainPathSegment(t0, v0, a, s0, sMax);
+    }
+
+    private TrainPathFunction buildPathFunction(TrainPath tp, TrainModel tm,
+	    boolean outOfWater) {
+	trainModelViewer.setTrainModel(tm);
+	ArrayList segList = new ArrayList();
+	ArrayList mapCoords = tp.getMapCoordArray();
+	// tail of PathToDestination coincides with head of train
+	IntLine il = tp.getLastSegment();
+	Point p1 = new Point();
+	Point p2 = new Point();
+	p1.setLocation(il.x2, il.y2);
+	p2.setLocation(il.x1, il.y1);
+	TrackTile.deltasToTileCoords(p1);
+	TrackTile.deltasToTileCoords(p2);
+	float s0 = 0;
+	float t0 = (float) ((GameTime) world.get(ITEM.TIME,
+		    Player.AUTHORITATIVE)).getTime();
+	int mass = trainModelViewer.getTotalMass();
+	EngineType et = (EngineType) world.get(KEY.ENGINE_TYPES,
+		    tm.getEngineType(), Player.AUTHORITATIVE);
+	int power = et.getPowerOutput();
+	
+	if (outOfWater)
+	    power /= 2;
+	
+	int maxTractiveForce = et.getMaxTractiveForce();
+	float v0 = 0;
+       if (tm.getTrainMotionModel().getPathFunction() != null)
+	    v0 = tm.getTrainMotionModel().getPathFunction()
+		.getSpeed((int) t0);
+	// add segment for path from current pos to centre of tile
+	if (p1.equals(p2)) {
+	    // Last segment is from train head to centre of tile
+	    TrainPathSegment seg = getNewSegment(p1, p2, t0, v0, s0, mass,
+		    power, (float) il.getLength().getLength(), et);
+	    segList.add(seg);
+	    t0 = seg.getTMax();
+	    if (t0 < 0) {
+		// train doesn't have enough power/traction to clmb hill!
+		return null;
+	    }
+	    s0 = seg.getDistance(t0);
+	    v0 = seg.getSpeed(t0);
+	    p1.setLocation(p2);
+	}
+
+	for (int i = mapCoords.size() - 1; i >= 0; i--) {
+	    p2 = (Point) mapCoords.get(i);
+	    float sMax = getSMax(s0, p1, p2);
+	    int currentChunk = 0;
+	    int maxChunks = 1;
+	    float currentS0 = s0;
+	    do {
+		TrainPathSegment seg = getNewSegment(p1, p2, t0, v0,
+			currentS0, mass, power, s0 + (sMax - s0) *
+			((float) (currentChunk + 1) / maxChunks), et);
+		float newT0;
+		newT0 = seg.getTMax();
+		if (newT0 < t0) {
+		    // need a better approximation
+		    // try smaller chunks
+		    maxChunks <<= 1;
+		    currentChunk <<= 1;
+		    if (maxChunks > 32) {
+			// hill is too steep
+			return null;
+		    }
+		    continue;
+		}
+		t0 = newT0;
+		segList.add(seg);
+		currentS0 = seg.getDistance(t0);
+		v0 = seg.getSpeed(t0);
+		currentChunk++;
+	    } while (currentChunk < maxChunks);
+	    s0 = currentS0;
+	    p1.setLocation(p2);
+	}
+	return new TrainPathFunction(segList);
+    }
+
     private int setPathToDestination(ObjectKey trainKey, TrainModel tm) {
 	final Point head = new Point();
-	Point stationCoords = new Point();
-	ScheduleIterator si = tm.getScheduleIterator();
-	TrainOrdersModel tom = si.getCurrentOrder(world);
 	GameTime t = (GameTime) world.get(ITEM.TIME, Player.AUTHORITATIVE);
 	
-	if (tom == null) {
+	Point stationCoords = getCurrentDestination(tm);
+	if (stationCoords == null) {
 	    /* no orders */
 	    ChangeTrainMove ctm = ChangeTrainMove.generateMove(trainKey.index,
-		    trainKey.principal, tm, (TrainPath) null, t);
+		    trainKey.principal, tm, (TrainPath) null, null, t);
 	    moveReceiver.processMove(ctm);
 	    return TrainModel.STATE_STOPPED;
 	}
-	ObjectKey stationKey = tom.getStationNumber();
-	StationModel station = (StationModel) world.get(stationKey.key,
-		stationKey.index, stationKey.principal);
 	tm.getPosition(t).getHead(head);
-	stationCoords.x = station.getStationX();
-	stationCoords.y = station.getStationY();
-	stationCoords = TrackTile.tileCoordsToDeltas(stationCoords);
 	TrainPath tp = pathFinder.findPath(stationCoords, head);
-	ChangeTrainMove ctm = ChangeTrainMove.generateMove(trainKey.index,
-		trainKey.principal, tm, tp, t);
+
+	TrainPathFunction tpf = buildPathFunction(tp, tm,
+		tm.getTrainMotionModel().isOutOfWater());
+	ChangeTrainMove ctm;
+	if (tpf == null) {
+	    // train can't climb hill
+	    ctm = ChangeTrainMove.generateMove(trainKey.index,
+		    trainKey.principal, tm, null, null, t);
+	} else {
+	    ctm = ChangeTrainMove.generateMove(trainKey.index,
+		    trainKey.principal, tm, tp, tpf, t);
+	}
 	moveReceiver.processMove(ctm);
 
 	return TrainModel.STATE_RUNNABLE;
     }
 
     private TrainModelViewer trainModelViewer;
+
+    /** @return the trains destination, in deltas from the origin, or null if
+     * there is no current destination */
+    private Point getCurrentDestination(TrainModel tm) {
+	GameTime now = (GameTime) world.get(ITEM.TIME,
+		Player.AUTHORITATIVE);
+	TrainOrdersModel tom = tm.getScheduleIterator()
+	    .getCurrentOrder(world);
+	if (tom == null)
+	    return null;
+
+	ObjectKey stationKey = tom.getStationNumber();
+	StationModel station = (StationModel) world.get
+	    (stationKey.key, stationKey.index, stationKey.principal);
+	Point p = new Point(station.getStationX(), station.getStationY());
+	return TrackTile.tileCoordsToDeltas(p);
+    }
 
     /** @return true if we changed the trains state */
     private boolean checkWater(ObjectKey trainKey, TrainModel train) {
@@ -294,8 +465,29 @@ class TrainController {
 
 	if (!isOutOfWater && trainModelViewer.getWaterRemaining() == 0) {
 	    // send a move to set out of water
-	    Move m = ChangeTrainMove.generateOutOfWaterMove(trainKey, world,
-		    true);
+	    Point head = new Point();
+	    GameTime now = (GameTime) world.get(ITEM.TIME,
+		    Player.AUTHORITATIVE);
+	    TrainPath trainPos = train.getPosition(now);
+	    trainPos.getHead(head);
+	    Point dest = getCurrentDestination(train);
+	    Move m;
+	    if (dest == null) {
+		m = ChangeTrainMove.generateOutOfWaterMove(trainKey, world,
+			true, null, null);
+	    } else {
+		TrainPath newPathToDestination =
+		    pathFinder.findPath(dest, head);
+		TrainPathFunction pathFunction = buildPathFunction
+		    (newPathToDestination, train, true);
+		if (pathFunction == null) {
+		    m = ChangeTrainMove.generateOutOfWaterMove(trainKey,
+			    world, true, null, null);
+		} else {
+		    m = ChangeTrainMove.generateOutOfWaterMove(trainKey, world,
+			    true, newPathToDestination, pathFunction);
+		}
+	    }
 	    moveReceiver.processMove(m);
 	    return true;
 	}

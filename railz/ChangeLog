@@ -1,3 +1,7 @@
+November 26, 2004:
+------------------
+Implemented more realistic physics model. Trains now slow down and speed up on
+gradients.
 October 31, 2004:
 -----------------
 Fixed bug where stations were free to build, added regular updates for water

@@ -46,6 +46,8 @@
     rgb CDATA #REQUIRED
     id ID #REQUIRED
     baseValue CDATA #REQUIRED
+    elevation CDATA #REQUIRED
+    roughness CDATA #REQUIRED
   >
   
 <!--
@@ -91,7 +93,12 @@
     maintenance CDATA #REQUIRED
     maxSpeed CDATA #REQUIRED
     annualFuelConsumption CDATA #REQUIRED
-    waterCapacity CDATA #REQUIRED>
+    waterCapacity CDATA #REQUIRED
+    mass CDATA #REQUIRED
+    powerOutput CDATA #REQUIRED
+    maxTractiveForce CDATA #REQUIRED
+    dragCoeff CDATA #REQUIRED
+    frictionCoeff CDATA #REQUIRED>
 
 <!ELEMENT FuelPrice EMPTY>
 <!ATTLIST FuelPrice
@@ -119,5 +126,17 @@
 
 <!ELEMENT StationImprovements (StationImprovement)*>
 
+<!ELEMENT WagonType EMPTY>
+<!ATTLIST WagonType
+    id ID #REQUIRED
+    category (mail|passenger|fast_freight|slow_freight|bulk_freight)
+#REQUIRED
+    capacity CDATA #REQUIRED
+    unladenMass CDATA #REQUIRED
+    cargoType IDREF #REQUIRED
+    >
+    
+<!ELEMENT WagonTypes (WagonType)*>
+
 <!ELEMENT Types (Cargo_Types, Terrain_Types, Building_Types, EngineTypes,
-	Economy, StationImprovements)>
+	Economy, StationImprovements, WagonTypes)>

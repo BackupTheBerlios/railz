@@ -100,6 +100,6 @@ public class MapFixtureFactory {
         //We need this since when we built track, the terrain type gets check to see if we can
         //built track on it and an exception is thrown if terrain type 0 does not exist.
 	world.add(KEY.TERRAIN_TYPES, new TerrainType(0,
-		    TerrainType.CATEGORY_COUNTRY, "Dummy Terrain", 0L));
+		    TerrainType.CATEGORY_COUNTRY, "Dummy Terrain", 0L, 10, 10));
     }
 }

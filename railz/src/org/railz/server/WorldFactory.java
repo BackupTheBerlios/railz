@@ -67,11 +67,6 @@ class WorldFactory {
         }
         pm.setValue(++progess);
 
-        WagonAndEngineTypesFactory wetf = new WagonAndEngineTypesFactory();
-        pm.setValue(++progess);
-        wetf.addTypesToWorld(w);
-        pm.setValue(++progess);
-
         URL track_xml_url = WorldFactory.class.getResource(
                 "/org/railz/server/data/track_tiles.xml");
 

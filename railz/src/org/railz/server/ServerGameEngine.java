@@ -185,9 +185,15 @@ public class ServerGameEngine implements GameModel, Runnable,
         Thread.currentThread().setPriority(Thread.currentThread().getPriority() +
             1);
 
-        while (keepRunning) {
-            update();
-        }
+	try {
+	    while (keepRunning) {
+		update();
+	    }
+	} catch (Throwable t) {
+	    System.err.println ("Caught throwable " + t);
+	    t.printStackTrace();
+	    return;
+	}
     }
 
     /**

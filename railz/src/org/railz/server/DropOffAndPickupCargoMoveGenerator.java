@@ -270,7 +270,7 @@ class DropOffAndPickupCargoMoveGenerator {
         //First calculate the train's total capacity.
         for (int j = 0; j < train.getNumberOfWagons(); j++) {
 	    WagonType wagonType = (WagonType) w.get(KEY.WAGON_TYPES,
-		    train.getWagon(j));
+		    train.getWagon(j), Player.AUTHORITATIVE);
 	    int cargoType = wagonType.getCargoType();
 
             spaceAvailable[cargoType] += wagonType.getCapacity();

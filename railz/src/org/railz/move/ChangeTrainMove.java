@@ -84,8 +84,10 @@ public class ChangeTrainMove extends ChangeItemInListMove {
      * Change path to destination.
      */
     public static ChangeTrainMove generateMove(int id, FreerailsPrincipal p,
-	    TrainModel before, TrainPath pathToDestination, GameTime now) {
-	TrainModel after = new TrainModel(before, pathToDestination, now);
+	    TrainModel before, TrainPath pathToDestination, TrainPathFunction
+	    pathFunction, GameTime now) {
+	TrainModel after = new TrainModel(before, pathToDestination,
+		pathFunction, now);
 	return new ChangeTrainMove(id, before, after, p);
     }
 
@@ -119,16 +121,33 @@ public class ChangeTrainMove extends ChangeItemInListMove {
     }
 
     public static ChangeTrainMove generateOutOfWaterMove(ObjectKey trainKey,
-	    ReadOnlyWorld w, boolean outOfWater) {
+	    ReadOnlyWorld w, boolean outOfWater, TrainPath pathToDestination,
+	    TrainPathFunction pathFunction) {
 	TrainModel before = (TrainModel) w.get(KEY.TRAINS, trainKey.index,
 		trainKey.principal);
 	GameTime now = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
-	TrainModel after = before.loadWater(now, outOfWater);
+	TrainModel after = before.loadWater(now, outOfWater,
+		pathToDestination, pathFunction);
 	return new ChangeTrainMove(trainKey.index, before, after,
 		trainKey.principal);
     }
 
     public MoveStatus doMove(World w, FreerailsPrincipal p) {
+	System.out.println("Executing ChangeTrainMove:");
+	System.out.println("before=" + getBefore() + ", after=" + getAfter());
+	if (getBefore() != null &&
+		((TrainModel) getBefore()).getTrainMotionModel() != null &&
+		((TrainModel) getBefore()).getTrainMotionModel().getPathFunction() !=
+		null)
+	    System.out.println("getBefore() PathFunction=" + ((TrainModel)
+			getBefore()).getTrainMotionModel().getPathFunction());
+	if (getAfter() != null &&
+		((TrainModel) getBefore()).getTrainMotionModel() != null &&
+		((TrainModel) getAfter()).getTrainMotionModel().getPathFunction() !=
+		null)
+	    System.out.println("getAfter() PathFunction=" + ((TrainModel)
+			getAfter()).getTrainMotionModel().getPathFunction());
+
 	return super.doMove(w, p);
     }
 }

@@ -18,10 +18,7 @@
 package org.railz.world.train;
 
 import java.awt.Point;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.ListIterator;
-import java.util.HashMap;
+import java.util.*;
 
 import org.railz.world.common.*;
 import org.railz.world.player.*;
@@ -301,6 +298,40 @@ public final class TrainPath implements FreerailsSerializable {
 
     public int hashCode() {
 	return segments.hashCode();
+    }
+
+    public ArrayList getMapCoordArray() {
+	ArrayList mapCoords = new ArrayList();
+	IntLine il;
+	ListIterator i = segments.listIterator(0);
+	Point p = new Point();
+	Point oldP = new Point();
+	Point p2 = new Point();
+	byte direction;
+	int dx;
+	int dy;
+	while (i.hasNext()) {
+	    il = (IntLine) i.next();
+	    p.setLocation(il.x1, il.y1);
+	    p2.setLocation(il.x2, il.y2);
+	    TrackTile.deltasToTileCoords(p);
+	    if (!p.equals(oldP))
+		mapCoords.add(new Point(p));
+	    oldP.setLocation(p);
+	    if (il.x1 == il.x2 && il.y1 == il.y2)
+		continue;
+	    direction = il.getDirection();
+	    dx = CompassPoints.getUnitDeltaX(direction);
+	    dy = CompassPoints.getUnitDeltaY(direction);
+	    TrackTile.deltasToTileCoords(p2); 
+	    
+	    while (!p2.equals(p)) {
+		p.translate(dx, dy);
+		mapCoords.add(new Point(p));
+		oldP.setLocation(p);
+	    }
+	}
+	return mapCoords;
     }
 
     /**

@@ -120,7 +120,7 @@ public class TrainModel implements FreerailsSerializable {
      * Copy constructor but with a new route to the destination
      */
     public TrainModel(TrainModel trainModel, TrainPath pathToDestination,
-	    GameTime now) {
+	    TrainPathFunction pathFunction, GameTime now) {
 	this(trainModel.engineType, trainModel.wagonTypes,
 		trainModel.cargoBundleNumber,
 		trainModel.creationDate, trainModel.state,
@@ -134,7 +134,7 @@ public class TrainModel implements FreerailsSerializable {
 
 	TrainMotionModel2 tmm = trainModel.trainMotionModel == null ? null :
 	    new TrainMotionModel2(trainModel.trainMotionModel,
-		    pathToDestination, now);
+		    pathToDestination, pathFunction, now);
 	trainMotionModel = tmm;
     }
 
@@ -329,7 +329,7 @@ public class TrainModel implements FreerailsSerializable {
 	    maxSpeed) {
 	return new TrainModel(engineType, wagonTypes, cargoBundleNumber,
 		creationDate, state, scheduleIterator, new
-		TrainMotionModel2(null, position, t, maxSpeed), priority,
+		TrainMotionModel2(null, position, t, maxSpeed, null), priority,
 		isBlocked, stateLastChanged, ticksInService,
 		costTraversedSinceLoadingWater);
     }
@@ -387,8 +387,10 @@ public class TrainModel implements FreerailsSerializable {
     }
 
     /** Change the full/empty state of the trains water */
-    public TrainModel loadWater(GameTime t0, boolean empty) {
-	TrainMotionModel2 tmm = trainMotionModel.setOutOfWater(empty, t0);
+    public TrainModel loadWater(GameTime t0, boolean empty, TrainPath
+	    pathToDestination, TrainPathFunction pathFunction) {
+	TrainMotionModel2 tmm = trainMotionModel.setOutOfWater(empty, t0,
+		pathToDestination, pathFunction);
 	return new TrainModel(engineType, wagonTypes, cargoBundleNumber,
 		creationDate, state, scheduleIterator, tmm,
 		priority, isBlocked, stateLastChanged, ticksInService,

@@ -33,6 +33,11 @@ class EngineTypesHandler {
     private int annualFuelConsumption;
     private int fuelType;
     private int waterCapacity;
+    private int mass;
+    private int powerOutput;
+    private int maxTractiveForce;
+    private float dragCoeff;
+    private float frictionCoeff;
 
     public EngineTypesHandler(World w) {
 	world = w;
@@ -44,9 +49,14 @@ class EngineTypesHandler {
 	speed = Integer.parseInt(meta.getValue("maxSpeed"));
 	maintenance = Long.parseLong(meta.getValue("maintenance"));
 	waterCapacity = Integer.parseInt(meta.getValue("waterCapacity"));
+	mass = Integer.parseInt(meta.getValue("mass"));
+	powerOutput = Integer.parseInt(meta.getValue("powerOutput"));
 	annualFuelConsumption =
 	    Integer.parseInt(meta.getValue("annualFuelConsumption"));
 	String ft = meta.getValue("fuelType");
+	maxTractiveForce = Integer.parseInt(meta.getValue("maxTractiveForce"));
+	dragCoeff = Float.parseFloat(meta.getValue("dragCoeff"));
+	frictionCoeff = Float.parseFloat(meta.getValue("frictionCoeff"));
 	if (ft.equals("Coal"))
 	    fuelType = EngineType.FUEL_TYPE_COAL;
 	else if (ft.equals("Diesel"))
@@ -66,7 +76,8 @@ class EngineTypesHandler {
 	    if ("EngineType".equals(name)) {
 		EngineType et = new EngineType(this.name, price, speed,
 			maintenance, annualFuelConsumption, fuelType,
-			waterCapacity);
+			waterCapacity, mass, powerOutput, maxTractiveForce,
+			frictionCoeff, dragCoeff);
 		world.add(KEY.ENGINE_TYPES, et, Player.AUTHORITATIVE);
 	    }
 	}
