@@ -218,6 +218,7 @@ public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldLi
     
     public void setHeight(int i) {
         height = i;
+	resetPreferredSize();
     }
     
     protected void paintComponent(Graphics g) {
