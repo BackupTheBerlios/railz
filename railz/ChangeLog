@@ -1,3 +1,6 @@
+January 4, 2005:
+----------------
+Added code for creating files in users home directory for modding the game.
 January 1, 2005:
 ----------------
 Added workaround for Crimson XML parser where it was failing to parse DTDs

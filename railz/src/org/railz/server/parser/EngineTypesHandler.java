@@ -28,7 +28,6 @@ class EngineTypesHandler {
 
     private String name;
     private long price;
-    private int speed;
     private long maintenance;
     private int annualFuelConsumption;
     private int fuelType;
@@ -47,7 +46,6 @@ class EngineTypesHandler {
     public void handleEngineType(Attributes meta) throws SAXException {
 	name = meta.getValue("id");
 	price = Long.parseLong(meta.getValue("price"));
-	speed = Integer.parseInt(meta.getValue("maxSpeed"));
 	maintenance = Long.parseLong(meta.getValue("maintenance"));
 	waterCapacity = Integer.parseInt(meta.getValue("waterCapacity"));
 	mass = Integer.parseInt(meta.getValue("mass"));
@@ -76,7 +74,7 @@ class EngineTypesHandler {
     public void endElement(String ns, String name, String qname) throws
 	SAXException {
 	    if ("EngineType".equals(name)) {
-		EngineType et = new EngineType(this.name, price, speed,
+		EngineType et = new EngineType(this.name, price,
 			maintenance, annualFuelConsumption, fuelType,
 			waterCapacity, mass, powerOutput, maxTractiveForce,
 			frictionCoeff, dragCoeff, available);

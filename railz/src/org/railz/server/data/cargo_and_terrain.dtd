@@ -94,7 +94,6 @@
     fuelType (Coal|Diesel|Electric) #REQUIRED
     price CDATA #REQUIRED
     maintenance CDATA #REQUIRED
-    maxSpeed CDATA #REQUIRED
     annualFuelConsumption CDATA #REQUIRED
     waterCapacity CDATA #REQUIRED
     mass CDATA #REQUIRED

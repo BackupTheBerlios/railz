@@ -14,10 +14,10 @@
   ++ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   -->
 <!-- Contains common map data -->
-<Calendar ticksPerDay="30" startYear="1837" />
+<Calendar ticksPerDay="30" startYear="1832" />
 <Events>
-	<ScriptingEvent name="EngineTypeEvent" startTime="1840-02-01"
-		 endTime="1840-02-01">
+	<ScriptingEvent name="EngineTypeEvent" startTime="1837-01-01"
+		 endTime="1837-01-01">
 		<Param name="available" value="true" />
 		<Param name="engineType" value="Norris" />
 	</ScriptingEvent>

@@ -19,7 +19,7 @@ package org.railz.server;
 
 import java.net.URL;
 import org.railz.server.parser.*;
-import org.railz.util.FreerailsProgressMonitor;
+import org.railz.util.*;
 import org.railz.world.common.*;
 import org.railz.world.player.Player;
 import org.railz.world.top.ITEM;
@@ -45,6 +45,9 @@ class WorldFactory {
 
     public static WorldImpl createWorldFromMapFile(String mapName,
         FreerailsProgressMonitor pm) {
+	ModdableResourceFinder mrf = new ModdableResourceFinder
+	    ("org/railz/server/data");
+
         pm.setMessage("Setting up world.");
         pm.setValue(0);
         pm.setMax(5);
@@ -61,8 +64,8 @@ class WorldFactory {
         w.set(ITEM.TIME, new GameTime(0));
 
         try {
-            java.net.URL url = WorldFactory.class.getResource(
-                    "/org/railz/server/data/cargo_and_terrain.xml");
+            java.net.URL url = mrf.getURLForReading
+		("cargo_and_terrain.xml");
 
             CargoAndTerrainParser.parse(url, w);
         } catch (Exception e) {
@@ -71,21 +74,21 @@ class WorldFactory {
         }
         pm.setValue(++progess);
 
-        URL track_xml_url = WorldFactory.class.getResource(
-                "/org/railz/server/data/track_tiles.xml");
+        URL track_xml_url = mrf.getURLForReading
+	    ("track_tiles.xml");
 
 	Track_TilesHandlerImpl trackSetFactory = new
 	    Track_TilesHandlerImpl(track_xml_url, w);
         pm.setValue(++progess);
 
         //Load the terrain map
-        URL map_url = WorldFactory.class.getResource
-	    ("/org/railz/server/data/maps/" + mapName + "/map.png");
+        URL map_url = mrf.getURLForReading
+	    ("maps/" + mapName + "/map.png");
         MapFactory.setupMap(map_url, w, pm);
 
         //Load the city names
-	URL cities_xml_url = WorldFactory.class.getResource
-	    ("/org/railz/server/data/maps/" + mapName + "/map.xml");
+	URL cities_xml_url = mrf.getURLForReading
+	    ("maps/" + mapName + "/map.xml");
 
         try {
             InputCityNames r = new InputCityNames(w, cities_xml_url);

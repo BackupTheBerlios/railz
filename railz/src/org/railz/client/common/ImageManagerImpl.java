@@ -37,13 +37,14 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import javax.imageio.ImageIO;
 
+import org.railz.util.*;
 
 /**
  * @author Luke
  *
  */
 public class ImageManagerImpl implements ImageManager {
-    private String pathToReadFrom;
+    private ModdableResourceFinder mrf;
 
     /**
      * HashMap of BufferedImage
@@ -59,21 +60,18 @@ public class ImageManagerImpl implements ImageManager {
                                                                             .getDefaultConfiguration();
 
     public ImageManagerImpl(Component c, String readpath) {
+	mrf = new ModdableResourceFinder(readpath);
 	defaultConfiguration = c.getGraphicsConfiguration();
-
-        pathToReadFrom = readpath;
     }
 
     public void setPathToReadFrom(String s) {
-        pathToReadFrom = s;
+	mrf = new ModdableResourceFinder(s);
     }
 
     private BufferedImage loadImage(String relativeFilename) throws IOException {
-        //File f = new File(pathToReadFrom+File.separator+relativeFilename);
-        String read = pathToReadFrom + relativeFilename;
-        read = read.replace(File.separatorChar, '/');
+        String read = relativeFilename;
 
-        URL url = ImageManagerImpl.class.getResource(read);
+        URL url = mrf.getURLForReading(read);
 
         if (null == url) {
             throw new IOException("Couldn't find: " + read);

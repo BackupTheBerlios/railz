@@ -46,6 +46,8 @@ public class ViewListsImpl implements ViewLists {
     private final ImageManager imageManager;
     private final HashMap icons = new HashMap();
     private final GUIRoot guiRoot;
+    private final ModdableResourceFinder mrf = new ModdableResourceFinder
+	("org/railz/client/graphics");
 
     public ViewListsImpl(ModelRoot mr, GUIRoot gr,
 	    FreerailsProgressMonitor pm)
@@ -53,11 +55,10 @@ public class ViewListsImpl implements ViewLists {
 	    guiRoot = gr;
 	    modelRoot = mr;
 	    ReadOnlyWorld w = mr.getWorld();
-        URL in = ViewListsImpl.class.getResource("/org/railz/client/graphics");
 
 	imageManager = new
 	    ImageManagerImpl(guiRoot.getClientJFrame(),
-		    "/org/railz/client/graphics/");
+		    "org/railz/client/graphics/");
         tiles = loadTerrainRenderers(w, pm);
 	buildingRenderers = loadBuildingRenderers(w, pm);
 
@@ -279,9 +280,7 @@ public class ViewListsImpl implements ViewLists {
 	ImageIcon icon = (ImageIcon) icons.get(iconName);
  	if (icon == null) {
  	    URL iconURL;
- 	    iconURL = this.getClass().getClass().getResource
- 		("/org/railz/client/graphics/" + iconName +
- 		 ".png");
+ 	    iconURL = mrf.getURLForReading (iconName + ".png");
  	    if (iconURL == null) {
  		System.err.println("Couldn't find icon for " + iconName);
  		return null;

@@ -91,7 +91,7 @@ final public class EngineType implements FreerailsSerializable {
 	available = et.available;
     }
 
-    public EngineType(String name, long m, int speed,
+    public EngineType(String name, long m,
         long maintenance, int annualFuelConsumption, int fuelType,
 	int waterCapacity, int mass, int powerOutput, int maxTractiveForce,
 	float rollingFrictionCoefficient, float dragCoefficient, boolean
