@@ -33,34 +33,42 @@ public class WorkaroundResolver implements EntityResolver {
 
     public InputSource resolveEntity(String publicId, String systemId)
 	throws SAXException, IOException {
-	    if (systemId != null &&
-		    systemId.startsWith("jar:")) {
+	    if (systemId != null) {
+		String prefix = null;
+		String suffix = null;
+	       if (systemId.startsWith("jar:")) {
 		// keep everything up to the !
-		int i = systemId.indexOf('!');
-		if (i >= 0 && i < systemId.length() - 1) {
-		    String prefix = systemId.substring(0, i + 1);
-		    String suffix = systemId.substring(i + 1);
-		    String[] elements = suffix.split("/");
-		    String newPath = "";
-		    int j = 0;
-		    for (i = 0; i < elements.length; i++) {
-			if (elements[i].equals("..")) {
-			    j = j - 2;
-			} else if (elements[i].equals(".")) {
-			    j--;
-			} else {
-			    elements[j] = elements[i];
-			}
-			j++;
-		    }
-		    for (i = 0; i < j; i++) {
-			if (i > 0) {
-			    newPath = newPath + "/";
-			}
-			newPath = newPath + elements[i];
-		    }
-		    systemId = prefix + newPath;
-		}
+		   int i = systemId.indexOf('!');
+		   if (i >= 0 && i < systemId.length() - 1) {
+		       prefix = systemId.substring(0, i + 1);
+		       suffix = systemId.substring(i + 1);
+		   }
+	       } else if (systemId.startsWith("file:")) {
+		   prefix = "";
+		   suffix = systemId;
+	       } else {
+		   return new InputSource(systemId);
+	       }
+	       String[] elements = suffix.split("/");
+	       String newPath = "";
+	       int j = 0;
+	       for (int i = 0; i < elements.length; i++) {
+		   if (elements[i].equals("..")) {
+		       j = j - 2;
+		   } else if (elements[i].equals(".")) {
+		       j--;
+		   } else {
+		       elements[j] = elements[i];
+		   }
+		   j++;
+	       }
+	       for (int i = 0; i < j; i++) {
+		   if (i > 0) {
+		       newPath = newPath + "/";
+		   }
+		   newPath = newPath + elements[i];
+	       }
+	       systemId = prefix + newPath;
 	    }
 	    return new InputSource(systemId);
 	}

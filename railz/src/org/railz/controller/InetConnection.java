@@ -157,6 +157,7 @@ public class InetConnection implements ConnectionToServer {
      */
     public World loadWorldFromServer() throws IOException {
         setState(ConnectionState.INITIALISING);
+	dispatcher.reset();
         sendCommand(new LoadWorldCommand());
         sender.flush();
         return dispatcher.receiveWorld();
@@ -227,40 +228,35 @@ public class InetConnection implements ConnectionToServer {
      * connection has been disconnected.
      */
     void disconnect() {
-        /* To allow this method to be called without risk of deadlock from synchronized methods in the dispatcher,
-        * we must acquire the lock on the dispatcher before locking on this object.       
-        */
-        synchronized (dispatcher) {
-            synchronized (this) {
-                try {
-                    System.out.println("disconnecting from remote peer!");
-                    setState(ConnectionState.CLOSED);
+	synchronized (this) {
+	    try {
+		System.out.println("disconnecting from remote peer!");
+		setState(ConnectionState.CLOSED);
 
-                    if (dispatcher != null) {
-                        dispatcher.close();
-                    }
+		if (dispatcher != null) {
+		    dispatcher.close();
+		}
 
-                    if (sender != null) {
-                        sender.close();
-                    }
+		if (sender != null) {
+		    sender.close();
+		}
 
-                    sender = null;
+		sender = null;
 
-                    if (socket != null) {
-                        socket.close();
-                    }
+		if (socket != null) {
+		    socket.close();
+		}
 
-                    socket = null;
-                } catch (IOException e) {
-                    System.out.println("Caught an IOException disconnecting " +
-                        e);
-                }
+		socket = null;
+	    } catch (IOException e) {
+		System.out.println("Caught an IOException disconnecting " +
+			e);
+	    }
 
-                if (connectionListener != null) {
-                    connectionListener.connectionClosed(this);
-                }
-            }
-        }
+	    if (connectionListener != null) {
+		connectionListener.connectionClosed(this);
+	    }
+	}
     }
 
     /**
@@ -316,5 +312,10 @@ public class InetConnection implements ConnectionToServer {
                 /* The socket was probably closed, exit */
             }
         }
+    }
+
+    void reset() {
+	if (sender != null)
+	    sender.reset();
     }
 }

@@ -341,8 +341,9 @@ class TrainController {
 	TrackTile.deltasToTileCoords(p1);
 	TrackTile.deltasToTileCoords(p2);
 	float s0 = 0;
-	float t0 = (float) ((GameTime) world.get(ITEM.TIME,
-		    Player.AUTHORITATIVE)).getTime();
+	int tBase = ((GameTime) world.get(ITEM.TIME,
+		    Player.AUTHORITATIVE)).getTime(); 
+	float t0 = 0.0f;
 	int mass = trainModelViewer.getTotalMass();
 	EngineType et = (EngineType) world.get(KEY.ENGINE_TYPES,
 		    tm.getEngineType(), Player.AUTHORITATIVE);
@@ -355,7 +356,7 @@ class TrainController {
 	float v0 = 0;
        if (tm.getTrainMotionModel().getPathFunction() != null)
 	    v0 = tm.getTrainMotionModel().getPathFunction()
-		.getSpeed((int) t0);
+		.getSpeed(tBase);
 	// add segment for path from current pos to centre of tile
 	if (p1.equals(p2)) {
 	    // Last segment is from train head to centre of tile
@@ -417,7 +418,7 @@ class TrainController {
 	    s0 = currentS0;
 	    p1.setLocation(p2);
 	}
-	return new TrainPathFunction(segList);
+	return new TrainPathFunction(tBase, segList);
     }
 
     private int setPathToDestination(ObjectKey trainKey, TrainModel tm) {

@@ -173,39 +173,38 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
             connection.removeConnectionListener(this);
         }
 
+	connection = c;
+	connection.open();
+
+	connection.addMoveReceiver(worldUpdater);
+	connection.addConnectionListener(this);
+
+	/* attempt to authenticate the player */
+	modelRoot.getUserMessageLogger().println
+	    (Resources.get("Attempting to authenticate player: ") +
+	     player.getName());
+	authenticated = false;
+	connection.sendCommand(new AddPlayerCommand(player, player.sign()));
+	synchronized (authMutex) {
+	    if (!authenticated) {
+		modelRoot.getUserMessageLogger().println
+		    (Resources.get("Waiting for authentication"));
+
+		try {
+		    authMutex.wait();
+		} catch (InterruptedException e) {
+		    //ignore
+		}
+
+		if (!authenticated) {
+		    throw new GeneralSecurityException("Server rejected " +
+			    "attempt to authenticate");
+		}
+	    }
+	} // synchronized (authMutex)
+	    
         /* grab the lock on the WorldUpdater in order to prevent any moves from
          * the server being lost whilst we plumb it in */
-    //    synchronized (worldUpdater) {
-            connection = c;
-            connection.open();
-
-            connection.addMoveReceiver(worldUpdater);
-            connection.addConnectionListener(this);
-
-	    /* attempt to authenticate the player */
-	    modelRoot.getUserMessageLogger().println
-		(Resources.get("Attempting to authenticate player: ") +
-		 player.getName());
-	    authenticated = false;
-	    connection.sendCommand(new AddPlayerCommand(player, player.sign()));
-	    synchronized (authMutex) {
-		if (!authenticated) {
-		    modelRoot.getUserMessageLogger().println
-			(Resources.get("Waiting for authentication"));
-
-		    try {
-			authMutex.wait();
-		    } catch (InterruptedException e) {
-			//ignore
-		    }
-
-		    if (!authenticated) {
-			throw new GeneralSecurityException("Server rejected " +
-				"attempt to authenticate");
-		    }
-		}
-	    } // synchronized (authMutex)
-	    
 	synchronized (worldUpdater) {
             world = connection.loadWorldFromServer();
 

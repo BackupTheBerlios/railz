@@ -1,3 +1,9 @@
+January 11, 2005:
+-----------------
+Fixed problems with TrainPathFunction getting out of control and not homing
+correctly.
+Fixed problem with network play, and server-only mode not working.
+Fixed problems with file-naming conventions on Windows machines.
 January 4, 2005:
 ----------------
 Added code for creating files in users home directory for modding the game.

@@ -59,6 +59,9 @@ public class ImageManagerImpl implements ImageManager {
                                                                             .getDefaultScreenDevice()
                                                                             .getDefaultConfiguration();
 
+    /**
+     * @param readpath UNIX-style path
+     */
     public ImageManagerImpl(Component c, String readpath) {
 	mrf = new ModdableResourceFinder(readpath);
 	defaultConfiguration = c.getGraphicsConfiguration();
@@ -68,6 +71,9 @@ public class ImageManagerImpl implements ImageManager {
 	mrf = new ModdableResourceFinder(s);
     }
 
+    /**
+     * @param relativeFilename UNIX-style relative path
+     */
     private BufferedImage loadImage(String relativeFilename) throws IOException {
         String read = relativeFilename;
 
@@ -92,6 +98,9 @@ public class ImageManagerImpl implements ImageManager {
         return compatibleImage;
     }
 
+    /**
+     * @param relativeFilename UNIX-style relative path
+     */
     public BufferedImage getImage(String relativeFilename) throws IOException {
         relativeFilename = relativeFilename.replace(' ', '_');
 
@@ -124,6 +133,7 @@ public class ImageManagerImpl implements ImageManager {
     /**
      *  Returns the specified image scaled so that its height is equal to the
      * specified height.
+     * @param relativeFilename UNIX-style relative path
      */
     public BufferedImage getScaledImage(String relativeFilename, int height)
         throws IOException {

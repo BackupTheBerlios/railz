@@ -49,7 +49,9 @@ import org.railz.world.player.Player;
  */
 public class Launcher extends javax.swing.JFrame implements
 FreerailsProgressMonitor {
-    private static final int GAME_SPEED_SLOW = 0;
+    private static final int GAME_SPEED_PAUSED = 0;
+    private static final int GAME_SPEED_SLOW = 10;
+    
 	private Component[] wizardPages = new Component[4];
     int currentPage = 0;
 
@@ -105,7 +107,8 @@ FreerailsProgressMonitor {
 		} else {
 		    sci = gs.getSavedGame(this, 0, msp.getLoadFilename());
 		}
-		sci.setTargetTicksPerSecond(GAME_SPEED_SLOW);  //Set initial game speed to slow.
+		//Set initial game speed to paused.
+		sci.setTargetTicksPerSecond(GAME_SPEED_PAUSED);
 		mode = cop.isWindowed() ? ScreenHandler.WINDOWED_MODE :
 		    ScreenHandler.FULL_SCREEN;
 		try {
@@ -215,7 +218,8 @@ FreerailsProgressMonitor {
 		setNextEnabled(true);
 		currentPage = 3;
 		cl.show(jPanel1, "3");
-		/* TODO start server! */
+		/* TODO additional server control screen including game speed
+		 * controls */
 	}
     }
 
@@ -445,6 +449,7 @@ FreerailsProgressMonitor {
 		/* Connection status screen */
 		prevButton.setEnabled(false);
 		sci.setTargetTicksPerSecond(GAME_SPEED_SLOW);
+		setMessage(Resources.get("Game started."));
 		setNextEnabled(false);
 	}
     }//GEN-LAST:event_nextButtonActionPerformed

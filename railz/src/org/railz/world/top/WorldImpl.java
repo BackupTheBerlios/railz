@@ -65,7 +65,7 @@ public class WorldImpl implements World {
 	    ArrayList al = wi.lists[i];
 	    KEY k = KEY.getKey(i);
 	    for (int j = 0; j < al.size(); j++) {
-		if (k.isPrivate && wi.getPlayerIndex(viewer) != j) {
+		if (k.isPrivate && pi != j) {
 		    lists[i].add(null);
 		} else {
 		    lists[i].add(al.get(j));
@@ -77,7 +77,7 @@ public class WorldImpl implements World {
 	map = wi.map;
     }
 
-    ReadOnlyWorld getReadOnlyView (FreerailsPrincipal viewer) {
+    synchronized ReadOnlyWorld getReadOnlyView (FreerailsPrincipal viewer) {
 	return new WorldImpl(this, viewer);
     }
 

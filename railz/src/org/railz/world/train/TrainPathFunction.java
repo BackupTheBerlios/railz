@@ -28,17 +28,21 @@ import org.railz.world.top.*;
  */
 public class TrainPathFunction implements FreerailsSerializable {
     private final TrainPathSegment[] segments;
+    private final int tBase;
     
-    public TrainPathFunction(ArrayList segmentArrayList) {
+    public TrainPathFunction(int tBase, ArrayList segmentArrayList) {
+	this.tBase = tBase;
 	segments = (TrainPathSegment [] ) segmentArrayList.toArray
 	    (new TrainPathSegment[segmentArrayList.size()]);
     }
     
     public TrainPathFunction(TrainPathFunction tpf) {
 	segments = tpf.segments;
+	tBase = tpf.tBase;
     }
 
     public float getSpeed(int t) {
+	t -= tBase;
 	for (int i = 0; i < segments.length; i++) {
 	    if (segments[i].tMax >= (float) t)
 		return segments[i].getSpeed((float) t);
@@ -48,6 +52,7 @@ public class TrainPathFunction implements FreerailsSerializable {
     }
 
     public float getDistance(int t) {
+	t -= tBase;
 	for (int i = 0; i < segments.length; i++) {
 	    if (segments[i].tMax >= (float) t)
 		return segments[i].getDistance((float) t);
@@ -89,18 +94,24 @@ public class TrainPathFunction implements FreerailsSerializable {
 		sMax) {
 	    this.t0 = t0;
 	    this.v0 = v0;
-	    this.a = a;
+	    // when a is small, approximate to 0 to avoid problems with
+	    // taking the difference between two small numbers
+	    if (Math.abs(a) > 0.0001)
+		this.a = a;
+	    else
+		this.a = 0.0f;
 	    this.s0 = s0;
 	    float deltaS = sMax - s0;
 	    // (-b +- sqrt(b^2 - 4ac)) / 2a
-	    if (a == 0) {
+	    if (a == 0.0f) {
 		tMax = t0 + (sMax - s0) / v0;
-	    } else if (v0 * v0 + 2 * a * deltaS < 0) {
+	    } else if (v0 * v0 + 2.0f * a * deltaS < 0.0f) {
 		tMax = -1;
 	    } else {
-		tMax = t0 + (-v0 + (float) Math.sqrt(v0 * v0 + 2 * a * 
+		tMax = t0 + (-v0 + (float) Math.sqrt(v0 * v0 + 2.0f * a * 
 			    deltaS)) / a;
 	    }
+	    assert tMax >= t0: "sMax=" + sMax + ", " + this.toString();
 	}
 
 	public String toString() {
@@ -115,6 +126,7 @@ public class TrainPathFunction implements FreerailsSerializable {
 
     public String toString() {
 	String s = "TrainPathFunction: ";
+	s += "tBase=" + tBase + ", ";
 	for (int i = 0; i < segments.length; i++) {
 	    if (i > 0)
 		s += ", ";

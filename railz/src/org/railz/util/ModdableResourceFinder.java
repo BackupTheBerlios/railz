@@ -60,7 +60,7 @@ public class ModdableResourceFinder {
      * Searches for the resource first in the customisable resource area, then
      * using the ClassLoader for this class.
      * @return a URL pointing to the desired resource.
-     * @param relPath relative path to the resource
+     * @param relPath relative path ('/' separated) to the resource
      */
     public URL getURLForReading(String relPath) {
 	/* first search user.home */
@@ -79,6 +79,7 @@ public class ModdableResourceFinder {
 	
 	// file did not exist, open default URL
 	u = getClass().getResource(prefix + relPath);
+	System.out.println("Getting URL " + u + " for " + relPath);
 	return u;
     }
 
@@ -86,7 +87,7 @@ public class ModdableResourceFinder {
      * Searches for the resource first in the customisable resource area, then
      * using the ClassLoader for this class.
      * @return a File pointing to the desired resource.
-     * @param relPath relative path to the resource
+     * @param relPath relative path ('/' separated) to the resource
      */
     public File getFileForWriting(String relPath) throws IOException {
 	File f = new File(prefixedHomeDir, relPath);
