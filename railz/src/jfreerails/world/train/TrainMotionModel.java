@@ -25,7 +25,7 @@ import jfreerails.world.common.*;
  * trains position and movement.
  * @author rtuck99@users.berlios.de
  */
-public class TrainMotionModel {
+public final class TrainMotionModel {
     /**
      * This is the trains speed in tiles per BigTick.
      */
@@ -48,12 +48,29 @@ public class TrainMotionModel {
     private GameTime timeOfLastSync;
 
     public boolean isBlocked;
+
+    /**
+     * Number of ticks during which this train has been blocked.
+     */
+    private int blockedFor;
     
     TrainMotionModel() {
 	pathTraversedSinceLastSync = null;
 	pathToDestination = null;
 	speed = 0;
+	blockedFor = 0;
 	isBlocked = true;
+    }
+
+    public int getBlockedFor() {
+	return blockedFor;
+    }
+
+    /**
+     * Bump the number of ticks we were blocked for
+     */
+    public void block() {
+	blockedFor++;
     }
 
     public TrainPath getPathToDestination() {
@@ -71,6 +88,7 @@ public class TrainMotionModel {
     public void sync(GameTime now, TrainPath p) {
 	timeOfLastSync = now;
 	pathTraversedSinceLastSync = new TrainPath(p);
+	blockedFor = 0;
     }
 
     public boolean isBlocked() {

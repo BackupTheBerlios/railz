@@ -87,9 +87,10 @@ public class TrainOrdersListModel extends AbstractListModel {
             }
         }
         
-       
         boolean isPriorityOrders = (0 == index && si.hasPriorityOrder());
-        TrainOrdersModel order =  getSchedule().getCurrentOrder(w);
+	Schedule schedule = (Schedule) w.get(KEY.TRAIN_SCHEDULES,
+		si.getScheduleId(), Player.AUTHORITATIVE);
+	TrainOrdersModel order = schedule.getOrder(index);
 	return new TrainOrdersListElement(isPriorityOrders, gotoStatus, order,
 		trainNumber);
     }

@@ -140,7 +140,6 @@ public class TrainPath implements FreerailsSerializable {
      * preserved and intended length is calculated.
      */
     public void append(TrainPath tp) {
-	System.out.println("appending " + tp + " to " + this);
 	IntLine tpHead = (IntLine) tp.segments.getFirst();
 	IntLine tail = (IntLine) segments.getLast();
 	if (tpHead.x1 != tail.x2 ||
@@ -188,8 +187,6 @@ public class TrainPath implements FreerailsSerializable {
 	    int oldY2 = line.y2;
 	    PathLength segLength = new PathLength(line.getLength());
 	    l.subtract(segLength);
-	    System.out.println("newLength = " + newLength + "l" +
-		    l.getLength());
 	    segLength.setLength(newLength - l.getLength());
 	    l.add(segLength);
 	    line.setLength(segLength);
@@ -212,18 +209,20 @@ public class TrainPath implements FreerailsSerializable {
      */
     public void prepend(TrainPath additionalPath) {
 	PathLength l = additionalPath.actualLength;
-	IntLine tail = (IntLine) additionalPath.segments.removeLast();
+	IntLine tail = (IntLine) additionalPath.segments.getLast();
 	IntLine head = getFirstSegment();
 	int tailDir = tail.getDirection();
 	if (tailDir == 0 || (tailDir == head.getDirection())) {
-	    System.out.println("prepending " + tail + " to " + head);
 	    head.prepend(tail);
 	} else {
 	    segments.addFirst(tail);
 	}
 	/* add the rest of the path */
-	while (! additionalPath.segments.isEmpty()) {
-	    segments.addFirst(additionalPath.segments.removeLast());
+	ListIterator i =
+	    additionalPath.segments.listIterator(additionalPath.segments.size()
+		    - 1);
+	while (i.hasPrevious()) {
+	    segments.addFirst(i.previous());
 	}
 	actualLength.add(l);
 	length = (int) actualLength.getLength();
@@ -239,7 +238,6 @@ public class TrainPath implements FreerailsSerializable {
     public TrainPath moveHeadTo(TrainPath additionalPath) {
 	int l = length;
 	prepend(additionalPath);
-	System.out.println("Truncating to " + l);
 	return truncateTail(l);
     }
     
@@ -251,8 +249,8 @@ public class TrainPath implements FreerailsSerializable {
      * @return the position of the head prior to the path being advanced
      */
     public Point moveTailTo(TrainPath additionalPath) {
-	IntLine additionalHead = (IntLine)
-	    additionalPath.segments.removeFirst();
+	ListIterator i = additionalPath.segments.listIterator(0);
+	IntLine additionalHead = (IntLine) i.next();
 	IntLine tail = getLastSegment();
 	Point oldHeadPoint = new Point (additionalHead.x1, additionalHead.y1);
 	if (tail.getDirection() == additionalHead.getDirection()) {
@@ -262,8 +260,8 @@ public class TrainPath implements FreerailsSerializable {
 	}
 	actualLength.add(additionalHead.getLength());
 	/* add the rest of the path */
-	while (! additionalPath.segments.isEmpty()) {
-	    additionalHead = (IntLine) additionalPath.segments.removeFirst();
+	while (i.hasNext()) {
+	    additionalHead = (IntLine) i.next();
 	    segments.add(additionalHead);
 	    actualLength.add(additionalHead.getLength());
 	}
@@ -300,63 +298,53 @@ public class TrainPath implements FreerailsSerializable {
      * to be put as keys, and the directions as objects.
      */
     public void getMapCoordsAndDirections(HashMap mapCoords) {
-	byte direction, nextDirection;
+	byte direction;
 	ListIterator i = segments.listIterator(0);
 	Point map = new Point();
 	final Point oldMapPoint = new Point();
-	nextDirection = 0;
 	while (i.hasNext()) {
 	    IntLine l = (IntLine) i.next();
 	    int dx = l.x2 - l.x1;
 	    int dy = l.y2 - l.y1;
 	    map.x = l.x1 / TrackTile.DELTAS_PER_TILE;
 	    map.y = l.y1 / TrackTile.DELTAS_PER_TILE;
-	    while (map.x != l.x2 / TrackTile.DELTAS_PER_TILE &&
-		    map.y != l.y2 / TrackTile.DELTAS_PER_TILE) {
-		direction = nextDirection;
-		nextDirection = 0;
+	    do {
 		oldMapPoint.x = map.x;
 		oldMapPoint.y = map.y;
 		if (dx < 0) {
 		    map.x--;
-		    nextDirection = (byte) (CompassPoints.NORTHWEST |
+		    direction = (byte) (CompassPoints.NORTHWEST |
 			CompassPoints.WEST |
 			CompassPoints.SOUTHWEST);
 		} else if (dx > 0) {
 		    map.x++;
-		    nextDirection = (byte) (CompassPoints.NORTHEAST |
+		    direction = (byte) (CompassPoints.NORTHEAST |
 			CompassPoints.EAST |
 			CompassPoints.SOUTHEAST);
 		} else {
-		    nextDirection = (byte) (CompassPoints.NORTH |
+		    direction = (byte) (CompassPoints.NORTH |
 			CompassPoints.SOUTH);
 		}
 		if (dy < 0) {
 		    map.y--;
-		    nextDirection &= (byte) (CompassPoints.NORTHWEST |
+		    direction &= (byte) (CompassPoints.NORTHWEST |
 			    CompassPoints.NORTH | CompassPoints.NORTHEAST);
 		} else if (dy > 0) {
 		    map.y++;
-		    nextDirection &= (byte) (CompassPoints.SOUTHWEST |
+		    direction &= (byte) (CompassPoints.SOUTHWEST |
 			    CompassPoints.SOUTH |
 			    CompassPoints.SOUTHEAST);
 		} else {
-		    nextDirection &= (byte) (CompassPoints.EAST |
+		    direction &= (byte) (CompassPoints.EAST |
 			    CompassPoints.WEST);
 		}
-		direction |= (byte) nextDirection;
-		Byte oldNextDirection = (Byte) mapCoords.get(map);
-		if (oldNextDirection != null)
-		    nextDirection |= oldNextDirection.byteValue();
-		System.out.println("putting " + oldMapPoint + ", " +
-			CompassPoints.toString(direction));
+		Byte oldDirection = (Byte) mapCoords.get(map);
+		if (oldDirection != null)
+		    direction |= oldDirection.byteValue();
 		mapCoords.put(new Point(oldMapPoint), new Byte(direction));
-	    };
+	    } while (oldMapPoint.x != l.x2 / TrackTile.DELTAS_PER_TILE ||
+		    oldMapPoint.y != l.y2 / TrackTile.DELTAS_PER_TILE);
 	}
-	/* add the last point */
-	mapCoords.put(new Point(map), new Byte(nextDirection));
-	System.out.println("putting " + map + ", " +
-		CompassPoints.toString(nextDirection));
     }
 
     /**
@@ -374,9 +362,6 @@ public class TrainPath implements FreerailsSerializable {
 	    d.add(l.getLength());
 	    if (d.getLength() >= distance) {
 		PathLength pl = new PathLength(l.getLength());
-		System.out.println("setting length to " +
-			(l.getLength().getLength() -
-			    (d.getLength() - distance)));
 		pl.setLength(l.getLength().getLength() - (d.getLength() -
 			    distance));
 		IntLine il = new IntLine(l);

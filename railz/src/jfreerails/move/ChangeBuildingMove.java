@@ -17,17 +17,23 @@
 package jfreerails.move;
 
 import java.awt.Point;
+import java.awt.Rectangle;
+
 import jfreerails.world.building.*;
 import jfreerails.world.player.*;
 import jfreerails.world.track.*;
 import jfreerails.world.top.*;
 
-public class ChangeBuildingMove implements Move {
+public class ChangeBuildingMove implements MapUpdateMove {
     private BuildingTile oldTile;
     private BuildingTile newTile;
     Point point;
     private FreerailsPrincipal principal;
     
+    public Rectangle getUpdatedTiles() {
+	return new Rectangle(point.x, point.y, 1, 1);
+    }
+
     public ChangeBuildingMove(Point p, BuildingTile oldTile, BuildingTile
 	    newTile, FreerailsPrincipal buildingOwner) {
 	point = new Point(p);

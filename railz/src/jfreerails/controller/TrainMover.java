@@ -81,17 +81,9 @@ public class TrainMover {
     }
 
     private void updateTrainPosition(TrainModel tm) {
-	System.out.println("updating position of " + tm);
-	final HashMap newMapTiles = new HashMap();
-	final HashMap oldMapTiles = new HashMap();
-	final HashMap currentMapTiles = new HashMap();
-	final HashMap undoList = new HashMap();
 	final PathLength pl = new PathLength();
 	GameTime now = (GameTime) world.get(ITEM.TIME, Player.AUTHORITATIVE);
 	TrainMotionModel tmm = tm.getTrainMotionModel();
-	if (tmm.isBlocked() &&
-		! acquireAllLocks(tm))
-	    return;
 	/* work out where we should be */
 	/* speed in tiles per BigTick */
 	float speed = ((float) ((EngineType) world.get(KEY.ENGINE_TYPES,
@@ -100,16 +92,11 @@ public class TrainMover {
 	/* speed in deltas per tick */
 	speed *= TrackTile.DELTAS_PER_TILE / GameTime.TICKS_PER_BIG_TICK;
 	int ticksSinceLastSync = now.getTime() -
-	    tmm.getTimeOfLastSync().getTime();
+	    tmm.getTimeOfLastSync().getTime() - tmm.getBlockedFor();
 	pl.setLength(tmm.getPathToDestination().getActualLength());
 	pl.add(tmm.getPathTraversedSinceLastSync().getActualLength());
 	int distanceToTarget = (int) (pl.getLength() - speed *
 	    ticksSinceLastSync);
-	System.out.println ("distanceToTarget = " + distanceToTarget +
-	       	", pathToDestination = " +
-		tmm.getPathToDestination().getLength() + 
-		", pathTraversed = " +
-		tmm.getPathTraversedSinceLastSync().getLength());
 	if (distanceToTarget < 0)
 	    distanceToTarget = 0;
 
@@ -121,51 +108,14 @@ public class TrainMover {
 
 	TrainPath tp =
 	    tmm.getPathToDestination().truncateTail(distanceToTarget);
-	System.out.println ("pathToAdd = " + tp.toString() + ", remainder = "
-		+ tmm.getPathToDestination());
-	/* check to see if we have crossed a tile boundary */
-	newMapTiles.clear();
-	oldMapTiles.clear();
-	currentMapTiles.clear();
-	undoList.clear();
-	tm.getPosition().getMapCoordsAndDirections(currentMapTiles);
-	Iterator i = currentMapTiles.entrySet().iterator();
-	while (i.hasNext()) {
-	    Entry e = (Entry) i.next();
-	    TrackTile tt = world.getTile((Point)
-		    e.getKey()).getTrackTile();
-	    tt.releaseLock(((Byte) e.getValue()).byteValue());
-	}
+	if (! tmm.isBlocked())
+	   releaseAllLocks(tm);
 	TrainPath pos = tm.getPosition();
 	TrainPath removed = pos.moveHeadTo(tp);
-	pos.getMapCoordsAndDirections(newMapTiles);
-	System.out.println("removed " + removed);
-	i = newMapTiles.entrySet().iterator();
-	boolean undoNeeded = false;
-	while (i.hasNext()) {
-	    byte extraLocks;
-	    Entry e = (Entry) i.next();
-	    TrackTile tt = world.getTile((Point)
-		    e.getKey()).getTrackTile();
-	    extraLocks = ((Byte) e.getValue()).byteValue();
-	    if (! tt.getLock(extraLocks)) {
-		undoNeeded = true;
-		break;
-	    }
-	    undoList.put(e.getKey(), new Byte(extraLocks));
-	}
-	if (undoNeeded) {
-	    /* undo all locks, restore the pathToDestination and bail out */
-	    i = undoList.entrySet().iterator();
-	    while (i.hasNext()) {
-		Entry e = (Entry) i.next();
-		world.getTile((Point) e.getKey()).
-		    getTrackTile().releaseLock
-		    (((Byte) e.getValue()).byteValue());
-	    }
+	if (! acquireAllLocks(tm)) {
 	    tmm.getPathToDestination().append(tp);
 	    pos.moveTailTo(removed);
-	    assert false;
+	    tmm.block();
 	    return;
 	}
 	/* increment the pathTraversedSinceLastSync */
@@ -245,8 +195,6 @@ public class TrainMover {
 	tmm.sync(now, pathTraversedSinceLastSync);
 
 	tmm.setPathToDestination(pathToNextStation);
-	System.out.println ("setting new train position " + currentPos +
-		" on model " + tm + " in " + Thread.currentThread().getName());
 	tm.setPosition(currentPos);
     }
 
