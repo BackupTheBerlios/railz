@@ -49,7 +49,7 @@ import org.railz.world.player.Player;
  */
 public class Launcher extends javax.swing.JFrame implements
 FreerailsProgressMonitor {
-    private static final int GAME_SPEED_SLOW = 10;
+    private static final int GAME_SPEED_SLOW = 0;
 	private Component[] wizardPages = new Component[4];
     int currentPage = 0;
 

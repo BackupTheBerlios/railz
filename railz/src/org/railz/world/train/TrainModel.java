@@ -125,6 +125,16 @@ public class TrainModel implements FreerailsSerializable {
     }
 
     /**
+     * Copy constructor
+     */
+    public TrainModel(TrainModel tm) {
+	this(tm.engineType, tm.wagonTypes, tm.cargoBundleNumber,
+		tm.creationDate, tm.state, tm.scheduleIterator,
+		tm.trainMotionModel, tm.priority, tm.isBlocked,
+		tm.stateLastChanged);
+    }
+
+    /**
      * @return a new TrainModel with the new priority
      */
     public TrainModel setPriority(int priority) {

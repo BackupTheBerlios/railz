@@ -23,7 +23,9 @@ import org.railz.world.top.*;
  * @author rtuck99@users.berlios.de
  */
 public class ScheduleIterator implements FreerailsSerializable {
-    private int currentOrder;
+    public static final int NO_CURRENT_ORDER = -1;
+
+    private int currentOrder = NO_CURRENT_ORDER;
     private ObjectKey scheduleKey;
     private TrainOrdersModel priorityOrder;
 
@@ -51,10 +53,16 @@ public class ScheduleIterator implements FreerailsSerializable {
 	return (priorityOrder != null);
     }
 
+    /**
+     * @return the current order or null if there is no current order
+     */
     public TrainOrdersModel getCurrentOrder(ReadOnlyWorld w) {
 	if (priorityOrder != null) {
 	    return priorityOrder;
 	}
+	if (currentOrder == NO_CURRENT_ORDER)
+	    return null;
+
 	Schedule s = (Schedule) w.get(KEY.TRAIN_SCHEDULES, scheduleKey.index,
 		scheduleKey.principal);
 	return s.getOrder(currentOrder);
@@ -90,7 +98,7 @@ public class ScheduleIterator implements FreerailsSerializable {
      * Used to update the iterator when the underlying schedule is changed
      */
     public ScheduleIterator prevIndex(Schedule s) {
-	int index = currentOrder < 0 ? s.getNumOrders() - 1 : currentOrder -
+	int index = currentOrder <= 0 ? s.getNumOrders() - 1 : currentOrder -
 	    1;
 	ScheduleIterator si = new ScheduleIterator(this, priorityOrder);
 	si.currentOrder = index;
@@ -103,7 +111,7 @@ public class ScheduleIterator implements FreerailsSerializable {
     public ScheduleIterator nextIndex(Schedule s) {
 	int index = currentOrder + 1;
 	if (index >= s.getNumOrders())
-	    index = 0;
+	    index = s.getNumOrders() > 0 ? 0 : NO_CURRENT_ORDER;
 	ScheduleIterator si = new ScheduleIterator(this, priorityOrder);
 	si.currentOrder = index;
 	return si;

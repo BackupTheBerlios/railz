@@ -41,6 +41,9 @@ public class TrainOrdersListModel extends AbstractListModel {
     private ReadOnlyWorld w;
 
     private ModelRoot modelRoot;
+
+    private Schedule schedule;
+    private TrainModel trainModel;
     
     public static final int DONT_GOTO = 0;
     public static final int GOTO_NOW = 1;
@@ -67,10 +70,18 @@ public class TrainOrdersListModel extends AbstractListModel {
 	modelRoot = mr;
 	w = mr.getWorld(); 
 	this.trainNumber = trainNumber;
+	trainModel = (TrainModel) w.get(KEY.TRAINS, trainNumber,
+		modelRoot.getPlayerPrincipal());
+	schedule = (Schedule) w.get(KEY.TRAIN_SCHEDULES,
+		trainModel.getScheduleIterator().getScheduleKey().index,
+	       trainModel.getScheduleIterator().getScheduleKey().principal);
     }
     
     public Object getElementAt(int index) {
-        ScheduleIterator si = getSchedule();
+	if (trainModel == null)
+	    return null;
+
+        ScheduleIterator si = trainModel.getScheduleIterator();
         int gotoStatus;
         if (si.getCurrentOrderIndex() == index) {
             if(si.hasPriorityOrder()){
@@ -88,36 +99,36 @@ public class TrainOrdersListModel extends AbstractListModel {
         }
         
         boolean isPriorityOrders = (0 == index && si.hasPriorityOrder());
-	Schedule schedule = (Schedule) w.get(KEY.TRAIN_SCHEDULES,
-		si.getScheduleKey().index, si.getScheduleKey().principal);
 	TrainOrdersModel order = schedule.getOrder(index);
 	return new TrainOrdersListElement(isPriorityOrders, gotoStatus, order,
 		trainNumber);
     }
     
     public int getSize() {
-	ScheduleIterator si = getSchedule();
-	if (si == null) {
+	if (schedule == null)
 	    return 0;
-	}
-	Schedule s = (Schedule) w.get(KEY.TRAIN_SCHEDULES,
-	       	si.getScheduleKey().index,
-		si.getScheduleKey().principal);
 
-        return s.getNumOrders();
+        return schedule.getNumOrders();
     }
     
-    public void fireRefresh(){
-        super.fireContentsChanged(this, 0, getSize());
-    }
-    
-    private ScheduleIterator getSchedule(){
-	if (trainNumber < 0) {
-	    return null;
-	}
+    public void fireRefresh() {
+	Schedule s = schedule;
+	TrainModel tm = trainModel;
 
-	TrainModel train = (TrainModel)w.get(KEY.TRAINS, trainNumber,
-		modelRoot.getPlayerPrincipal());		
-	return train.getScheduleIterator();		
-    }    		
+	trainModel = (TrainModel) w.get(KEY.TRAINS, trainNumber,
+		modelRoot.getPlayerPrincipal());
+	
+	schedule = (Schedule) w.get(KEY.TRAIN_SCHEDULES,
+		tm.getScheduleIterator().getScheduleKey().index,
+		tm.getScheduleIterator().getScheduleKey().principal);
+	
+	if (s.getNumOrders() > schedule.getNumOrders()) {
+	    fireIntervalRemoved(this, s.getNumOrders() - 1,
+		    schedule.getNumOrders());
+	} else if (s.getNumOrders() < schedule.getNumOrders()) {
+	    fireIntervalAdded(this, schedule.getNumOrders() - 1,
+		    s.getNumOrders());
+	}
+        super.fireContentsChanged(this, 0, schedule.getNumOrders());
+    }
 }

@@ -245,7 +245,6 @@ public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldLi
         }
     }
     
-    
     public void listUpdated(KEY key, int index, FreerailsPrincipal principal) {
         if(showingOrder){
             if(KEY.TRAIN_SCHEDULES == key &&

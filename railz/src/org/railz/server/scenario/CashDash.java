@@ -46,7 +46,8 @@ public class CashDash implements Scenario {
     private long initialFunds = 1000000;
     private long assetsRequired = 10000000;
 
-    private CashDashControlPanel controlPanel = new CashDashControlPanel();
+    private transient CashDashControlPanel controlPanel
+       	= new CashDashControlPanel();
    
     /**
      * Provides a slider which controls the amount of starting cash and amount

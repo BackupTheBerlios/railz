@@ -68,13 +68,7 @@ public class ImageManagerImpl implements ImageManager {
         pathToReadFrom = s;
     }
 
-    public BufferedImage getImage(String relativeFilename) throws IOException {
-        relativeFilename = relativeFilename.replace(' ', '_');
-
-        if (imageHashMap.containsKey(relativeFilename)) {
-            return (BufferedImage)imageHashMap.get(relativeFilename);
-        }
-
+    private BufferedImage loadImage(String relativeFilename) throws IOException {
         //File f = new File(pathToReadFrom+File.separator+relativeFilename);
         String read = pathToReadFrom + relativeFilename;
         read = read.replace(File.separatorChar, '/');
@@ -84,16 +78,29 @@ public class ImageManagerImpl implements ImageManager {
         if (null == url) {
             throw new IOException("Couldn't find: " + read);
         }
-
+	System.out.println("fetching " + read);
+	ImageIO.setUseCache(false);
         BufferedImage tempImage = ImageIO.read(url);
 	BufferedImage compatibleImage =
 	    defaultConfiguration.createCompatibleImage(tempImage.getWidth(
                     null), tempImage.getHeight(null), Transparency.TRANSLUCENT);
         Graphics g = compatibleImage.getGraphics();
         g.drawImage(tempImage, 0, 0, null);
-        imageHashMap.put(relativeFilename, compatibleImage);
+	imageHashMap.put(relativeFilename, compatibleImage);
+	g.dispose();
+	compatibleImage.flush();
 
         return compatibleImage;
+    }
+
+    public BufferedImage getImage(String relativeFilename) throws IOException {
+        relativeFilename = relativeFilename.replace(' ', '_');
+
+	if (imageHashMap.containsKey(relativeFilename)) {
+	    return (BufferedImage)imageHashMap.get(relativeFilename);
+	}
+
+	return loadImage(relativeFilename);
     }
 
     public boolean contains(String relativeFilename) {

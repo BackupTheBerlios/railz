@@ -6,7 +6,9 @@
       <SubComponents>
         <MenuItem class="javax.swing.JMenuItem" name="gotoStationJMenuItem">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Goto station"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Go to station" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
+            </Property>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gotoStationJMenuItemActionPerformed"/>
@@ -14,7 +16,9 @@
         </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="changeStation">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Change Station"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Change station" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
+            </Property>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="changeStationActionPerformed"/>
@@ -22,7 +26,9 @@
         </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="removeStationJMenuItem">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Remove station"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Remove station" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
+            </Property>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removeStationJMenuItemActionPerformed"/>
@@ -30,57 +36,16 @@
         </MenuItem>
         <MenuItem class="javax.swing.JSeparator" name="jSeparator1">
         </MenuItem>
-        <Menu class="javax.swing.JMenu" name="addWagonJMenu">
+        <MenuItem class="javax.swing.JMenuItem" name="changeConsistJMenuItem">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Add Wagon"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Change Consist" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
+            </Property>
           </Properties>
-        </Menu>
-        <Menu class="javax.swing.JMenu" name="removeWagonsJMenu">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Remove wagon(s)"/>
-          </Properties>
-          <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="removeLastJMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Remove last"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removeLastJMenuItemActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="removeAllJMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Remove all wagons"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removeAllJMenuItemActionPerformed"/>
-              </Events>
-            </MenuItem>
-          </SubComponents>
-        </Menu>
-        <Menu class="javax.swing.JMenu" name="changeConsistJMenu">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Change consist to.."/>
-          </Properties>
-          <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="noChangeJMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="&apos;No change&apos;"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="noChangeJMenuItemActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="engineOnlyJMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Engine only"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="engineOnlyJMenuItemActionPerformed"/>
-              </Events>
-            </MenuItem>
-          </SubComponents>
-        </Menu>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="changeConsistJMenuItemActionPerformed"/>
+          </Events>
+        </MenuItem>
         <Menu class="javax.swing.JMenu" name="waitJMenu">
           <Properties>
             <Property name="text" type="java.lang.String" value="Wait at station"/>
@@ -88,7 +53,9 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="dontWaitJMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Don&apos;t wait"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Don&apos;t wait" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="dontWaitJMenuItemActionPerformed"/>
@@ -96,7 +63,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="waitUntilFullJMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Wait until full"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Wait until full" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="waitUntilFullJMenuItemActionPerformed"/>
@@ -108,7 +77,9 @@
         </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="pullUpJMenuItem">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Pull up"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Pull up" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
+            </Property>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pullUpJMenuItemActionPerformed"/>
@@ -116,7 +87,9 @@
         </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="pushDownJMenuItem">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Push down"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Push down" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
+            </Property>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pushDownJMenuItemActionPerformed"/>
@@ -129,7 +102,9 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.openide.explorer.propertysheet.editors.IconEditor">
           <Image iconType="3" name="/org/railz/client/graphics/toolbar/add_station.png"/>
         </Property>
-        <Property name="toolTipText" type="java.lang.String" value="Add Station"/>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Add station" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addStationJButtonActionPerformed"/>
@@ -143,7 +118,9 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.openide.explorer.propertysheet.editors.IconEditor">
           <Image iconType="3" name="/org/railz/client/graphics/toolbar/priority_orders.png"/>
         </Property>
-        <Property name="toolTipText" type="java.lang.String" value="Add Priority Orders"/>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Add priority orders" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="priorityOrdersJButtonActionPerformed"/>
@@ -156,7 +133,9 @@
   <Properties>
     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
       <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-        <TitledBorder title="Schedule"/>
+        <TitledBorder title="">
+          <ResourceString PropertyName="titleX" bundle="org/railz/data/l10n/jfreerails_en.properties" key="Schedule" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
+        </TitledBorder>
       </Border>
     </Property>
   </Properties>

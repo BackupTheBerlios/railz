@@ -63,13 +63,11 @@ public class TrainPathFinder {
     private void nextElement(Point currentPosition) {
 	PathElement pe = (PathElement) currentPath.getLast();
 	while (!pe.nextDirection()) {
-	    System.out.println("marking " + pe);
 	    exploredTiles.add(new Point(pe.x, pe.y));
 	    currentPath.removeLast();
 	    if (currentPath.size() == 1)
 		break;
 	    pe = (PathElement) currentPath.getLast();
-	    System.out.println("popping, new element is " + pe);
 	}
 	currentPosition.x = pe.x;
 	currentPosition.y = pe.y;
@@ -113,7 +111,6 @@ public class TrainPathFinder {
      * 45deg A/C from target, rather than 180..)
      */
     public TrainPath findPath(Point start, Point dest) {
-	System.out.println("Finding path from " + start + " to " + dest);
 	Point target = new Point(dest);
 	TrackTile.deltasToTileCoords(target);
 	startDirection = CompassPoints.NORTH;
@@ -157,8 +154,6 @@ public class TrainPathFinder {
 		oldPosition.x = currentPosition.x;
 		oldPosition.y = currentPosition.y;
 		currentElement = (PathElement) currentPath.getLast();
-		System.out.println("Curremt pos: " + currentPosition + ", " +
-			"currenrElem: " + currentElement);
 		advanceOneTile(currentPosition, currentElement.direction);
 
 		/* is this tile already explored ? */
@@ -201,7 +196,6 @@ public class TrainPathFinder {
 
 		currentElement = new PathElement(currentPosition.x,
 			currentPosition.y, initialDirection, trackLayout, 1);
-		System.out.println("adding " + currentElement);
 		currentPath.add(currentElement);
 
 		/* have we reached the target ? */
@@ -260,7 +254,6 @@ public class TrainPathFinder {
 	fixUpPathEnds(intLines, start, dest);
 	TrainPath retVal = new TrainPath((IntLine[]) intLines.toArray(new
 		    IntLine[intLines.size()]));
-	System.out.println("Returning: " + retVal.toString());
 	return retVal;
     }
 

@@ -68,8 +68,12 @@ public class AddRemoveScheduleStationMove extends CompositeMove {
 	    while (i.next()) {
 		TrainModel tm = (TrainModel) i.getElement();
 		ScheduleIterator si = tm.getScheduleIterator();
+		ObjectKey scheduleKey = si.getScheduleKey();
+		Schedule s = (Schedule) w.get(scheduleKey.key,
+		       	scheduleKey.index, scheduleKey.principal);
 		if (si.getScheduleKey().equals(aSchedule) &&
-			si.getCurrentOrderIndex() > aStationIndex)
+			si.getCurrentOrderIndex() > aStationIndex ||
+			s.getNumOrders() - 1 == si.getCurrentOrderIndex())
 		    trainKeys.add(new ObjectKey(KEY.TRAINS, p, i.getIndex()));
 
 	    }

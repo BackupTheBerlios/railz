@@ -241,44 +241,6 @@ public class SelectWagonsJPanel extends javax.swing.JPanel {
     private javax.swing.JButton okjButton;
     private javax.swing.JList wagonTypesJList;
     // End of variables declaration//GEN-END:variables
-    final private class WagonCellRenderer implements ListCellRenderer {
-	private Component[] labels;
-
-        TrainImages trainImages;
-
-	public WagonCellRenderer(World2ListModelAdapter w2lma, TrainImages s) {
-	    trainImages = s;
-
-	    labels = new Component[w2lma.getSize()];
-	    for (int i = 0; i < w2lma.getSize(); i++) {
-		JLabel label = new JLabel();
-		label.setFont(new java.awt.Font("Dialog", 0, 12));
-		Image image = trainImages.getSideOnWagonImage(i);
-		int height = image.getHeight(null);
-		int width = image.getWidth(null);
-		int scale = height/10;
-		
-		ImageIcon icon = new
-		    ImageIcon(image.getScaledInstance(width/scale,
-				height/scale, Image.SCALE_FAST));			
-		label.setIcon(icon);
-		labels[i] = label;
-	    }
-	}
-
-	public Component getListCellRendererComponent(JList list, Object value, /* value to display*/
-		int index, /* cell index*/
-		boolean isSelected, /* is the cell selected*/
-		boolean cellHasFocus) /* the list and the cell have the focus*/ {
-	    if (index >= 0 && index < labels.length) {
-		CargoType cargoType = (CargoType) value;
-		String text = "<html><body>" + (isSelected ? "<strong>" : "") + cargoType.getDisplayName() + (isSelected ? "</strong>" : "&nbsp;&nbsp;&nbsp;&nbsp;"/*padding to stop word wrap due to greater wodth of strong font*/) + "</body></html>";
-		((JLabel) labels[index]).setText(text);
-		return labels[index];
-	    }
-	    return null;
-	}
-    }
 
     public void setup(ModelRoot mr, ActionListener submitButtonCallBack) {
         this.viewLists = mr.getViewLists();

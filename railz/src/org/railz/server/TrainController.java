@@ -185,15 +185,13 @@ class TrainController {
 	if (stationKey != null) {
 	    ScheduleIterator si = tm.getScheduleIterator();
 	    TrainOrdersModel tom = si.getCurrentOrder(world);
-	    if (! tom.isNoConsistChange()) {
-		Move m = ChangeTrainMove.generateMove(trainKey.index,
-			trainKey.principal, tm, tm.getEngineType(),
-			tom.getConsist());
-		moveReceiver.processMove(m);
+	    Move m = ChangeTrainMove.generateMove(trainKey.index,
+		    trainKey.principal, tm, tm.getEngineType(),
+		    tom.getConsist());
+	    moveReceiver.processMove(m);
 
-		// dump or sell any surplus cargo
-		dopucmg.dumpSurplusCargo(trainKey, stationKey);
-	    }
+	    // dump or sell any surplus cargo
+	    dopucmg.dumpSurplusCargo(trainKey, stationKey);
 	}
 
 	// get the updated train model

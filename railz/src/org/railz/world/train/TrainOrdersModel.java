@@ -44,7 +44,7 @@ public class TrainOrdersModel implements FreerailsSerializable {
     public final boolean waitUntilFull;
 
     /**
-     * Array of indices into the WAGON_TYPES table, or null if no change.
+     * Array of indices into the WAGON_TYPES table.
      */
     public final int[] consist;
     
@@ -68,11 +68,12 @@ public class TrainOrdersModel implements FreerailsSerializable {
      */
     public TrainOrdersModel(ObjectKey station, int[] newConsist, boolean wait,
 	    boolean loadTrain, boolean unloadTrain) {
+	assert newConsist != null;
         //If there are no wagons, set wait = false.
-        wait = (null == newConsist || 0 == newConsist.length) ? false : wait;
+        wait = (0 == newConsist.length) ? false : wait;
 
         waitUntilFull = wait;
-        consist = newConsist;
+        consist = (int []) newConsist.clone();
         this.station = station;
 	this.loadTrain = loadTrain;
 	this.unloadTrain = unloadTrain;
@@ -86,20 +87,16 @@ public class TrainOrdersModel implements FreerailsSerializable {
         return station;
     }
 
-    public boolean isNoConsistChange() {
-        return null == consist;
-    }
-
     public boolean getWaitUntilFull() {
         return waitUntilFull;
     }
 
     public boolean orderHasWagons() {
-        return null != consist && 0 != consist.length;
+        return 0 != consist.length;
     }
 
     public boolean hasLessThanMaxiumNumberOfWagons() {
-        return null == consist || consist.length < MAXIMUM_NUMBER_OF_WAGONS;
+        return consist.length < MAXIMUM_NUMBER_OF_WAGONS;
     }
 
     public int hashCode() {

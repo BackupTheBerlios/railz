@@ -1,4 +1,5 @@
 /*
+ *
  * Copyright (C) Luke Lindsay
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,9 +22,7 @@ import java.awt.Container;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
@@ -36,6 +35,7 @@ import org.railz.client.common.PortablePopupAdapter;
 import org.railz.client.renderer.TrainImages;
 import org.railz.client.renderer.ViewLists;
 import org.railz.client.model.ModelRoot;
+import org.railz.client.view.TrainOrdersListModel.TrainOrdersListElement;
 import org.railz.move.*;
 import org.railz.util.Resources;
 import org.railz.world.cargo.CargoType;
@@ -45,8 +45,8 @@ import org.railz.world.top.*;
 import org.railz.world.train.*;
 
 /**
- *  This JPanel displays a train's schedule and provides controls that let you
- *  edit it.
+ * This JPanel displays a train's schedule and provides controls that let you
+ * edit it.
  * @author  Luke Lindsay
  */
 public class TrainScheduleJPanel extends javax.swing.JPanel implements
@@ -65,6 +65,9 @@ WorldListListener, ListCellRenderer {
     
     private TrainOrdersListModel listModel;
     private Component selectStationDialog;
+    private volatile Component wagonSelectionDialog;
+    private WagonSelectionJPanel wagonSelectionJPanel;
+    private int wagonSelectionOrderNo;
     
     /** Creates new form TrainScheduleJPanel */
     public TrainScheduleJPanel() {
@@ -85,13 +88,7 @@ WorldListListener, ListCellRenderer {
         changeStation = new javax.swing.JMenuItem();
         removeStationJMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
-        addWagonJMenu = new javax.swing.JMenu();
-        removeWagonsJMenu = new javax.swing.JMenu();
-        removeLastJMenuItem = new javax.swing.JMenuItem();
-        removeAllJMenuItem = new javax.swing.JMenuItem();
-        changeConsistJMenu = new javax.swing.JMenu();
-        noChangeJMenuItem = new javax.swing.JMenuItem();
-        engineOnlyJMenuItem = new javax.swing.JMenuItem();
+        changeConsistJMenuItem = new javax.swing.JMenuItem();
         waitJMenu = new javax.swing.JMenu();
         dontWaitJMenuItem = new javax.swing.JMenuItem();
         waitUntilFullJMenuItem = new javax.swing.JMenuItem();
@@ -104,7 +101,7 @@ WorldListListener, ListCellRenderer {
         orders = new javax.swing.JList();
         orders.addMouseListener(ordersPopupAdapter);
 
-        gotoStationJMenuItem.setText("Goto station");
+        gotoStationJMenuItem.setText(org.railz.util.Resources.get("Go to station"));
         gotoStationJMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 gotoStationJMenuItemActionPerformed(evt);
@@ -113,7 +110,7 @@ WorldListListener, ListCellRenderer {
 
         editOrderJPopupMenu.add(gotoStationJMenuItem);
 
-        changeStation.setText("Change Station");
+        changeStation.setText(org.railz.util.Resources.get("Change station"));
         changeStation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 changeStationActionPerformed(evt);
@@ -122,7 +119,7 @@ WorldListListener, ListCellRenderer {
 
         editOrderJPopupMenu.add(changeStation);
 
-        removeStationJMenuItem.setText("Remove station");
+        removeStationJMenuItem.setText(org.railz.util.Resources.get("Remove station"));
         removeStationJMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 removeStationJMenuItemActionPerformed(evt);
@@ -133,53 +130,17 @@ WorldListListener, ListCellRenderer {
 
         editOrderJPopupMenu.add(jSeparator1);
 
-        addWagonJMenu.setText("Add Wagon");
-        editOrderJPopupMenu.add(addWagonJMenu);
-
-        removeWagonsJMenu.setText("Remove wagon(s)");
-        removeLastJMenuItem.setText("Remove last");
-        removeLastJMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        changeConsistJMenuItem.setText(org.railz.util.Resources.get("Change Consist"));
+        changeConsistJMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeLastJMenuItemActionPerformed(evt);
+                changeConsistJMenuItemActionPerformed(evt);
             }
         });
 
-        removeWagonsJMenu.add(removeLastJMenuItem);
-
-        removeAllJMenuItem.setText("Remove all wagons");
-        removeAllJMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeAllJMenuItemActionPerformed(evt);
-            }
-        });
-
-        removeWagonsJMenu.add(removeAllJMenuItem);
-
-        editOrderJPopupMenu.add(removeWagonsJMenu);
-
-        changeConsistJMenu.setText("Change consist to..");
-        noChangeJMenuItem.setText("'No change'");
-        noChangeJMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                noChangeJMenuItemActionPerformed(evt);
-            }
-        });
-
-        changeConsistJMenu.add(noChangeJMenuItem);
-
-        engineOnlyJMenuItem.setText("Engine only");
-        engineOnlyJMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                engineOnlyJMenuItemActionPerformed(evt);
-            }
-        });
-
-        changeConsistJMenu.add(engineOnlyJMenuItem);
-
-        editOrderJPopupMenu.add(changeConsistJMenu);
+        editOrderJPopupMenu.add(changeConsistJMenuItem);
 
         waitJMenu.setText("Wait at station");
-        dontWaitJMenuItem.setText("Don't wait");
+        dontWaitJMenuItem.setText(org.railz.util.Resources.get("Don't wait"));
         dontWaitJMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dontWaitJMenuItemActionPerformed(evt);
@@ -188,7 +149,7 @@ WorldListListener, ListCellRenderer {
 
         waitJMenu.add(dontWaitJMenuItem);
 
-        waitUntilFullJMenuItem.setText("Wait until full");
+        waitUntilFullJMenuItem.setText(org.railz.util.Resources.get("Wait until full"));
         waitUntilFullJMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 waitUntilFullJMenuItemActionPerformed(evt);
@@ -201,7 +162,7 @@ WorldListListener, ListCellRenderer {
 
         editOrderJPopupMenu.add(jSeparator2);
 
-        pullUpJMenuItem.setText("Pull up");
+        pullUpJMenuItem.setText(org.railz.util.Resources.get("Pull up"));
         pullUpJMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 pullUpJMenuItemActionPerformed(evt);
@@ -210,7 +171,7 @@ WorldListListener, ListCellRenderer {
 
         editOrderJPopupMenu.add(pullUpJMenuItem);
 
-        pushDownJMenuItem.setText("Push down");
+        pushDownJMenuItem.setText(org.railz.util.Resources.get("Push down"));
         pushDownJMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 pushDownJMenuItemActionPerformed(evt);
@@ -220,7 +181,7 @@ WorldListListener, ListCellRenderer {
         editOrderJPopupMenu.add(pushDownJMenuItem);
 
         addStationJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/railz/client/graphics/toolbar/add_station.png")));
-        addStationJButton.setToolTipText("Add Station");
+        addStationJButton.setToolTipText(org.railz.util.Resources.get("Add station"));
         addStationJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addStationJButtonActionPerformed(evt);
@@ -228,7 +189,7 @@ WorldListListener, ListCellRenderer {
         });
 
         priorityOrdersJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/railz/client/graphics/toolbar/priority_orders.png")));
-        priorityOrdersJButton.setToolTipText("Add Priority Orders");
+        priorityOrdersJButton.setToolTipText(org.railz.util.Resources.get("Add priority orders"));
         priorityOrdersJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 priorityOrdersJButtonActionPerformed(evt);
@@ -237,7 +198,7 @@ WorldListListener, ListCellRenderer {
 
         setLayout(new java.awt.GridBagLayout());
 
-        setBorder(new javax.swing.border.TitledBorder("Schedule"));
+        setBorder(new javax.swing.border.TitledBorder(org.railz.util.Resources.get("Schedule")));
         orders.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(orders);
 
@@ -252,6 +213,26 @@ WorldListListener, ListCellRenderer {
         add(jScrollPane1, gridBagConstraints);
 
     }//GEN-END:initComponents
+
+    private void changeConsistJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeConsistJMenuItemActionPerformed
+	if (wagonSelectionDialog != null)
+	    return;
+
+	wagonSelectionOrderNo = orders.getSelectedIndex();
+
+	wagonSelectionJPanel = new WagonSelectionJPanel();
+	TrainModel tm = (TrainModel) w.get(KEY.TRAINS, trainNumber,
+		modelRoot.getPlayerPrincipal());
+
+	int[] orderWagons = ((TrainOrdersListElement)
+	    listModel.getElementAt(wagonSelectionOrderNo)).order.getConsist();
+	tm = tm.getNewInstance(tm.getEngineType(), orderWagons);
+	wagonSelectionJPanel.setup(modelRoot, tm);
+	wagonSelectionDialog =
+	    guiRoot.getDialogueBoxController().createDialog(wagonSelectionJPanel,
+		    Resources.get("Select new consist"));
+	wagonSelectionDialog.addComponentListener(changeConsistListener);
+    }//GEN-LAST:event_changeConsistJMenuItemActionPerformed
     
     private void changeStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeStationActionPerformed
         int orderNumber = this.orders.getSelectedIndex();
@@ -262,14 +243,6 @@ WorldListListener, ListCellRenderer {
 	    (selectStationJPanel, Resources.get("Select a Station"));
     }//GEN-LAST:event_changeStationActionPerformed
     
-    private void removeAllJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAllJMenuItemActionPerformed
-        removeAllWagons();
-    }//GEN-LAST:event_removeAllJMenuItemActionPerformed
-    
-    private void removeLastJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeLastJMenuItemActionPerformed
-        removeLastWagon();
-    }//GEN-LAST:event_removeLastJMenuItemActionPerformed
-    
     private void waitUntilFullJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_waitUntilFullJMenuItemActionPerformed
         setWaitUntilFull(true);
     }//GEN-LAST:event_waitUntilFullJMenuItemActionPerformed
@@ -277,14 +250,6 @@ WorldListListener, ListCellRenderer {
     private void dontWaitJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dontWaitJMenuItemActionPerformed
         setWaitUntilFull(false);
     }//GEN-LAST:event_dontWaitJMenuItemActionPerformed
-    
-    private void engineOnlyJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_engineOnlyJMenuItemActionPerformed
-        removeAllWagons();
-    }//GEN-LAST:event_engineOnlyJMenuItemActionPerformed
-    
-    private void noChangeJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_noChangeJMenuItemActionPerformed
-        noChange();
-    }//GEN-LAST:event_noChangeJMenuItemActionPerformed
     
     private void priorityOrdersJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_priorityOrdersJButtonActionPerformed
 	TrainOrdersModel tom = new TrainOrdersModel(new ObjectKey(KEY.STATIONS,
@@ -302,12 +267,15 @@ WorldListListener, ListCellRenderer {
     private void addStationJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStationJButtonActionPerformed
 	TrainModel tm = (TrainModel) w.get(KEY.TRAINS, trainNumber,
 		modelRoot.getPlayerPrincipal());
+	int[] consist = new int[tm.getNumberOfWagons()];
+	for (int i = 0; i < consist.length; i++)
+	    consist[i] = tm.getWagon(i);
 	Schedule s = (Schedule) w.get(KEY.TRAIN_SCHEDULES,
 		tm.getScheduleIterator().getScheduleKey().index,
 	       	tm.getScheduleIterator().getScheduleKey().principal);
         TrainOrdersModel order = new TrainOrdersModel
 	    (new ObjectKey(KEY.STATIONS, modelRoot.getPlayerPrincipal(), 0),
-	     null, false, true, true);
+	     consist, false, true, true);
         sendAddStationMove(s.getNumOrders(), order);
     }//GEN-LAST:event_addStationJButtonActionPerformed
     
@@ -361,10 +329,7 @@ WorldListListener, ListCellRenderer {
 		pullUpJMenuItem.setEnabled(i > 0);
 		pushDownJMenuItem.setEnabled(s.getNumOrders() > i + 1);
 		gotoStationJMenuItem.setEnabled(true);
-		removeWagonsJMenu.setEnabled(order.orderHasWagons());
 		waitJMenu.setEnabled(order.orderHasWagons());
-		addWagonJMenu.setEnabled(order.hasLessThanMaxiumNumberOfWagons());
-		setupWagonsPopup();
 		editOrderJPopupMenu.show(e.getComponent(), e.getX(),
 			e.getY());
 	    }
@@ -411,6 +376,13 @@ WorldListListener, ListCellRenderer {
     
     public void display(int trainNumber){
 	System.out.println("TrainScheduleJPanel display");
+	if (wagonSelectionDialog != null &&
+		this.trainNumber != trainNumber) {
+	    /* close the dialog without saving changes */
+	    wagonSelectionDialog.removeComponentListener(changeConsistListener);
+	    wagonSelectionDialog.setVisible(false);
+	    wagonSelectionDialog = null;
+	}
         this.trainNumber = trainNumber;
 	if (trainNumber >= 0) {
 	    TrainModel train = (TrainModel) w.get(KEY.TRAINS, trainNumber,
@@ -457,35 +429,6 @@ WorldListListener, ListCellRenderer {
         return new MutableSchedule(immutableSchedule);
     }
     
-    private void setupWagonsPopup() {
-        addWagonJMenu.removeAll(); //Remove existing menu items.
-        NonNullElements cargoTypes = new NonNullElements(KEY.CARGO_TYPES, w);
-        
-        TrainImages trainImages = vl.getTrainImages();
-        
-        while (cargoTypes.next()) {
-            final CargoType wagonType = (CargoType) cargoTypes.getElement();
-            JMenuItem wagonMenuItem = new JMenuItem();
-            final int wagonTypeNumber = cargoTypes.getIndex();
-            wagonMenuItem.setText(wagonType.getDisplayName());
-            Image image = trainImages.getSideOnWagonImage(wagonTypeNumber);
-            int height = image.getHeight(null);
-            int width = image.getWidth(null);
-            int scale = height/10;
-            ImageIcon icon = new ImageIcon(image.getScaledInstance(width/scale,
-            height/scale, Image.SCALE_FAST));
-            wagonMenuItem.setIcon(icon);
-            wagonMenuItem
-            .addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    
-                    addWagon(wagonTypeNumber);
-                }
-            });
-            addWagonJMenu.add(wagonMenuItem);
-        }
-    }
-    
     private void setStationNumber(int stationIndex){
         TrainOrdersModel oldOrders, newOrders;
         MutableSchedule s = getSchedule();
@@ -498,16 +441,6 @@ WorldListListener, ListCellRenderer {
         sendUpdateStationMove(orderNumber, newOrders);
     }
     
-    private void noChange(){
-        TrainOrdersModel oldOrders, newOrders;
-        MutableSchedule s = getSchedule();
-        int orderNumber = this.orders.getSelectedIndex();
-        oldOrders = s.getOrder(orderNumber);
-	newOrders = new TrainOrdersModel(oldOrders.getStationNumber(), null,
-		false, oldOrders.loadTrain, oldOrders.unloadTrain);
-	sendUpdateStationMove(orderNumber, newOrders);
-    }
-    
     private void setWaitUntilFull(boolean b){
         TrainOrdersModel oldOrders, newOrders;
         MutableSchedule s = getSchedule();
@@ -515,61 +448,6 @@ WorldListListener, ListCellRenderer {
         oldOrders = s.getOrder(orderNumber);
 	newOrders = new TrainOrdersModel(oldOrders.getStationNumber(),
 		oldOrders.consist, b, oldOrders.loadTrain,
-		oldOrders.unloadTrain);
-        sendUpdateStationMove(orderNumber, newOrders);
-    }
-    
-    private void  addWagon(int wagonTypeNumber){
-        TrainOrdersModel oldOrders, newOrders;
-        MutableSchedule s = getSchedule();
-        int orderNumber = this.orders.getSelectedIndex();
-        oldOrders = s.getOrder(orderNumber);
-        int[] newConsist;
-        //The consist will be null if old orders were 'no change'.
-        if(null != oldOrders.consist){
-            int oldLength = oldOrders.consist.length;
-            newConsist = new int[oldLength+1];
-            //Copy existing wagons
-            for( int i = 0 ; i < oldLength ; i ++){
-                newConsist[i] = oldOrders.consist[i];
-            }
-            //Then add specified wagon.
-            newConsist[oldLength] = wagonTypeNumber;
-        }else{
-            newConsist = new int[]{wagonTypeNumber};
-        }
-	newOrders = new TrainOrdersModel(oldOrders.getStationNumber(),
-		newConsist, oldOrders.getWaitUntilFull(), oldOrders.loadTrain,
-		oldOrders.unloadTrain);
-        sendUpdateStationMove(orderNumber, newOrders);
-    }
-    
-    private void removeAllWagons(){
-        TrainOrdersModel oldOrders, newOrders;
-        MutableSchedule s = getSchedule();
-        int orderNumber = this.orders.getSelectedIndex();
-        oldOrders = s.getOrder(orderNumber);
-	newOrders = new TrainOrdersModel(oldOrders.getStationNumber(), new
-		int[0], false, oldOrders.loadTrain, oldOrders.unloadTrain);
-        sendUpdateStationMove(orderNumber, newOrders);
-    }
-    
-    private void removeLastWagon(){
-        TrainOrdersModel oldOrders, newOrders;
-        MutableSchedule s = getSchedule();
-        int orderNumber = this.orders.getSelectedIndex();
-        oldOrders = s.getOrder(orderNumber);
-        int[] oldConsist = oldOrders.consist;
-        int newLength = oldConsist.length -1 ;
-        if(newLength < 0){
-            throw new NoSuchElementException("No wagons to remove!");
-        }
-        int[] newConsist = new int[newLength];
-        
-        //Copy existing wagons
-        System.arraycopy(oldConsist, 0, newConsist, 0, newConsist.length);
-	newOrders = new TrainOrdersModel(oldOrders.getStationNumber(),
-		newConsist, oldOrders.waitUntilFull, oldOrders.loadTrain,
 		oldOrders.unloadTrain);
         sendUpdateStationMove(orderNumber, newOrders);
     }
@@ -636,27 +514,40 @@ WorldListListener, ListCellRenderer {
     private SelectStationJPanel selectStationJPanel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     javax.swing.JButton addStationJButton;
-    private javax.swing.JMenu addWagonJMenu;
-    private javax.swing.JMenu changeConsistJMenu;
+    private javax.swing.JMenuItem changeConsistJMenuItem;
     private javax.swing.JMenuItem changeStation;
     private javax.swing.JMenuItem dontWaitJMenuItem;
     private javax.swing.JPopupMenu editOrderJPopupMenu;
-    private javax.swing.JMenuItem engineOnlyJMenuItem;
     private javax.swing.JMenuItem gotoStationJMenuItem;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JMenuItem noChangeJMenuItem;
-    private javax.swing.JList orders;
+    javax.swing.JList orders;
     javax.swing.JButton priorityOrdersJButton;
     private javax.swing.JMenuItem pullUpJMenuItem;
     private javax.swing.JMenuItem pushDownJMenuItem;
-    private javax.swing.JMenuItem removeAllJMenuItem;
-    private javax.swing.JMenuItem removeLastJMenuItem;
     private javax.swing.JMenuItem removeStationJMenuItem;
-    private javax.swing.JMenu removeWagonsJMenu;
     private javax.swing.JMenu waitJMenu;
     private javax.swing.JMenuItem waitUntilFullJMenuItem;
     // End of variables declaration//GEN-END:variables
     
+    private ComponentListener changeConsistListener  = new ComponentAdapter()
+	{
+	    public void componentHidden(ComponentEvent e) {
+		System.out.println("Component hidden!");
+		int[] wagons = wagonSelectionJPanel.getWagons();
+		TrainOrdersModel oldOrder = ((TrainOrdersListElement)
+		       	listModel.getElementAt(wagonSelectionOrderNo)).order;
+		TrainOrdersModel tom = new TrainOrdersModel
+		    (oldOrder.getStationNumber(), wagons,
+		     oldOrder.getWaitUntilFull(), oldOrder.loadTrain,
+		     oldOrder.unloadTrain);
+		Move m = AddRemoveScheduleStationMove.generateChangeMove
+		    (scheduleIterator.getScheduleKey(), wagonSelectionOrderNo,
+		     tom, w);
+		modelRoot.getReceiver().processMove(m);
+		wagonSelectionDialog = null;
+		wagonSelectionJPanel = null;
+	    }
+	};
 }

@@ -22,11 +22,8 @@
  */
 
 package org.railz.client.view;
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.NoSuchElementException;
 
 import javax.swing.JButton;
@@ -36,6 +33,7 @@ import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JInternalFrame;
 import javax.swing.border.LineBorder;
+import javax.swing.event.*;
 
 import org.railz.client.common.ScreenHandler;
 import org.railz.client.model.ModelRoot;
@@ -371,7 +369,7 @@ public class DialogueBoxController {
 	Component dialog;
 	switch (guiRoot.getScreenHandler().getMode()) {
 	    case ScreenHandler.FULL_SCREEN:
-		JInternalFrame jif = new JInternalFrame(title,
+		JInternalFrame jif = new CustomInternalFrame(title,
 			true);
 		jif.getContentPane().add(content);
 		jif.pack();
@@ -383,7 +381,7 @@ public class DialogueBoxController {
 		dialog = jif;
 		break;
 	    default:
-		JDialog jd = new JDialog(frame, title, false);
+		CustomDialog jd = new CustomDialog(frame, title, false);
 		jd.getContentPane().add(content);
 		jd.pack();
 		jd.setLocation(frame.getX() +
@@ -396,5 +394,35 @@ public class DialogueBoxController {
 	}
 	dialog.setVisible(true);
 	return dialog;
+    }
+
+    private class CustomInternalFrame extends JInternalFrame {
+	private InternalFrameListener listener = new InternalFrameAdapter() {
+	    public void internalFrameClosed(InternalFrameEvent e) {
+		CustomInternalFrame.this.processComponentEvent
+		    (new ComponentEvent(CustomInternalFrame.this,
+					ComponentEvent.COMPONENT_HIDDEN));
+	    }
+	};
+
+	public CustomInternalFrame(String title, boolean resizable) {
+	    super(title, resizable);
+	    addInternalFrameListener(listener);
+	}
+    }
+
+    private class CustomDialog extends JDialog {
+	private WindowListener listener = new WindowAdapter() {
+	    public void windowClosed(WindowEvent e) {
+		CustomDialog.this.processComponentEvent
+		    (new ComponentEvent(CustomDialog.this,
+					ComponentEvent.COMPONENT_HIDDEN));
+	    }
+	};
+
+	public CustomDialog(Frame owner, String title, boolean modal) {
+	    super(owner, title, modal);
+	    addWindowListener(listener);
+	}
     }
 }
