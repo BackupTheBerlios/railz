@@ -87,11 +87,14 @@ public class ChangeTrackPieceMoveTest extends AbstractMoveTestCase {
         assertEquals(false, moveStatus.isOk());
 
         //Try a move that does nothing, i.e. oldTrackPiece==newTrackPiece, should fail.
-        move = new ChangeTrackPieceMove(oldTrackPiece, oldTrackPiece,
-                new Point(0, 0), testPlayer.getPrincipal());
-        moveStatus = move.tryDoMove(getWorld(), testPlayer.getPrincipal());
-        assertNotNull(moveStatus);
-        assertEquals(false, moveStatus.isOk());
+	boolean failed = false;
+	try {
+	    move = new ChangeTrackPieceMove(oldTrackPiece, oldTrackPiece,
+		    new Point(0, 0), testPlayer.getPrincipal());
+	} catch (IllegalArgumentException e) {
+	    failed = true;
+	}
+	assertTrue(failed);
 
         //Try buildingtrack outside the map.
         move = new ChangeTrackPieceMove(newTrackPiece, oldTrackPiece,
@@ -139,7 +142,7 @@ public class ChangeTrackPieceMoveTest extends AbstractMoveTestCase {
                 new Point(0, 0), testPlayer.getPrincipal());
         moveStatus = move.doMove(getWorld(), testPlayer.getPrincipal());
         assertNotNull(moveStatus);
-        assertEquals(true, moveStatus.isOk());
+        assertTrue(moveStatus.toString(), moveStatus.isOk());
         assertEquals(newTrackPiece.getTrackConfiguration(),
             getWorld().getTile(0, 0).getTrackConfiguration());
     }

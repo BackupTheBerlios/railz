@@ -69,13 +69,12 @@ public class TrackRule implements FreerailsSerializable {
         }
 
 	for (int i = 0; i < lc.length; i++) {
-	    byte b = (byte) (((int) lc[i]) & 0xFF);
+	    int b = ((int) lc[i]) & 0xFF;
 	    for (int j = 0; j < 8; j++) {
 		legalConfigurations[b] = true;
-		b = CompassPoints.rotateClockwise(b);
+		b = (int) (CompassPoints.rotateClockwise((byte) b) & 0xFF);
 	    }
 	}
-
 	this.maxConsecutivePieces = maxConsecutivePieces;
 	this.buildPermissions = buildPermissions;
 	this.maintenanceCost = maintenanceCost;

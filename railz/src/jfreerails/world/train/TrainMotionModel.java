@@ -50,8 +50,8 @@ public class TrainMotionModel {
     public boolean isBlocked;
     
     TrainMotionModel() {
-	pathTraversedSinceLastSync = new TrainPath(new Point[0]);
-	pathToDestination = new TrainPath(new Point[0]);
+	pathTraversedSinceLastSync = null;
+	pathToDestination = null;
 	speed = 0;
 	isBlocked = true;
     }

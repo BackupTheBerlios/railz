@@ -95,18 +95,35 @@ public class ChangeTrackPieceCompositeMoveTest extends AbstractMoveTestCase {
         assertBuildTrackSuceeds(pointA, CompassPoints.EAST, trackRule);
 
         //Track already there.
-        assertBuildTrackFails(pointA, CompassPoints.SOUTHEAST, trackRule);
+	assertConstructBuildTrackMoveFails(pointA, CompassPoints.SOUTHEAST,
+		trackRule);
 
         //Illegal config. connecting from one existing track piece
         assertBuildTrackFails(pointA, CompassPoints.SOUTH, trackRule);
 
-        //Illegal config. connecting to one existing track piece
+        /*
+	 * XXX This shouldl no longer fail
+	 * Illegal config. connecting to one existing track piece
 	assertBuildTrackFails(new Point(0, 1), CompassPoints.NORTHEAST,
 		trackRule);
+	 */
 
         //Illegal config. connecting between two existing track pieces
         assertBuildTrackFails(pointC, CompassPoints.SOUTH, trackRule);
     }
+
+    private void assertConstructBuildTrackMoveFails(Point p, byte v, int rule)
+	{
+	    boolean failed = false;
+	    try {
+		ChangeTrackPieceCompositeMove move =
+		    ChangeTrackPieceCompositeMove.generateBuildTrackMove(p,
+			    v, rule, getWorld(), testPlayer.getPrincipal());
+	    } catch (IllegalArgumentException e) {
+		failed = true;
+	    }
+	    assertTrue(failed);
+	}
 
     private void assertBuildTrackFails(Point p, byte v,
         int rule) {
@@ -123,7 +140,7 @@ public class ChangeTrackPieceCompositeMoveTest extends AbstractMoveTestCase {
 	    ChangeTrackPieceCompositeMove.generateBuildTrackMove(p,
                 v, rule, getWorld(), testPlayer.getPrincipal());
         MoveStatus status = move.doMove(getWorld(), testPlayer.getPrincipal());
-        assertEquals(true, status.isOk());
+        assertTrue(status.toString(), status.isOk());
     }
 
     private void assertRemoveTrackSuceeds(Point p, byte v) {

@@ -18,6 +18,7 @@ package jfreerails.world.track;
 
 import java.awt.Point;
 
+import jfreerails.world.common.*;
 import jfreerails.world.player.Player;
 import jfreerails.world.top.*;
 
@@ -25,7 +26,7 @@ import jfreerails.world.top.*;
  * The properties of a given tile which are specific to the track layer
  * @author rtuck99@users.berlios.de
  */
-public abstract class TrackTile {
+public abstract class TrackTile implements FreerailsSerializable {
     /**
      * Defines the number of Deltas per track tile. One track tile is defined
      * to be this many "Deltas" in width / height. A Delta is a
@@ -108,5 +109,25 @@ public abstract class TrackTile {
 		deltaCoord.x < (mapTile.x + 1) * TrackTile.DELTAS_PER_TILE &&
 		deltaCoord.y >= mapTile.y * TrackTile.DELTAS_PER_TILE &&
 		deltaCoord.y < (mapTile.y + 1) * TrackTile.DELTAS_PER_TILE);
+    }
+
+    /**
+     * @return true if the tile is locked by a train passing over it
+     */
+    public boolean isLocked() {
+	return trackLock != 0;
+    }
+
+    public boolean equals(Object o) {
+	if (o == null || !(o instanceof TrackTile))
+	    return false;
+	TrackTile tt = (TrackTile) o;
+	
+	return (trackLayout == tt.trackLayout &&
+		trackType == tt.trackType);
+    }
+
+    public int hashCode() {
+	return trackLayout ^ trackType;
     }
 }

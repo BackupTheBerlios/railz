@@ -26,9 +26,8 @@ import jfreerails.world.common.GameTime;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.ITEM;
 import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.train.ImmutableSchedule;
-import jfreerails.world.train.TrainModel;
-import jfreerails.world.player.FreerailsPrincipal;
+import jfreerails.world.train.*;
+import jfreerails.world.player.*;
 
 /**
  * This CompositeMove adds a train to the train list, a train schedule to the
@@ -43,9 +42,11 @@ public class AddTrainMove extends CompositeMove {
 
     public static AddTrainMove generateMove(ReadOnlyWorld w, int i, TrainModel
 	    train, long price, ImmutableSchedule s, FreerailsPrincipal p) {
-        Move m = new AddItemToListMove(KEY.TRAINS, i, train, p);
+	int scheduleId = w.size(KEY.TRAIN_SCHEDULES, Player.AUTHORITATIVE);
+	train = new TrainModel(train, new ScheduleIterator(scheduleId, 0));
         Move m2 = new AddItemToListMove(KEY.TRAIN_SCHEDULES,
-                train.getScheduleIterator().getScheduleId(), s);
+                scheduleId, s);
+        Move m = new AddItemToListMove(KEY.TRAINS, i, train, p);
 	GameTime now = (GameTime) w.get(ITEM.TIME, p);
 	AddItemTransaction t = new AddItemTransaction(now,
 		AddItemTransaction.ROLLING_STOCK, 0, 1, -price);
@@ -53,6 +54,6 @@ public class AddTrainMove extends CompositeMove {
                 t, p);
 	
 
-        return new AddTrainMove(new Move[] {m, transactionMove, m2});
+        return new AddTrainMove(new Move[] {m2, m, transactionMove});
     }
 }

@@ -21,7 +21,7 @@ import java.util.HashSet;
 
 import jfreerails.world.common.*;
 import jfreerails.world.terrain.TerrainType;
-import jfreerails.world.track.TrackRule;
+import jfreerails.world.track.*;
 
 /**
  * This class is used to generate fixures for Junit tests.
@@ -41,11 +41,21 @@ public class MapFixtureFactory {
 	this.h = h;
 	world = new WorldImpl(w, h);
 	generateTrackRuleList(world);
+	for (int x = 0; x < w; x++) {
+	    for (int y = 0; y < h; y++) {
+		world.setTile(x, y, new FreerailsTile(0, null, null));
+	    }
+	}
     }
 
     public MapFixtureFactory() {
 	world = new WorldImpl(w, h);
         generateTrackRuleList(world);
+	for (int x = 0; x < w; x++) {
+	    for (int y = 0; y < h; y++) {
+		world.setTile(x, y, new FreerailsTile(0, null, null));
+	    }
+	}
     }
 
     public void generateTrackRuleList(World world) {
@@ -61,7 +71,7 @@ public class MapFixtureFactory {
         };
 
         legalTrackConfigurations[0] = trackTemplates0;
-        legalTrackPlacement[0] = new boolean[] { true };
+        legalTrackPlacement[0] = new boolean[] { true, true, true, true };
         trackRulesArray[0] = new TrackRule(0, "type0", false, 10,
 		legalTrackConfigurations[0], 0, legalTrackPlacement[0]);
 
@@ -71,13 +81,13 @@ public class MapFixtureFactory {
 	    CompassPoints.NORTH | CompassPoints.SOUTH
 	};
 
-        legalTrackPlacement[1] = new boolean[] { true };
+        legalTrackPlacement[1] = new boolean[] { true, true, true, true };
         trackRulesArray[1] = new TrackRule(0, "type1", false, 20,
 		legalTrackConfigurations[1], 0, legalTrackPlacement[1]);
 
         //3rd track type..
         legalTrackConfigurations[2] = new byte[0];
-        legalTrackPlacement[2] = new boolean[] { true };
+        legalTrackPlacement[2] = new boolean[] { true, true, true, true };
         trackRulesArray[2] = new TrackRule(0, "type2", false, 30,
 		legalTrackConfigurations[2], 0, legalTrackPlacement[2]);
 

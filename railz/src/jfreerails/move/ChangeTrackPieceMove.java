@@ -87,10 +87,17 @@ final public class ChangeTrackPieceMove implements TrackMove, MapUpdateMove {
         //the same as this.oldTrackPiece.
 	TrackTile currentTrackPieceAtLocation = currentTile.getTrackTile();
 	if ((oldTrackPiece == null && currentTrackPieceAtLocation != null) ||
-		!oldTrackPiece.equals(currentTrackPieceAtLocation)) {
+		((oldTrackPiece != null) &&
+		 !oldTrackPiece.equals(currentTrackPieceAtLocation))) {
             return MoveStatus.moveFailed("Somebody else changed the track " +
 		    "piece.");
         }
+
+	// Check that the track is not locked by a train
+	if (currentTrackPieceAtLocation != null &&
+		currentTrackPieceAtLocation.isLocked()) {
+	    return MoveStatus.moveFailed("A train is using this track.");
+	}
 
 	if (oldTrackPiece != null) {
 	    TrackRule oldTrackRule = (TrackRule) w.get(KEY.TRACK_RULES,
@@ -175,8 +182,14 @@ final public class ChangeTrackPieceMove implements TrackMove, MapUpdateMove {
         if (o instanceof ChangeTrackPieceMove) {
             ChangeTrackPieceMove m = (ChangeTrackPieceMove)o;
             boolean fieldPointEqual = this.location.equals(m.location);
-            boolean fieldoldTrackPieceEqual = this.trackPieceBefore.equals(m.trackPieceBefore);
-            boolean fieldnewTrackPieceEqual = this.trackPieceAfter.equals(m.trackPieceAfter);
+            boolean fieldoldTrackPieceEqual = 
+		((trackPieceBefore == null && m.trackPieceBefore == null) ||
+		 (trackPieceBefore != null && trackPieceBefore.equals
+		  (m.trackPieceBefore)));
+            boolean fieldnewTrackPieceEqual =
+	       ((trackPieceAfter == null && m.trackPieceAfter == null) ||
+	(trackPieceAfter != null &&
+	 trackPieceAfter.equals(m.trackPieceAfter)));
 
             if (fieldPointEqual && fieldoldTrackPieceEqual &&
                     fieldnewTrackPieceEqual &&

@@ -75,14 +75,14 @@ public final class CompassPoints implements FreerailsSerializable {
     }
 
     public static byte rotateClockwise(byte b) {
-	byte lsb = (byte) (b & 0x01);
-	return (byte) ((b >>> 1) | (lsb << 7)); 
+	int lsb = (b & 0x01);
+	return (byte) (((b & 0xFF) >>> 1) | (lsb << 7)); 
     }
 
     public static byte rotateAnticlockwise(byte b) {
-	byte b2 = (byte) (b << 1);
-	b2 |= ((b & 0x100) >>> 8);
-	return b2;
+	int b2 =  (b << 1);
+	b2 |= ((b2 & 0x100) >>> 8);
+	return (byte) b2;
     }
 
     public static byte invert(byte b) {
@@ -351,5 +351,20 @@ public final class CompassPoints implements FreerailsSerializable {
 		throw new IllegalArgumentException();
 	}
     }
+
+    public static String toString(byte direction) {
+	String s = "";
+	int mask = 1;
+	for (int i = 0; i < 8; i++) {
+	    byte b = (byte) (direction & mask);
+	    if (b != 0) {
+		if (s.length() > 0)
+		    s += " | ";
+		s += toAbrvString(eightBitToThreeBit(b));
+	    }
+	    mask = mask << 1;
+	}
+	return s;
+    } 
 }
 
