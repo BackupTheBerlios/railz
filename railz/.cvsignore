@@ -1,0 +1,10 @@
+bin
+.classpath
+.project
+freerails.sav
+javadoc
+dist
+build
+.nbattrs
+*.class
+temp
