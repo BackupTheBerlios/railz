@@ -62,6 +62,9 @@ public class DisplayModeListModel implements ListModel {
      }
     
     public Object getElementAt(int index) {
+	if (index >= modes.length)
+	    return null;
+
         return modes[index];
     }
     

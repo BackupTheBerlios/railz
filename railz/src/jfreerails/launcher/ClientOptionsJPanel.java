@@ -40,8 +40,9 @@ class ClientOptionsJPanel extends javax.swing.JPanel {
     }
 
     DisplayMode getDisplayMode() {
-	return ((MyDisplayMode) listModel.getElementAt
-		(jList1.getSelectedIndex())).displayMode;
+	MyDisplayMode mdm = (MyDisplayMode) listModel.getElementAt
+		(jList1.getSelectedIndex());
+	return mdm == null ? null : mdm.displayMode;
     }
 
     boolean isWindowed() {
