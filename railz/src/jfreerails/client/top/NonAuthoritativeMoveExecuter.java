@@ -24,8 +24,7 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 import jfreerails.client.model.ModelRoot;
-import jfreerails.controller.MoveReceiver;
-import jfreerails.controller.UncommittedMoveReceiver;
+import jfreerails.controller.*;
 import jfreerails.move.Move;
 import jfreerails.move.MoveStatus;
 import jfreerails.move.RejectedMove;
@@ -62,6 +61,7 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
     private PendingQueue pendingQueue = new PendingQueue();
     private ModelRoot modelRoot;
     private MoveReceiver moveReceiver;
+    private final TrainMover trainMover;
     private World world;
     private final SychronizedQueue sychronizedQueue = new SychronizedQueue();
     static boolean debug = false;
@@ -73,6 +73,7 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
         world = w;
 	modelRoot.getDebugModel().getClientMoveDebugModel().
 	    getAction().addPropertyChangeListener(debugChangeListener);
+	trainMover = new TrainMover(world);
     }
 
     /**
@@ -80,6 +81,13 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
      */
     public void processMove(Move move) {
         sychronizedQueue.write(move);
+    }
+
+    /**
+     * Executed once per TimeTick
+     */
+    private void timeTickElapsed() {
+	trainMover.moveTrains();
     }
 
     /**
@@ -91,6 +99,9 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
         for (int i = 0; i < items.length; i++) {
             Move move = (Move)items[i];
             pendingQueue.moveCommitted(move);
+	    if (move instanceof TimeTickMove)
+		timeTickElapsed();
+	    
 	    if (debug && ! (move instanceof TimeTickMove))
 		System.err.println("pending: " + pendingQueue.pendingMoves.size());
         }

@@ -17,6 +17,9 @@
 package jfreerails.world.train;
 
 import java.util.Arrays;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+
 import jfreerails.world.common.*;
 import jfreerails.world.track.*;
 
@@ -190,7 +193,17 @@ public class TrainModel implements FreerailsSerializable {
 		tm.stateLastChanged);
     }
 
+    public void setTrainMotionModel(TrainMotionModel tmm) {
+	trainMotionModel = tmm;
+    }
+
     public TrainMotionModel getTrainMotionModel() {
 	return trainMotionModel;
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException,
+    ClassNotFoundException {
+	in.defaultReadObject();
+	trainMotionModel = new TrainMotionModel();
     }
 }

@@ -80,7 +80,7 @@ public class StationBuilder {
 	/* further condition is that track must be straight with no branches */
 	byte reference = (byte) (CompassPoints.NORTH | CompassPoints.SOUTH);
 	byte currentLayout = oldTile.getTrackTile().getTrackConfiguration();
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 4; i++) {
 	    if (currentLayout == reference)
 		return true;
 	    currentLayout = CompassPoints.rotateClockwise(currentLayout);

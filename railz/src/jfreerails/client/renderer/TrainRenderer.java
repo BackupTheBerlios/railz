@@ -52,8 +52,8 @@ public class TrainRenderer {
 	int n = train.getNumberOfWagons() + 1;
         //renderer wagons.				
         for (int i = 1; i < n; i++) {
-            int wagonType = train.getWagon(i);
-            renderWagon(g, s, n, wagonType, false);
+            int wagonType = train.getWagon(i - 1);
+            renderWagon(g, s, i, wagonType, false);
         }
     }
 

@@ -231,8 +231,8 @@ final public class MapBackgroundRender implements MapLayerRenderer {
 
     public void paintTile(Graphics g, int x, int y) {
         terrainLayer.paintTile(g, x, y);
-	buildingLayer.paintTile(g, x, y);
         trackLayer.paintTile(g, x, y);
+	buildingLayer.paintTile(g, x, y);
     }
 
     /**
@@ -260,8 +260,8 @@ final public class MapBackgroundRender implements MapLayerRenderer {
     private void paintRectangleOfTiles(Graphics g, int x, int y, int width,
         int height) {
         terrainLayer.paintRectangleOfTiles(g, x, y, width, height);
-	buildingLayer.paintRectangleOfTiles(g, x, y, width, height);
         trackLayer.paintRectangleOfTiles(g, x, y, width, height);
+	buildingLayer.paintRectangleOfTiles(g, x, y, width, height);
     }
 
     public void refreshTile(int x, int y) {

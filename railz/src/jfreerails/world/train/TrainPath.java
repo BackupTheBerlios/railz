@@ -18,6 +18,7 @@
 package jfreerails.world.train;
 
 import java.awt.Point;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.HashMap;
@@ -54,10 +55,14 @@ public class TrainPath implements FreerailsSerializable {
     }
 
     public TrainPath (IntLine[] lines) {
+	double l = 0;
 	if (lines.length != 0) {
-	    for (int i = 0; i < lines.length; i++)
+	    for (int i = 0; i < lines.length; i++) {
 		segments.add(lines[i]);
+		l += lines[i].getLength();
+	    }
 	}
+	length = (int) l;
     }
 
     public TrainPath(TrainPath p) {
@@ -310,5 +315,16 @@ public class TrainPath implements FreerailsSerializable {
 	}
 	// distance was bigger than length of the TrainPath
 	throw new IllegalArgumentException();
+    }
+
+    public String toString() {
+	String s = "";
+	Iterator i = segments.iterator();
+	while (i.hasNext()) {
+	    if (s.length() > 0)
+		s += ", ";
+	    s += ((IntLine) i.next()).toString();
+	}
+	return s;
     }
 }

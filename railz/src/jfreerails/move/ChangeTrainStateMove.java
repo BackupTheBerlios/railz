@@ -27,7 +27,6 @@ import jfreerails.world.top.*;
  */
 public class ChangeTrainStateMove extends TrainMove {
     private TrainPath pathFromLastSync;
-    private ObjectKey trainKey;
     int oldState;
     GameTime oldStateTime;
     int newState;

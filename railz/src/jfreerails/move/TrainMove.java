@@ -41,8 +41,12 @@ public abstract class TrainMove implements Move {
 	if (tm == null)
 	    return MoveStatus.moveFailed("The train does not exist.");
 
-	if (pathFromLastSync.equals(tm.getTrainMotionModel().
-		    getPathTraversedSinceLastSync()))
+	if ((pathFromLastSync == null &&
+		    tm.getTrainMotionModel().getPathTraversedSinceLastSync() ==
+		    null) ||
+		((pathFromLastSync != null) &&
+		 pathFromLastSync.equals(tm.getTrainMotionModel().
+		    getPathTraversedSinceLastSync())))
 	    return MoveStatus.MOVE_OK;
 
 	return MoveStatus.MOVE_FAILED;

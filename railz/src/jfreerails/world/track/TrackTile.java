@@ -91,6 +91,9 @@ public abstract class TrackTile implements FreerailsSerializable {
 	this.trackType = trackType;
     }
 
+    /**
+     * @return a new point at the centre of the map tile
+     */
     public static final Point tileCoordsToDeltas(Point p) {
 	Point newP = new Point((p.x * TrackTile.DELTAS_PER_TILE +
 		    DELTAS_PER_TILE / 2),

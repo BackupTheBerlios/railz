@@ -68,7 +68,7 @@ public class TrainMover {
 	    while (j.next()) {
 		TrainModel tm = (TrainModel) j.getElement();
 		if (tm.getPosition() == null) {
-		    setInitialPosition(tm);
+		    setInitialPosition(tm, p, j.getIndex());
 		}
 		if (tm.getState() == TrainModel.STATE_RUNNABLE)
 		    updateTrainPosition(tm);
@@ -77,6 +77,7 @@ public class TrainMover {
     }
 
     private void updateTrainPosition(TrainModel tm) {
+	System.out.println("updating position of " + tm);
 	final HashMap newMapTiles = new HashMap();
 	final HashMap oldMapTiles = new HashMap();
 	final HashMap undoList = new HashMap();
@@ -163,13 +164,15 @@ public class TrainMover {
 	tmm.getPathTraversedSinceLastSync().prepend(removed);
     }
 
-    private void setInitialPosition(TrainModel tm) {
+    private void setInitialPosition(TrainModel tm, FreerailsPrincipal
+	    trainPrincipal, int trainIndex) {
 	ScheduleIterator si = tm.getScheduleIterator();
 	TrainOrdersModel departsOrder = si.getCurrentOrder(world);
 	StationModel departsStation = (StationModel) world.get(KEY.STATIONS,
 		departsOrder.getStationNumber().index,
 		departsOrder.getStationNumber().principal); 
 	tm = new TrainModel (tm, si = si.nextOrder(world));
+	world.set(KEY.TRAINS, trainIndex, tm, trainPrincipal);
 	TrainOrdersModel arrivesOrder = si.getCurrentOrder(world);
 	StationModel arrivesStation = (StationModel) world.get(KEY.STATIONS,
 		arrivesOrder.getStationNumber().index,
@@ -203,6 +206,8 @@ public class TrainMover {
 	TrainPath trainPos =
 	    pathToNextStation.truncateTail(pathToNextStationLength);
 	tmm.setPathToDestination(pathToNextStation);
+	System.out.println ("setting new train position " + trainPos +
+		" on model " + tm + " in " + Thread.currentThread().getName());
 	tm.setPosition(trainPos);
     }
 

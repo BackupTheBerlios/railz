@@ -87,6 +87,7 @@ class TrainController {
 		    setState(trainIndex, p, TrainModel.STATE_UNLOADING, now,
 			    tm);
 		}
+		return;
 	    default:
 		return;
 	}
@@ -105,6 +106,8 @@ class TrainController {
 	    int trainIndex) {
 	/* get the details of the station the train is at */
 	Point point = new Point();
+	System.out.println("getting position of " + tm + " = " +
+		tm.getPosition() + " in " + Thread.currentThread().getName());
 	tm.getPosition().getHead(point);
 	FreerailsPrincipal sp = null;
 	NonNullElements j = new NonNullElements(KEY.PLAYERS, world,

@@ -48,8 +48,16 @@ public class TrainPathFinder {
      */
     private HashSet exploredTiles;
 
+    private void dumpState(LinkedList l) {
+	Iterator i = l.iterator();
+	while (i.hasNext()) { 
+	    System.out.println(((PathElement) i.next()).toString());
+	}
+    }
+
     public TrainPathFinder(ReadOnlyWorld w) {
 	world = w;
+	exploredTiles = new HashSet();
     }
 
     private void nextElement(Point currentPosition) {
@@ -66,32 +74,57 @@ public class TrainPathFinder {
     }
 
     /**
+     * @param start start location measured in Deltas from map origin.
+     * @param target end location measured in Deltas from map origin.
      * TODO calculate cost from terrain and track layout.
+     * TODO fix so that initial move is from start point to centre of tile
+     * TODO improve efficiency of this algorithm (discard paths when the
+     * possible minimum is longer than current best, compare current best
+     * against theoretical minimum and accept non-optimal solutions if they
+     * are within a certain %age. Also it may be more efficient to scan from
+     * 45deg A/C from target, rather than 180..)
      */
-    public TrainPath findPath(Point start, Point target) {
+    public TrainPath findPath(Point start, Point dest) {
 	/* "Stupidity" filter... */
-	if (start.equals(target))
-	    return new TrainPath(new IntLine[0]);
+	if (start.equals(dest))
+	    return new TrainPath(new IntLine[]{new IntLine(start.x, start.y,
+			start.x, start.y)});
 
+	Point target = new Point(dest);
+	TrackTile.deltasToTileCoords(target);
 	startDirection = CompassPoints.NORTH;
-	startTrackLayout = world.getTile(start.x,
-		start.y).getTrackConfiguration();
+	startTrackLayout = world.getTile(start.x / TrackTile.DELTAS_PER_TILE,
+		start.y / TrackTile.DELTAS_PER_TILE).getTrackConfiguration();
 	currentPath = new LinkedList();
 	bestPath = new LinkedList();
 	bestCost = Integer.MAX_VALUE;
+	Point startCentre = new Point (start);
+	TrackTile.deltasToTileCoords(startCentre);
+	startCentre = TrackTile.tileCoordsToDeltas(startCentre);
+	IntLine startLine = new IntLine(start.x, start.y, startCentre.x,
+		    startCentre.y);
 	do {
 	    startDirection = CompassPoints.rotateClockwise(startDirection);
+	    if ((startDirection & world.getTile(startCentre.x /
+			TrackTile.DELTAS_PER_TILE, startCentre.y /
+			TrackTile.DELTAS_PER_TILE).getTrackConfiguration()) ==
+			0)
+		    continue;
+
 	    currentPath.clear();
-	    currentPath.add(new IntLine(start.x /
-			TrackTile.DELTAS_PER_TILE, start.y /
-			TrackTile.DELTAS_PER_TILE,
-			startTrackLayout,
-			CompassPoints.getLength(startDirection) / 2));
+			
+	    currentPath.add(new PathElement
+		    (startCentre.x / TrackTile.DELTAS_PER_TILE,
+		    startCentre.y / TrackTile.DELTAS_PER_TILE,
+		    startDirection, startTrackLayout, 1));
 	    PathElement currentElement = (PathElement) currentPath.getFirst();
 	    Point currentPosition = new Point(currentElement.x,
 		    currentElement.y);
 	    Point oldPosition = new Point();
+	    exploredTiles.clear();
+	    exploredTiles.add(currentPosition);
 	    do {
+		System.out.println("exploring tile " + currentPosition);
 		/* move to next tile along current direction */
 		oldPosition.x = currentPosition.x;
 		oldPosition.y = currentPosition.y;
@@ -125,8 +158,14 @@ public class TrainPathFinder {
 		}
 
 		/* add the current position to the current path */
-		byte trackLayout = world.getTile(currentPosition.x,
+		byte trackLayout = 0;
+		try {
+		    trackLayout = world.getTile(currentPosition.x,
 			currentPosition.y).getTrackConfiguration();
+		} catch (NullPointerException e) {
+		    System.out.println("caught null pointer exception");
+		    dumpState(currentPath);
+		}
 		byte initialDirection =
 		    CompassPoints.invert(currentElement.direction);
 
@@ -159,6 +198,8 @@ public class TrainPathFinder {
 	if (bestPath.isEmpty())
 	    return new TrainPath(new IntLine[0]);
 
+	System.out.println("best path:");
+	dumpState(bestPath);
 	/* convert the ArrayList to a TrainPath. bestPath always contains the
 	 * target tile and the start tile */
 	Point oldp = new Point();
@@ -171,14 +212,14 @@ public class TrainPathFinder {
 	    oldp.x = p.x;
 	    oldp.y = p.y;
 	    oldDirection = p.direction;
-	    while (p.direction == oldDirection) {
+	    do {
 		p = (PathElement) bestPath.removeFirst();
 		newp.x = p.x;
 		newp.y = p.y;
-	    }
+	    } while (p.direction == oldDirection);
 	    if (firstP) {
-		oldp.x = start.x;
-		oldp.y = start.y;
+		oldp.x = startCentre.x;
+		oldp.y = startCentre.y;
 		firstP = false;
 	    } else {
 		oldp = TrackTile.tileCoordsToDeltas(oldp);
@@ -187,8 +228,11 @@ public class TrainPathFinder {
 	    IntLine l = new IntLine(oldp.x, oldp.y, newp.x, newp.y);
 	    intLines.add(l);
 	}
-	return new TrainPath((IntLine[]) intLines.toArray(new
+	intLines.addFirst(startLine);
+	TrainPath retVal = new TrainPath((IntLine[]) intLines.toArray(new
 		    IntLine[intLines.size()]));
+	System.out.println("Returning: " + retVal.toString());
+	return retVal;
     }
 
     private static class PathElement {
@@ -206,6 +250,13 @@ public class TrainPathFinder {
 
 	private int cost;
 
+	public String toString() {
+	    return "x = " + x + ", y = " + y + ", direction = " +
+		CompassPoints.toString(direction) + ", initDir = " +
+		CompassPoints.toString(initialDirection) + ", trackLayout = "
+		+ CompassPoints.toString(trackLayout) + ", cost = " + cost;
+	}
+
 	public PathElement(PathElement p) {
 	    x = p.x;
 	    y = p.y;
@@ -217,6 +268,11 @@ public class TrainPathFinder {
 
 	/**
 	 * @param cost cost factor to traverse this tile
+	 * @param x x coord of tile in tiles
+	 * @param y y coord of tile in tiles
+	 * @param trackLayout CompassPoints mask representing layout of track
+	 * at this point
+	 * @param cost cost factor to traverse the tile.
 	 */
 	public PathElement(int x, int y, byte direction, byte trackLayout, int
 		cost) {
