@@ -1,3 +1,8 @@
+December 30, 2004:
+------------------
+Adjusted physics model. Added scripting engine, added configurable EngineType
+availability. Relocated server configuration files to server package.
+Implemented first part of client-specific "views".
 November 26, 2004:
 ------------------
 Implemented more realistic physics model. Trains now slow down and speed up on

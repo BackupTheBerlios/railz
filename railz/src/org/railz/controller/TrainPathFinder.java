@@ -318,6 +318,7 @@ public class TrainPathFinder {
 	    return true;
 	}
 
+	/** TODO change this method to take into account the terrain */
 	public int getCost() {
 	    return cost * CompassPoints.getLength(direction);
 	}

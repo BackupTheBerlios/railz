@@ -99,6 +99,9 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
          * Processes inbound moves from the server
          */
         public synchronized void processMove(Move move) {
+	    if (moveReceiver == null)
+		return;
+
             if (move instanceof TimeTickMove) {
                 /*
                  * flush our outgoing moves prior to receiving next tick
@@ -150,25 +153,6 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
     public synchronized void setConnection(ConnectionToServer c)
         throws IOException, GeneralSecurityException {
         setConnectionImpl(c);
-
-        synchronized (authMutex) {
-            if (!authenticated) {
-                modelRoot.getUserMessageLogger().println
-		    (Resources.get("Waiting for authentication"));
-
-                try {
-                    authMutex.wait();
-                } catch (InterruptedException e) {
-                    //ignore
-                }
-
-                if (!authenticated) {
-                    throw new GeneralSecurityException("Server rejected " +
-                        "attempt to authenticate");
-                }
-
-            }
-        }
     }
 
     /**
@@ -191,12 +175,38 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
 
         /* grab the lock on the WorldUpdater in order to prevent any moves from
          * the server being lost whilst we plumb it in */
-        synchronized (worldUpdater) {
+    //    synchronized (worldUpdater) {
             connection = c;
             connection.open();
 
             connection.addMoveReceiver(worldUpdater);
             connection.addConnectionListener(this);
+
+	    /* attempt to authenticate the player */
+	    modelRoot.getUserMessageLogger().println
+		(Resources.get("Attempting to authenticate player: ") +
+		 player.getName());
+	    authenticated = false;
+	    connection.sendCommand(new AddPlayerCommand(player, player.sign()));
+	    synchronized (authMutex) {
+		if (!authenticated) {
+		    modelRoot.getUserMessageLogger().println
+			(Resources.get("Waiting for authentication"));
+
+		    try {
+			authMutex.wait();
+		    } catch (InterruptedException e) {
+			//ignore
+		    }
+
+		    if (!authenticated) {
+			throw new GeneralSecurityException("Server rejected " +
+				"attempt to authenticate");
+		    }
+		}
+	    } // synchronized (authMutex)
+	    
+	synchronized (worldUpdater) {
             world = connection.loadWorldFromServer();
 
             /* plumb in a new Move Executer */
@@ -211,16 +221,11 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
 	gameLoop = new GameLoop(guiRoot.getScreenHandler(),
 		moveExecuter);
 
-        /* attempt to authenticate the player */
-        modelRoot.getUserMessageLogger().println
-	    (Resources.get("Attempting to authenticate player: ") +
-	     player.getName());
-        authenticated = false;
-        connection.sendCommand(new AddPlayerCommand(player, player.sign()));
-
 	/* send a command to set up server-specific resources */
 	connection.sendCommand(new ResourceBundleManager.GetResourceCommand
 		("org.railz.data.l10n.server", Locale.getDefault()));
+
+	playerConfirmed();
     }
 
     private void playerConfirmed() {
@@ -295,7 +300,6 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
 			(Resources.get
 			 ("Player was successfully authenticated"));
                     modelRoot.setPlayerPrincipal(((AddPlayerResponseCommand)s).getPrincipal());
-                    playerConfirmed();
                 } else {
                     modelRoot.getUserMessageLogger().println
 			(Resources.get("Authentication was rejected"));
@@ -304,17 +308,8 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
                 authMutex.notify();
             }
         } else if (s instanceof WorldChangedCommand) {
-            try {
-                setConnectionImpl(c);
-            } catch (IOException e) {
-                modelRoot.getUserMessageLogger().println
-		    (Resources.get("Unable to open remote connection"));
-                closeConnection();
-            } catch (GeneralSecurityException e) {
-                modelRoot.getUserMessageLogger().println
-		    (Resources.get("Unable to authenticate with server: ")
-		     + e.toString());
-            }
+		Runnable r = new ConnectionHelper(c);
+		(new Thread(r)).start();
         } else if (s instanceof ServerMessageCommand) {
 	    modelRoot.getUserMessageLogger().println
 		(Resources.get(((ServerMessageCommand) s).getMessage()));
@@ -331,4 +326,26 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
 		}
 	}
     }
-}
+
+    private class ConnectionHelper implements Runnable {
+	ConnectionToServer c;
+
+	public ConnectionHelper(ConnectionToServer c) {
+	    this.c = c;
+	}
+
+	public void run() {
+	    try {
+		setConnectionImpl(c);
+	    } catch (IOException e) {
+		modelRoot.getUserMessageLogger().println
+		    (Resources.get("Unable to open remote connection"));
+		closeConnection();
+	    } catch (GeneralSecurityException e) {
+		modelRoot.getUserMessageLogger().println
+		    (Resources.get("Unable to authenticate with server: ")
+		     + e.toString());
+	    }
+	}
+    }
+    }

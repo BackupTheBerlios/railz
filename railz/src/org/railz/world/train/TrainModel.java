@@ -325,11 +325,10 @@ public class TrainModel implements FreerailsSerializable {
 	    trainMotionModel.getPosition(t);
     }
 
-    public TrainModel setPosition(TrainPath position, GameTime t, int
-	    maxSpeed) {
+    public TrainModel setPosition(TrainPath position, GameTime t) {
 	return new TrainModel(engineType, wagonTypes, cargoBundleNumber,
 		creationDate, state, scheduleIterator, new
-		TrainMotionModel2(null, position, t, maxSpeed, null), priority,
+		TrainMotionModel2(null, position, t, null), priority,
 		isBlocked, stateLastChanged, ticksInService,
 		costTraversedSinceLoadingWater);
     }

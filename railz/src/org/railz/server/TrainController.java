@@ -37,6 +37,8 @@ import org.railz.world.train.TrainPathFunction.TrainPathSegment;
  * train destinations.
  */
 class TrainController {
+    private HashMap lostTrains = new HashMap();
+
     /**
      * Time to wait in station whilst unloading cargo
      */
@@ -282,7 +284,8 @@ class TrainController {
     }
 
     private TrainPathSegment getNewSegment(Point p1, Point p2,
-	    float t0, float v0, float s0, int mass, int power, EngineType et) {
+	    float t0, float v0, float s0, int mass, float power, EngineType
+	    et) {
 	float sMax = getSMax(s0, p1, p1);
 	return getNewSegment(p1, p2, t0, v0, s0, mass, power, sMax, et);
     }
@@ -290,9 +293,9 @@ class TrainController {
     /** @return the TrainPathSegment for the traversal from the centre of tile
      * at point p1 to centre of tile at point p2 */
     private TrainPathSegment getNewSegment(Point p1, Point p2,
-	    float t0, float v0, float s0, int mass, int power, float sMax,
+	    float t0, float v0, float s0, int mass, float power, float sMax,
 	    EngineType et) {
-	int maxTractiveForce = et.getMaxTractiveForce();
+	float maxTractiveForce = et.getMaxTractiveForce();
 	FreerailsTile ft = world.getTile(p1);
 	int ttn = ft.getTerrainTypeNumber();
 	TerrainType tt1 = (TerrainType)
@@ -301,27 +304,25 @@ class TrainController {
 	ttn = ft.getTerrainTypeNumber();
 	TerrainType tt2 = (TerrainType) world.get(KEY.TERRAIN_TYPES, ttn,
 		Player.AUTHORITATIVE);
-	float effectiveIncline = (float) (tt2.getElevation() -
-		tt1.getElevation() + (tt1.getRoughness() + tt2.getRoughness())
-		/ 2) / 100;
-	// if we are on a diagonal then our incline is divided by root 2
-	if (p1.x != p2.x && p1.y != p2.y) {
-	    effectiveIncline /= ROOT_TWO;
+	// check the track type to see whether it is a tunnel
+	TrackRule trackType = (TrackRule) world.get(KEY.TRACK_RULES,
+		ft.getTrackRule(), Player.AUTHORITATIVE);
+	float effectiveIncline;
+	if (trackType.isTunnel()) {
+	    // if we are in a tunnel, then assume it's level
+	    effectiveIncline = 0;
+	} else {
+	    effectiveIncline = (float) (tt2.getElevation() -
+		    tt1.getElevation()); 
+	    // if we are on a diagonal then our incline is divided by root 2
+	    if (p1.x != p2.x && p1.y != p2.y) {
+		effectiveIncline /= ROOT_TWO;
+	    }
+	    effectiveIncline += (float) (tt1.getRoughness() +
+			tt2.getRoughness()) / 2;
+	    effectiveIncline /= 100;
 	}
-	// at low speeds, acceleration is limited by traction
-	// calculate acceleration
-	// since mass is on the order of 100, and v is of the order of 1, and
-	// mass is of the order of 1, then power should be in the region of
-	// 100
-	float tractiveForce = power / (100 * v0);
-	if (tractiveForce > (float) maxTractiveForce / 10)
-	    tractiveForce = (float) maxTractiveForce / 10;
-	float a = tractiveForce / mass - effectiveIncline
-	    - v0 * v0 * et.getDragCoeff() / mass - v0 *
-	    et.getRollingFrictionCoeff();
-	System.out.println("a=" + a + ", tf=" + tractiveForce + ", mass=" +
-		mass + ", incline=" + effectiveIncline + ", v0" + v0 +
-	       	", s0=" + s0 + ", t0=" + t0);
+	float a = et.getAcceleration(effectiveIncline, v0, mass);
 	
 	return new TrainPathSegment(t0, v0, a, s0, sMax);
     }
@@ -345,12 +346,12 @@ class TrainController {
 	int mass = trainModelViewer.getTotalMass();
 	EngineType et = (EngineType) world.get(KEY.ENGINE_TYPES,
 		    tm.getEngineType(), Player.AUTHORITATIVE);
-	int power = et.getPowerOutput();
+	float power = et.getPowerOutput();
 	
 	if (outOfWater)
 	    power /= 2;
 	
-	int maxTractiveForce = et.getMaxTractiveForce();
+	float maxTractiveForce = et.getMaxTractiveForce();
 	float v0 = 0;
        if (tm.getTrainMotionModel().getPathFunction() != null)
 	    v0 = tm.getTrainMotionModel().getPathFunction()
@@ -371,11 +372,12 @@ class TrainController {
 	    p1.setLocation(p2);
 	}
 
+	int prefChunks = 1;
 	for (int i = mapCoords.size() - 1; i >= 0; i--) {
 	    p2 = (Point) mapCoords.get(i);
 	    float sMax = getSMax(s0, p1, p2);
 	    int currentChunk = 0;
-	    int maxChunks = 1;
+	    int maxChunks = prefChunks;
 	    float currentS0 = s0;
 	    do {
 		TrainPathSegment seg = getNewSegment(p1, p2, t0, v0,
@@ -383,15 +385,26 @@ class TrainController {
 			((float) (currentChunk + 1) / maxChunks), et);
 		float newT0;
 		newT0 = seg.getTMax();
-		if (newT0 < t0) {
+		float vDiff = Math.abs(seg.getSpeed(newT0) -
+				seg.getSpeed(t0));
+		float a = Math.abs(seg.getAcceleration());
+		if (prefChunks <= maxChunks && (newT0 < t0 || (vDiff > a * 4 &&
+				vDiff > 0.0001))) {
 		    // need a better approximation
 		    // try smaller chunks
 		    maxChunks <<= 1;
 		    currentChunk <<= 1;
-		    if (maxChunks > 32) {
+		    if (maxChunks > 4096) {
 			// hill is too steep
 			return null;
 		    }
+		    continue;
+		} else if (prefChunks >= maxChunks && 
+			(currentChunk % 2) == 0 &&
+			maxChunks > 1 && vDiff <= a) {
+		    // try larger chunks
+		    maxChunks >>= 1;
+		    currentChunk >>= 1;
 		    continue;
 		}
 		t0 = newT0;
@@ -399,6 +412,7 @@ class TrainController {
 		currentS0 = seg.getDistance(t0);
 		v0 = seg.getSpeed(t0);
 		currentChunk++;
+		prefChunks = maxChunks;
 	    } while (currentChunk < maxChunks);
 	    s0 = currentS0;
 	    p1.setLocation(p2);
@@ -407,8 +421,18 @@ class TrainController {
     }
 
     private int setPathToDestination(ObjectKey trainKey, TrainModel tm) {
-	final Point head = new Point();
 	GameTime t = (GameTime) world.get(ITEM.TIME, Player.AUTHORITATIVE);
+	Integer timeOfLastAttempt = (Integer) lostTrains.get(trainKey);
+	if (timeOfLastAttempt != null) {
+	    GameCalendar gc = (GameCalendar) world.get(ITEM.CALENDAR,
+		    Player.AUTHORITATIVE);
+	    if (timeOfLastAttempt.intValue() + gc.getTicksPerDay() 
+		    > t.getTime())
+		return tm.getState();
+	}
+
+
+	final Point head = new Point();
 	
 	Point stationCoords = getCurrentDestination(tm);
 	if (stationCoords == null) {
@@ -426,11 +450,13 @@ class TrainController {
 	ChangeTrainMove ctm;
 	if (tpf == null) {
 	    // train can't climb hill
-	    ctm = ChangeTrainMove.generateMove(trainKey.index,
-		    trainKey.principal, tm, null, null, t);
+	    // train is already lost, so no new move required
+	    lostTrains.put(trainKey, new Integer(t.getTime()));
+	    return TrainModel.STATE_RUNNABLE;
 	} else {
 	    ctm = ChangeTrainMove.generateMove(trainKey.index,
 		    trainKey.principal, tm, tp, tpf, t);
+	    lostTrains.remove(trainKey);
 	}
 	moveReceiver.processMove(ctm);
 

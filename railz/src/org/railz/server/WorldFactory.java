@@ -43,7 +43,7 @@ class WorldFactory {
         return new String[] {"south_america", "small_south_america"};
     }
 
-    public static World createWorldFromMapFile(String mapName,
+    public static WorldImpl createWorldFromMapFile(String mapName,
         FreerailsProgressMonitor pm) {
         pm.setMessage("Setting up world.");
         pm.setValue(0);
@@ -55,6 +55,10 @@ class WorldFactory {
 
         WorldImpl w = new WorldImpl();
         pm.setValue(++progess);
+
+        //Set the time..
+        w.set(ITEM.CALENDAR, new GameCalendar(30, 1840, 0));
+        w.set(ITEM.TIME, new GameTime(0));
 
         try {
             java.net.URL url = WorldFactory.class.getResource(
@@ -75,25 +79,23 @@ class WorldFactory {
         pm.setValue(++progess);
 
         //Load the terrain map
-        URL map_url = WorldFactory.class.getResource("/org/railz/data/" +
-                mapName + ".png");
+        URL map_url = WorldFactory.class.getResource
+	    ("/org/railz/server/data/maps/" + mapName + "/map.png");
         MapFactory.setupMap(map_url, w, pm);
 
         //Load the city names
-        URL cities_xml_url = WorldFactory.class.getResource("/org/railz/data/" +
-                mapName + "_cities.xml");
+	URL cities_xml_url = WorldFactory.class.getResource
+	    ("/org/railz/server/data/maps/" + mapName + "/map.xml");
 
         try {
             InputCityNames r = new InputCityNames(w, cities_xml_url);
         } catch (SAXException e) {
+	    System.err.println("Caught exception " + e.getMessage());
+	    e.printStackTrace();
         }
 
         //Randomly position the city tiles - no need to assign this object
         new BuildingTilePositioner(w);
-
-        //Set the time..
-        w.set(ITEM.CALENDAR, new GameCalendar(30, 1840, 0));
-        w.set(ITEM.TIME, new GameTime(0));
 
         return w;
     }

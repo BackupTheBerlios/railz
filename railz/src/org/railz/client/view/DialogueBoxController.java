@@ -135,17 +135,6 @@ public class DialogueBoxController {
         
         how2play = new HtmlJPanel(DialogueBoxController.class.getResource("/org/railz/client/view/how_to_play.htm"));
         
-        //Set up select engine dialogue.
-        selectEngine = new SelectEngineJPanel();
-        selectEngine.setCancelButtonActionListener(this.closeCurrentDialogue);
-        selectEngine.setup(modelRoot, new ActionListener() {
-            
-            public void actionPerformed(ActionEvent arg0) {
-                closeContent();
-                showSelectWagons();
-            }
-            
-        });
         newspaper = new NewsPaperJPanel();
         newspaper.setup(w, vl, closeCurrentDialogue);
         
@@ -207,7 +196,15 @@ public class DialogueBoxController {
             modelRoot.getUserMessageLogger().println("Can't" +
             " build train since there are no stations");
         } else {
-            
+	    //Set up select engine dialogue.
+	    selectEngine = new SelectEngineJPanel();
+	    selectEngine.setCancelButtonActionListener(closeCurrentDialogue);
+	    selectEngine.setup(modelRoot, new ActionListener() {
+		    public void actionPerformed(ActionEvent arg0) {
+			closeContent();
+			showSelectWagons();
+		    }
+		    });
             showContent(selectEngine);
         }
     }

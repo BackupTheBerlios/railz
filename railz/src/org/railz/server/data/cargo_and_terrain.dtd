@@ -41,6 +41,9 @@
 
 <!ELEMENT Tile EMPTY>
 
+<!--
+  ++ elevation and roughness are in 100ths of % in gradient terms
+  -->
 <!ATTLIST Tile
     Category (River | Ocean | Hill | Country) #REQUIRED
     rgb CDATA #REQUIRED
@@ -98,7 +101,8 @@
     powerOutput CDATA #REQUIRED
     maxTractiveForce CDATA #REQUIRED
     dragCoeff CDATA #REQUIRED
-    frictionCoeff CDATA #REQUIRED>
+    frictionCoeff CDATA #REQUIRED
+    available (true|false) #REQUIRED>
 
 <!ELEMENT FuelPrice EMPTY>
 <!ATTLIST FuelPrice
@@ -137,6 +141,14 @@
     >
     
 <!ELEMENT WagonTypes (WagonType)*>
+
+<!ELEMENT ScriptingParam EMPTY>
+<!ATTLIST ScriptingParam
+    name CDATA #REQUIRED
+    value CDATA #REQUIRED
+>
+
+<!ELEMENT ScriptingEvent (ScriptingParam)*>
 
 <!ELEMENT Types (Cargo_Types, Terrain_Types, Building_Types, EngineTypes,
 	Economy, StationImprovements, WagonTypes)>

@@ -27,10 +27,7 @@ import org.railz.move.MoveStatus;
 import org.railz.move.RejectedMove;
 import org.railz.world.player.FreerailsPrincipal;
 import org.railz.world.player.Player;
-import org.railz.world.top.KEY;
-import org.railz.world.top.NonNullElements;
-import org.railz.world.top.World;
-
+import org.railz.world.top.*;
 
 /**
  * Provides a method by which a Principal may be obtained
@@ -147,6 +144,10 @@ class IdentityProvider {
 
                 principals.put(c, p);
 
+		/* set the connection world */
+		c.setWorld(new WorldView(serverGameEngine.getWorld(),
+			    p.getPrincipal()));
+
                 return true;
             }
         }
@@ -158,7 +159,6 @@ class IdentityProvider {
 	MoveConfirmer mc = new MoveConfirmer(serverGameEngine.getMoveExecuter(),
 		serverGameEngine.getMoveChainFork());
         AddPlayerMove m = new AddPlayerMove(serverGameEngine.getWorld(), player);
-
         MoveStatus ms = mc.confirmMove(m, null);
 
 	assert ms == MoveStatus.MOVE_OK;
@@ -182,6 +182,9 @@ class IdentityProvider {
 	    (scenario.getSetupMoves(serverGameEngine.getWorld(),
 		    player.getPrincipal()), c);
 
+	/* set the connection world */
+	c.setWorld(new WorldView(serverGameEngine.getWorld(),
+		    player.getPrincipal()));
         return true;
     }
 
@@ -190,6 +193,7 @@ class IdentityProvider {
      */
     public synchronized void removeConnection(ConnectionToServer c) {
         principals.remove(c);
+	c.setWorld(null);
     }
 
     public synchronized FreerailsPrincipal getPrincipal(ConnectionToServer c) {

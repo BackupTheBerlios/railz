@@ -42,8 +42,10 @@ public class InputCityNames {
 
         InputSource is = new InputSource(filename.toString());
 
-        DefaultHandler handler = new CitySAXParser(world);
+        DefaultHandler handler = new MapHandler(world);
         SAXParserFactory factory = SAXParserFactory.newInstance();
+
+        System.out.println("\nLoading XML " + filename);
 
         try {
             SAXParser saxParser = factory.newSAXParser();
@@ -53,7 +55,5 @@ public class InputCityNames {
         } catch (ParserConfigurationException pce) {
             pce.printStackTrace();
         }
-
-        System.out.println("\nLoading XML " + filename);
     }
 }

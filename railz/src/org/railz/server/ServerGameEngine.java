@@ -35,10 +35,7 @@ import org.railz.world.player.FreerailsPrincipal;
 import org.railz.world.player.Player;
 import org.railz.world.station.ProductionAtEngineShop;
 import org.railz.world.station.StationModel;
-import org.railz.world.top.ITEM;
-import org.railz.world.top.KEY;
-import org.railz.world.top.NonNullElements;
-import org.railz.world.top.World;
+import org.railz.world.top.*;
 import org.railz.world.train.*;
 
 
@@ -57,9 +54,10 @@ public class ServerGameEngine implements GameModel, Runnable,
     private final AuthoritativeMoveExecuter moveExecuter;
     private final QueuedMoveReceiver queuedMoveReceiver;
     private ServerCommandReceiver serverCommandReceiver;
-    private World world;
+    private WorldImpl world;
     private Scenario scenario;
     private ScenarioManager scenarioManager;
+    private ScriptingEngine scriptingEngine;
 
     /* some stats for monitoring sim speed */
     private int statUpdates = 0;
@@ -128,7 +126,7 @@ public class ServerGameEngine implements GameModel, Runnable,
      * @param p an IdentityProvider which correlates a ConnectionToServer
      * object with a Principal.
      */
-    private ServerGameEngine(World w,
+    private ServerGameEngine(WorldImpl w,
         Vector serverAutomata, Scenario scenario) {
         this.world = w;
         this.serverAutomata = serverAutomata;
@@ -157,6 +155,7 @@ public class ServerGameEngine implements GameModel, Runnable,
 		moveExecuter);
 	trainMover = new AuthoritativeTrainMover(w, moveExecuter);
 	trainController = new TrainController(w, moveExecuter);
+	scriptingEngine = new ScriptingEngine(w, moveExecuter);
 
         for (int i = 0; i < serverAutomata.size(); i++) {
             ((ServerAutomaton)serverAutomata.get(i)).initAutomaton(moveExecuter);
@@ -177,6 +176,7 @@ public class ServerGameEngine implements GameModel, Runnable,
     }
 
     public void run() {
+	System.out.println("Railz server thread started.");
         Thread.currentThread().setName("Railz server");
 
         /*
@@ -333,6 +333,7 @@ public class ServerGameEngine implements GameModel, Runnable,
 
         CargoAtStationsGenerator cargoAtStationsGenerator = new CargoAtStationsGenerator(moveExecuter);
         cargoAtStationsGenerator.update(world);
+	scriptingEngine.processScripts();
     }
 
     /**
@@ -441,7 +442,7 @@ public class ServerGameEngine implements GameModel, Runnable,
 		FileInputStream(filename.getCanonicalPath());
             GZIPInputStream zipin = new GZIPInputStream(in);
             ObjectInputStream objectIn = new ObjectInputStream(zipin);
-            World world = (World)objectIn.readObject();
+            WorldImpl world = (WorldImpl) objectIn.readObject();
             Vector serverAutomata = (Vector)objectIn.readObject();
 	    Scenario scenario = (Scenario) objectIn.readObject();
 
@@ -482,7 +483,7 @@ public class ServerGameEngine implements GameModel, Runnable,
      * Returns a reference to the servers world.
      * @return World
      */
-    public World getWorld() {
+    public WorldImpl getWorld() {
         return world;
     }
 

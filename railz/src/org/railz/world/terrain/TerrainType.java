@@ -49,10 +49,13 @@ public class TerrainType implements FreerailsSerializable {
      */
     private final int roughness;
 
+    /** @return roughness of terrain measured in gradient of 100ths of a % */
     public int getRoughness() {
 	return roughness;
     }
 
+    /** @return elevation of terrain from sea-level, measured in required
+     * gradient in 100ths of a % */
     public int getElevation() {
 	return elevation;
     }

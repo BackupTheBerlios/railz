@@ -52,7 +52,7 @@ class ServerGameController implements ServerControlInterface,
         if (port != 0) {
             /* Open our server socket */
             try {
-                serverSocket = new InetConnection(this, engine.getWorld(),
+                serverSocket = new InetConnection(this,
                         InetConnection.SERVER_PORT);
             } catch (IOException e) {
                 System.err.println("Couldn't open the server socket!!!" + e);
@@ -84,8 +84,7 @@ class ServerGameController implements ServerControlInterface,
      * return a brand new local connection.
      */
     public synchronized LocalConnection getLocalConnection() {
-	    LocalConnection connection = new
-		LocalConnection(gameEngine.getWorld());
+	    LocalConnection connection = new LocalConnection();
 	    addConnection(connection);
 
 	    return connection;
@@ -310,8 +309,10 @@ class ServerGameController implements ServerControlInterface,
 			    + "rejected by the server", new
 			    Serializable[]{apc.getPlayer().getName()});
                 } else {
+		    System.out.println("sending addplayerresponsecommand");
                     c.sendCommand(new AddPlayerResponseCommand(
                             gameEngine.getIdentityProvider().getPrincipal(c)));
+		    System.out.println("sending sendmessagetoclients");
 		    sendMessageToClients("{0} joined the game", new
 			    Serializable[]{apc.getPlayer().getName()});
                 }

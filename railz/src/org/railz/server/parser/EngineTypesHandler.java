@@ -36,6 +36,7 @@ class EngineTypesHandler {
     private int mass;
     private int powerOutput;
     private int maxTractiveForce;
+    private boolean available;
     private float dragCoeff;
     private float frictionCoeff;
 
@@ -63,6 +64,7 @@ class EngineTypesHandler {
 	    fuelType = EngineType.FUEL_TYPE_DIESEL;
 	else 
 	    fuelType = EngineType.FUEL_TYPE_ELECTRIC;
+	available = "true".equals(meta.getValue("available"));
     }
 
     public void startElement(String ns, String name, String qname, Attributes
@@ -77,7 +79,7 @@ class EngineTypesHandler {
 		EngineType et = new EngineType(this.name, price, speed,
 			maintenance, annualFuelConsumption, fuelType,
 			waterCapacity, mass, powerOutput, maxTractiveForce,
-			frictionCoeff, dragCoeff);
+			frictionCoeff, dragCoeff, available);
 		world.add(KEY.ENGINE_TYPES, et, Player.AUTHORITATIVE);
 	    }
 	}

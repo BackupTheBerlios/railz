@@ -74,9 +74,8 @@ public class InetConnection implements ConnectionToServer {
      * @throws IOException if the socket couldn't be created.
      * @throws SecurityException if we're not allowed to create the socket.
      */
-    public InetConnection(ConnectionListener cl, World w, int port) throws
+    public InetConnection(ConnectionListener cl, int port) throws
 	IOException {
-        world = w;
 	connectionListener = cl;
         System.out.println("Server listening for new connections on port " +
             port);
@@ -92,9 +91,8 @@ public class InetConnection implements ConnectionToServer {
     /**
      * called when an incoming connection is attempted
      */
-    private InetConnection(Socket acceptedConnection, World w)
+    private InetConnection(Socket acceptedConnection)
         throws IOException {
-        world = w;
         socket = acceptedConnection;
         System.out.println("accepted incoming client connection from " +
             socket.getRemoteSocketAddress());
@@ -120,7 +118,7 @@ public class InetConnection implements ConnectionToServer {
      * @return The new connection, or null if the socket is closed.
      */
     private InetConnection accept() throws IOException {
-        return new InetConnection(serverSocket.accept(), world);
+        return new InetConnection(serverSocket.accept());
     }
 
     public void sendCommand(ServerCommand s) {

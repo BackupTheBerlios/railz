@@ -107,10 +107,8 @@ public class ChangeTrainMove extends ChangeItemInListMove {
     public static ChangeTrainMove generateMove(int id, FreerailsPrincipal p,
 	    TrainPath tp, GameTime t, ReadOnlyWorld w) {
 	TrainModel tm = (TrainModel) w.get(KEY.TRAINS, id, p);
-	int speed = ((EngineType) w.get(KEY.ENGINE_TYPES, tm.getEngineType(),
-		Player.AUTHORITATIVE)).getMaxSpeed();
 
-	TrainModel newTm = tm.setPosition(tp, t, speed);
+	TrainModel newTm = tm.setPosition(tp, t);
 	return new ChangeTrainMove(id, tm, newTm, p);
     }
 

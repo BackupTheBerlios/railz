@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='utf-8' ?>
 <!DOCTYPE Types SYSTEM "cargo_and_terrain.dtd">
 <Types>
    <Cargo_Types>
@@ -42,11 +43,11 @@ elevation="0" roughness="0" />
       <Tile id="Jungle" Category="Country" rgb="4890fc" baseValue="1500" 
 elevation="0" roughness="0" />
       <Tile id="Hills" Category="Hill" rgb="b4b4b4" baseValue="1500" 
-elevation="10" roughness="6" />
+elevation="200" roughness="200" />
       <Tile id="Foothills" Category="Hill" rgb="90d8fc" baseValue="2000" 
-elevation="6" roughness="4" />
+elevation="150" roughness="100" />
       <Tile id="Mountain" Category="Hill" rgb="ffffff" baseValue="1000"
-elevation="20" roughness="15" />
+elevation="250" roughness="300" />
    </Terrain_Types>
    <Building_Types>
       <Building_Type id="Refinery" category="Industry"
@@ -330,13 +331,13 @@ elevation="20" roughness="15" />
    <EngineTypes>
 	<EngineType id="Grasshopper" fuelType="Coal" price="10000"
 	maintenance="5000" maxSpeed="30" annualFuelConsumption="600"
-       waterCapacity="1000" mass="40" powerOutput="400" maxTractiveForce="30"
-       dragCoeff="0.100" frictionCoeff="0.001"
-       />
+       waterCapacity="1000" mass="40" powerOutput="2000" maxTractiveForce="400"
+       dragCoeff="0.70" frictionCoeff="0.20" available="true" />
 	<EngineType id="Norris" fuelType="Coal" price="10000"
 	maintenance="8000" maxSpeed="35" annualFuelConsumption="700"
-	waterCapacity="1000" mass="45" powerOutput="500"
-	maxTractiveForce="30" dragCoeff="0.100" frictionCoeff="0.001" />
+	waterCapacity="1000" mass="45" powerOutput="2500"
+	maxTractiveForce="400" dragCoeff="0.700" frictionCoeff="0.20"
+	available="false" />
    </EngineTypes>
    <Economy incomeTaxRate="25" baseRate="5.0">
 	<FuelPrice fuelType="Coal" unitPrice="20" />

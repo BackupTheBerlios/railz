@@ -29,6 +29,8 @@ import org.railz.world.common.FreerailsSerializable;
  *
  */
 public class WagonType implements FreerailsSerializable {
+    static final long serialVersionUID = 8938548220916409842L;
+
     private final String typeName;
 
     private final TransportCategory typeCategory;

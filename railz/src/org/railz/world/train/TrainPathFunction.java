@@ -107,6 +107,10 @@ public class TrainPathFunction implements FreerailsSerializable {
 	    return "Segment: t0=" + t0 + ", v0=" + v0 + ", a=" + a +
 		", s0=" + s0 + ", tMax=" + tMax;
 	}
+
+	public float getAcceleration() {
+	    return a;
+	}
     }
 
     public String toString() {
