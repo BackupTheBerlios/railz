@@ -36,6 +36,6 @@ public class ChangeCargoBundleMove extends ChangeItemInListMove {
     public ChangeCargoBundleMove(CargoBundle before, CargoBundle after,
         int bundleNumber) {
 	super(KEY.CARGO_BUNDLES, bundleNumber, before, after,
-		Player.AUTHORITATIVE);
+		Player.NOBODY);
     }
 }
