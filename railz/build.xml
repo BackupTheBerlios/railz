@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="bindist" name="jFreeRails">
+<project basedir="." default="debugcompile" name="jFreeRails">
     
    <description>The aim of the FreeRails project is to create a fun game based off the RailRoad Tycoon and RailRoad Tycoon II games.</description>
 

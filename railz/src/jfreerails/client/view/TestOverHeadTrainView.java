@@ -38,7 +38,5 @@ public class TestOverHeadTrainView implements Painter {
 			trainPainter.paintTrain(g, train);
 			
 		}
-
 	}
-
 }

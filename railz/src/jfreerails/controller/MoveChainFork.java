@@ -50,6 +50,10 @@ final public class MoveChainFork implements MoveReceiver {
         splitMoveReceivers.add(moveReceiver);
     }
 
+    public void removeSplitMoveReceiver(MoveReceiver moveReceiver) {
+	splitMoveReceivers.remove(moveReceiver);
+    }
+
     public void addListListener(WorldListListener listener) {
         if (null == listener) {
             throw new NullPointerException();

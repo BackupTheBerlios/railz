@@ -69,6 +69,9 @@ final public class ZoomedOutMapRenderer implements MapRenderer {
     public void refresh() {
         int mapWidth = w.getMapWidth();
         int mapHeight = w.getMapHeight();
+	if (mapImage != null) {
+	    mapImage.flush();
+	}
         mapImage = defaultConfiguration.createCompatibleImage(mapWidth,
                 mapHeight);
 

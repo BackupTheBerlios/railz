@@ -8,7 +8,6 @@ import javax.swing.KeyStroke;
 
 import java.util.ArrayList;
 
-import jfreerails.client.common.ScreenHandler;
 import jfreerails.client.common.UserMessageLogger;
 import jfreerails.client.renderer.ViewLists;
 import jfreerails.controller.MoveChainFork;
@@ -42,7 +41,6 @@ public final class ModelRoot implements CallBacks {
 
     protected ServerControlModel serverControls = new ServerControlModel(null);
     private ReadOnlyWorld world;
-    private ScreenHandler screenHandler;
       
     public void addModelRootListener(ModelRootListener l) {
 	synchronized(listeners) {
@@ -106,15 +104,18 @@ public final class ModelRoot implements CallBacks {
             }
         };
 
+    public void setWorld(ReadOnlyWorld w) {
+	world = w;
+    }
+
     /**
      * Updates the ModelRoot with those properties which are dependent upon the
      * world model.
      * Call this when the world model is changed (e.g. new map is loaded)
      */
-    public void setWorld(ReadOnlyWorld world, UntriedMoveReceiver receiver,
+    public void setWorld(UntriedMoveReceiver receiver,
     ViewLists vl) {
 	viewLists = vl;
-	this.world = world;
     	if(world.size(KEY.TRACK_RULES)> 0){
 	    assert playerPrincipal != null;
 	    trackMoveProducer = new TrackMoveProducer(world, receiver,
@@ -186,14 +187,6 @@ public final class ModelRoot implements CallBacks {
 
     public void setMoveReceiver(UntriedMoveReceiver moveReceiver) {
 	this.moveReceiver = moveReceiver;
-    }
-
-    public ScreenHandler getScreenHandler() {
-	return screenHandler;
-    }
-
-    public void setScreenHandler(ScreenHandler sh) {
-	screenHandler = sh;
     }
 
     public void addListListener(WorldListListener l) {

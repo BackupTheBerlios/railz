@@ -20,6 +20,7 @@ import jfreerails.client.renderer.TileRendererListImpl;
 import jfreerails.client.renderer.TrackPieceRendererList;
 import jfreerails.client.renderer.TrainImages;
 import jfreerails.client.renderer.ViewLists;
+import jfreerails.client.view.ModelRoot;
 import jfreerails.util.FreerailsProgressMonitor;
 import jfreerails.world.terrain.TerrainType;
 import jfreerails.world.top.KEY;
@@ -32,14 +33,19 @@ public class ViewListsImpl implements ViewLists {
     private final TrainImages trainImages;
     private final ImageManager imageManager;
     private final HashMap icons = new HashMap();
+    private final GUIComponentFactoryImpl guiComponentFactory;
 
-    public ViewListsImpl(ReadOnlyWorld w, FreerailsProgressMonitor pm)
+    public ViewListsImpl(ModelRoot mr, GUIComponentFactoryImpl gcf,
+	    FreerailsProgressMonitor pm)
         throws IOException {
+	    guiComponentFactory = gcf;
+	    ReadOnlyWorld w = mr.getWorld();
         URL out = ViewListsImpl.class.getResource("/");
         URL in = ViewListsImpl.class.getResource("/jfreerails/client/graphics");
 
-        imageManager = new ImageManagerImpl("/jfreerails/client/graphics/",
-                out.getPath());
+	imageManager = new
+	    ImageManagerImpl(guiComponentFactory.getClientJFrame(),
+		    "/jfreerails/client/graphics/", out.getPath());
         tiles = loadNewTileViewList(w, pm);
 
         trackPieceViewList = loadTrackViews(w, pm);

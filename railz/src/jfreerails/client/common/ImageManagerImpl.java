@@ -4,6 +4,7 @@
  */
 package jfreerails.client.common;
 
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
@@ -32,7 +33,9 @@ public class ImageManagerImpl implements ImageManager {
                                                                             .getDefaultScreenDevice()
                                                                             .getDefaultConfiguration();
 
-    public ImageManagerImpl(String readpath, String writePath) {
+    public ImageManagerImpl(Component c, String readpath, String writePath) {
+	defaultConfiguration = c.getGraphicsConfiguration();
+
         pathToReadFrom = readpath;
         pathToWriteTo = writePath;
     }

@@ -29,24 +29,21 @@ public class CashJLabel extends JLabel {
 		this.setText("         ");
 	}
 
-	public void setup(ReadOnlyWorld w, ViewLists vl, ActionListener
-		submitButtonCallBack, ModelRoot mr) {
-		this.w = w;
+	public void setup(ModelRoot mr) {
+		this.w = mr.getWorld();
 		modelRoot = mr;
 	}
 	
-
-	
 	public void paint(Graphics g) {
-		if(null != w && w.size(KEY.BANK_ACCOUNTS,
-			    modelRoot.getPlayerPrincipal()) > 0){
-			BankAccount account = (BankAccount)w.get
-			    (KEY.BANK_ACCOUNTS, 0, modelRoot.getPlayerPrincipal());
-			Money m = account.getCurrentBalance();
-			String s = m.toString();			
-			this.setText(s);			
-		}
-		super.paint(g);
+	    if(null != w && w.size(KEY.BANK_ACCOUNTS,
+			modelRoot.getPlayerPrincipal()) > 0){
+		BankAccount account = (BankAccount)w.get
+		    (KEY.BANK_ACCOUNTS, 0, modelRoot.getPlayerPrincipal());
+		Money m = account.getCurrentBalance();
+		String s = m.toString();			
+		this.setText(s);			
+	    }
+	    super.paint(g);
 	}
 
 }

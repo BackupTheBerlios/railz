@@ -26,6 +26,7 @@ final public class SquareTileBackgroundRenderer
         gg.setClip(x, y, width, height);
         gg.translate(-bufferRect.x, -bufferRect.y);
         mapView.paintRect(gg, bufferRect);
+	gg.dispose();
     }
 
     public SquareTileBackgroundRenderer(MapLayerRenderer mv, float _scale) {
@@ -40,5 +41,6 @@ final public class SquareTileBackgroundRenderer
         Graphics gg = bg.create();
         gg.translate(-bufferRect.x, -bufferRect.y);
         mapView.paintTile(gg, x, y);
+	gg.dispose();
     }
 }

@@ -21,6 +21,7 @@ import javax.swing.border.LineBorder;
 
 import jfreerails.client.common.ScreenHandler;
 import jfreerails.client.renderer.ViewLists;
+import jfreerails.client.top.GUIComponentFactoryImpl;
 import jfreerails.controller.MoveChainFork;
 import jfreerails.controller.UntriedMoveReceiver;
 import jfreerails.move.ChangeProductionAtEngineShopMove;
@@ -41,7 +42,7 @@ import jfreerails.world.track.FreerailsTile;
  * @author  lindsal8
  */
 public class DialogueBoxController {
-    
+    private GUIComponentFactoryImpl guiComponentFactory;
     private Component dialog;
     private JFrame frame;
     private JButton closeButton = new JButton("Close");
@@ -67,7 +68,10 @@ public class DialogueBoxController {
     private ReadOnlyWorld w;
     private ViewLists vl;
     
-    /** Use this ActionListener to close a dialogue without performing any other action. */
+    /**
+     * Use this ActionListener to close a dialogue without performing any
+     * other action.
+    */
     private ActionListener closeCurrentDialogue = new ActionListener() {
         public void actionPerformed(ActionEvent arg0) {
             closeContent();
@@ -80,50 +84,37 @@ public class DialogueBoxController {
         }
     };
     
-    /** Creates new DialogueBoxController */
-    
-    public DialogueBoxController(JFrame frame, ModelRoot mr) {
+    public DialogueBoxController(JFrame frame, ModelRoot mr,
+	    GUIComponentFactoryImpl gcf) {
+	guiComponentFactory = gcf;
         modelRoot = mr;
 	this.frame = frame;
         closeButton.addActionListener(closeCurrentDialogue);
         modelRoot.setDialogueBoxController(this);
     }
     
-    public void setup(
-    ReadOnlyWorld w,
-    ViewLists vl,
-    MoveChainFork moveChainFork,
-    UntriedMoveReceiver mr,
-    MapCursor mapCursor) {
-    	this.w =w;
-    	this.vl = vl;
+    public void setup() {
+    	this.w = modelRoot.getWorld();
+    	this.vl = modelRoot.getViewLists();
         
-        moveReceiver = mr;
+        moveReceiver = modelRoot.getReceiver();
         
         if (w == null)
             throw new NullPointerException();
         if (vl == null)
-            throw new NullPointerException();
-        if (moveChainFork == null)
-            throw new NullPointerException();
-        if (mapCursor == null)
             throw new NullPointerException();
         
         this.world = w;
         viewLists = vl;
         
         //Setup the various dialogue boxes.
-        
-        
         // setup the terrain info dialogue.
         terrainInfo = new TerrainInfoJPanel();
         terrainInfo.setup(w, vl);
         
         // setup the supply and demand at station dialogue.
         stationInfo = new StationInfoJPanel();
-        stationInfo.setup(w, vl);
-        moveChainFork.addSplitMoveReceiver(stationInfo);
-        stationInfo.setMapCursor(mapCursor);
+        stationInfo.setup(modelRoot);
         
         // setup the 'show controls' dialogue
         showControls = new HtmlJPanel(DialogueBoxController.class.getResource("/jfreerails/client/view/game_controls.html"));
@@ -134,11 +125,6 @@ public class DialogueBoxController {
         
         how2play = new HtmlJPanel(DialogueBoxController.class.getResource("/jfreerails/client/view/how_to_play.htm"));
         how2play.setup(w, vl, this.closeCurrentDialogue);
-        
-        //Set up train orders dialogue
-        //trainScheduleJPanel = new TrainScheduleJPanel();
-        //trainScheduleJPanel.setup(w, vl);
-        //moveChainFork.add(trainScheduleJPanel);
         
         //Set up select engine dialogue.
         selectEngine = new SelectEngineJPanel();
@@ -305,7 +291,7 @@ public class DialogueBoxController {
         }
         
         contentPanel.setBorder(defaultBorder);
-	switch (modelRoot.getScreenHandler().getMode()) {
+	switch (guiComponentFactory.getScreenHandler().getMode()) {
 	    case ScreenHandler.FULL_SCREEN:
 		JInternalFrame jif = new JInternalFrame("JFreerails Dialog",
 			true);
@@ -319,7 +305,7 @@ public class DialogueBoxController {
 		jif.show();
 		break;
 	    default:
-		JDialog jd = new JDialog(frame, "JFreerails Dialog", true);
+		JDialog jd = new JDialog(frame, "JFreerails Dialog", false);
 		jd.getContentPane().add(contentPanel);
 		jd.pack();
 		jd.setLocation(frame.getX() +

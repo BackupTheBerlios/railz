@@ -20,7 +20,7 @@ import jfreerails.world.top.ReadOnlyWorld;
  * @author Luke
  * 
  */
-public class DateJLabel extends JLabel implements View {
+public class DateJLabel extends JLabel {
 
 	private ReadOnlyWorld w;
 	
@@ -38,8 +38,8 @@ public class DateJLabel extends JLabel implements View {
 		super.paint(g);
 	}
 
-	public void setup(ReadOnlyWorld w, ViewLists vl, ActionListener submitButtonCallBack) {
-		this.w = w;
+	public void setup(ModelRoot mr) {
+		this.w = mr.getWorld();
 	}
 
 }

@@ -30,7 +30,7 @@ final public class BuildMenu extends javax.swing.JMenu {
         super();
     }
 
-    public void setup(ReadOnlyWorld w, ModelRoot modelRoot) {
+    public void setup(ModelRoot modelRoot) {
         this.removeAll();
         this.setText("Build");
         buttonGroup = new ButtonGroup();

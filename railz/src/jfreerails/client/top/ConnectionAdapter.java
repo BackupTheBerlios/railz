@@ -51,13 +51,15 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
     MoveReceiver moveReceiver;
     World world;
     private FreerailsProgressMonitor progressMonitor;
+    private GUIComponentFactoryImpl guiComponentFactory;
 
-    public ConnectionAdapter(ModelRoot mr, Player player,
-        FreerailsProgressMonitor pm, GUIClient gc) {
+    public ConnectionAdapter(ModelRoot mr, GUIComponentFactoryImpl gcf, Player
+	    player, FreerailsProgressMonitor pm, GUIClient gc) {
         modelRoot = mr;
         this.player = player;
         this.progressMonitor = pm;
         guiClient = gc;
+	guiComponentFactory = gcf;
     }
 
     /**
@@ -188,7 +190,8 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
         }
 
         /* start a new game loop */
-        gameLoop = new GameLoop(guiClient.getScreenHandler(), moveExecuter);
+	gameLoop = new GameLoop(guiComponentFactory.getScreenHandler(),
+		moveExecuter);
 
         /* attempt to authenticate the player */
         modelRoot.getUserMessageLogger().println("Attempting to " +
@@ -202,14 +205,16 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
             /* create the models */
             assert world != null;
 
-            ViewLists viewLists = new ViewListsImpl(world, progressMonitor);
+            modelRoot.setWorld(world);
+	    ViewLists viewLists = new ViewListsImpl(modelRoot,
+		    guiComponentFactory, progressMonitor);
 
             if (!viewLists.validate(world)) {
                 modelRoot.getUserMessageLogger().println("Couldn't validate " +
                     "viewLists!");
             }
 
-            modelRoot.setWorld(world, this, viewLists);
+            modelRoot.setWorld(this, viewLists);
 
             /*
              * wait until the player the client represents has been created in

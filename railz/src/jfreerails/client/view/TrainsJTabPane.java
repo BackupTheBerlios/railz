@@ -3,7 +3,7 @@
  */
 
 /*
- * $Id: TrainsJTabPane.java,v 1.1 2004/02/28 02:05:23 rtuck99 Exp $
+ * $Id: TrainsJTabPane.java,v 1.2 2004/03/07 00:55:11 rtuck99 Exp $
  */
 
 package jfreerails.client.view;
@@ -35,12 +35,9 @@ public class TrainsJTabPane extends JTabbedPane implements CursorEventListener {
 	buildJPane = new BuildJPane();
     }
     
-    public void setMapCursor(MapCursor mapCursor){
-		stationInfoPanel.setMapCursor(mapCursor);
-    }
-	
-    public void setup(ReadOnlyWorld w,  ViewLists vl, ModelRoot modelRoot) {	
-	world = w;
+    public void setup(ModelRoot modelRoot) {	
+	world = modelRoot.getWorld();
+	ViewLists vl = modelRoot.getViewLists();
 	
 	addTab(null, vl.getImageIcon("terrain_info"), terrainInfoPanel, 
 		"Terrain Info");
@@ -51,9 +48,10 @@ public class TrainsJTabPane extends JTabbedPane implements CursorEventListener {
  	addTab(null, vl.getImageIcon("build"), buildJPane, "Build");
 
 	terrainInfoPanel.setup(world, vl);
-	stationInfoPanel.setup(world, vl);
+	stationInfoPanel.setup(modelRoot);
 	trainSchedulePanel.setup(world, vl, modelRoot, modelRoot);
  	buildJPane.setup(vl, modelRoot);
+        modelRoot.getCursor().addCursorEventListener(this);
         
 	stationInfoPanel.display();
         	

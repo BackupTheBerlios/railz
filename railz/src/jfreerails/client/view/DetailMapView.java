@@ -71,6 +71,11 @@ public class DetailMapView implements MapRenderer {
         background.refreshTile(x, y);
     }
 
+    /**
+     * @param g Graphics context with origin pointing to map origin.
+     * @param visibleRect rectangle defining area of map to draw relative to
+     * origin 0,0 at top left of map, measured in pixels.
+     */
     public void paintRect(Graphics g, Rectangle visibleRect) {
         background.paintRect(g, visibleRect);
         trainsview.paint((Graphics2D)g);

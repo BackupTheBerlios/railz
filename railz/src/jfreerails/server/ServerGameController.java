@@ -110,17 +110,27 @@ class ServerGameController implements ServerControlInterface,
      * this game to the new one.
      */
     public void loadGame() {
-        int ticksPerSec = gameEngine.getTargetTicksPerSecond();
+	Thread t = new Thread() {
+	    public void run() {
+		int ticksPerSec = gameEngine.getTargetTicksPerSecond();
 
-        /* open a new controller */
-        ServerGameEngine newGame = ServerGameEngine.loadGame();
+		/* open a new controller */
+		ServerGameEngine newGame = ServerGameEngine.loadGame();
 
-        transferClients(newGame);
-        setTargetTicksPerSecond(ticksPerSec);
+		transferClients(newGame);
+		setTargetTicksPerSecond(ticksPerSec);
+	    }
+	};
+	t.start();
     }
 
     public void saveGame() {
-        gameEngine.saveGame();
+	Thread t = new Thread() {
+	    public void run() {
+		gameEngine.saveGame();
+	    }
+	};
+	t.start();
     }
 
     public String[] getMapNames() {
@@ -135,13 +145,19 @@ class ServerGameController implements ServerControlInterface,
      * stop the current game and transfer the current local connections to a
      * new game running the specified map.
      */
-    public void newGame(String mapName) {
-        int ticksPerSec = gameEngine.getTargetTicksPerSecond();
-        ServerGameEngine newGame = new ServerGameEngine(mapName,
-                FreerailsProgressMonitor.NULL_INSTANCE);
-        transferClients(newGame);
+    public void newGame(String map) {
+	final String mapName = map;
+	Thread t = new Thread() {
+	    public void run() {
+		int ticksPerSec = gameEngine.getTargetTicksPerSecond();
+		ServerGameEngine newGame = new ServerGameEngine(mapName,
+			FreerailsProgressMonitor.NULL_INSTANCE);
+		transferClients(newGame);
 
-        setTargetTicksPerSecond(ticksPerSec);
+		setTargetTicksPerSecond(ticksPerSec);
+	    }
+	};
+	t.start();
     }
 
     /**

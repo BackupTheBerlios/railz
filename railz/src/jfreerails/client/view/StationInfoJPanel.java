@@ -9,7 +9,6 @@ import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-import jfreerails.client.renderer.ViewLists;
 import jfreerails.controller.MoveReceiver;
 import jfreerails.move.AddItemToListMove;
 import jfreerails.move.ListMove;
@@ -28,14 +27,12 @@ import jfreerails.world.train.WagonType;
  *
  * @author  Luke
  */
-public class StationInfoJPanel
-extends javax.swing.JPanel
+public class StationInfoJPanel extends javax.swing.JPanel
 implements MoveReceiver {
-
-    private ReadOnlyWorld w;
+    private ModelRoot modelRoot;
     private WorldIterator wi;
     private boolean ignoreMoves = true;
-    private MapCursor mapCursor = MapCursor.NULL_MAP_CURSOR;
+    private ReadOnlyWorld world;
     
     /**
      * The index of the cargoBundle associated with this station
@@ -121,7 +118,7 @@ implements MoveReceiver {
             new Point(
             ((StationModel) wi.getElement()).getStationX(),
             ((StationModel) wi.getElement()).getStationY());
-            getMapCursor().tryMoveCursor(p);
+            modelRoot.getCursor().tryMoveCursor(p);
             
             display();
         } else {
@@ -138,7 +135,7 @@ implements MoveReceiver {
             new Point(
             ((StationModel) wi.getElement()).getStationX(),
             ((StationModel) wi.getElement()).getStationY());
-            getMapCursor().tryMoveCursor(p);
+            modelRoot.getCursor().tryMoveCursor(p);
             display();
         } else {
             throw new IllegalStateException();
@@ -146,10 +143,12 @@ implements MoveReceiver {
         
 	} //GEN-LAST:event_nextStationActionPerformed
     
-    public void setup(ReadOnlyWorld w, ViewLists vl) {
-        this.w = w;
-        this.wi = new NonNullElements(KEY.STATIONS, w);
+    public void setup(ModelRoot mr) {
+	modelRoot = mr;
+        this.wi = new NonNullElements(KEY.STATIONS, modelRoot.getWorld());
         addComponentListener(componentListener);
+	modelRoot.getMoveChainFork().addSplitMoveReceiver(this);
+	world = modelRoot.getWorld();
     }
     
     public void setStation(int stationNumber) {
@@ -175,12 +174,12 @@ implements MoveReceiver {
         String label;
         if (stationNumber != WorldIterator.BEFORE_FIRST) {
             StationModel station =
-            (StationModel) w.get(KEY.STATIONS, stationNumber);
-            FreerailsTile tile = w.getTile(station.x, station.y);
+            (StationModel) world.get(KEY.STATIONS, stationNumber);
+            FreerailsTile tile = world.getTile(station.x, station.y);
             String stationTypeName = tile.getTrackRule().getTypeName();
             cargoBundleIndex = station.getCargoBundleNumber();
             CargoBundle cargoWaiting =
-            (CargoBundle) w.get(
+            (CargoBundle) world.get(
             KEY.CARGO_BUNDLES,
             station.getCargoBundleNumber());
             String title =
@@ -191,10 +190,10 @@ implements MoveReceiver {
             + ")</h2>";
             String table =
             "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"3\"><tr><td>&nbsp;</td>\n    <td>Will pay for</td>\n    <td>Supplies / cars per year</td><td>Waiting for pickup / car loads</td>  </tr>";
-            for (int i = 0; i < w.size(KEY.CARGO_TYPES); i++) {
+            for (int i = 0; i < world.size(KEY.CARGO_TYPES); i++) {
                 
                 //get the values
-                CargoType cargoType = (CargoType) w.get(KEY.CARGO_TYPES, i);
+                CargoType cargoType = (CargoType) world.get(KEY.CARGO_TYPES, i);
                 String demanded =
                 (station.getDemand().isCargoDemanded(i) ? "Yes" : "No");
                 int amountSupplied = station.getSupply().getSupply(i);
@@ -289,17 +288,4 @@ implements MoveReceiver {
     private javax.swing.JButton nextStation;
     private javax.swing.JButton previousStation;
     // End of variables declaration//GEN-END:variables
-    
-    
-    public MapCursor getMapCursor() {
-        return mapCursor;
-    }
-    
-    public void setMapCursor(MapCursor cursor) {
-        if(null == cursor){
-            throw new NullPointerException();
-        }
-        mapCursor = cursor;
-    }
-    
 }

@@ -1,3 +1,4 @@
+Mar 7, 2004 Reworked GUI architecture. Rendering code changed. Still a bit buggy :)
 Feb 28, 2004 Railz CVS created from patched JFreerails source
 Added:
 * Overhead wagon graphics

@@ -51,19 +51,18 @@ public class UserInputOnMapController implements CursorEventListener {
         }
     }
 
-    public void setup(MapViewJComponent mv, TrackMoveProducer trackBuilder,
-        StationTypesPopup stPopup, ModelRoot mr, DialogueBoxController dbc,
-        UncommittedMoveReceiver tx) {
-        trackMoveExecutor = tx;
-        this.dialogueBoxController = dbc;
+    public void setup(GUIComponentFactoryImpl gcf,
+	    MapViewJComponent mv, StationTypesPopup stp) {
+        trackMoveExecutor = modelRoot.getReceiver();
+        this.dialogueBoxController = gcf.getDialogueBoxController();
         this.mapView = mv;
-        this.stationTypesPopup = stPopup;
 
-        this.trackBuilder = trackBuilder;
+        this.trackBuilder = modelRoot.getTrackMoveProducer();
 
-        this.cursor = mr.getCursor();
+        this.cursor = modelRoot.getCursor();
 
         cursor.addCursorEventListener(this);
+	stationTypesPopup = stp;
     }
 
     public void cursorJumped(CursorEvent ce) {
