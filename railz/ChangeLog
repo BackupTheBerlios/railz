@@ -2,6 +2,7 @@ July 14, 2004:
 --------------
 Fixed bug 32 - Primary resources should be more widely scattered.
 Fixed bug 35 - Buildings should have transparent Backgrounds.
+Fixed bug 36 - Station name is shown as foo (standard track) on station view
 May 21, 2004:
 -------------
 Fixed some bugs with the train schedule dialog

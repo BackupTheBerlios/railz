@@ -256,7 +256,7 @@
          <Consumes Cargo="Sugar" />
       </Building_Type>
       -->
-      <Building_Type id="depot" stationRadius="1" baseValue="50000"
+      <Building_Type id="Depot" stationRadius="1" baseValue="50000"
       maintenance="2000" category="Station">
 	<AcceptableTerrainTypes>
 	    <TerrainType terrainType="Clear" />
@@ -272,7 +272,7 @@
 	<TrackPieceTemplate trackTemplate="100010000" />
       <!--  X="9" Y="10" doubleTrack="false" RGBvalue="000007" maxConsecutivePieces="0" -->
       </Building_Type>
-      <Building_Type id="station" stationRadius="2"
+      <Building_Type id="Station" stationRadius="2"
       baseValue="100000" maintenance="2000" category="Station">
 	<AcceptableTerrainTypes>
 	    <TerrainType terrainType="Clear" />
@@ -289,7 +289,7 @@
       <!-- X="9" Y="12"  doubleTrack="false" RGBvalue="000008"
       maxConsecuativePieces="0"-->
       </Building_Type>
-      <Building_Type id="terminal" stationRadius="3"
+      <Building_Type id="Terminal" stationRadius="3"
       baseValue="200000" maintenance="2000" category="Station">
 	<AcceptableTerrainTypes>
 	    <TerrainType terrainType="Clear" />
