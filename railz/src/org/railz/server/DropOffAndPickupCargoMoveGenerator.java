@@ -28,6 +28,7 @@ import org.railz.move.TransferCargoAtStationMove;
 import org.railz.world.cargo.CargoBatch;
 import org.railz.world.cargo.CargoBundle;
 import org.railz.world.cargo.CargoBundleImpl;
+import org.railz.world.common.*;
 import org.railz.world.station.ConvertedAtStation;
 import org.railz.world.station.DemandAtStation;
 import org.railz.world.station.StationModel;
@@ -80,19 +81,22 @@ class DropOffAndPickupCargoMoveGenerator {
             //if the cargo is demanded.
             DemandAtStation demand = station.getDemand();
             int cargoType = cb.getCargoType();
+	    System.out.println("Unloading cargo " + cargoType);
 
             if (demand.isCargoDemanded(cargoType)) {
                 int amount = trainAfter.getAmount(cb);
-		if (demand.isCargoDemanded(cargoType))
-		    cargoDroppedOff.addCargo(cb, amount);
+		cargoDroppedOff.addCargo(cb, amount);
 
                 //Now perform any conversions..
                 ConvertedAtStation converted = station.getConverted();
 
                 if (converted.isCargoConverted(cargoType)) {
                     int newCargoType = converted.getConversion(cargoType);
+		    GameTime now = (GameTime) w.get(ITEM.TIME,
+			    Player.AUTHORITATIVE);
                     CargoBatch newCargoBatch = new CargoBatch(newCargoType,
-                            station.x, station.y, 0, stationKey.index);
+                            station.x, station.y, now.getTime(),
+			    stationKey.index);
                     stationAfter.addCargo(newCargoBatch, amount);
                 }
 
@@ -111,9 +115,9 @@ class DropOffAndPickupCargoMoveGenerator {
 	ChangeCargoBundleMove changeOnTrain = new
 	    ChangeCargoBundleMove(trainBefore, trainAfter, trainBundleId);
 
-	System.out.println("stationAfter = " + stationAfter +
-	       	", stationBefore = " + stationBefore + ", trainAfter = " + 
-		trainAfter + ", trainBefore = " + trainBefore);
+	System.out.println("train " + trainKey.index + ": stationAfter = " + 
+		stationAfter + ", stationBefore = " + stationBefore +
+	       	", trainAfter = " + trainAfter + ", trainBefore = " + trainBefore + ", dropped off = " + cargoDroppedOff);
 
 	System.out.println("payment = " + payment);
 	moveReceiver.processMove(TransferCargoAtStationMove.generateMove
@@ -287,8 +291,11 @@ class DropOffAndPickupCargoMoveGenerator {
 
                 if (converted.isCargoConverted(cargoType)) {
                     int newCargoType = converted.getConversion(cargoType);
+		    GameTime now = (GameTime) w.get(ITEM.TIME,
+			    Player.AUTHORITATIVE);
                     CargoBatch newCargoBatch = new CargoBatch(newCargoType,
-                            station.x, station.y, 0, stationKey.index);
+                            station.x, station.y, now.getTime(),
+			    stationKey.index);
                     to.addCargo(newCargoBatch, amountOfThisBatchToTransfer);
                 }
 		amountTransferedSoFar += amountOfThisBatchToTransfer;
