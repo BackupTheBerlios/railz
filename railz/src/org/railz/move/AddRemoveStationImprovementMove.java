@@ -69,7 +69,7 @@ public class AddRemoveStationImprovementMove extends CompositeMove {
 	    GameTime now = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
 	    Transaction t = new AddItemTransaction(now,
 		    AddItemTransaction.BUILDING, 0, 1,
-		    smv.getImprovementCost(improvementKey.index));
+		    - smv.getImprovementCost(improvementKey.index));
 
 	    Move transactionMove = new AddTransactionMove(0, t,
 		    stationKey.principal);
