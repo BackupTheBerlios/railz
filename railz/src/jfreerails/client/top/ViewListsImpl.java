@@ -40,12 +40,11 @@ public class ViewListsImpl implements ViewLists {
         throws IOException {
 	    guiComponentFactory = gcf;
 	    ReadOnlyWorld w = mr.getWorld();
-        URL out = ViewListsImpl.class.getResource("/");
         URL in = ViewListsImpl.class.getResource("/jfreerails/client/graphics");
 
 	imageManager = new
 	    ImageManagerImpl(guiComponentFactory.getClientJFrame(),
-		    "/jfreerails/client/graphics/", out.getPath());
+		    "/jfreerails/client/graphics/");
         tiles = loadNewTileViewList(w, pm);
 
         trackPieceViewList = loadTrackViews(w, pm);
