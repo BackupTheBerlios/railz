@@ -1,8 +1,19 @@
-Mar 9, 2004 Separated view and model client packages. Added Debug menu. Rendering bugs hopefully mostly fixed.
+Mar 9, 2004:
+------------
+Separated view and model client packages.
+Added Debug menu.
+Rendering bugs hopefully mostly fixed.
 Added Release Notes
-Mar 7, 2004 Reworked GUI architecture. Rendering code changed. Still a bit buggy :)
+Tidied up build.xml
+Removed external references to JFreerails in dialogs etc.
+Added bug reporting link to About dialog.
+Mar 7, 2004
+-----------
+Reworked GUI architecture. Rendering code changed. Still a bit buggy :)
 Added L10N/I18N infrastructure (Thanks Christoph!)
-Feb 28, 2004 Railz CVS created from patched JFreerails source
+Feb 28, 2004
+------------
+Railz CVS created from patched JFreerails source
 Added:
 * Overhead wagon graphics
 * Integration of schedule into JTabPane
@@ -12,7 +23,8 @@ Added:
 * Fix to cargo payment calculations
 * GPL License file
 * Load/save fix
-Removed "experimental" directory
+* Removed "experimental" directory
+
 ============================================================================
 Feb 20, 2004 6:34:03 PM Luke
 	o Fix 839371 - Goods & livestock wagons appear the same on train orders
