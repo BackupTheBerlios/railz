@@ -38,7 +38,6 @@ public class ChangeTrainMove extends ChangeItemInListMove {
 	super(KEY.TRAINS, id, before, after, p);
 	System.out.println("creating ChangeTrainMove for train " + id + ": " +
 		getBefore() + ", " + ", " + getAfter());
-	Thread.currentThread().dumpStack();
     }
 
     /**
