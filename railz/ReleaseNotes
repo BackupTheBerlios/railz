@@ -1,39 +1,48 @@
 Release Notes
 =============
 
-These are the release notes for the 0.2.3 Development build of Railz.
+These are the release notes for the 0.3.0 Development build of Railz.
 
 New Features since the last release:
 ====================================
-Balance sheet
-Bank account interest
-Train maintenance charges
-Track maintenance charges
-Improved client message display
-Improved station selector
-Bug fixes
+Train motion updated - single and double width track implemented (trains 
+now block each other on single track).
+Train movement no longer eats bandwidth
+New consist selection dialog.
+"Pluggable" Game Scenarios and Stats counters.
+Changes to city tile generation and cargo/tile values.
+Train priorities implemented
 
 Bugs/features fixed since last release:
 =======================================
-2 Train Schedule Tab sizes layout is bad
-4 Select station popup looks awful
-10 station build buttons should show station prices 
-13 overview map is too big 
-15 station info states cars per year when tonnes per year 
-16 income tax not implemented 
-18 default directory for saving is in c:\windows 
-19 Images in CVS are stored as text 
-20 Server cannot send user messages to client 
-22 Train purchase dialog doesn't show train maintenance cost 
-24 All display mode selections result in same res being applied
+3 P2 RESO FIXE Train list button on schedule pane doesn't work 
+17 P2 RESO FIXE resources don't all fit on station info tab 
+29 P2 RESO FIXE Blue blobs on map near cities 
+30 P2 RESO FIXE Can't build stations on end track pieces 
+31 P2 RESO FIXE terrain info doesn't show building title 
+32 P2 RESO FIXE Primary resources should be more widely scattered 
+33 P2 RESO FIXE harbours should be placed next to sea 
+34 P2 RESO FIXE buildings no longer appear on mini map 
+35 P2 RESO FIXE buildings should have transparent backgrounds 
+36 P2 RESO FIXE Station name is shown as foo (standard track) on station view 
+37 P2 RESO FIXE track type not shown in terrain info dialog 
+38 P2 RESO FIXE Lumber mill, sugar plantations have unintuitive appearance 
+39 P2 RESO FIXE upgrading track causes "track has been changed" message 
+40 P2 RESO FIXE terrain info doesn't update when user clicks in build mode 
+5 P5 RESO FIXE Station info tab prev/next buttons don't use icons
 
-Known Bugs
-==========
-3 Train list button on schedule pane doesn't work
-5 Station info tab prev/next buttons don't use icons
-6 Top-down engine gfx are just black rectangles
-7 Help and Build Menus missing accelerators
-8 train schedule dialog doesn't sccale gracefully
-9 too easy to accidentally build track by clicking on map
-11 freight and passenger revenues are not separated
-17 resources don't all fit on station info tab
+Outstanding bugs:
+=================
+6 P3 ASSI Top-down engine gfx are just black rectangles
+9 P3 NEW too easy to accidentally build track by clicking on map
+11 P3 ASSI freight and passenger revenues are not separated
+25 P3 NEW Station cargo delivery doesn't account for multiple stations
+27 P3 NEW MapLayerRenderer doesn't expose the right methods
+7 P4 NEW Help and Build Menus missing accelerators
+12 P4 NEW tidy up build menu
+14 P4 NEW when in build mode, should be able to see build cost
+23 P4 NEW Select station dialog needs improving
+26 P4 NEW Urban areas should grow over time 
+28 P4 ASSI Game world objects contain non-internationalised strings 
+8 P5 NEW train schedule dialog doesn't sccale gracefully 
+21 P5 ASSI dialogs no longer need close buttons
