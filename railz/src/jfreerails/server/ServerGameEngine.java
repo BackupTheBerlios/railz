@@ -301,8 +301,15 @@ public class ServerGameEngine implements GameModel, Runnable {
             if (null != station && null != station.getProduction()) {
                 ProductionAtEngineShop production = station.getProduction();
                 Point p = new Point(station.x, station.y);
-                TrainMover trainMover = tb.buildTrain(production.getEngineType(),
-                        production.getWagonTypes(), p);
+		/*
+		 * TODO until stations are owned, all trains are produced by
+		 * Player 0! 
+		 */
+                TrainMover trainMover = tb.buildTrain
+		    (production.getEngineType(),
+			production.getWagonTypes(), p,
+		       	((Player) world.get(KEY.PLAYERS, 0,
+			    Player.AUTHORITATIVE)).getPrincipal());
 
                 //FIXME, at some stage 'ServerAutomaton' and 'trainMovers' should be combined.
                 TrainPathFinder tpf = trainMover.getTrainPathFinder();

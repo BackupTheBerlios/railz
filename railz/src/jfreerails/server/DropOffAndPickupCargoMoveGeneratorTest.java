@@ -81,7 +81,7 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
         //3 wagons to carry cargo type 0.
         int[] wagons = new int[] {0, 0, 0};
         TrainModel train = new TrainModel(wagons, trainCargoBundleId);
-        w.add(KEY.TRAINS, train);
+        w.add(KEY.TRAINS, train, testPlayer.getPrincipal());
 
         w.add(KEY.BANK_ACCOUNTS, new BankAccount(), testPlayer.getPrincipal());
     }
@@ -141,7 +141,8 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
      */
     public void testPickUpCargo3() {
         //Set wagons on train.	
-        TrainModel train = (TrainModel)w.get(KEY.TRAINS, 0);
+        TrainModel train = (TrainModel)w.get(KEY.TRAINS, 0,
+	       	testPlayer.getPrincipal());
         int[] wagons = new int[] {0, 0, 2, 2};
 
         //2 wagons for cargo type 0; 2 wagons for cargo type 2.
@@ -194,7 +195,8 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
 
         //Add 2 wagons for cargo type 0 and 1 for cargo type 1 to train.
         int[] wagons = new int[] {0, 0, 1, 1};
-        TrainModel train = (TrainModel)w.get(KEY.TRAINS, 0);
+        TrainModel train = (TrainModel)w.get(KEY.TRAINS, 0,
+		testPlayer.getPrincipal());
         train = addWagons(wagons);
 
         //Add quantities of cargo type 0 and 2 to the train.
@@ -295,16 +297,18 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
     }
 
     private TrainModel addWagons(int[] wagons) {
-        TrainModel train = (TrainModel)w.get(KEY.TRAINS, 0);
+        TrainModel train = (TrainModel)w.get(KEY.TRAINS, 0,
+		testPlayer.getPrincipal());
         TrainModel newTrain = train.getNewInstance(train.getEngineType(), wagons);
-        w.set(KEY.TRAINS, 0, newTrain);
+        w.set(KEY.TRAINS, 0, newTrain, testPlayer.getPrincipal());
 
         return newTrain;
     }
 
     private void stopAtStation() {
-        DropOffAndPickupCargoMoveGenerator moveGenerator = new DropOffAndPickupCargoMoveGenerator(0,
-                0, w);
+        DropOffAndPickupCargoMoveGenerator moveGenerator = new
+	    DropOffAndPickupCargoMoveGenerator(testPlayer.getPrincipal(), 0,
+		    0, w);
         Move m = moveGenerator.generateMove();
         MoveStatus ms = m.doMove(w, testPlayer.getPrincipal());
         assertTrue(ms.isOk());
@@ -321,7 +325,8 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
 
     /** Retrieves the cargo bundle that the train is carrying from the world object */
     private CargoBundle getCargoOnTrain() {
-        TrainModel train = (TrainModel)w.get(KEY.TRAINS, 0);
+        TrainModel train = (TrainModel)w.get(KEY.TRAINS, 0,
+		testPlayer.getPrincipal());
         CargoBundle cargoOnTrain = (CargoBundle)w.get(KEY.CARGO_BUNDLES,
                 train.getCargoBundleNumber());
 

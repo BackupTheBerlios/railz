@@ -123,7 +123,7 @@ public class DialogueBoxController {
         //Set up select engine dialogue.
         selectEngine = new SelectEngineJPanel();
         selectEngine.setCancelButtonActionListener(this.closeCurrentDialogue);
-        selectEngine.setup(w, vl, new ActionListener() {
+        selectEngine.setup(modelRoot, new ActionListener() {
             
             public void actionPerformed(ActionEvent arg0) {
                 closeContent();
@@ -138,7 +138,7 @@ public class DialogueBoxController {
         
         final ReadOnlyWorld finalROW = this.world;
         //So that inner class can reference it.
-        selectWagons.setup(w, vl, new ActionListener() {
+        selectWagons.setup(modelRoot, new ActionListener() {
             
             public void actionPerformed(ActionEvent arg0) {
                 WorldIterator wi = new NonNullElements(KEY.STATIONS, finalROW);
@@ -180,7 +180,8 @@ public class DialogueBoxController {
     }
     
     public void showTrainOrders() {
-        WorldIterator wi = new NonNullElements(KEY.TRAINS, world);
+	WorldIterator wi = new NonNullElements(KEY.TRAINS, world,
+		modelRoot.getPlayerPrincipal());
         if (!wi.next()) {
             modelRoot.getUserMessageLogger().println("Cannot" +
             " show train orders since there are no" +
@@ -243,9 +244,9 @@ public class DialogueBoxController {
     }
     
     public void showTrainList() {
-	if (world.size(KEY.TRAINS) > 0) {
+	if (world.size(KEY.TRAINS, modelRoot.getPlayerPrincipal()) > 0) {
 	    final TrainListJPanel trainList = new TrainListJPanel();		
-	    trainList.setup(w, vl, closeCurrentDialogue);
+	    trainList.setup(modelRoot, closeCurrentDialogue);
 	    trainList.setShowTrainDetailsActionListener(
 		    new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {

@@ -15,6 +15,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
+import jfreerails.client.model.ModelRoot;
 import jfreerails.client.renderer.ViewLists;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.ReadOnlyWorld;
@@ -25,13 +26,15 @@ import jfreerails.world.train.TrainOrdersModel;
 import jfreerails.world.train.WagonType;
 import jfreerails.world.cargo.CargoBundle;
 import jfreerails.world.cargo.CargoType;
+import jfreerails.world.player.FreerailsPrincipal;
 import jfreerails.world.player.Player;
 
 /**
  *  This JPanel displays an engine and a number of wagons.
  * @author  Luke Lindsay
  */
-public class TrainViewJPanel extends JPanel implements View, ListCellRenderer, WorldListListener {
+public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldListListener {
+    private ModelRoot modelRoot;
     
     private ReadOnlyWorld w;
     
@@ -67,15 +70,15 @@ public class TrainViewJPanel extends JPanel implements View, ListCellRenderer, W
         this.setOpaque(false);
     }
     
-	/** Creates a new instance of TrainView */
-	   public TrainViewJPanel(ReadOnlyWorld w, ViewLists vl) {
-		   setup(w, vl, null);		  
-		   this.setBackground(backgoundColor);
-	   }
-    
     /** Creates a new instance of TrainView */
-    public TrainViewJPanel(ReadOnlyWorld w, ViewLists vl, int trainNumber) {
-        setup(w, vl, null);
+    public TrainViewJPanel(ModelRoot mr) {
+	setup(mr, null);		  
+	this.setBackground(backgoundColor);
+    }
+
+    /** Creates a new instance of TrainView */
+    public TrainViewJPanel(ModelRoot mr, int trainNumber) {
+        setup(mr, null);
         display(trainNumber);
         this.setBackground(backgoundColor);
     }
@@ -91,7 +94,8 @@ public class TrainViewJPanel extends JPanel implements View, ListCellRenderer, W
         showingOrder = false;
         this.trainNumber = trainNumber;
 	if (trainNumber >= 0) {
-	    TrainModel train = (TrainModel) w.get(KEY.TRAINS, trainNumber);
+	    TrainModel train = (TrainModel) w.get(KEY.TRAINS, trainNumber,
+		    modelRoot.getPlayerPrincipal());
 	    CargoBundle cargoBundle = (CargoBundle) w.get(KEY.CARGO_BUNDLES,
 		    train.getCargoBundleNumber());
 
@@ -148,7 +152,8 @@ public class TrainViewJPanel extends JPanel implements View, ListCellRenderer, W
         showingOrder = true;
         this.trainNumber = trainNumber;
         this.scheduleOrderNumber = scheduleOrderNumber;
-        TrainModel train = (TrainModel) w.get(KEY.TRAINS, trainNumber);
+	TrainModel train = (TrainModel) w.get(KEY.TRAINS, trainNumber,
+		modelRoot.getPlayerPrincipal());
         this.scheduleID = train.getScheduleID();
         ImmutableSchedule s = (ImmutableSchedule)w.get(KEY.TRAIN_SCHEDULES, scheduleID);
         TrainOrdersModel order = s.getOrder(scheduleOrderNumber);
@@ -182,12 +187,11 @@ public class TrainViewJPanel extends JPanel implements View, ListCellRenderer, W
 	setMinimumSize(new Dimension(Math.max(200, width), height));
     }
     
-    public void setup(
-    ReadOnlyWorld w,
-    ViewLists vl,
+    public void setup(ModelRoot mr,
     java.awt.event.ActionListener submitButtonCallBack) {
-        this.w = w;
-        this.vl = vl;
+	modelRoot = mr;
+        w = modelRoot.getWorld();
+        vl = modelRoot.getViewLists();
     }
     
     public Component getListCellRendererComponent(
@@ -230,24 +234,26 @@ public class TrainViewJPanel extends JPanel implements View, ListCellRenderer, W
     }
     
     
-    public void listUpdated(KEY key, int index) {
+    public void listUpdated(KEY key, int index, FreerailsPrincipal principal) {
         if(showingOrder){
             if(KEY.TRAIN_SCHEDULES == key && this.scheduleID == index){
                 this.display(this.trainNumber, this.scheduleOrderNumber);
             }
         }else{
-            if(KEY.TRAINS == key && this.trainNumber == index){
+            if(KEY.TRAINS == key &&
+		    this.trainNumber == index &&
+		    modelRoot.getPlayerPrincipal().equals(principal)){
                 this.display(this.trainNumber);
             }
         }
     }
     
-    public void itemAdded(KEY key, int index) {
-        
+    public void itemAdded(KEY key, int index, FreerailsPrincipal principal) {
+	// do nothing
     }
     
-    public void itemRemoved(KEY key, int index) {
-        
+    public void itemRemoved(KEY key, int index, FreerailsPrincipal princpal) {
+	// do nothing
     }
     
 }

@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.util.NoSuchElementException;
 
 import jfreerails.client.renderer.ViewLists;
+import jfreerails.client.model.ModelRoot;
 import jfreerails.world.common.OneTileMoveVector;
 import jfreerails.world.station.StationModel;
 import jfreerails.world.top.KEY;
@@ -30,7 +31,8 @@ import jfreerails.world.train.TrainOrdersModel;
  *
  * @author  Luke
  */
-public class SelectStationJPanel extends javax.swing.JPanel implements View {
+public class SelectStationJPanel extends javax.swing.JPanel {
+    private ModelRoot modelRoot;
     
     private ReadOnlyWorld world;
 
@@ -175,7 +177,8 @@ public class SelectStationJPanel extends javax.swing.JPanel implements View {
         this.selectedOrderNumber = orderNumber;
         
         //Set the selected station to the current station for the specified order.
-        TrainModel train = (TrainModel)world.get(KEY.TRAINS, this.trainID);
+	TrainModel train = (TrainModel)world.get(KEY.TRAINS, this.trainID,
+		modelRoot.getPlayerPrincipal());
         Schedule schedule = (Schedule)world.get(KEY.TRAIN_SCHEDULES, train.getScheduleID());
         TrainOrdersModel order = schedule.getOrder(selectedOrderNumber);
         this.selectedStationID = order.getStationNumber();
@@ -250,7 +253,8 @@ public class SelectStationJPanel extends javax.swing.JPanel implements View {
             }
         }
         
-        TrainModel train = (TrainModel)world.get(KEY.TRAINS, this.trainID);
+        TrainModel train = (TrainModel)world.get(KEY.TRAINS, this.trainID,
+	       	modelRoot.getPlayerPrincipal());
         Schedule schedule = (Schedule)world.get(KEY.TRAIN_SCHEDULES, train.getScheduleID());
         
         //Draw stations
@@ -299,9 +303,10 @@ public class SelectStationJPanel extends javax.swing.JPanel implements View {
         }        
     }
     
-    public void setup(ReadOnlyWorld w, ViewLists vl, ActionListener submitButtonCallBack) {
-        cargoWaitingAndDemandedJPanel1.setup(w, vl,  null);
-        this.world = w;
+    public void setup(ModelRoot mr, ActionListener submitButtonCallBack) {
+	modelRoot = mr;
+        this.world = mr.getWorld();
+        cargoWaitingAndDemandedJPanel1.setup(world, mr.getViewLists(),  null);
         this.submitButtonCallBack = submitButtonCallBack;
     }
     

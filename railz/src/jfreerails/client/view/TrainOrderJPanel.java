@@ -5,7 +5,10 @@
  */
 
 package jfreerails.client.view;
+
 import javax.swing.*;
+
+import jfreerails.client.model.ModelRoot;
 import jfreerails.world.top.*;
 import jfreerails.world.station.*;
 import java.awt.*;
@@ -13,7 +16,8 @@ import java.awt.*;
  *
  * @author  Luke Lindsay
  */
-public class TrainOrderJPanel extends javax.swing.JPanel implements View, ListCellRenderer{
+public class TrainOrderJPanel extends javax.swing.JPanel implements 
+ListCellRenderer {
     
     jfreerails.world.top.ReadOnlyWorld w;
     
@@ -88,12 +92,11 @@ public class TrainOrderJPanel extends javax.swing.JPanel implements View, ListCe
 
     }//GEN-END:initComponents
     
-    public void setup(jfreerails.world.top.ReadOnlyWorld w, jfreerails.client.renderer.ViewLists vl, java.awt.event.ActionListener submitButtonCallBack) {
-        this.w = w;
+    public void setup(ModelRoot mr, java.awt.event.ActionListener submitButtonCallBack) {
+        w = mr.getWorld();
         TrainViewJPanel trainViewJPanel = (TrainViewJPanel)consistChangeJPanel;
         trainViewJPanel.setHeight(15);
-        trainViewJPanel.setup(w, vl, null);
-        
+        trainViewJPanel.setup(mr, null);
     }
     
     public java.awt.Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {

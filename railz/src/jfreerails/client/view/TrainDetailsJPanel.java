@@ -8,19 +8,22 @@ package jfreerails.client.view;
 
 import javax.swing.border.TitledBorder;
 
+import jfreerails.client.model.ModelRoot;
 import jfreerails.world.cargo.CargoBundle;
 import jfreerails.world.cargo.CargoType;
+import jfreerails.world.player.FreerailsPrincipal;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.ReadOnlyWorld;
 import jfreerails.world.top.WorldListListener;
 import jfreerails.world.train.TrainModel;
 /**
- *	This JPanel displays a side-on view of a train and a summary of the cargo that it is carrying.
+ * This JPanel displays a side-on view of a train and a summary of the
+ * cargo that it is carrying.
  *
  * @author  Luke Lindsay
  */
-public class TrainDetailsJPanel extends javax.swing.JPanel implements View, WorldListListener {
-
+public class TrainDetailsJPanel extends javax.swing.JPanel implements WorldListListener {
+    private ModelRoot modelRoot;
 
     private ReadOnlyWorld w;    
     
@@ -56,8 +59,12 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements View, Worl
 
     }//GEN-END:initComponents
 
-    public void setup(ReadOnlyWorld w, jfreerails.client.renderer.ViewLists vl, java.awt.event.ActionListener submitButtonCallBack) {
-        this.trainViewJPanel1.setup(w, vl, submitButtonCallBack);
+    public void setup(ModelRoot mr,
+	    java.awt.event.ActionListener submitButtonCallBack) {
+	modelRoot = mr;
+	ReadOnlyWorld w = mr.getWorld();
+	jfreerails.client.renderer.ViewLists vl = mr.getViewLists();
+        this.trainViewJPanel1.setup(mr, submitButtonCallBack);
         trainViewJPanel1.setHeight(20);
          trainViewJPanel1.setCenterTrain(true);
         this.w = w;
@@ -70,7 +77,8 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements View, Worl
         trainViewJPanel1.display(trainNumber);
 	String s;
 	if (trainNumber >= 0) {
-	    TrainModel train = (TrainModel)w.get(KEY.TRAINS, trainNumber);
+	    TrainModel train = (TrainModel)w.get(KEY.TRAINS, trainNumber,
+		    modelRoot.getPlayerPrincipal());
 
 	    this.bundleID = train.getCargoBundleNumber();
 
@@ -83,25 +91,25 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements View, Worl
 	((TitledBorder) getBorder()).setTitle(s);
     }
         
-	public void listUpdated(KEY key, int index) {
-		
-		if(KEY.TRAINS == key && index == trainNumber){
-			//The train has been updated.
-			this.displayTrain(this.trainNumber);
-		}else if(KEY.CARGO_BUNDLES == key && index == bundleID){ 
-			//The train's cargo has changed.
-			this.displayTrain(this.trainNumber);
-		}			
-		trainViewJPanel1.listUpdated(key, index);
-	}
+    public void listUpdated(KEY key, int index, FreerailsPrincipal p) {
+	if(KEY.TRAINS == key && index == trainNumber &&
+		p.equals(modelRoot.getPlayerPrincipal())) {
+	    //The train has been updated.
+	    this.displayTrain(this.trainNumber);
+	}else if(KEY.CARGO_BUNDLES == key && index == bundleID){ 
+	    //The train's cargo has changed.
+	    this.displayTrain(this.trainNumber);
+	}			
+	trainViewJPanel1.listUpdated(key, index, p);
+    }
 
-	public void itemAdded(KEY key, int index) {
-		trainViewJPanel1.itemAdded(key, index);
-	}
+    public void itemAdded(KEY key, int index, FreerailsPrincipal p) {
+	trainViewJPanel1.itemAdded(key, index, p);
+    }
 
-	public void itemRemoved(KEY key, int index) {
-	    trainViewJPanel1.itemRemoved(key, index);
-	}
+    public void itemRemoved(KEY key, int index, FreerailsPrincipal p) {
+	trainViewJPanel1.itemRemoved(key, index, p);
+    }
                 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private jfreerails.client.view.TrainViewJPanel trainViewJPanel1;

@@ -23,7 +23,7 @@ public class AddTrainMove extends CompositeMove {
 
     public static AddTrainMove generateMove(int i, TrainModel train,
         Money price, ImmutableSchedule s, FreerailsPrincipal p) {
-        Move m = new AddItemToListMove(KEY.TRAINS, i, train);
+        Move m = new AddItemToListMove(KEY.TRAINS, i, train, p);
         Move m2 = new AddItemToListMove(KEY.TRAIN_SCHEDULES,
                 train.getScheduleID(), s);
         AddTransactionMove transactionMove = new AddTransactionMove(0,

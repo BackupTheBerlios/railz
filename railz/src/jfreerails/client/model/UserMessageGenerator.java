@@ -27,12 +27,12 @@ import jfreerails.world.train.TrainModel;
  * Created on Dec 13, 2003
  * 
  */
-public class UserMessageGenerator implements MoveReceiver {
+class UserMessageGenerator implements MoveReceiver {
     ModelRoot mr;
     ReadOnlyWorld world;
     DecimalFormat formatter = new DecimalFormat("#,###,###");
 
-    public UserMessageGenerator(ModelRoot mr, ReadOnlyWorld world) {
+    UserMessageGenerator(ModelRoot mr, ReadOnlyWorld world) {
         this.mr = mr;
         this.world = world;
     }
@@ -40,18 +40,24 @@ public class UserMessageGenerator implements MoveReceiver {
     public void processMove(Move move) {
         //Check whether it is a train arriving at a station.
         if (move instanceof TransferCargoAtStationMove) {
-            TransferCargoAtStationMove transferCargoAtStationMove = (TransferCargoAtStationMove)move;
+	    TransferCargoAtStationMove transferCargoAtStationMove =
+		(TransferCargoAtStationMove)move;
 
-            AddTransactionMove addTransactionMove = transferCargoAtStationMove.getPayment();
-            DeliverCargoReceipt deliverCargoReceipt = (DeliverCargoReceipt)addTransactionMove.getTransaction();
+	    AddTransactionMove addTransactionMove =
+		transferCargoAtStationMove.getPayment();
+	    DeliverCargoReceipt deliverCargoReceipt =
+		(DeliverCargoReceipt)addTransactionMove.getTransaction();
             long revenue = deliverCargoReceipt.getValue().getAmount();
 
             if (0 < revenue) {
-                int trainCargoBundle = transferCargoAtStationMove.getChangeOnTrain()
+                int trainCargoBundle =
+		    transferCargoAtStationMove.getChangeOnTrain()
                                                                  .getIndex();
-                int stationCargoBundle = transferCargoAtStationMove.getChangeAtStation()
+                int stationCargoBundle =
+		    transferCargoAtStationMove.getChangeAtStation()
                                                                    .getIndex();
-                NonNullElements trains = new NonNullElements(KEY.TRAINS, world);
+                NonNullElements trains = new NonNullElements(KEY.TRAINS, world,
+		       	mr.getPlayerPrincipal());
                 NonNullElements stations = new NonNullElements(KEY.STATIONS,
                         world);
 

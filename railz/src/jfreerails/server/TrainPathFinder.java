@@ -12,6 +12,7 @@ import jfreerails.move.Move;
 import jfreerails.util.FreerailsIntIterator;
 import jfreerails.server.ServerAutomaton;
 import jfreerails.world.common.PositionOnTrack;
+import jfreerails.world.player.FreerailsPrincipal;
 import jfreerails.world.station.StationModel;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.ReadOnlyWorld;
@@ -34,6 +35,7 @@ public class TrainPathFinder implements FreerailsIntIterator, ServerAutomaton {
     private final int trainId;
     private final ReadOnlyWorld world;
     private transient MoveReceiver moveReceiver;
+    private FreerailsPrincipal trainPrincipal;
     FlatTrackExplorer trackExplorer;
     SimpleAStarPathFinder pathFinder = new SimpleAStarPathFinder();
 
@@ -41,13 +43,15 @@ public class TrainPathFinder implements FreerailsIntIterator, ServerAutomaton {
      * Constructor.
      *
      * @param tx the track explorer this pathfinder is to use.
+     * @param tp Principal that owns the train.
      */
     public TrainPathFinder(FlatTrackExplorer tx, ReadOnlyWorld w,
-        int trainNumber, MoveReceiver mr) {
+        int trainNumber, FreerailsPrincipal tp, MoveReceiver mr) {
         this.moveReceiver = mr;
         this.trackExplorer = tx;
         this.trainId = trainNumber;
         this.world = w;
+	trainPrincipal = tp;
     }
 
     public boolean hasNextInt() {
@@ -69,8 +73,8 @@ public class TrainPathFinder implements FreerailsIntIterator, ServerAutomaton {
 
         if (null != wagonsToAdd) {
             int engine = train.getEngineType();
-            moves.add(ChangeTrainMove.generateMove(this.trainId, train, engine,
-                    wagonsToAdd));
+            moves.add(ChangeTrainMove.generateMove(this.trainId, trainPrincipal,
+		       	train, engine, wagonsToAdd));
         }
 
         schedule.gotoNextStaton();
@@ -89,7 +93,8 @@ public class TrainPathFinder implements FreerailsIntIterator, ServerAutomaton {
      * station.
      */
     private void updateTarget() {
-        TrainModel train = (TrainModel)world.get(KEY.TRAINS, this.trainId);
+        TrainModel train = (TrainModel)world.get(KEY.TRAINS, this.trainId,
+		trainPrincipal);
         int scheduleID = train.getScheduleID();
         ImmutableSchedule currentSchedule = (ImmutableSchedule)world.get(KEY.TRAIN_SCHEDULES,
                 scheduleID);
@@ -121,7 +126,8 @@ public class TrainPathFinder implements FreerailsIntIterator, ServerAutomaton {
      * towards.
      */
     private Point getTarget() {
-        TrainModel train = (TrainModel)world.get(KEY.TRAINS, this.trainId);
+        TrainModel train = (TrainModel)world.get(KEY.TRAINS, this.trainId,
+		trainPrincipal);
         int scheduleID = train.getScheduleID();
         ImmutableSchedule schedule = (ImmutableSchedule)world.get(KEY.TRAIN_SCHEDULES,
                 scheduleID);
@@ -139,7 +145,8 @@ public class TrainPathFinder implements FreerailsIntIterator, ServerAutomaton {
     }
 
     private void scheduledStop() {
-        TrainModel train = (TrainModel)world.get(KEY.TRAINS, this.trainId);
+        TrainModel train = (TrainModel)world.get(KEY.TRAINS, this.trainId,
+		trainPrincipal);
         Schedule schedule = (ImmutableSchedule)world.get(KEY.TRAIN_SCHEDULES,
                 train.getScheduleID());
         StationModel station = null;
@@ -150,15 +157,16 @@ public class TrainPathFinder implements FreerailsIntIterator, ServerAutomaton {
 
         if (null != wagonsToAdd) {
             int engine = train.getEngineType();
-            Move m = ChangeTrainMove.generateMove(this.trainId, train, engine,
-                    wagonsToAdd);
+	    Move m = ChangeTrainMove.generateMove(this.trainId, trainPrincipal,
+		    train, engine, wagonsToAdd);
             moveReceiver.processMove(m);
         }
     }
 
     private void loadAndUnloadCargo(int stationId) {
         //train is at a station so do the cargo processing
-        DropOffAndPickupCargoMoveGenerator transfer = new DropOffAndPickupCargoMoveGenerator(trainId,
+        DropOffAndPickupCargoMoveGenerator transfer = new   
+	    DropOffAndPickupCargoMoveGenerator(trainPrincipal, trainId,
                 stationId, world);
 
         Move m = transfer.generateMove();
