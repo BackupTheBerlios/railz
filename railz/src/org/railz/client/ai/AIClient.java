@@ -36,7 +36,7 @@ public class AIClient extends Client implements Runnable,
     private ReadOnlyWorld world;
     private GameModel gameModel;
     private volatile boolean keepRunning = true;
-    private RouteBuilder routeBuilder;
+    private Scheduler scheduler;
 
     /** The default user message logger logs to stderr */
     private UserMessageLogger userMessageLogger = new UserMessageLogger() {
@@ -72,6 +72,8 @@ public class AIClient extends Client implements Runnable,
      * submits its moves.
      */
     public void run() {
+	scheduler = new Scheduler(this);
+
 	while (keepRunning) {
 	    // sleep for a bit to save on CPU
 	    try {
@@ -85,7 +87,7 @@ public class AIClient extends Client implements Runnable,
 	    gameModel.update();
 
 	    // do our stuff
-	    //buildRoutes();
+	    scheduler.scheduleTasks();
 	}
     }
 
@@ -103,7 +105,7 @@ public class AIClient extends Client implements Runnable,
 	    gameModel.update();
 	}
 
-	routeBuilder = new RouteBuilder(this);
+	scheduler = new Scheduler(this);
 
 	/* start the client main loop */
 	Thread t = new Thread(this, "AI Client named " + 

@@ -33,7 +33,7 @@ import org.railz.world.top.KEY;
 import org.railz.world.top.ITEM;
 import org.railz.world.top.ReadOnlyWorld;
 import org.railz.world.track.*;
-import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.*;
 
 
 /**
@@ -71,7 +71,7 @@ public class TrackMoveTransactionsGenerator {
     }
 
     public Move addTransactions(Move move) {
-        int numberOfTrackTypes = w.size(KEY.TRACK_RULES);
+        int numberOfTrackTypes = w.size(KEY.TRACK_RULES, Player.AUTHORITATIVE);
         trackAdded = new int[numberOfTrackTypes];
         trackRemoved = new int[numberOfTrackTypes];
 
@@ -128,7 +128,15 @@ public class TrackMoveTransactionsGenerator {
 
     /**
      * Charge or credit player according to amount of track added/removed.
-     * TODO Charge diagonals at sqrt(2) of straight track
+     * TODO Remove this abomination! Track should be charged by using the
+     * TrackPieceViewer to determine the cost, which will
+     * <ul>
+     * <li>Take into account initial and final track configuration
+     * <li>Take into account initial and final track type
+     * <li>Take into account costs incurred due to difficult terrain (if any)
+     * <li>Take into account costs due to economic cycle.
+     * <li>Make these calculations available to other modules.
+     * </ul>
      */
     private void generateTransactions() {
         transactions.clear();
@@ -138,7 +146,8 @@ public class TrackMoveTransactionsGenerator {
             int numberAdded = trackAdded[i];
 
             if (0 != numberAdded) {
-                TrackRule rule = (TrackRule)w.get(KEY.TRACK_RULES, i);
+                TrackRule rule = (TrackRule)w.get(KEY.TRACK_RULES, i,
+			Player.AUTHORITATIVE);
                 long m = rule.getPrice();
                 long total = -m * numberAdded;
 		GameTime now = (GameTime) w.get(ITEM.TIME, principal);
@@ -150,7 +159,8 @@ public class TrackMoveTransactionsGenerator {
             int numberRemoved = trackRemoved[i];
 
             if (0 != numberRemoved) {
-                TrackRule rule = (TrackRule)w.get(KEY.TRACK_RULES, i);
+                TrackRule rule = (TrackRule)w.get(KEY.TRACK_RULES, i,
+			Player.AUTHORITATIVE);
                 long m = rule.getPrice();
 
                 long total = m * numberRemoved / 2;

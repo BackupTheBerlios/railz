@@ -23,6 +23,10 @@ public class ConvertedAtStation implements FreerailsSerializable {
     public static final int NOT_CONVERTED = Integer.MIN_VALUE;
     private final int[] convertedTo;
 
+    /**
+     * @param convertedTo an array indexed by CARGO_TYPE, indicating the
+     * CARGO_TYPE to which each cargo is converted.
+     */
     public ConvertedAtStation(int[] convertedTo) {
         this.convertedTo = (int[])convertedTo.clone(); //defensive copy.
     }

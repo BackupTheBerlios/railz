@@ -32,6 +32,9 @@ public class CityModel implements FreerailsSerializable {
     private int x;
     private int y;
 
+    /** Hard-code all cities at size 3 for now */
+    private static final int CITY_RADIUS = 3;
+
     public CityModel(String name, int x, int y) {
         this.name = name;
         this.x = x;
@@ -48,5 +51,13 @@ public class CityModel implements FreerailsSerializable {
 
     public int getCityY() {
         return y;
+    }
+
+    /**
+     * @return the city radius r, such that all city buildings reside within
+     * a square which is 2r+1 tiles on the side.
+     */
+    public int getCityRadius() {
+	return CITY_RADIUS;
     }
 }

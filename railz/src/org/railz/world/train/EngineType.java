@@ -114,6 +114,9 @@ final public class EngineType implements FreerailsSerializable {
 	return fuelType;
     }
 
+    /**
+     * @return the annual fuel consumption in units of fuel used per year
+     */
     public int getAnnualFuelConsumption() {
 	return annualFuelConsumption;
     }

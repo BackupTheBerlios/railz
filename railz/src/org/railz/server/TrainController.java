@@ -57,6 +57,7 @@ class TrainController {
     public TrainController(ReadOnlyWorld w, AuthoritativeMoveExecuter mr) {
 	world = w;
 	moveReceiver = mr;
+	WorldConstants.init(w);
 	dopucmg = new DropOffAndPickupCargoMoveGenerator(world, moveReceiver);
 	pathFinder = new TrainPathFinder(world);
 	trainModelViewer = new TrainModelViewer(world);
@@ -211,7 +212,7 @@ class TrainController {
 	    // check to see if there is a water tower
 	    StationModel sm = (StationModel) world.get(KEY.STATIONS,
 		    stationKey.index, stationKey.principal);
-	    if (sm.hasImprovement(WorldConstants.SI_WATER_TOWER)) {
+	    if (sm.hasImprovement(WorldConstants.get().SI_WATER_TOWER)) {
 		Point head = new Point();
 		GameTime now = (GameTime) world.get(ITEM.TIME,
 			Player.AUTHORITATIVE);

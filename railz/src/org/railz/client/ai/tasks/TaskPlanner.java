@@ -14,14 +14,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package org.railz.client.ai;
+package org.railz.client.ai.tasks;
 
-/** Implemented by each class which implements the AI for a given type of
+import java.util.*;
+
+import org.railz.client.ai.*;
+
+/** Extended by each class which implements the AI for a given type of
  * task, e.g. Building track, buying trains, upgrading stations, changing
  * schedules. Provides an interface which enables a generic scheduler to
  * prioritise tasks according to "cost/benefit".
  */
-interface TaskPlanner {
+public abstract class TaskPlanner implements Comparable {
     /**
      * Plan the most favourable task (or set of tasks) of this type.
      * This causes the cost and priority of these tasks to be computed. This
@@ -29,24 +33,65 @@ interface TaskPlanner {
      * do, given limited resources.
      * @return true if these plans can be performed and a plan was made.
      */
-    public boolean planTask();
+    public abstract boolean planTask();
 
     /**
      * @return the relative priority of the task(s) planned in planTask().
-     * The higher this value, the more important (greater benefit).
+     * The higher this value, the more important (greater benefit). This
+     * should ideally be an estimate of the gross profit measured in $ per
+     * year. A priority of 0 indicates this task should not be performed.
      */
-    public int getTaskPriority();
+    public abstract int getTaskPriority();
 
     /**
      * @return the monetary cost of carrying out the task(s) planned in
      * planTask(). Obviously, if we return 0 here, our scheduler should order
-     * it to be done.
+     * it to be done, no matter what priority.
      */
-    public long getTaskCost();
+    public abstract long getTaskCost();
 
     /**
      * Carry out the task planned in planTask()
      */
-    public void doTask();
+    public abstract void doTask();
+
+    /**
+     * Order first by ascending order of priority,
+     * then by descending cost to do the task.
+     */
+    public int compareTo(Object o) {
+	TaskPlanner tp = (TaskPlanner) o;
+	int diff = getTaskPriority() - tp.getTaskPriority();
+	if (diff != 0)
+	    return diff;
+	diff = (int) (tp.getTaskCost() - getTaskCost());
+	if (diff != 0)
+	    return diff;
+
+	return 0;
+    }
+
+    public boolean equals(Object o) {
+	if (!(o instanceof TaskPlanner))
+	    return false;
+
+	return compareTo(o) == 0;
+    }
+
+    public int hashCode() {
+	return getTaskPriority() ^ (int) getTaskCost();
+    }
+
+    public static ArrayList createTaskPlanners(AIClient aic) {
+	ArrayList al = new ArrayList();
+	al.add(new RouteBuilder(aic));
+	return al;
+    }
+
+    /**
+     * Prevent classes outside this package extending TaskPlanner.
+     */
+    TaskPlanner() {
+    }
 }
 

@@ -29,8 +29,6 @@ import org.railz.world.track.FreerailsTile;
 
 class BuildingTilePositioner {
     private double[] probabilities;
-    /** City consists of 7 x 7 grid */
-    private static final int CITY_RADIUS = 3;
 
     public BuildingTilePositioner(World w) {
 	probabilities = new double[w.size(KEY.BUILDING_TYPES,
@@ -50,10 +48,11 @@ class BuildingTilePositioner {
 
     private void processCity(CityModel cm, World w) {
 	Point cityCentre = new Point(cm.getCityX(), cm.getCityY());
-	int xmin = cm.getCityX() - CITY_RADIUS;
-	int xmax = cm.getCityX() + CITY_RADIUS;
-	int ymin = cm.getCityY() - CITY_RADIUS;
-	int ymax = cm.getCityY() + CITY_RADIUS;
+	int cr = cm.getCityRadius();
+	int xmin = cm.getCityX() - cr;
+	int xmax = cm.getCityX() + cr;
+	int ymin = cm.getCityY() - cr;
+	int ymax = cm.getCityY() + cr;
 	xmin = xmin < 0 ? 0 : xmin;
 	xmax = xmax >= w.getMapWidth() ? w.getMapWidth() - 1 : xmax;
 	ymin = ymin < 0 ? 0 : ymin;

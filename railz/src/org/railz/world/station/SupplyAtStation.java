@@ -23,8 +23,8 @@ import org.railz.world.common.FreerailsSerializable;
 public class SupplyAtStation implements FreerailsSerializable {
     private final int[] supply;
 
-    public SupplyAtStation(int[] cargoWaiting) {
-        supply = (int[])cargoWaiting.clone();
+    public SupplyAtStation(int[] cargoSupply) {
+        supply = (int[])cargoSupply.clone();
     }
 
     /** Returns the number of car loads of the specified cargo that the station

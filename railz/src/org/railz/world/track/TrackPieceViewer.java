@@ -24,28 +24,27 @@ import org.railz.world.common.*;
 import org.railz.world.player.*;
 import org.railz.world.top.*;
 
+/**
+ * Provides information about a TrackTile in the context of the rest of the
+ * game world.
+ */
 public class TrackPieceViewer implements FixedAsset {
     private ReadOnlyWorld world;
     private int x, y;
     private FreerailsTile tile;
+    private TrackTileViewer ttViewer;
 
     public TrackPieceViewer(ReadOnlyWorld w) {
 	world = w;
+	ttViewer = new TrackTileViewer(w);
     }
 
     public void setFreerailsTile(int x, int y) {
 	tile = world.getTile(x, y);
+	ttViewer.setTrackTile(tile.getTrackTile());
     }
 
-    /**
-     * Track is valued at 25% of initial cost, irrespective of age.
-     * TODO
-     * Stations have zero value since station and track are indivisible.
-     * Stations are accounted for elsewhere.
-     */
     public long getBookValue() {
-	return (long) (((TrackRule) world.get(KEY.TRACK_RULES,
-			tile.getTrackRule(), Player.AUTHORITATIVE)).getPrice()
-		* 0.25);
+	return ttViewer.getBookValue();
     }
 }
