@@ -7,6 +7,7 @@ Added:
 * Bank account patch
 * Fix to cargo payment calculations
 * GPL License file
+* Load/save fix
 Removed "experimental" directory
 ============================================================================
 Feb 20, 2004 6:34:03 PM Luke
