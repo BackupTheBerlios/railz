@@ -5,10 +5,9 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 
 import jfreerails.controller.MoveReceiver;
-import jfreerails.move.AddTransactionMove;
-import jfreerails.move.Move;
-import jfreerails.move.TransferCargoAtStationMove;
-import jfreerails.world.accounts.DeliverCargoReceipt;
+import jfreerails.move.*;
+import jfreerails.util.Resources;
+import jfreerails.world.accounts.*;
 import jfreerails.world.cargo.CargoBundle;
 import jfreerails.world.cargo.CargoType;
 import jfreerails.world.common.GameCalendar;
@@ -72,7 +71,7 @@ class UserMessageGenerator implements MoveReceiver {
 
                 int trainNumber = -1;
                 int statonNumber = -1;
-                String stationName = "No station";
+                String stationName = Resources.get("No station");
 
                 while (trains.next()) {
                     TrainModel train = (TrainModel)trains.getElement();
@@ -126,6 +125,15 @@ class UserMessageGenerator implements MoveReceiver {
                 message += "$" + formatter.format(revenue);
                 mr.getUserMessageLogger().println(message);
             }
-        }
+        } else if ((move instanceof AddTransactionMove) &&
+		move.getPrincipal().equals(mr.getPlayerPrincipal())) {
+	    Transaction t = (Transaction) ((AddTransactionMove)
+		    move).getTransaction();
+	    if(t.getCategory() == Transaction.CATEGORY_TAX &&
+		    t.getSubcategory() == Bill.INCOME_TAX) {
+		mr.getUserMessageLogger().println(Resources.get
+			("Income tax charge: $") + (-t.getValue()));
+	    }
+	}
     }
 }

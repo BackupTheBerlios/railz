@@ -17,6 +17,9 @@ public class Economy implements FreerailsSerializable {
      */
     private int incomeTaxRate;
 
+    /**
+     * @return income tax rate in percent
+     */
     public int getIncomeTaxRate() {
 	return incomeTaxRate;
     }

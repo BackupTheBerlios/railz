@@ -14,6 +14,7 @@ public class Bill extends Transaction {
     public static final int TRACK_MAINTENANCE = 1;
     public static final int ROLLING_STOCK_MAINTENANCE = 2;
     public static final int FUEL = 3;
+    public static final int INCOME_TAX = 4;
 
     public final int subcategory;
 
@@ -26,6 +27,7 @@ public class Bill extends Transaction {
 	    case TRACK_MAINTENANCE:
 	    case ROLLING_STOCK_MAINTENANCE:
 	    case FUEL:
+	    case INCOME_TAX:
 		break;
 	    default:
 		throw new IllegalArgumentException();
@@ -41,6 +43,8 @@ public class Bill extends Transaction {
 		return CATEGORY_OPERATING_EXPENSE;
 	    case FUEL:
 		return CATEGORY_COST_OF_SALES;
+	    case INCOME_TAX:
+		return CATEGORY_TAX;
 	}
 	assert false;
 	// keep the compiler happy :)

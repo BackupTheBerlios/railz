@@ -55,22 +55,13 @@ public class ServerGameEngine implements GameModel, Runnable {
     TrainBuilder tb;
     private int targetTicksPerSecond = 0;
     private IdentityProvider identityProvider;
+    private TaxationMoveFactory taxationMoveFactory;
 
     /**
      * List of the ServerAutomaton objects connected to this game
      */
     private Vector serverAutomata;
 
-    /**
-     * Number of ticks which is A Long Time for infrequently updated things.
-     * TODO Ideally we should calculate this from the calendar
-     */
-    private final static int aLongTime = 1000;
-
-    /**
-     * Number of ticks since the last time we did an infrequent update
-     */
-    private int ticksSinceUpdate = 0;
     private long frameStartTime;
     private long nextModelUpdateDue = System.currentTimeMillis();
     private long baseTime = System.currentTimeMillis();
@@ -123,6 +114,7 @@ public class ServerGameEngine implements GameModel, Runnable {
         tb = new TrainBuilder(world, moveExecuter);
         calcSupplyAtStations = new CalcSupplyAtStations(w, moveExecuter);
         moveChainFork.addListListener(calcSupplyAtStations);
+	taxationMoveFactory = new TaxationMoveFactory(w, moveExecuter);
 
         for (int i = 0; i < serverAutomata.size(); i++) {
             ((ServerAutomaton)serverAutomata.get(i)).initAutomaton(moveExecuter);
@@ -154,10 +146,6 @@ public class ServerGameEngine implements GameModel, Runnable {
      */
     public void stop() {
         keepRunning = false;
-    }
-
-    public void infrequentUpdate() {
-        calcSupplyAtStations.doProcessing();
     }
 
     /**
@@ -217,11 +205,7 @@ public class ServerGameEngine implements GameModel, Runnable {
 	    }
             if (this.currentYearLastTick != currentYear) {
                 this.currentYearLastTick = currentYear;
-                newYear();
-            }
-
-            if (ticksSinceUpdate % aLongTime == 0) {
-                infrequentUpdate();
+                newYear(currentYear - 1);
             }
 
             /*
@@ -268,8 +252,6 @@ public class ServerGameEngine implements GameModel, Runnable {
             } catch (InterruptedException e) {
                 // do nothing
             }
-
-            ticksSinceUpdate++;
         } else {
             /*
              * even when game is paused, we should still check for moves
@@ -291,6 +273,7 @@ public class ServerGameEngine implements GameModel, Runnable {
     }
 
     private void newMonth() {
+        calcSupplyAtStations.doProcessing();
         TrackMaintenanceMoveGenerator tmmg = new TrackMaintenanceMoveGenerator(moveExecuter);
         tmmg.update(world);
 
@@ -298,8 +281,12 @@ public class ServerGameEngine implements GameModel, Runnable {
         cargoAtStationsGenerator.update(world);
     }
 
-    /** This is called at the start of each new year. */
-    private void newYear() {
+    /**
+     * This is called at the start of each new year.
+     * @param lastYear the year which has just elapsed
+     */
+    private void newYear(int lastYear) {
+	taxationMoveFactory.generateMoves(lastYear);
     }
 
     /**
