@@ -22,12 +22,15 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.railz.util.Resources;
+import org.railz.client.model.*;
 
 public class DisplayMenu extends JMenu {
     private GUIRoot guiRoot;
+    private ModelRoot modelRoot;
 
-    public DisplayMenu(GUIRoot gcf) {
+    public DisplayMenu(GUIRoot gcf, ModelRoot mr) {
         super(Resources.get("Display"));
+	modelRoot = mr;
 	guiRoot = gcf;
         setMnemonic(68);
 
@@ -86,11 +89,23 @@ public class DisplayMenu extends JMenu {
                 }
             });
 
+        JMenuItem gameInfoJMenuItem = new JMenuItem
+	    (Resources.get("Game Info"));
+        gameInfoJMenuItem.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+		    DialogueBoxController dbc =
+		    guiRoot.getDialogueBoxController();
+		    if (dbc != null)
+			dbc.showContent(new GameInfo(modelRoot));
+                }
+            });
+	
         add(trainOrdersJMenuItem);
         add(stationInfoJMenuItem);
         add(trainListJMenuItem);
 	add(profitLossJMenuItem);
 	add(balanceSheetJMenuItem);
+	add(gameInfoJMenuItem);
     }
 
 }

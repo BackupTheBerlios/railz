@@ -1,3 +1,6 @@
+August 10, 2004:
+----------------
+Added game info dialog showing game objective and statistics for different players.
 August 3, 2004:
 --------------
 Added infrastructure for Bug 28 - Game world objects contain non-internationalised strings

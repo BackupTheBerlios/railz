@@ -16,6 +16,7 @@
 
 package org.railz.world.common;
 
+import java.io.*;
 import java.util.GregorianCalendar;
 
 /** 
@@ -23,8 +24,11 @@ import java.util.GregorianCalendar;
  * measured in the game world.
  */
 final public class GameCalendar implements FreerailsSerializable {
+    private static final long serialVersionUID = -1153667197832054475L;
+
     private final int ticksPerDay;
     private final int startYear;
+    private GregorianCalendar t0;
 
     public GregorianCalendar getCalendar(GameTime time) {
 	GregorianCalendar c = new GregorianCalendar(startYear, 0, 1);
@@ -32,9 +36,16 @@ final public class GameCalendar implements FreerailsSerializable {
 	return c;
     }
 
+    public GameTime getTimeFromCalendar(GregorianCalendar c) {
+	long deltaT = c.getTimeInMillis() - t0.getTimeInMillis();
+	return new GameTime((int) (deltaT /
+		    (1000 * 60 * 60 * 24 / ticksPerDay)));
+    }
+
     public GameCalendar(int ticksPerDay, int startYear) {
         this.ticksPerDay = ticksPerDay;
         this.startYear = startYear;
+	t0 = new GregorianCalendar(startYear, 0, 1);
     }
 
     public boolean equals(Object o) {
@@ -58,5 +69,12 @@ final public class GameCalendar implements FreerailsSerializable {
 
     public int getStartYear() {
 	return startYear;
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException,
+    ClassNotFoundException {
+	in.defaultReadObject();
+	if (t0 == null)
+	    t0 = new GregorianCalendar(startYear, 0, 1);
     }
 }

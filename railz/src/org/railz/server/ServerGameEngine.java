@@ -95,8 +95,8 @@ public class ServerGameEngine implements GameModel, Runnable,
     private int n;
     AuthoritativeTrainMover trainMover;
     TrainController trainController;
-    private int currentYearLastTick = -1;
-    private int currentMonthLastTick = -1;
+    private int currentYearLastTick;
+    private int currentMonthLastTick;
     private boolean keepRunning = true;
 
     public int getTargetTicksPerSecond() {
@@ -136,7 +136,8 @@ public class ServerGameEngine implements GameModel, Runnable,
         moveChainFork = new MoveChainFork();
 
         moveExecuter = new AuthoritativeMoveExecuter(world, moveChainFork);
-        identityProvider = new IdentityProvider(this, scenario);
+	statsGatherer = new StatGatherer(w, moveExecuter);
+        identityProvider = new IdentityProvider(this, scenario, statsGatherer);
         queuedMoveReceiver = new QueuedMoveReceiver(moveExecuter,
                 identityProvider);
         tb = new TrainBuilder(world, moveExecuter);
@@ -151,7 +152,6 @@ public class ServerGameEngine implements GameModel, Runnable,
 		moveExecuter);
 	trainMover = new AuthoritativeTrainMover(w, moveExecuter);
 	trainController = new TrainController(w, moveExecuter);
-	statsGatherer = new StatGatherer(w, moveExecuter);
 
         for (int i = 0; i < serverAutomata.size(); i++) {
             ((ServerAutomaton)serverAutomata.get(i)).initAutomaton(moveExecuter);
@@ -159,6 +159,13 @@ public class ServerGameEngine implements GameModel, Runnable,
 
         nextModelUpdateDue = System.currentTimeMillis();
 
+	GameTime t = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
+	t = new GameTime(t.getTime() - 1);
+	GameCalendar gc = (GameCalendar) w.get(ITEM.CALENDAR,
+		Player.AUTHORITATIVE);
+	currentYearLastTick = gc.getCalendar(t).get(Calendar.YEAR);
+	currentMonthLastTick = gc.getCalendar(t).get(Calendar.MONTH);
+	
         /* Start the server thread */
         Thread thread = new Thread(this);
         thread.start();

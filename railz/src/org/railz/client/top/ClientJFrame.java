@@ -178,7 +178,7 @@ UpdatedComponent {
         jMenuBar1 = new javax.swing.JMenuBar();
         gameMenu = new GameMenu(modelRoot, guiRoot);
         buildMenu = new BuildMenu();
-        displayMenu = new DisplayMenu(guiRoot);
+        displayMenu = new DisplayMenu(guiRoot, modelRoot);
         helpMenu = new HelpMenu(guiRoot);
 
         getContentPane().setLayout(new java.awt.GridBagLayout());

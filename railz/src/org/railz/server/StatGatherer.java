@@ -16,6 +16,8 @@
  */
 package org.railz.server;
 
+import java.util.*;
+
 import org.railz.controller.*;
 import org.railz.move.*;
 import org.railz.server.stats.*;
@@ -40,6 +42,22 @@ class StatGatherer {
 	world = w;
     }
 
+    public CompositeMove generateNewPlayerMove(FreerailsPrincipal p) {
+	GameTime t = (GameTime) world.get(ITEM.TIME,
+		Player.AUTHORITATIVE);
+	ArrayList l = new ArrayList();
+	for (int j = 0; j < monitors.length; j++) {
+	    ObjectKey ok;
+	    Statistic stat = new Statistic(monitors[j].getName(),
+			    monitors[j].getDescription(),
+			    monitors[j].getYUnit());
+	    ok = new ObjectKey(KEY.STATISTICS,
+		    p, world.size(KEY.STATISTICS, p));
+	    l.add(new AddStatisticMove(ok, stat));
+	}
+	return new CompositeMove((Move[]) l.toArray(new Move[l.size()]));
+    }
+
     public void generateMoves() {
 	NonNullElements i = new NonNullElements(KEY.PLAYERS, world,
 		Player.AUTHORITATIVE);
@@ -59,17 +77,7 @@ class StatGatherer {
 			break;
 		    }
 		}
-		ObjectKey ok;
-		if (stat == null) {
-		    stat = new Statistic(monitors[j].getName(),
-			    monitors[j].getDescription(),
-			    monitors[j].getYUnit());
-		    ok = new ObjectKey(KEY.STATISTICS,
-				p, world.size(KEY.STATISTICS, p));
-		    moveReceiver.processMove(new AddStatisticMove(ok, stat));
-		} else {
-		    ok = new ObjectKey(KEY.STATISTICS, p, k.getIndex());
-		}
+		ObjectKey ok = new ObjectKey(KEY.STATISTICS, p, k.getIndex());
 		moveReceiver.processMove(new AddDataPointMove(ok, t,
 			    monitors[j].calculateDataPoint(world, p), world));
 	    }

@@ -36,6 +36,9 @@ import org.railz.world.top.World;
  * Provides a method by which a Principal may be obtained
  */
 class IdentityProvider {
+
+    private StatGatherer statGatherer;
+
     /**
      * submits a move to the queue, sleeps until confirmation that a move has
      * been implemented (un)successfully received
@@ -96,9 +99,11 @@ class IdentityProvider {
     private ServerGameEngine serverGameEngine;
     private Scenario scenario;
 
-    public IdentityProvider(ServerGameEngine s, Scenario scenario) {
+    public IdentityProvider(ServerGameEngine s, Scenario scenario,
+	    StatGatherer sg) {
         serverGameEngine = s;
 	this.scenario = scenario;
+	statGatherer = sg;
     }
 
     /**
@@ -171,6 +176,8 @@ class IdentityProvider {
         principals.put(c, player);
 
 	/* Perform any moves necessary for adding a new player */
+	serverGameEngine.getMoveExecuter().processMove
+	    (statGatherer.generateNewPlayerMove(player.getPrincipal()), c);	
 	serverGameEngine.getMoveExecuter().processMove
 	    (scenario.getSetupMoves(serverGameEngine.getWorld(),
 		    player.getPrincipal()), c);

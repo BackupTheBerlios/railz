@@ -4,37 +4,37 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
-!=Project-Id-Version\: PACKAGE VERSION\nReport-Msgid-Bugs-To\: \nPOT-Creation-Date\: 2004-08-01 23\:23+0100\nPO-Revision-Date\: YEAR-MO-DA HO\:MI+ZONE\nLast-Translator\: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team\: LANGUAGE <LL@li.org>\nMIME-Version\: 1.0\nContent-Type\: text/plain; charset\=UTF-8\nContent-Transfer-Encoding\: 8bit\n
+!=Project-Id-Version\: PACKAGE VERSION\nReport-Msgid-Bugs-To\: \nPOT-Creation-Date\: 2004-08-09 23\:46+0100\nPO-Revision-Date\: YEAR-MO-DA HO\:MI+ZONE\nLast-Translator\: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team\: LANGUAGE <LL@li.org>\nMIME-Version\: 1.0\nContent-Type\: text/plain; charset\=UTF-8\nContent-Transfer-Encoding\: 8bit\n
 
-#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/scenario/SandBox.java:42
+#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/scenario/SandBox.java:43
 !Initial\ funds\ /\ $1000=
 
-#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/ServerGameController.java:111
+#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/ServerGameController.java:112
 #, java-format
 !{0}\ left\ the\ game.=
 
-#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/ServerGameController.java:159
+#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/ServerGameController.java:160
 #, java-format
 !Server\ is\ loading\ new\ saved\ game\:\ {0}=
 
-#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/ServerGameController.java:172
+#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/ServerGameController.java:173
 !Server\ is\ saving\ the\ game...=
 
-#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/ServerGameController.java:201
+#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/ServerGameController.java:214
 #, java-format
 !Server\ is\ starting\ a\ new\ map\:\ {0}=
 
-#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/ServerGameController.java:264
+#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/ServerGameController.java:277
 !Server\ is\ shutting\ down.\ Bye...=
 
-#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/ServerGameController.java:281
+#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/ServerGameController.java:294
 #, java-format
 !Server\ received\ request\ to\ authenticate\ player\ {0}=
 
-#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/ServerGameController.java:288
+#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/ServerGameController.java:301
 #, java-format
 !{0}''s\ attempt\ to\ join\ was\ rejected\ by\ the\ server=
 
-#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/ServerGameController.java:294
+#: /Users/bob/programs/freerails/dev/railz/src/org/railz/server/ServerGameController.java:307
 #, java-format
 !{0}\ joined\ the\ game=

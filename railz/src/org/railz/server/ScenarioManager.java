@@ -81,7 +81,7 @@ public final class ScenarioManager {
 	NonNullElements i = new NonNullElements(KEY.PLAYERS, world,
 		Player.AUTHORITATIVE);
 	while (i.next()) {
-	    FreerailsPrincipal p = (FreerailsPrincipal) i.getElement();
+	    FreerailsPrincipal p = ((Player) i.getElement()).getPrincipal();
 	    int outcome = scenario.getVictoryState(world, p);
 	    if (outcome != Scenario.UNDECIDED) {
 		commandReceiver.sendCommand
