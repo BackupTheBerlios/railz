@@ -28,10 +28,11 @@ import java.awt.Point;
 import javax.swing.ImageIcon;
 
 import jfreerails.client.renderer.ViewLists;
+import jfreerails.util.*;
 import jfreerails.world.building.*;
 import jfreerails.world.cargo.CargoType;
 import jfreerails.world.player.Player;
-import jfreerails.world.track.FreerailsTile;
+import jfreerails.world.track.*;
 import jfreerails.world.terrain.TerrainType;
 import jfreerails.world.top.KEY;
 import jfreerails.world.top.NonNullElements;
@@ -135,8 +136,14 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
 	       	terrainTileViewer.getTerrainValue() + "</p>";
 	}
 	
+	if (tile.getTrackTile() != null) {
+	    TrackRule tr = (TrackRule) w.get(KEY.TRACK_RULES,
+		    tile.getTrackRule(), Player.AUTHORITATIVE);
+	    row += Resources.get("Track Type:") + " " + 
+		Resources.get(tr.toString()) + "<br>";
+	}
+
 	/* TODO print cost for building demolition/purchase */
-	/* TODO display building name */
         String tableString = "";
 	int cargosProduced = 0;
 	int cargosConsumed = 0;

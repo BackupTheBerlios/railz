@@ -1,3 +1,7 @@
+May 16, 2004:
+-------------
+Improvements to some building graphics
+Fix for bug 37 - track type not shown in terrain info dialog
 May 15, 2004:
 -------------
 Fix for bug 17 - resources don't all fit on station info tab
