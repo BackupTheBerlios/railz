@@ -33,7 +33,7 @@
 <!ELEMENT Events (ScriptingEvent)*>
 
 <!ELEMENT Cities (City*)>
-<!ELEMENT City (name, x, y)>
+<!ELEMENT City EMPTY>
 <!ATTLIST City 
 	name CDATA #REQUIRED
 	x CDATA #REQUIRED
