@@ -5,6 +5,8 @@
 package jfreerails.server;
 
 import java.util.Iterator;
+import java.util.Map.Entry;
+
 import jfreerails.controller.FreerailsServerSerializable;
 import jfreerails.controller.MoveReceiver;
 import jfreerails.move.ChangeCargoBundleMove;
@@ -62,12 +64,13 @@ public class CargoAtStationsGenerator implements FreerailsServerSerializable {
 		Iterator it = after.cargoBatchIterator();
 
 		while (it.hasNext()) {
-		    CargoBatch cb = (CargoBatch)it.next();
+		    Entry entry = (Entry) it.next();
+		    CargoBatch cb = (CargoBatch)entry.getKey();
 		    int amount = after.getAmount(cb);
 
 		    if (amount > 0) {
-			after.setAmount(cb, (int) ((1.0 - Math.pow(0.5, 1.0 /
-					    12)) * amount));
+			entry.setValue(new Integer((int) ((1.0 - Math.pow(0.5,
+						1.0 / 12)) * amount)));
 		    }
 		}
 

@@ -4,6 +4,7 @@ Added Profit and loss dialog.
 Removed Money class.
 Reworked accounting system and game calendar.
 Added Economy class
+Fixed bug causing ConcurrentModificationExceptions during CargoBundle iterations.
 Mar 16, 2004:
 -------------
 Removed unused right-of-way charges.

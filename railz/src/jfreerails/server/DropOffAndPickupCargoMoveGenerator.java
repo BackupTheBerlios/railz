@@ -1,6 +1,8 @@
 package jfreerails.server;
 
 import java.util.Iterator;
+import java.util.Map.Entry;
+
 import jfreerails.move.AddTransactionMove;
 import jfreerails.move.ChangeCargoBundleMove;
 import jfreerails.move.Move;
@@ -102,7 +104,7 @@ class DropOffAndPickupCargoMoveGenerator {
 
         //Unload the cargo that the station demands
         while (batches.hasNext()) {
-            CargoBatch cb = (CargoBatch)batches.next();
+            CargoBatch cb = (CargoBatch)((Entry) batches.next()).getKey();
 
             //if the cargo is demanded and its not from this station originally...
             DemandAtStation demand = station.getDemand();
@@ -195,7 +197,7 @@ class DropOffAndPickupCargoMoveGenerator {
 
             while (batches.hasNext() &&
                     amountTransferedSoFar < amountToTransfer) {
-                CargoBatch cb = (CargoBatch)batches.next();
+                CargoBatch cb = (CargoBatch)((Entry) batches.next()).getKey();
 
                 if (cb.getCargoType() == cargoTypeToTransfer) {
                     int amount = from.getAmount(cb);

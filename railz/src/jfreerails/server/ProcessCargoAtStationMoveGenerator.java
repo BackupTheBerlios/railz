@@ -5,6 +5,8 @@
 package jfreerails.server;
 
 import java.util.Iterator;
+import java.util.Map.Entry;
+
 import jfreerails.move.AddTransactionMove;
 import jfreerails.world.accounts.DeliverCargoReceipt;
 import jfreerails.world.cargo.CargoBatch;
@@ -37,7 +39,7 @@ public class ProcessCargoAtStationMoveGenerator {
         double amount = 0;
 
         while (batches.hasNext()) {
-            CargoBatch batch = (CargoBatch)batches.next();
+            CargoBatch batch = (CargoBatch)((Entry) batches.next()).getKey();
 	    int dx = (batch.getSourceX() - thisStation.x);
 	    int dy = (batch.getSourceY() - thisStation.y);
             double dist = Math.sqrt(dx*dx + dy*dy);
