@@ -34,6 +34,6 @@ import org.railz.world.top.KEY;
  */
 public class AddCargoBundleMove extends AddItemToListMove {
     public AddCargoBundleMove(int i, CargoBundle item) {
-        super(KEY.CARGO_BUNDLES, i, item, Player.AUTHORITATIVE);
+        super(KEY.CARGO_BUNDLES, i, item, Player.NOBODY);
     }
 }
