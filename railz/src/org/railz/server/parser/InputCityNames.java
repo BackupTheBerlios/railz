@@ -35,6 +35,20 @@ import org.railz.util.*;
 public class InputCityNames {
     private World world;
 
+    private class WorkaroundResolver implements EntityResolver {
+	private EntityResolver defaultResolver;
+
+	public WorkaroundResolver(EntityResolver defaultResolver) {
+	    this.defaultResolver = defaultResolver;
+	}
+
+	public InputSource resolveEntity(String publicId, String systemId)
+	    throws SAXException, IOException {
+	    System.err.println("attempting to resolve..." + systemId);
+	    return defaultResolver.resolveEntity(publicId, systemId);
+	}
+    };
+
     public InputCityNames(World w, URL filename) throws SAXException {
         world = w;
 
