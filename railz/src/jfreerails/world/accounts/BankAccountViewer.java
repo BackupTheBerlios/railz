@@ -82,4 +82,24 @@ public class BankAccountViewer {
 	}
 	return (income * economy.getIncomeTaxRate() / 100);
     }
+    
+    /**
+     * @return the monthly interest rate in % applied to an account in credit
+     */
+    public float getCreditAccountInterestRate() {
+	float creditRate = (float) (economy.getBaseInterestRate() - 2.0);
+	if (creditRate <= 0.0) 
+	    return (float) 0.0;
+	
+	return (float) Economy.aerToMonthly(creditRate);
+    }
+
+    /**
+     * @return the monthly interest rate in % applied to an account with an
+     * overdraft.
+     */
+    public float getOverdraftInterestRate() {
+	float creditRate = (float) (economy.getBaseInterestRate() + 2.0);
+	return (float) Economy.aerToMonthly(creditRate);
+    }
 }

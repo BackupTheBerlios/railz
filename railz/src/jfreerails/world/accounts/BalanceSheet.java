@@ -82,10 +82,8 @@ public class BalanceSheet implements FreerailsSerializable {
 	this.totalAssets = totalCurrentAssets + rollingStock + property;
 	this.overdraft = overdraft;
 	this.interest = interest;
-	/* track and train maintenance are for 1 months outstanding payment,
-	 * not the whole year */
-	this.trackMaintenance = trackMaintenance / 12;
-	this.trainMaintenance = trainMaintenance / 12;
+	this.trackMaintenance = trackMaintenance;
+	this.trainMaintenance = trainMaintenance;
 	this.tax = tax;
 	this.totalCurrentLiabilities = overdraft + interest + trackMaintenance
 	    + trainMaintenance + tax;
@@ -157,7 +155,6 @@ public class BalanceSheet implements FreerailsSerializable {
 	    smv.setStationModel((StationModel) i.getElement());
 	    property += smv.getBookValue();
 	}
-	long interest = 0;
 	long trackMaintenance = 0;
 	for (int j = 0; j < trackRules.length; j++) {
 	    TrackRule tr = (TrackRule) w.get(KEY.TRACK_RULES, j,
@@ -167,6 +164,12 @@ public class BalanceSheet implements FreerailsSerializable {
 	BankAccountViewer bav = new BankAccountViewer(w);
 	bav.setBankAccount(account);
 	long tax = bav.getIncomeTaxLiability();
+	long interest = account.getCurrentBalance();
+	if (interest < 0) {
+	    interest = (long) (interest * -bav.getOverdraftInterestRate());
+	} else {
+	    interest = 0;
+	} 
 	long loans = 0;
 	long bonds = 0;
 	long stock = 0;

@@ -50,8 +50,8 @@ import jfreerails.world.top.World;
 
 
 /**
- *
- * This class takes care of the world simulation - for instance "non-player" activities.
+ * This class takes care of the world simulation - for instance "non-player"
+ * activities.
  * @author Luke Lindsay 05-Nov-2002
  *
  */
@@ -74,6 +74,7 @@ public class ServerGameEngine implements GameModel, Runnable {
     private IdentityProvider identityProvider;
     private TaxationMoveFactory taxationMoveFactory;
     private BalanceSheetMoveFactory balanceSheetMoveFactory;
+    private AccountInterestMoveFactory accountInterestMoveFactory;
 
     /**
      * List of the ServerAutomaton objects connected to this game
@@ -134,6 +135,8 @@ public class ServerGameEngine implements GameModel, Runnable {
         moveChainFork.addListListener(calcSupplyAtStations);
 	taxationMoveFactory = new TaxationMoveFactory(w, moveExecuter);
 	balanceSheetMoveFactory = new BalanceSheetMoveFactory(w,
+		moveExecuter);
+	accountInterestMoveFactory = new AccountInterestMoveFactory(w,
 		moveExecuter);
 
         for (int i = 0; i < serverAutomata.size(); i++) {
@@ -296,6 +299,7 @@ public class ServerGameEngine implements GameModel, Runnable {
         calcSupplyAtStations.doProcessing();
         TrackMaintenanceMoveGenerator tmmg = new TrackMaintenanceMoveGenerator(moveExecuter);
         tmmg.update(world);
+	accountInterestMoveFactory.generateMoves();
 
         CargoAtStationsGenerator cargoAtStationsGenerator = new CargoAtStationsGenerator(moveExecuter);
         cargoAtStationsGenerator.update(world);

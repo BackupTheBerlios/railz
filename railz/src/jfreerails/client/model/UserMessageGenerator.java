@@ -146,10 +146,26 @@ class UserMessageGenerator implements MoveReceiver {
 		move.getPrincipal().equals(mr.getPlayerPrincipal())) {
 	    Transaction t = (Transaction) ((AddTransactionMove)
 		    move).getTransaction();
-	    if(t.getCategory() == Transaction.CATEGORY_TAX &&
-		    t.getSubcategory() == Bill.INCOME_TAX) {
-		mr.getUserMessageLogger().println(Resources.get
-			("Income tax charge: $") + (-t.getValue()));
+	    switch (t.getCategory()) {
+		case Transaction.CATEGORY_TAX:
+		   if (t.getSubcategory() == Bill.INCOME_TAX) {
+		       mr.getUserMessageLogger().println(Resources.get
+			       ("Income tax charge: $") + (-t.getValue()));
+		   }
+		   break;
+		case Transaction.CATEGORY_INTEREST:
+		  switch (t.getSubcategory()) {
+		      case InterestTransaction.SUBCATEGORY_OVERDRAFT:
+			  mr.getUserMessageLogger().println(Resources.get
+				  ("Overdraft interest charge: $") + 
+				  (-t.getValue()));
+			  break;
+		      case InterestTransaction.SUBCATEGORY_ACCOUNT_CREDIT_INTEREST: 
+			  mr.getUserMessageLogger().println(Resources.get
+				  ("Account interest credited: $") +
+				  (t.getValue()));
+			  break;
+		  }
 	    }
 	}
     }

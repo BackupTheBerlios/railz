@@ -100,6 +100,7 @@ public class ProfitLossModel {
 	 * as freight */
 	int _freightRevenue = 0;
 	int _trackMaintenanceExpense = 0;
+	int _interestPayableExpense = 0;
 	for (i = minIndex; i < maxIndex; i++) {
 	    Transaction t = account.getTransaction(i);
 	    switch (t.getCategory()) {
@@ -110,15 +111,18 @@ public class ProfitLossModel {
 		    if (t.getSubcategory() == Bill.TRACK_MAINTENANCE)
 			_trackMaintenanceExpense -= t.getValue();
 		    break;
+		case Transaction.CATEGORY_INTEREST:
+		    _interestPayableExpense -= t.getValue();
+		    break;
 	    }
 	}
+	interestPayableExpense = _interestPayableExpense;
 	freightRevenue = _freightRevenue;
 	passengerRevenue = 0;
 	fuelExpenses = 0;
 	grossProfit = freightRevenue + passengerRevenue - fuelExpenses;
 	trackMaintenanceExpense = _trackMaintenanceExpense;
 	rollingStockMaintenanceExpense = 0;
-	interestPayableExpense = 0;
 	profitBeforeTax = grossProfit - trackMaintenanceExpense -
 	    rollingStockMaintenanceExpense - interestPayableExpense;
 	incomeTax = profitBeforeTax > 0 ? profitBeforeTax *

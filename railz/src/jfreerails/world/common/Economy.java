@@ -49,18 +49,12 @@ public class Economy implements FreerailsSerializable {
 	baseInterestRate = rate;
     }
 
-    private double aerToMonthly(double rate) {
+    public float getBaseInterestRate() {
+	return baseInterestRate;
+    }
+
+    public static double aerToMonthly(double rate) {
 	return (float) ((Math.pow((1 + rate / 100), (1.0 / 12)) - 1.0) *
 		100.0);
-    }
-    /**
-     * @return the monthly interest rate applied to an account in credit
-     */
-    public float getCreditAccountInterestRate() {
-	float creditRate = (float) (baseInterestRate - 2.0);
-	if (creditRate <= 0.0) 
-	    return (float) 0.0;
-	
-	return (float) aerToMonthly(creditRate);
     }
 }
