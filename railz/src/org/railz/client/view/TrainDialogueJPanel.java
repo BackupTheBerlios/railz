@@ -64,13 +64,15 @@ WorldListListener {
 	}
     };
 
-    private DetailsListCellRenderer trainDetailsRenderer = new
-	DetailsListCellRenderer();
+    private DetailsListCellRenderer trainDetailsRenderer;
    
     private class DetailsListCellRenderer implements ListCellRenderer {
-	private TrainDetailsJPanel trainDetailsJPanel = new
-	    TrainDetailsJPanel();
+	private TrainDetailsJPanel trainDetailsJPanel;
 	private TrainViewJPanel trainViewJPanel;
+
+	DetailsListCellRenderer(ModelRoot mr, GUIRoot gr) {
+	    trainDetailsJPanel = new TrainDetailsJPanel(mr, gr);
+	}
 
 	public Component getListCellRendererComponent(JList list, Object
 		value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -190,12 +192,13 @@ WorldListListener {
     public void setup(ModelRoot mr, GUIRoot gr) {
 	modelRoot = mr;
 	guiRoot = gr;
+	trainDetailsRenderer = new DetailsListCellRenderer(modelRoot, guiRoot);
         w = modelRoot.getWorld();
 	wi = new NonNullElements(KEY.TRAINS, w, mr.getPlayerPrincipal());
         newTrainScheduleJPanel1.setup(mr, gr);
 	addComponentListener(componentListener);
 
-	trainDetailsRenderer.trainDetailsJPanel.setup(modelRoot, guiRoot);
+	trainDetailsRenderer.trainDetailsJPanel.setup();
 	trainDetailsRenderer.trainViewJPanel = new TrainViewJPanel(modelRoot);
 
 	if (popupJButton != null)

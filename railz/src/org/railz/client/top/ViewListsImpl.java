@@ -47,14 +47,14 @@ public class ViewListsImpl implements ViewLists {
     private final ImageManager imageManager;
     private final HashMap icons = new HashMap();
     private final GUIRoot guiRoot;
-    private final ModdableResourceFinder mrf = new ModdableResourceFinder
-	("org/railz/client/graphics");
+    private final ModdableResourceFinder mrf;
     private static final Logger logger = Logger.getLogger("global");
 
     public ViewListsImpl(ModelRoot mr, GUIRoot gr,
 	    FreerailsProgressMonitor pm)
         throws IOException {
 	    guiRoot = gr;
+	    mrf = guiRoot.getGraphicsResourceFinder();
 	    modelRoot = mr;
 	    ReadOnlyWorld w = mr.getWorld();
 
