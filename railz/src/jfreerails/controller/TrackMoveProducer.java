@@ -66,8 +66,12 @@ final public class TrackMoveProducer {
 			from.y + CompassPoints.getUnitDeltaY(trackVector));
 		return upgradeTrack(point, trackRule);
 	    case BUILD_TRACK:
-		move = ChangeTrackPieceCompositeMove.generateBuildTrackMove
-		    (from, trackVector, trackRule, w, principal);
+		try {
+		    move = ChangeTrackPieceCompositeMove.generateBuildTrackMove
+			(from, trackVector, trackRule, w, principal);
+		} catch (IllegalArgumentException e) {
+		    return MoveStatus.moveFailed("Track already exists");
+		}
 		break;
 	    case REMOVE_TRACK:
 		move = ChangeTrackPieceCompositeMove.generateRemoveTrackMove

@@ -70,9 +70,9 @@ class BuildingLayerRenderer implements MapLayerRenderer {
 
     void paintRectangleOfTiles(Graphics g, int x, int y, int width, int
 	    height) {
-	for (; y < y + height; y++) {
-	    for (; x < x + width; x++) {
-		paintTile(g, x, y);
+	for (int yy = y; yy < y + height; yy++) {
+	    for (int xx = x; xx < x + width; xx++) {
+		paintTile(g, xx, yy);
 	    }
 	}
     }

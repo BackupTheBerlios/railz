@@ -29,17 +29,7 @@ import jfreerails.client.model.ModelRoot;
 import jfreerails.client.view.GUIRoot;
 import jfreerails.client.common.ImageManager;
 import jfreerails.client.common.ImageManagerImpl;
-import jfreerails.client.renderer.ChequeredTileRenderer;
-import jfreerails.client.renderer.ForestStyleTileRenderer;
-import jfreerails.client.renderer.RiverStyleTileRenderer;
-import jfreerails.client.renderer.SpecialTileRenderer;
-import jfreerails.client.renderer.StandardTileRenderer;
-import jfreerails.client.renderer.TileRenderer;
-import jfreerails.client.renderer.TileRendererList;
-import jfreerails.client.renderer.TileRendererListImpl;
-import jfreerails.client.renderer.TrackPieceRendererList;
-import jfreerails.client.renderer.TrainImages;
-import jfreerails.client.renderer.ViewLists;
+import jfreerails.client.renderer.*;
 import jfreerails.util.*;
 import jfreerails.world.building.*;
 import jfreerails.world.player.*;
@@ -107,6 +97,15 @@ public class ViewListsImpl implements ViewLists {
 		    ChequeredTileRenderer(imageManager, buildingType,
 			    tileTypes);
 		buildingRenderers.add(tr);
+		continue;
+	    } catch (IOException e) {
+		// ignore
+	    }
+	    /* Try loading as a station tile */
+	    try {
+		StationRenderer sr = new StationRenderer(imageManager,
+			buildingType);
+		buildingRenderers.add(sr);
 		continue;
 	    } catch (IOException e) {
 		// no more renderers to try

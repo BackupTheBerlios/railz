@@ -69,8 +69,9 @@ public abstract class AbstractTileRenderer implements TileRenderer {
         return getTileIcons()[0];
     }
 
-    /** Returns an icon for the tile at x,y, which may depend on the terrain types of
-     * of the surrounding tiles.
+    /**
+     * Returns an icon for the tile at x,y, which may depend on the terrain
+     * types of of the surrounding tiles.
      */
     public BufferedImage getIcon(int x, int y, ReadOnlyWorld w) {
         int tile = selectTileIcon(x, y, w);
@@ -112,14 +113,9 @@ public abstract class AbstractTileRenderer implements TileRenderer {
                     //A match
                 }
             }
+	    return 0;
         }
-       return 1;
-       //A match
-
-       /*
-	* If the tile we are checking is off the map, let it be a match.
-	* This stops coast appearing where the ocean meets the map edge.
-	*/
+	return 1;
     }
 
     abstract public void dumpImages(ImageManager imageManager);

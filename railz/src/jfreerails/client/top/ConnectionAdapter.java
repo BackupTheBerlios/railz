@@ -250,6 +250,8 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
             modelRoot.getUserMessageLogger().println
 		(Resources.get("There was a problem reading in the graphics "
 			       + "data"));
+	    System.err.println(e.getMessage());
+	    e.printStackTrace();
         }
     }
 

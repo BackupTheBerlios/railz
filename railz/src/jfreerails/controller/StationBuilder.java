@@ -93,6 +93,7 @@ public class StationBuilder {
 
         //Only build a station if there is track at the specified point.
         if (canBuiltStationHere(p)) {
+	    System.err.println("Can build station");
             String cityName;
             String stationName;
 
@@ -101,34 +102,36 @@ public class StationBuilder {
 	    if (bTile != null) {
 		bType = (BuildingType) w.get(KEY.BUILDING_TYPES,
 			bTile.getType(), Player.AUTHORITATIVE);
+	    }
 
-		if (bTile == null || bType.getCategory() !=
-			BuildingType.CATEGORY_STATION) {
-		    //There isn't already a station here, we need to pick a name
-		    //and add an entry to the station list.
-		    CalcNearestCity cNC = new CalcNearestCity(w, p.x, p.y);
-		    cityName = cNC.findNearestCity();
+	    if (bTile == null || bType.getCategory() !=
+		    BuildingType.CATEGORY_STATION) {
+		System.err.println("Adding new station");
+		//There isn't already a station here, we need to pick a name
+		//and add an entry to the station list.
+		CalcNearestCity cNC = new CalcNearestCity(w, p.x, p.y);
+		cityName = cNC.findNearestCity();
 
-		    VerifyStationName vSN = new VerifyStationName(w, cityName);
-		    stationName = vSN.getName();
+		VerifyStationName vSN = new VerifyStationName(w, cityName);
+		stationName = vSN.getName();
 
-		    if (stationName == null) {
-			//there are no cities, this should never happen
-			stationName = "Central Station";
-		    }
-
-		    //check the terrain to see if we can build a station on it...
-		    Move m = AddStationMove.generateMove(w, stationName, p,
-			    stationOwner, ruleNumber);
-
-		    this.moveReceiver.processMove
-		    (transactionsGenerator.addTransactions(m));
-		} else {
-		    //Upgrade an existing station.
-		    ChangeBuildingMove cbm = new ChangeBuildingMove(p, bTile,
-			    new BuildingTile(ruleNumber), stationOwner);
-		    this.moveReceiver.processMove(cbm);
+		if (stationName == null) {
+		    //there are no cities, this should never happen
+		    stationName = "Central Station";
 		}
+
+		//check the terrain to see if we can build a station on it...
+		Move m = AddStationMove.generateMove(w, stationName, p,
+			stationOwner, ruleNumber);
+
+		this.moveReceiver.processMove
+		    (transactionsGenerator.addTransactions(m));
+		System.err.println("move done");
+	    } else {
+		//Upgrade an existing station.
+		ChangeBuildingMove cbm = new ChangeBuildingMove(p, bTile,
+			new BuildingTile(ruleNumber), stationOwner);
+		this.moveReceiver.processMove(cbm);
             }
         } else {
             System.err.println(

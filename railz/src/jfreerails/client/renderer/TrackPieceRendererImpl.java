@@ -54,7 +54,7 @@ final public class TrackPieceRendererImpl implements TrackPieceRenderer {
         for (byte i = Byte.MIN_VALUE; i < Byte.MAX_VALUE; i++) {
             if (trackRule.testTrackPieceLegality(i)) {
                 String fileName = generateFilename(i);
-                trackPieceIcons[i] = imageManager.getImage(fileName);
+                trackPieceIcons[(int) i & 0xFF] = imageManager.getImage(fileName);
             }
         }
     }
@@ -78,7 +78,7 @@ final public class TrackPieceRendererImpl implements TrackPieceRenderer {
             this.getTrackTypeName();
         int newTemplate = (int) trackTemplate & 0xFF;
         String fileName = relativeFileNameBase + "_" +
-            BinaryNumberFormatter.formatWithLowBitOnLeft(newTemplate, 8) +
+            BinaryNumberFormatter.format(newTemplate, 8) +
             ".png";
 
         return fileName;

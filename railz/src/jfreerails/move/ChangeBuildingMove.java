@@ -46,7 +46,7 @@ public class ChangeBuildingMove implements Move {
 
 	BuildingTile bTile = w.getTile(point).getBuildingTile();
 	if (((oldTile == null) && (bTile != null)) ||
-		!oldTile.equals(bTile)) {
+		((oldTile != null) && !oldTile.equals(bTile))) {
 	    return MoveStatus.moveFailed("Tile was changed by another player");
 	}
 	return MoveStatus.MOVE_OK;
@@ -58,7 +58,7 @@ public class ChangeBuildingMove implements Move {
 
 	BuildingTile bTile = w.getTile(point).getBuildingTile();
 	if (((newTile == null) && (bTile != null)) ||
-		!newTile.equals(bTile)) {
+		((newTile != null) && !newTile.equals(bTile))) {
 	    return MoveStatus.MOVE_FAILED;
 	}
 	return MoveStatus.MOVE_OK;
@@ -90,8 +90,10 @@ public class ChangeBuildingMove implements Move {
 
 	ChangeBuildingMove m = (ChangeBuildingMove) o;
 
-	return (oldTile.equals(m.oldTile) &&
-		newTile.equals(m.newTile) &&
+	return (((oldTile == null) ? (m.oldTile == null) :
+		oldTile.equals(m.oldTile)) &&
+		((newTile == null) ? (m.newTile == null) :
+		 newTile.equals(m.newTile)) &&
 		point.equals(m.point));
     }
 

@@ -29,13 +29,12 @@ import jfreerails.client.common.ImageManager;
 import jfreerails.world.terrain.TerrainType;
 import jfreerails.world.top.ReadOnlyWorld;
 
-
 /**
 *
 * @author  Luke Lindsay
 */
 final public class ForestStyleTileRenderer
-    extends jfreerails.client.renderer.AbstractTileRenderer {
+    extends AbstractTileRenderer {
     private static final int[] X_LOOK_AT = {-1, 1};
     private static final int[] Y_LOOK_AT = {0, 0};
 
