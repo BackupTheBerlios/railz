@@ -39,13 +39,15 @@ public class ServerControlModel {
     private ScreenHandler screenHandler;
     private Component dialog;
 
+    /* TODO selection of scenario types, for now select first off the list */
     private class NewGameAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             if (serverInterface != null) {
                 String mapName = e.getActionCommand();
 
                 if (mapName != null) {
-                    serverInterface.newGame(mapName);
+                    serverInterface.newGame(mapName,
+			    serverInterface.getScenarioNames()[0]);
                 }
             }
         }

@@ -35,8 +35,7 @@ import org.railz.move.ChangeProductionAtEngineShopMove;
 import org.railz.move.TimeTickMove;
 import org.railz.util.FreerailsProgressMonitor;
 import org.railz.util.GameModel;
-import org.railz.world.common.GameCalendar;
-import org.railz.world.common.GameTime;
+import org.railz.world.common.*;
 import org.railz.world.player.FreerailsPrincipal;
 import org.railz.world.player.Player;
 import org.railz.world.station.ProductionAtEngineShop;
@@ -54,14 +53,18 @@ import org.railz.world.train.*;
  * @author Luke Lindsay 05-Nov-2002
  *
  */
-public class ServerGameEngine implements GameModel, Runnable {
+public class ServerGameEngine implements GameModel, Runnable,
+    ServerCommandReceiver {
     /**
      * Objects that run as part of the server should use this object as the
      * destination for moves, rather than queuedMoveReceiver
      */
     private final AuthoritativeMoveExecuter moveExecuter;
     private final QueuedMoveReceiver queuedMoveReceiver;
+    private ServerCommandReceiver serverCommandReceiver;
     private World world;
+    private Scenario scenario;
+    private ScenarioManager scenarioManager;
 
     /* some stats for monitoring sim speed */
     private int statUpdates = 0;
@@ -75,6 +78,7 @@ public class ServerGameEngine implements GameModel, Runnable {
     private BalanceSheetMoveFactory balanceSheetMoveFactory;
     private AccountInterestMoveFactory accountInterestMoveFactory;
     private TrainMaintenanceMoveFactory trainMaintenanceMoveFactory;
+    private StatGatherer statsGatherer;
 
     /**
      * List of the ServerAutomaton objects connected to this game
@@ -106,9 +110,10 @@ public class ServerGameEngine implements GameModel, Runnable {
     /**
      * Start a game on a new instance of a named map
      */
-    public ServerGameEngine(String mapName, FreerailsProgressMonitor pm) {
+    public ServerGameEngine(String mapName, FreerailsProgressMonitor pm,
+	    Scenario scenario) {
         this(WorldFactory.createWorldFromMapFile(mapName, pm),
-            new Vector());
+            new Vector(), scenario);
     }
 
     /**
@@ -119,14 +124,19 @@ public class ServerGameEngine implements GameModel, Runnable {
      * object with a Principal.
      */
     private ServerGameEngine(World w,
-        Vector serverAutomata) {
+        Vector serverAutomata, Scenario scenario) {
         this.world = w;
         this.serverAutomata = serverAutomata;
+	this.scenario = scenario;
+	scenarioManager = new ScenarioManager(world, scenario, this);
+	VictoryConditions vc = new VictoryConditions(scenario.getName(),
+		scenario.getDescription());
+	world.set(ITEM.VICTORY_CONDITIONS, vc, Player.AUTHORITATIVE);
 
         moveChainFork = new MoveChainFork();
 
         moveExecuter = new AuthoritativeMoveExecuter(world, moveChainFork);
-        identityProvider = new IdentityProvider(this);
+        identityProvider = new IdentityProvider(this, scenario);
         queuedMoveReceiver = new QueuedMoveReceiver(moveExecuter,
                 identityProvider);
         tb = new TrainBuilder(world, moveExecuter);
@@ -141,6 +151,7 @@ public class ServerGameEngine implements GameModel, Runnable {
 		moveExecuter);
 	trainMover = new AuthoritativeTrainMover(w, moveExecuter);
 	trainController = new TrainController(w, moveExecuter);
+	statsGatherer = new StatGatherer(w, moveExecuter);
 
         for (int i = 0; i < serverAutomata.size(); i++) {
             ((ServerAutomaton)serverAutomata.get(i)).initAutomaton(moveExecuter);
@@ -313,6 +324,8 @@ public class ServerGameEngine implements GameModel, Runnable {
     private void newYear(int lastYear) {
 	taxationMoveFactory.generateMoves(lastYear);
 	balanceSheetMoveFactory.generateMoves();
+	statsGatherer.generateMoves();
+	scenarioManager.checkVictory();
     }
 
     /**
@@ -376,6 +389,7 @@ public class ServerGameEngine implements GameModel, Runnable {
 
             objectOut.writeObject(world);
             objectOut.writeObject(serverAutomata);
+	    objectOut.writeObject(scenario);
 
             /**
              * save player private data
@@ -411,6 +425,7 @@ public class ServerGameEngine implements GameModel, Runnable {
             ObjectInputStream objectIn = new ObjectInputStream(zipin);
             World world = (World)objectIn.readObject();
             Vector serverAutomata = (Vector)objectIn.readObject();
+	    Scenario scenario = (Scenario) objectIn.readObject();
 
             /**
              * load player private data
@@ -422,7 +437,7 @@ public class ServerGameEngine implements GameModel, Runnable {
                 ((Player)i.getElement()).loadSession(objectIn);
             }
 
-            engine = new ServerGameEngine(world, serverAutomata);
+            engine = new ServerGameEngine(world, serverAutomata, scenario);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -463,5 +478,14 @@ public class ServerGameEngine implements GameModel, Runnable {
 
     public IdentityProvider getIdentityProvider() {
         return identityProvider;
+    }
+
+    public void setServerCommandReceiver(ServerCommandReceiver r) {
+	serverCommandReceiver = r;
+    }
+
+    public void sendCommand(ServerCommand s) {
+	if (serverCommandReceiver != null)
+	    serverCommandReceiver.sendCommand(s);
     }
 }

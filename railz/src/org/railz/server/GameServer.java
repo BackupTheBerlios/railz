@@ -43,8 +43,9 @@ public class GameServer {
      * from a new map, accepting connections on the default port.
      */
     public ServerControlInterface getNewGame(String mapName,
-        FreerailsProgressMonitor pm, int port) {
-        ServerGameEngine gameEngine = new ServerGameEngine(mapName, pm);
+        FreerailsProgressMonitor pm, int port, Scenario scenario) {
+	ServerGameEngine gameEngine = new ServerGameEngine(mapName, pm,
+		scenario);
         ServerGameController sgc = new ServerGameController(gameEngine, port);
         gameControllers.add(sgc);
 

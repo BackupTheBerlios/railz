@@ -12,10 +12,11 @@ Train / terrain track layout speed interaction.
   |_Sand and water
 Fuel consumption
 |_More train types
-Cargo ageing
-|_Train priorities
 Player info screen
 |_Victory conditions?
+  |_ Make $xxx in y years
+  |_ First player to $xxx
+  |_ Statistics - loads hauled / miles track layed / lifetime revenue
 AI Player
 
 P3:

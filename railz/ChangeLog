@@ -1,3 +1,8 @@
+August 3, 2004:
+--------------
+Added infrastructure for Bug 28 - Game world objects contain non-internationalised strings
+Clients can now request a resources file from the server containing translations of strings in the client app's locale.
+Added server-side support for statistics gathering, and different game victory scenarios.
 July 30, 2004:
 --------------
 Change to buffering setup.

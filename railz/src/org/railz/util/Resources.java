@@ -24,6 +24,7 @@ import java.util.ResourceBundle;
  */
 public final class Resources {
     private static ResourceBundle bundle;
+    private static ResourceBundle externalResource;
    
    static {
        try {
@@ -50,6 +51,13 @@ public final class Resources {
 	} catch (MissingResourceException e) {
 	    // ignore
 	}
+	if (externalResource == null)
+	    return defaultString;
+	try {
+	    return externalResource.getString(key);
+	} catch (MissingResourceException e) {
+	    // ignore
+	}
 	return defaultString;
     }
 
@@ -60,5 +68,13 @@ public final class Resources {
      */
     public static String get(String defaultString) {
 	return get(defaultString, defaultString);
+    }
+
+    /**
+     * Set an external resource bundle that is used as a back-up if the
+     * default does not have a given resource
+     */
+    public static void setExternalResourceBundle(ResourceBundle rb) {
+	externalResource = rb;
     }
 }

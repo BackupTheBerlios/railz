@@ -34,6 +34,7 @@ public class ITEM implements FreerailsSerializable {
     public static final ITEM TIME = new ITEM();
     public static final ITEM CALENDAR = new ITEM();
     public static final ITEM ECONOMY = new ITEM();
+    public static final ITEM VICTORY_CONDITIONS = new ITEM();
 
     //END OF KEYS		
     private static int numberOfKeys = 0;

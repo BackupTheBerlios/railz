@@ -99,7 +99,8 @@ FreerailsProgressMonitor {
 	switch (lp.getMode()) {
 	    case LauncherPanel1.MODE_SINGLE_PLAYER:
 		if (msp.getMapAction() == MapSelectionPanel.START_NEW_MAP) {
-		    sci = gs.getNewGame(msp.getMapName(), this, 0);
+		    sci = gs.getNewGame(msp.getMapName(), this, 0,
+			    msp.getScenario());
 		} else {
 		    sci = gs.getSavedGame(this, 0, msp.getLoadFilename());
 		}
@@ -134,7 +135,7 @@ FreerailsProgressMonitor {
 	    case LauncherPanel1.MODE_START_NETWORK_GAME:
 		if (msp.getMapAction() == MapSelectionPanel.START_NEW_MAP) {
 		    sci = gs.getNewGame(msp.getMapName(), this,
-			    lp.getServerPort());
+			    lp.getServerPort(), msp.getScenario());
 		} else {
 		    sci = gs.getSavedGame(this, lp.getServerPort(),
 			    msp.getLoadFilename());
@@ -203,7 +204,7 @@ FreerailsProgressMonitor {
 	    case LauncherPanel1.MODE_SERVER_ONLY:
 		if (msp.getMapAction() == MapSelectionPanel.START_NEW_MAP) {
 		    sci = gs.getNewGame(msp.getMapName(), this,
-			    lp.getServerPort());
+			    lp.getServerPort(), msp.getScenario());
 		} else {
 		    sci = gs.getSavedGame(this, lp.getServerPort(),
 			    msp.getLoadFilename());
@@ -418,6 +419,8 @@ FreerailsProgressMonitor {
 		prevButton.setEnabled(true);
 		break;
 	    case 1:
+		((MapSelectionPanel)
+		 wizardPages[1]).submitScenarioSettings();
 		/* map selection page */
 		if (panel.getMode() == LauncherPanel1.MODE_SERVER_ONLY) {
 		    prevButton.setEnabled(false);

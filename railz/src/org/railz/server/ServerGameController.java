@@ -34,7 +34,7 @@ import org.railz.util.FreerailsProgressMonitor;
  * Manages connectivity to the ServerGameEngine.
  */
 class ServerGameController implements ServerControlInterface,
-    ConnectionListener {
+    ConnectionListener, ServerCommandReceiver {
     /**
      * The connections that this server has
      */
@@ -47,6 +47,7 @@ class ServerGameController implements ServerControlInterface,
     public ServerGameController(ServerGameEngine engine, int port) {
         moveChainFork = engine.getMoveChainFork();
         gameEngine = engine;
+	gameEngine.setServerCommandReceiver(this);
 
         if (port != 0) {
             /* Open our server socket */
@@ -178,6 +179,14 @@ class ServerGameController implements ServerControlInterface,
         return GameServer.getMapNames();
     }
 
+    public String[] getScenarioNames() {
+	Scenario[] scenarios = ScenarioManager.getScenarios();
+	String[] names = new String[scenarios.length];
+	for (int i = 0; i < scenarios.length; i++)
+	    names[i] = scenarios[i].getName();
+	return names;
+    }
+
     public void setTargetTicksPerSecond(int ticksPerSecond) {
         gameEngine.setTargetTicksPerSecond(ticksPerSecond);
     }
@@ -186,13 +195,17 @@ class ServerGameController implements ServerControlInterface,
      * stop the current game and transfer the current local connections to a
      * new game running the specified map.
      */
-    public void newGame(String map) {
+    public void newGame(String map, String scenarioName) {
 	final String mapName = map;
+	final Scenario scenario = ScenarioManager.getScenario(scenarioName);
+	if (scenario == null)
+	    return;
+
 	Thread t = new Thread() {
 	    public void run() {
 		int ticksPerSec = gameEngine.getTargetTicksPerSecond();
 		ServerGameEngine newGame = new ServerGameEngine(mapName,
-			FreerailsProgressMonitor.NULL_INSTANCE);
+			FreerailsProgressMonitor.NULL_INSTANCE, scenario);
 		transferClients(newGame);
 
 		setTargetTicksPerSecond(ticksPerSec);
@@ -297,6 +310,19 @@ class ServerGameController implements ServerControlInterface,
 
                 tableModel.stateChanged(c, connections.indexOf(c));
             }
-        }
+        } else if (s instanceof ResourceBundleManager.GetResourceCommand) {
+	    ResourceBundleManager.GetResourceCommand grc =
+		(ResourceBundleManager.GetResourceCommand) s;
+	    c.sendCommand(new ResourceBundleManager.GetResourceResponseCommand
+		    (ResourceBundleManager.getResourceByteArray(grc.locale,
+								grc.baseName)));
+	}
+    }
+
+    public synchronized void sendCommand(ServerCommand s) {
+	for (int i = 0; i < connections.size(); i++) {
+	    ConnectionToServer c = (ConnectionToServer) connections.get(i);
+	    c.sendCommand(s);
+	}
     }
 }

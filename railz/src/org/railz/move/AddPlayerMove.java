@@ -72,11 +72,6 @@ public class AddPlayerMove extends CompositeMove implements ServerMove {
         }
     }
 
-    /**
-     * Amount of money a player gets initially
-     */
-    private static final int INITIAL_MONEY = 1000000;
-
     private static Move[] generateMove(ReadOnlyWorld w, Player player) {
         /**
          * create a new player with a corresponding Principal
@@ -88,8 +83,6 @@ public class AddPlayerMove extends CompositeMove implements ServerMove {
 
 	BankAccount ba = new BankAccount();
 	GameTime now = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
-	InitialDeposit r = new InitialDeposit(now, INITIAL_MONEY);
-	ba.addTransaction(r);
 
         return new Move[] {
             new AddPlayerToListMove(KEY.PLAYERS,

@@ -165,7 +165,7 @@ public final class TrainMotionModel2 implements FreerailsSerializable {
     }
 
     public boolean equals(Object o) {
-	if (!(o instanceof TrainMotionModel2))
+	if (o == null || !(o instanceof TrainMotionModel2))
 	    return false;
 	TrainMotionModel2 tmm = (TrainMotionModel2) o;
 	return t0 == tmm.t0 &&

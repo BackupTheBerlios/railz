@@ -46,7 +46,7 @@ public interface ServerControlInterface {
      * <li>The game starts running at the speed of the previous game
      * </ol>
      */
-    public void newGame(String mapName);
+    public void newGame(String mapName, String scenarioName);
 
     public void loadGame(File filename);
 
@@ -58,6 +58,11 @@ public interface ServerControlInterface {
      * Retrieve a list of map names for use with newGame()
      */
     public String[] getMapNames();
+
+    /**
+     * Retreive a list of scenario names for use with newGame()
+     */
+    public String[] getScenarioNames();
 
     public void setTargetTicksPerSecond(int ticksPerSecond);
 

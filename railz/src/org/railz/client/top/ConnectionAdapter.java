@@ -16,6 +16,7 @@
 
 package org.railz.client.top;
 
+import java.util.*;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
@@ -160,6 +161,7 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
                     throw new GeneralSecurityException("Server rejected " +
                         "attempt to authenticate");
                 }
+
             }
         }
     }
@@ -210,6 +212,10 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
 	     player.getName());
         authenticated = false;
         connection.sendCommand(new AddPlayerCommand(player, player.sign()));
+
+	/* send a command to set up server-specific resources */
+	connection.sendCommand(new ResourceBundleManager.GetResourceCommand
+		("org.railz.data.l10n.server", Locale.getDefault()));
     }
 
     private void playerConfirmed() {
@@ -307,6 +313,14 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
         } else if (s instanceof ServerMessageCommand) {
 	    modelRoot.getUserMessageLogger().println
 		(Resources.get(((ServerMessageCommand) s).getMessage()));
+	} else if (s instanceof
+		ResourceBundleManager.GetResourceResponseCommand) {
+		ResourceBundleManager.GetResourceResponseCommand response =
+		    (ResourceBundleManager.GetResourceResponseCommand) s;
+		if (response.isSuccessful()) {
+		    Resources.setExternalResourceBundle
+			(response.getResourceBundle());
+		}
 	}
     }
 }

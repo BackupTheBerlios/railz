@@ -71,7 +71,6 @@ class IdentityProvider {
 
 	public synchronized MoveStatus confirmMove(Move m,
 	       	ConnectionToServer c) {
-            System.err.println("In thread " + Thread.currentThread().getName());
             move = m;
             executer.processMove(m, c);
 
@@ -95,9 +94,11 @@ class IdentityProvider {
      */
     private HashMap principals = new HashMap();
     private ServerGameEngine serverGameEngine;
+    private Scenario scenario;
 
-    public IdentityProvider(ServerGameEngine s) {
+    public IdentityProvider(ServerGameEngine s, Scenario scenario) {
         serverGameEngine = s;
+	this.scenario = scenario;
     }
 
     /**
@@ -161,13 +162,18 @@ class IdentityProvider {
          * get the newly created player-with-principal
          */
         World w = serverGameEngine.getWorld();
+        assert (w != null);
         System.err.println("checking " + w);
         player = (Player)w.get(KEY.PLAYERS,
                 w.size(KEY.PLAYERS, Player.AUTHORITATIVE) - 1,
                 Player.AUTHORITATIVE);
-        assert (w != null);
 
         principals.put(c, player);
+
+	/* Perform any moves necessary for adding a new player */
+	serverGameEngine.getMoveExecuter().processMove
+	    (scenario.getSetupMoves(serverGameEngine.getWorld(),
+		    player.getPrincipal()), c);
 
         return true;
     }
