@@ -196,9 +196,12 @@ public class IntLine implements FreerailsSerializable {
     }
 
     public void prepend(IntLine l) {
-	assert ((l.getDirection() == getDirection()) ||
+	if (!((l.getDirection() == getDirection()) ||
 		(l.x1 == l.x2 && l.y1 == l.y2)) &&
-	    (l.x2 == x1 && l.y2 == y1);
+	    (l.x2 == x1 && l.y2 == y1)) {
+		System.out.println("adding " + l + " to " + this);
+		assert false;
+	}
 	x1 = l.x1;
 	y1 = l.y1;
 	length.add(l.length);
