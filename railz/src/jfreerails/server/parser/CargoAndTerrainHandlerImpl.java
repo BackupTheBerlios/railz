@@ -38,7 +38,6 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
     String tileID;
     String tileCategory;
     int tileRGB;
-    int tileROW;
     ArrayList typeConsumes = new ArrayList();
     ArrayList typeProduces = new ArrayList();
     ArrayList typeConverts = new ArrayList();
@@ -81,8 +80,6 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
         } else {
             rgbValuesAlreadyUsed.add(rgbInteger);
         }
-
-        tileROW = Integer.parseInt(meta.getValue("right-of-way"));
     }
 
     public void end_Tile() throws SAXException {
@@ -105,7 +102,7 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
         }
 
         TileTypeImpl tileType = new TileTypeImpl(tileRGB, tileCategory, tileID,
-                tileROW, produces, consumes, converts, tileBaseValue);
+                produces, consumes, converts, tileBaseValue);
 
         world.add(KEY.TERRAIN_TYPES, tileType, Player.AUTHORITATIVE);
     }

@@ -19,7 +19,6 @@ final public class TileTypeImpl implements TerrainType {
     private final int rgb;
     private final String terrainCategory;
     private final String terrainType;
-    private final int rightOfWay;
     private final Production[] production;
     private final Consumption[] consumption;
     private final Conversion[] conversion;
@@ -34,12 +33,11 @@ final public class TileTypeImpl implements TerrainType {
     }
 
     public TileTypeImpl(int rgb, String terrainCategory, String terrainType,
-        int rightOfWay, Production[] production, Consumption[] consumption,
+        Production[] production, Consumption[] consumption,
         Conversion[] conversion, Money baseValue) {
         this.terrainType = terrainType;
         this.terrainCategory = terrainCategory;
         this.rgb = rgb;
-        this.rightOfWay = rightOfWay;
         this.production = production;
         this.consumption = consumption;
         this.conversion = conversion;
@@ -67,10 +65,6 @@ final public class TileTypeImpl implements TerrainType {
         } else {
             return false;
         }
-    }
-
-    public int getRightOfWay() {
-        return rightOfWay;
     }
 
     public Consumption[] getConsumption() {

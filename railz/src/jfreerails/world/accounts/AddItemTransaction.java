@@ -39,6 +39,9 @@ public class AddItemTransaction implements Transaction {
         }
     }
 
+    /**
+     * @param amount Positive amounts represent a credit, negative is a debit.
+     */
     public AddItemTransaction(int category, int type, int quantity, Money
 	    amount) {
         this.category = category;

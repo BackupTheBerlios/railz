@@ -10,8 +10,6 @@ public interface TerrainType extends FreerailsSerializable {
 
     String getTerrainCategory();
 
-    int getRightOfWay();
-
     int getRGB();
 
     Production[] getProduction();

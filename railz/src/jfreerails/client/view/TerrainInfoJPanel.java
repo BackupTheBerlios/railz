@@ -98,9 +98,7 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
 	TerrainType type = (TerrainType)w.get(KEY.TERRAIN_TYPES,
 		tile.getTerrainTypeNumber());
       
-        String row = "<p>Right-of-Way costs $" + type.getRightOfWay() + 
-	    " per mile. </p>";
-	
+	String row = "";
 	if (! tile.getOwner().equals(Player.AUTHORITATIVE)) {
 	    NonNullElements i = new NonNullElements(KEY.PLAYERS, w,
 		    Player.AUTHORITATIVE);
@@ -111,6 +109,9 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
 		    break;
 		}
 	    }
+	} else {
+	    row = "<p>Purchase cost: $" + tile.getTerrainValue(w, point.x,
+		    point.y) + "</p>";
 	}
 	
         String tableString = "";

@@ -16,7 +16,7 @@ public class PurchaseTileMove extends CompositeMove implements Move {
 	Money tileValue = w.getTile(location.x, location.y).getTerrainValue(w,
 		location.x, location.y);
 	AddItemTransaction t = new AddItemTransaction(AddItemTransaction.LAND,
-		0, 1, tileValue);
+		0, 1, new Money(- tileValue.getAmount()));
 	return new Move[] {
 	    new ChangeTileOwnershipMove(w, location, newOwner),
 	    new AddTransactionMove(0, t, true, newOwner)
