@@ -28,7 +28,7 @@ import org.railz.world.common.GameTime;
  *  @author Luke
  *
  */
-public class DeliverCargoReceipt extends Transaction {
+public final class DeliverCargoReceipt extends Transaction {
     public static final int SUBCATEGORY_FREIGHT = 1;
     public static final int SUBCATEGORY_PASSENGERS = 2;
 

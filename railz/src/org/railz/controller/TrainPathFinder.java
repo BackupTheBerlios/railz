@@ -106,7 +106,7 @@ public class TrainPathFinder {
 	LinkedList intLines = new LinkedList();
 	boolean firstP = true;
 	p = (PathExplorer) bestPath.removeFirst();
-	while (!bestPath.isEmpty()) {
+	do {
 	    newp.x = oldp.x = p.getX();
 	    newp.y = oldp.y = p.getY();
 	    if (!bestPath.isEmpty()) {
@@ -135,7 +135,7 @@ public class TrainPathFinder {
 	    newp = TrackTile.tileCoordsToDeltas(newp);
 	    IntLine l = new IntLine(oldp.x, oldp.y, newp.x, newp.y);
 	    intLines.add(l);
-	}
+	} while (!bestPath.isEmpty());
 	fixUpPathEnds(intLines, start, dest);
 	TrainPath retVal = new TrainPath((IntLine[]) intLines.toArray(new
 		    IntLine[intLines.size()]));

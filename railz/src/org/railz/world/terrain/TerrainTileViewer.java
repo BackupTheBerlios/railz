@@ -21,7 +21,7 @@
 package org.railz.world.terrain;
 
 import org.railz.world.player.Player;
-import org.railz.world.track.FreerailsTile;
+import org.railz.world.track.*;
 import org.railz.world.top.*;
 import org.railz.world.common.*;
 
@@ -33,6 +33,7 @@ public class TerrainTileViewer implements FixedAsset {
     private ReadOnlyWorld world;
     private FreerailsTile tile;
     private int x, y;
+    private static final double ROOT_TWO = Math.sqrt(2);
 
     public TerrainTileViewer(ReadOnlyWorld w) {
        world = w;
@@ -62,5 +63,43 @@ public class TerrainTileViewer implements FixedAsset {
 		tile.getTerrainTypeNumber(), Player.AUTHORITATIVE);
 
 	return t.getBaseValue();
+    }
+
+    /**
+     * @param x2 the x coord of the tile we are traversing to.
+     * @param y2 the y coord of the tile we are traversing to.
+     * @return the effective incline in % when traversing between the two
+     * neighbouring tiles. 
+     */
+    public int getEffectiveIncline(int x2, int y2) {
+	FreerailsTile ft = world.getTile(x, y);
+	int ttn = ft.getTerrainTypeNumber();
+	TerrainType tt1 = (TerrainType)
+	    world.get(KEY.TERRAIN_TYPES, ttn, Player.AUTHORITATIVE);
+	ft = world.getTile(x2, y2);
+	ttn = ft.getTerrainTypeNumber();
+	TerrainType tt2 = (TerrainType) world.get(KEY.TERRAIN_TYPES, ttn,
+		Player.AUTHORITATIVE);
+	// check the track type to see whether it is a tunnel
+	int effectiveIncline;
+	TrackRule trackType = null;
+	if (ft.getTrackTile() != null) {
+	    trackType = (TrackRule) world.get(KEY.TRACK_RULES,
+		    ft.getTrackRule(), Player.AUTHORITATIVE);
+	}
+	if (trackType != null && trackType.isTunnel()) {
+	    // if we are in a tunnel, then assume it's level
+	    effectiveIncline = 0;
+	} else {
+	    effectiveIncline = tt2.getElevation() -
+		    tt1.getElevation(); 
+	    // if we are on a diagonal then our incline is divided by root 2
+	    if (x != x2 && y != y2) {
+		effectiveIncline = (int) ((double) effectiveIncline / ROOT_TWO);
+	    }
+	    effectiveIncline += (tt1.getRoughness() +
+			tt2.getRoughness()) / 2;
+	}
+	return effectiveIncline;
     }
 }

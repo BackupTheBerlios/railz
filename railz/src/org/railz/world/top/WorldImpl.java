@@ -48,16 +48,15 @@ public class WorldImpl implements World {
     private final FreerailsSerializable[] items = new FreerailsSerializable[ITEM.getNumberOfKeys()];
     private FreerailsTile[][] map;
 
-    public WorldImpl() {
-        this.setupMap(0, 0);
-        this.setupLists();
-    }
-
     public WorldImpl(int mapWidth, int mapHeight) {
         this.setupMap(mapWidth, mapHeight);
         this.setupLists();
     }
 
+    public WorldImpl() {
+	this(0, 0);
+    }
+    
     private WorldImpl(WorldImpl wi, FreerailsPrincipal viewer) {
 	setupLists();
 	int pi = wi.getPlayerIndex(viewer);
@@ -85,7 +84,7 @@ public class WorldImpl implements World {
         map = new FreerailsTile[mapWidth][mapHeight];
     }
 
-    public void setupLists() {
+    private void setupLists() {
         for (int i = 0; i < lists.length; i++) {
             lists[i] = new ArrayList();
         }
@@ -177,6 +176,7 @@ public class WorldImpl implements World {
     }
 
     public void setTile(int x, int y, FreerailsTile element) {
+	// System.out.println("setTile:" + element);
         map[x][y] = element;
     }
 

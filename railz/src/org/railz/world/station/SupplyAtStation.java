@@ -53,4 +53,11 @@ public class SupplyAtStation implements FreerailsSerializable {
             return false;
         }
     }
+
+    public String toString() {
+	String s = "SupplyAtStation: ";
+	for (int i = 0; i < supply.length; i++)
+	    s += supply[i] + ", ";
+	return s;
+    }
 }

@@ -16,14 +16,14 @@
 
 package org.railz.move;
 
-import java.awt.Point;
+import java.awt.*;
 
 import org.railz.world.track.FreerailsTile;
 import org.railz.world.top.ReadOnlyWorld;
 import org.railz.world.top.World;
 import org.railz.world.player.FreerailsPrincipal;
 
-public class ChangeTileOwnershipMove implements Move {
+public class ChangeTileOwnershipMove implements MapUpdateMove {
     private final FreerailsPrincipal oldOwner;
     private final FreerailsPrincipal newOwner;
     private final Point location;
@@ -31,7 +31,7 @@ public class ChangeTileOwnershipMove implements Move {
     /**
      * XXX Not to be instantiated as a standalone move.
      */
-    ChangeTileOwnershipMove(ReadOnlyWorld w, Point location,
+    protected ChangeTileOwnershipMove(ReadOnlyWorld w, Point location,
 	    FreerailsPrincipal newOwner) {
 	oldOwner = (FreerailsPrincipal) ((FreerailsTile) w.getTile(location.x,
 		    location.y)).getOwner();
@@ -63,7 +63,8 @@ public class ChangeTileOwnershipMove implements Move {
 	MoveStatus ms;
 	if ((ms = tryDoMove(w, p)) == MoveStatus.MOVE_OK) {
 	    FreerailsTile currentTile = w.getTile(location.x, location.y);
-	    currentTile.setOwner(p);
+	    w.setTile(location.x, location.y, new FreerailsTile(currentTile, 
+			p));
 	}
 	return ms;
     }
@@ -72,7 +73,8 @@ public class ChangeTileOwnershipMove implements Move {
 	MoveStatus ms;
 	if ((ms = tryUndoMove(w, p)) == MoveStatus.MOVE_OK) {
 	    FreerailsTile currentTile = w.getTile(location.x, location.y);
-	    currentTile.setOwner(oldOwner);
+	    w.setTile(location.x, location.y,
+		   new FreerailsTile(currentTile, oldOwner));
 	}
 	return ms;
     }
@@ -95,5 +97,9 @@ public class ChangeTileOwnershipMove implements Move {
     public String toString() {
 	return "ChangeTileOwnershipMove: oldOwner=" + oldOwner + ", newOwner="
 	    + newOwner + ", location" + location;
+    }
+
+    public Rectangle getUpdatedTiles() {
+	return new Rectangle(location.x, location.y, 1, 1);
     }
 }

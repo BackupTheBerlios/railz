@@ -332,7 +332,14 @@ FreerailsProgressMonitor {
 	    System.err.println("Couldn't open logging configuration " + 
 		    "due to SecurityException:" + e.getMessage());
 	}
-	Logger.getLogger("global").log(Level.INFO, "Logging enabled");
+	Logger l = Logger.getLogger("global");
+	Level lev;
+	while ((lev = l.getLevel()) == null && l.getParent() != null)
+	    l = l.getParent();
+	if (System.getProperty(".level") != null)
+	    l.setLevel(Level.parse(System.getProperty(".level")));
+	Logger.getLogger("global").log(Level.INFO, "Logging enabled at level "
+		+ l.getLevel());
 	
 	Launcher launcher = new Launcher();
 	launcher.show();

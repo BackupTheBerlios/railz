@@ -203,12 +203,16 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
         /* grab the lock on the WorldUpdater in order to prevent any moves from
          * the server being lost whilst we plumb it in */
 	synchronized (worldUpdater) {
-            world = connection.loadWorldFromServer();
 
             /* plumb in a new Move Executer */
 	    if (connection instanceof LocalConnection) {
-		moveExecuter = new DummyMoveExecuter(moveReceiver, world);
+		 // world = connection.loadWorldFromServer();
+		// moveExecuter = new DummyMoveExecuter(moveReceiver, world);
+		world = new WorldOverlay(connection.loadWorldFromServer());
+		 moveExecuter = new OverlayMoveExecuter(moveReceiver,
+			 (WorldOverlay) world);
 	    } else {
+		world = connection.loadWorldFromServer();
 		moveExecuter = new NonAuthoritativeMoveExecuter(world,
 			moveReceiver, userMessageLogger);
 	    }

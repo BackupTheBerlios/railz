@@ -73,6 +73,7 @@ public class ServerGameEngine implements GameModel, Runnable,
     private BalanceSheetMoveFactory balanceSheetMoveFactory;
     private AccountInterestMoveFactory accountInterestMoveFactory;
     private TrainMaintenanceMoveFactory trainMaintenanceMoveFactory;
+    private TrackMaintenanceMoveGenerator trackMaintenanceMoveGenerator;
     private StatGatherer statsGatherer;
 
     /**
@@ -157,6 +158,8 @@ public class ServerGameEngine implements GameModel, Runnable,
 		moveExecuter);
 	trainMaintenanceMoveFactory = new TrainMaintenanceMoveFactory(w,
 		moveExecuter);
+	trackMaintenanceMoveGenerator = new TrackMaintenanceMoveGenerator
+	    (w, moveExecuter);
 	trainMover = new AuthoritativeTrainMover(w, moveExecuter);
 	trainController = new TrainController(w, moveExecuter);
 	scriptingEngine = new ScriptingEngine(w, moveExecuter);
@@ -333,8 +336,7 @@ public class ServerGameEngine implements GameModel, Runnable,
 
     private void newMonth() {
         calcSupplyAtStations.doProcessing();
-        TrackMaintenanceMoveGenerator tmmg = new TrackMaintenanceMoveGenerator(moveExecuter);
-        tmmg.update(world);
+        trackMaintenanceMoveGenerator.update();
 	accountInterestMoveFactory.generateMoves();
 	trainMaintenanceMoveFactory.generateMoves();
 

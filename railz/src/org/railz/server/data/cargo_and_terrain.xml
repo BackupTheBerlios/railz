@@ -138,8 +138,8 @@ elevation="250" roughness="300" />
          <Produces Cargo="Mail" Rate="120" />
          <Produces Cargo="Passengers" Rate="250" />
          <Produces Cargo="Mfg._Goods" Rate="500" />
-         <Converts input="Grain" output="Food" />
-         <Converts input="Export_Goods" output="Export_Goods" />
+         <Produces Cargo="Food" Rate="400" />
+         <Consumes Cargo="Export_Goods" />
          <Consumes Cargo="Grain" />
          <Consumes Cargo="Coffee" />
          <Consumes Cargo="Wood" />

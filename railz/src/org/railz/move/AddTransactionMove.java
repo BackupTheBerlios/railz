@@ -113,7 +113,8 @@ public class AddTransactionMove implements Move {
         if (ms.ok) {
             BankAccount bankAccount = (BankAccount)w.get(KEY.BANK_ACCOUNTS,
                     this.account, p);
-            bankAccount.addTransaction(this.transaction);
+            w.set(KEY.BANK_ACCOUNTS, account, 
+		    bankAccount.addTransaction(this.transaction), p);
         }
 
         return ms;
@@ -125,7 +126,8 @@ public class AddTransactionMove implements Move {
         if (ms.ok) {
             BankAccount bankAccount = (BankAccount)w.get(KEY.BANK_ACCOUNTS,
                     this.account, p);
-            bankAccount.removeLastTransaction();
+            w.set(KEY.BANK_ACCOUNTS, account, 
+		    bankAccount.removeLastTransaction(), p);
         }
 
         return ms;

@@ -53,6 +53,7 @@ class TrainController {
     private AuthoritativeMoveExecuter moveReceiver;
     private DropOffAndPickupCargoMoveGenerator dopucmg;
     private TrainPathFinder pathFinder;
+    private TerrainTileViewer terrainTileViewer;
 
     public TrainController(ReadOnlyWorld w, AuthoritativeMoveExecuter mr) {
 	world = w;
@@ -61,6 +62,7 @@ class TrainController {
 	dopucmg = new DropOffAndPickupCargoMoveGenerator(world, moveReceiver);
 	pathFinder = new TrainPathFinder(world);
 	trainModelViewer = new TrainModelViewer(world);
+	terrainTileViewer = new TerrainTileViewer(world);
     }
 
     public void updateTrains() {
@@ -296,33 +298,9 @@ class TrainController {
     private TrainPathSegment getNewSegment(Point p1, Point p2,
 	    float t0, float v0, float s0, int mass, float sMax,
 	    EngineType et, boolean outOfWater) {
-	float maxTractiveForce = et.getMaxTractiveForce();
-	FreerailsTile ft = world.getTile(p1);
-	int ttn = ft.getTerrainTypeNumber();
-	TerrainType tt1 = (TerrainType)
-	    world.get(KEY.TERRAIN_TYPES, ttn, Player.AUTHORITATIVE);
-	ft = world.getTile(p2);
-	ttn = ft.getTerrainTypeNumber();
-	TerrainType tt2 = (TerrainType) world.get(KEY.TERRAIN_TYPES, ttn,
-		Player.AUTHORITATIVE);
-	// check the track type to see whether it is a tunnel
-	TrackRule trackType = (TrackRule) world.get(KEY.TRACK_RULES,
-		ft.getTrackRule(), Player.AUTHORITATIVE);
-	float effectiveIncline;
-	if (trackType.isTunnel()) {
-	    // if we are in a tunnel, then assume it's level
-	    effectiveIncline = 0;
-	} else {
-	    effectiveIncline = (float) (tt2.getElevation() -
-		    tt1.getElevation()); 
-	    // if we are on a diagonal then our incline is divided by root 2
-	    if (p1.x != p2.x && p1.y != p2.y) {
-		effectiveIncline /= ROOT_TWO;
-	    }
-	    effectiveIncline += (float) (tt1.getRoughness() +
-			tt2.getRoughness()) / 2;
-	    effectiveIncline /= 100;
-	}
+	terrainTileViewer.setFreerailsTile(p1.x, p1.y);
+	float effectiveIncline = ((float) terrainTileViewer.getEffectiveIncline
+		(p2.x, p2.y)) / 100.0f;
 	float a = et.getAcceleration(effectiveIncline, v0, mass, outOfWater);
 	
 	return new TrainPathSegment(t0, v0, a, s0, sMax);

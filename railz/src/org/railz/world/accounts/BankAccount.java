@@ -31,10 +31,17 @@ import org.railz.world.common.FreerailsSerializable;
  *
  */
 public class BankAccount implements FreerailsSerializable {
+    static final long serialVersionUID = 4209030709047745616L;
+
     private ArrayList transactions = new ArrayList();
     private long currentBalance = 0;
 
     public BankAccount() {
+    }
+
+    private BankAccount(BankAccount b) {
+	currentBalance = b.currentBalance;
+	transactions = (ArrayList) b.transactions.clone();
     }
 
     public synchronized long getCurrentBalance() {
@@ -45,17 +52,19 @@ public class BankAccount implements FreerailsSerializable {
         return transactions.size();
     }
 
-    public synchronized void addTransaction(Transaction t) {
-        transactions.add(t);
-        this.currentBalance = currentBalance + t.getValue();
+    public synchronized BankAccount addTransaction(Transaction t) {
+	BankAccount b = new BankAccount(this);
+        b.transactions.add(t);
+        b.currentBalance += t.getValue();
+	return b;
     }
 
-    public synchronized Transaction removeLastTransaction() {
-        int last = transactions.size() - 1;
-        Transaction t = (Transaction)transactions.remove(last);
-        this.currentBalance = currentBalance - t.getValue();
-
-        return t;
+    public synchronized BankAccount removeLastTransaction() {
+	BankAccount b = new BankAccount(this);
+        int last = b.transactions.size() - 1;
+        Transaction t = (Transaction) b.transactions.remove(last);
+        b.currentBalance -= t.getValue();
+        return b;
     }
 
     public synchronized Transaction getTransaction(int i) {

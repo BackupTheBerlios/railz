@@ -23,25 +23,17 @@ package org.railz.world.top;
 
 import org.railz.world.common.FreerailsSerializable;
 import junit.framework.TestCase;
-
+import org.railz.world.player.*;
 
 /**
  * @author Luke
  *
  */
-public class WorldImplTest extends TestCase {
-    FreerailsSerializable fs = new FreerailsSerializable() {
-        };
-
-    public void testGet() {
-        World w = new WorldImpl();
-        w.add(KEY.TERRAIN_TYPES, fs);
-        assertEquals(w.get(KEY.TERRAIN_TYPES, 0), fs);
-    }
-
-    public void testConstructor() {
-        World w = new WorldImpl();
-        assertEquals("The width should be zero", 0, w.getMapWidth());
-        assertEquals("The height should be zero", 0, w.getMapHeight());
+public class WorldImplTest extends WorldTest {
+    protected  World getWorld(int width, int height) {
+	World w = new WorldImpl(width, height);
+	w.add(KEY.PLAYERS, pl1, Player.AUTHORITATIVE);
+	w.add(KEY.PLAYERS, pl2, Player.AUTHORITATIVE);
+	return w;
     }
 }

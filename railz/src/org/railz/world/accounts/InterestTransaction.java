@@ -18,7 +18,7 @@ package org.railz.world.accounts;
 
 import org.railz.world.common.*;
 
-public class InterestTransaction extends Transaction {
+public final class InterestTransaction extends Transaction {
     public static final int SUBCATEGORY_LOAN = 1;
     public static final int SUBCATEGORY_BOND = 2;
     public static final int SUBCATEGORY_ACCOUNT_CREDIT_INTEREST = 3;

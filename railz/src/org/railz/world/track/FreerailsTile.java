@@ -30,6 +30,8 @@ import org.railz.world.top.ReadOnlyWorld;
  */
 public class FreerailsTile implements TerrainTile,
     FreerailsSerializable {
+    static final long serialVersionUID = -6626612368478492123L;
+
     private final TrackTile trackTile;
     private final int terrainType;
     private final BuildingTile buildingTile;
@@ -56,6 +58,10 @@ public class FreerailsTile implements TerrainTile,
 	this(tile.terrainType, tile.trackTile, building, tile.owner);
     }
 
+    public FreerailsTile(FreerailsTile tile, FreerailsPrincipal o) {
+	this(tile.terrainType, tile.trackTile, tile.buildingTile, o);
+    }
+
     /*
      * @see TrackTile#getTrackRule()
      */
@@ -70,15 +76,22 @@ public class FreerailsTile implements TerrainTile,
         return trackTile.getTrackConfiguration();
     }
 
+    /**
+     * TODO better hashCode
+     */
+    public int hashCode() {
+	return terrainType;
+    }
+
     public boolean equals(Object o) {
         if (o instanceof FreerailsTile) {
             FreerailsTile test = (FreerailsTile)o;
 
             return (terrainType == test.terrainType &&
-		    buildingTile == null ? test.buildingTile == null :
-		    (buildingTile.equals(test.buildingTile)) &&
-		    trackTile == null ? test.trackTile == null :
-		    (trackTile.equals(test.trackTile)) &&
+		    (buildingTile == null ? test.buildingTile == null :
+		    (buildingTile.equals(test.buildingTile))) &&
+		    (trackTile == null ? test.trackTile == null :
+		    (trackTile.equals(test.trackTile))) &&
 		     owner.equals(test.owner));
         } else {
             return false;
@@ -101,7 +114,8 @@ public class FreerailsTile implements TerrainTile,
 	return owner;
     }
 
-    public void setOwner(FreerailsPrincipal o) {
-	owner = o;
+    public String toString() {
+	return "FreerailsTile: terrainType=" + terrainType +
+	    ", owner=" + owner;
     }
 }

@@ -37,19 +37,25 @@ public final class PathFinder {
     
     private static Logger logger = Logger.getLogger("global");
 
-    private class ExplorerList extends LinkedList {
+    private static class ExplorerList extends LinkedList {
 	private int cost = 0;
+	private HashSet locations = new HashSet(); 
+	private final Point tmpP = new Point();
 
 	public boolean add(Object o) {
 	    super.add(o);
 	    PathExplorer pe = (PathExplorer) o;
 	    cost += pe.getCost();
+	    locations.add(new Point(pe.getX(), pe.getY()));
+
 	    return true;
 	}
 
 	public Object removeLast() {
 	    PathExplorer pe = (PathExplorer) super.removeLast();
 	    cost -= pe.getCost();
+	    tmpP.setLocation(pe.getX(), pe.getY());
+	    locations.remove(tmpP);
 	    return pe;
 	}
 
@@ -59,7 +65,13 @@ public final class PathFinder {
 
 	public void clear() {
 	    super.clear();
+	    locations.clear();
 	    cost = 0;
+	}
+
+	public boolean haveLocation(int x, int y) {
+	    tmpP.setLocation(x, y);
+	    return locations.contains(tmpP);
 	}
     }
 
@@ -89,13 +101,14 @@ public final class PathFinder {
      * Perform the exploration.
      * @return a LinkedList of PathExplorer objects. The first object in the
      * link is at the starting point, and the last contains the destination.
+     * Return null if no path could be found.
      */
     public LinkedList explore() {
 	logger.log(Level.FINE, "exploring from " + start + " to " + target);
 	logger.log(Level.FINE, "best minCost=" + minCost + ", maxCost=" +
 	       maxCost);
 	currentPath = new ExplorerList();
-	bestPath = new LinkedList();
+	bestPath = null;
 	bestCost = maxCost;
 	
 	/* "Stupidity" filter... */
@@ -124,29 +137,24 @@ public final class PathFinder {
 	    }
 
 	    /* Is this tile already explored?
-	     * Have we explored further than our maxCost? */
+	     * Have we explored further than our current bestCost? */
 	    currentPos.setLocation(pe.getX(), pe.getY());
 	    if (exploredTiles.contains(currentPos) ||
-		    currentPath.getCost() > maxCost) {
+		    currentPath.getCost() > bestCost) {
 		/* go back to old tile */
 		pe = (PathExplorer) currentPath.removeLast();
 		continue;
 	    }
 
 	    /* have we doubled back on ourselves ? */
-	    Iterator i = currentPath.iterator();
-	    do {
-		PathExplorer p = (PathExplorer) i.next();
-		if (currentPos.x == p.getX() &&
-			currentPos.y == p.getY()) {
+	    /*if (currentPath.haveLocation(currentPos.x, currentPos.y)) {
 		    pe = (PathExplorer) currentPath.removeLast();
-		    break;
-		}
-	    } while (i.hasNext());
+		    continue;
+	    }*/
 
 	    /* have we reached the target ? */
 	    if (currentPos.equals(target)) {
-		i = currentPath.iterator();
+		Iterator i = currentPath.iterator();
 		int cost = 0;
 		do {
 		    cost += ((PathExplorer) i.next()).getCost();
@@ -156,6 +164,8 @@ public final class PathFinder {
 		    logger.log(Level.FINE, "Found new route cost " + 
 			    cost);
 		    bestCost = cost;
+		    if (bestPath == null)
+			bestPath = new LinkedList();
 		    bestPath.clear();
 		    i = currentPath.iterator();
 		    do {
@@ -164,7 +174,7 @@ public final class PathFinder {
 		}
 		// remove the current tile, and continue searching with
 		// the previous tile.
-		currentPath.removeLast();
+		// currentPath.removeLast();
 		pe = (PathExplorer) currentPath.removeLast();
 		continue;
 	    }

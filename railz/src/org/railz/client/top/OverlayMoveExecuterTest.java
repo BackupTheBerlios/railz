@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Robert Tuck
+ * Copyright (C) 2005 Robert Tuck
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -14,26 +14,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+package org.railz.client.top;
 
-/**
- * Represents an initial deposit on opening an account.
- *
- * @author rtuck99@users.berlios.de
- */
-package org.railz.world.accounts;
+import org.railz.client.common.*;
+import org.railz.world.player.*;
+import org.railz.world.top.*;
 
-import org.railz.world.common.GameTime;
-
-public final class InitialDeposit extends Transaction {
-    public InitialDeposit(GameTime t, long value) {
-	super(t, value);
-    }
-
-    public final int getCategory() {
-	return CATEGORY_OUTSIDE_INVESTMENT;
-    }
-
-    public final int getSubcategory() {
-	return SUBCATEGORY_NO_SUBCATEGORY;
-    }
+public class OverlayMoveExecuterTest extends ClientMoveExecuterTest {
+    public ClientMoveExecuter getCME() {
+	serverWorld = new WorldImpl(10, 10);
+	clientWorld = new WorldOverlay(serverWorld);
+	serverWorld.add(KEY.PLAYERS, pl1, Player.AUTHORITATIVE);
+	ClientMoveExecuter cme = new OverlayMoveExecuter(testClient,
+		(WorldOverlay) clientWorld);
+	cme.addMoveReceiver(testServer);
+	return cme;
+    }	
 }
+

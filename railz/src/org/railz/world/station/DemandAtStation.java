@@ -50,4 +50,11 @@ public class DemandAtStation implements FreerailsSerializable {
             return false;
         }
     }
+
+    public String toString() {
+	String s = "DemandAtStation: ";
+	for (int i = 0; i < demand.length; i++)
+	    s += demand[i] + ", ";
+	return s;
+    }
 }

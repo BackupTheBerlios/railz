@@ -26,7 +26,7 @@ import org.railz.world.common.GameTime;
 /**
  * @author Luke Lindsay
  */
-public class Bill extends Transaction {
+public final class Bill extends Transaction {
     /* for use with subcategory */
     public static final int TRACK_MAINTENANCE = 1;
     public static final int ROLLING_STOCK_MAINTENANCE = 2;

@@ -22,7 +22,7 @@ import org.railz.world.common.*;
 /**
  * @author rtuck99@users.berlios.de
  */
-public class DoubleTrackTile extends TrackTile implements
+public final class DoubleTrackTile extends TrackTile implements
 FreerailsSerializable {
     DoubleTrackTile(byte trackLayout, int trackType) {
 	super(trackLayout, trackType);

@@ -33,7 +33,7 @@ import org.railz.world.common.*;
  * @author     Luke Lindsay
  *     09 October 2001
  */
-public class TrackRule implements FreerailsSerializable {
+public final class TrackRule implements FreerailsSerializable {
     private final boolean isDoubleTrack;
     private final boolean buildPermissions[];
     private final String name;

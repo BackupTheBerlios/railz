@@ -29,7 +29,7 @@ import org.railz.world.common.GameTime;
  * @author Luke Lindsay
  *
  */
-public class AddItemTransaction extends Transaction {
+public final class AddItemTransaction extends Transaction {
     /** Constants to specify the subcategory. */
     public static final int TRACK = 1;
     public static final int LAND = 2;

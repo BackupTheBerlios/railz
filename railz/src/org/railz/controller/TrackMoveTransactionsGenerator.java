@@ -21,7 +21,8 @@
  */
 package org.railz.controller;
 
-import java.util.ArrayList;
+import java.util.*;
+
 import org.railz.move.AddTransactionMove;
 import org.railz.move.ChangeTrackPieceMove;
 import org.railz.move.CompositeMove;
@@ -68,12 +69,17 @@ public class TrackMoveTransactionsGenerator {
         FreerailsPrincipal p) {
         w = world;
 	principal = p;
-    }
-
-    public Move addTransactions(Move move) {
         int numberOfTrackTypes = w.size(KEY.TRACK_RULES, Player.AUTHORITATIVE);
         trackAdded = new int[numberOfTrackTypes];
         trackRemoved = new int[numberOfTrackTypes];
+    }
+
+    /**
+     * Append to the specified moves additional moves that perform the
+     * transactions necessary to purchase the track.
+     */
+    public Move addTransactions(Move move) {
+	resetTransactions();
 
         unpackMove(move);
         generateTransactions();
@@ -90,6 +96,10 @@ public class TrackMoveTransactionsGenerator {
         return new CompositeMove(moves);
     }
 
+    /**
+     * Recursively unpack composite moves and process them to calculate the
+     * number of sections of each track type used.
+     */
     private void unpackMove(Move move) {
         if (move instanceof ChangeTrackPieceMove) {
             ChangeTrackPieceMove tm = (ChangeTrackPieceMove)move;
@@ -107,10 +117,22 @@ public class TrackMoveTransactionsGenerator {
     }
 
     private void processMove(ChangeTrackPieceMove move) {
-	TrackTile trAfter = move.getNewTrackPiece();
-	TrackTile trBefore = move.getOldTrackPiece();
-	 int after = -1;
-	 int before = -1;
+	processTrackChange(move.getOldTrackPiece(), move.getNewTrackPiece());
+    }
+
+    /**
+     * TODO Remove this abomination! Track should be charged by using the
+     * TrackPieceViewer to determine the cost, which will
+     * <ul>
+     * <li>Take into account initial and final track configuration
+     * <li>Take into account initial and final track type
+     * <li>Take into account costs incurred due to difficult terrain (if any)
+     * <li>Take into account costs due to economic cycle.
+     * </ul>
+     */
+    private void processTrackChange(TrackTile trBefore, TrackTile trAfter) {
+	int after = -1;
+	int before = -1;
         if (trAfter != null) {
 	    after = trAfter.getTrackRule();
         }
@@ -127,18 +149,11 @@ public class TrackMoveTransactionsGenerator {
     }
 
     /**
-     * Charge or credit player according to amount of track added/removed.
-     * TODO Remove this abomination! Track should be charged by using the
-     * TrackPieceViewer to determine the cost, which will
-     * <ul>
-     * <li>Take into account initial and final track configuration
-     * <li>Take into account initial and final track type
-     * <li>Take into account costs incurred due to difficult terrain (if any)
-     * <li>Take into account costs due to economic cycle.
-     * <li>Make these calculations available to other modules.
-     * </ul>
+     * Calculate the charge or credit to the  player according to amount of
+     * track added/removed.
      */
     private void generateTransactions() {
+	GameTime now = (GameTime) w.get(ITEM.TIME, principal);
         transactions.clear();
 
         //For each track type, generate a transaction if any pieces of the type have been added or removed.
@@ -148,9 +163,7 @@ public class TrackMoveTransactionsGenerator {
             if (0 != numberAdded) {
                 TrackRule rule = (TrackRule)w.get(KEY.TRACK_RULES, i,
 			Player.AUTHORITATIVE);
-                long m = rule.getPrice();
-                long total = -m * numberAdded;
-		GameTime now = (GameTime) w.get(ITEM.TIME, principal);
+                long total = -rule.getPrice() * numberAdded;
 		Transaction t = new AddItemTransaction(now,
 			AddItemTransaction.TRACK, i, numberAdded, total);
                 transactions.add(t);
@@ -161,16 +174,41 @@ public class TrackMoveTransactionsGenerator {
             if (0 != numberRemoved) {
                 TrackRule rule = (TrackRule)w.get(KEY.TRACK_RULES, i,
 			Player.AUTHORITATIVE);
-                long m = rule.getPrice();
 
-                long total = m * numberRemoved / 2;
-		GameTime now = (GameTime) w.get(ITEM.TIME, principal);
-
+                long total = rule.getPrice() * numberRemoved / 2;
 		Transaction t = new AddItemTransaction(now,
 			AddItemTransaction.TRACK,
                         i, -numberRemoved, total);
                 transactions.add(t);
             }
         }
+    }
+
+    /**
+     * Reset any stored state and associated transactions.
+     */
+    public void resetTransactions() {
+	Arrays.fill(trackAdded, 0);
+	Arrays.fill(trackRemoved, 0);
+    }
+
+    /**
+     * Add transactions to convert the track on the specified tile.
+     * @param ft the tile on which the track currently/will reside(s)
+     * @param config1 the initial track configuration
+     * @param config2 the final track configuration
+     */
+    public void addTrackChange(FreerailsTile ft, TrackTile config1, TrackTile
+	    config2) {
+	processTrackChange(config1, config2);
+    }
+
+    /**
+     * @return the calculated transactions.
+     */
+    public Transaction[] createTransactions() {
+	generateTransactions();
+	return (Transaction[])
+	    transactions.toArray(new Transaction[transactions.size()]);
     }
 }
