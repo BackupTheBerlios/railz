@@ -85,7 +85,7 @@ UpdatedComponent {
         ((CashJLabel) cashjLabel).setup(modelRoot);
         ((TrainsJTabPane) trainsJTabPane1).setup(modelRoot);
 	((BuildMenu) buildMenu).setup(modelRoot);
-	setTitle("JFreerails Client");
+	setTitle("Railz Client");
 	guiRoot.getMapMediator().setMainMap
 	    (mainMapView.getViewport(), mapViewJComponent);
     }

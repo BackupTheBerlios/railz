@@ -4,108 +4,108 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
-!=Project-Id-Version\: PACKAGE VERSION\nReport-Msgid-Bugs-To\: \nPOT-Creation-Date\: 2004-03-09 08\:46+0000\nPO-Revision-Date\: YEAR-MO-DA HO\:MI+ZONE\nLast-Translator\: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team\: LANGUAGE <LL@li.org>\nMIME-Version\: 1.0\nContent-Type\: text/plain; charset\=UTF-8\nContent-Transfer-Encoding\: 8bit\n
+!=Project-Id-Version\: PACKAGE VERSION\nReport-Msgid-Bugs-To\: \nPOT-Creation-Date\: 2004-03-09 15\:56+0000\nPO-Revision-Date\: YEAR-MO-DA HO\:MI+ZONE\nLast-Translator\: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team\: LANGUAGE <LL@li.org>\nMIME-Version\: 1.0\nContent-Type\: text/plain; charset\=UTF-8\nContent-Transfer-Encoding\: 8bit\n
 
-#: src/jfreerails/client/model/DebugModel.java:17
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/model/DebugModel.java:17
 !Show\ Frame\ Rate=
 
-#: src/jfreerails/client/view/DebugMenu.java:15
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/DebugMenu.java:15
 !Debug=
 
-#: src/jfreerails/launcher/ClientOptionsJPanel.java:47
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/ClientOptionsJPanel.java:47
 !Please\ set\ a\ name\ for\ your\ player=
 
-#: src/jfreerails/launcher/ClientOptionsJPanel.java:94
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/ClientOptionsJPanel.java:94
 !Player\ Details=
 
-#: src/jfreerails/launcher/ClientOptionsJPanel.java:95
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/ClientOptionsJPanel.java:95
 !Player\ name\:=
 
-#: src/jfreerails/launcher/ClientOptionsJPanel.java:99
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/ClientOptionsJPanel.java:99
 !Player1=
 
-#: src/jfreerails/launcher/ClientOptionsJPanel.java:117
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/ClientOptionsJPanel.java:117
 !Select\ Display\ Mode=
 
-#: src/jfreerails/launcher/ClientOptionsJPanel.java:128
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/ClientOptionsJPanel.java:128
 !Windowed=
 
-#: src/jfreerails/launcher/ClientOptionsJPanel.java:132
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/ClientOptionsJPanel.java:132
 !Full\ screen=
 
-#: src/jfreerails/launcher/Launcher.java:58
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/Launcher.java:58
 !Start=
 
-#: src/jfreerails/launcher/Launcher.java:60
-#: src/jfreerails/launcher/Launcher.java:293
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/Launcher.java:60
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/Launcher.java:293
 !Next...=
 
-#: src/jfreerails/launcher/Launcher.java:96
-#: src/jfreerails/launcher/Launcher.java:127
-#: src/jfreerails/launcher/Launcher.java:157
-!JFreerails\ Client=
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/Launcher.java:96
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/Launcher.java:127
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/Launcher.java:157
+!Railz\ Client=
 
-#: src/jfreerails/launcher/Launcher.java:197
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/Launcher.java:197
 !Loading\ saved\ player\ keys=
 
-#: src/jfreerails/launcher/Launcher.java:207
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/Launcher.java:207
 !Saving\ player\ keys=
 
-#: src/jfreerails/launcher/Launcher.java:212
-#: src/jfreerails/launcher/Launcher.java:215
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/Launcher.java:212
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/Launcher.java:215
 !Player\ KeyPair\ was\ corrupted\!=
 
-#: src/jfreerails/launcher/Launcher.java:269
-!JFreerails\ Launcher=
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/Launcher.java:269
+!Railz\ Launcher=
 
-#: src/jfreerails/launcher/Launcher.java:316
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/Launcher.java:316
 !Back...=
 
-#: src/jfreerails/launcher/LauncherPanel1.java:83
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/LauncherPanel1.java:83
 !Please\ enter\ a\ valid\ port\ number=
 
-#: src/jfreerails/launcher/LauncherPanel1.java:88
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/LauncherPanel1.java:88
 !Please\ enter\ a\ valid\ remote\ server\ address=
 
-#: src/jfreerails/launcher/LauncherPanel1.java:91
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/LauncherPanel1.java:91
 !Couldn't\ resolve\ remote\ server\ address=
 
-#: src/jfreerails/launcher/LauncherPanel1.java:139
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/LauncherPanel1.java:139
 !Select\ Game\ Type=
 
-#: src/jfreerails/launcher/LauncherPanel1.java:147
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/LauncherPanel1.java:147
 !Single-Player=
 
-#: src/jfreerails/launcher/LauncherPanel1.java:160
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/LauncherPanel1.java:160
 !Start\ a\ network\ game=
 
-#: src/jfreerails/launcher/LauncherPanel1.java:174
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/LauncherPanel1.java:174
 !Join\ a\ network\ game=
 
-#: src/jfreerails/launcher/LauncherPanel1.java:188
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/LauncherPanel1.java:188
 !Server\ only=
 
-#: src/jfreerails/launcher/LauncherPanel1.java:204
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/LauncherPanel1.java:204
 !Remote\ server\ address=
 
-#: src/jfreerails/launcher/LauncherPanel1.java:208
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/LauncherPanel1.java:208
 !IP\ Address\:=
 
-#: src/jfreerails/launcher/LauncherPanel1.java:227
-#: src/jfreerails/launcher/LauncherPanel1.java:256
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/LauncherPanel1.java:227
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/LauncherPanel1.java:256
 !Port\:=
 
-#: src/jfreerails/launcher/LauncherPanel1.java:255
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/LauncherPanel1.java:255
 !Server\ port=
 
-#: src/jfreerails/launcher/MapSelectionPanel.java:70
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/MapSelectionPanel.java:70
 !Load\ a\ saved\ game=
 
-#: src/jfreerails/launcher/MapSelectionPanel.java:75
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/MapSelectionPanel.java:75
 !Start\ a\ new\ map=
 
-#: src/jfreerails/launcher/MapSelectionPanel.java:89
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/MapSelectionPanel.java:89
 !Select\ Map=
 
-#: src/jfreerails/launcher/ServerStatusPanel.java:40
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/ServerStatusPanel.java:40
 !Server\ Status=

@@ -93,7 +93,7 @@ FreerailsProgressMonitor {
 		    p = getPlayer(cop.getPlayerName());
 		    gc = new GUIClient(sci, sci.getLocalConnection(), mode,
 			    cop.getDisplayMode(), Resources.get
-			    ("JFreerails Client"), this, p);
+			    ("Railz Client"), this, p);
 		} catch (IOException e) {
 		    setInfoText(e.getMessage());
 		    recover = true;
@@ -124,7 +124,7 @@ FreerailsProgressMonitor {
 		    p = getPlayer(cop.getPlayerName());
 		    gc = new GUIClient(sci, sci.getLocalConnection(), mode,
 			    cop.getDisplayMode(), Resources.get
-			    ("JFreerails Client"), this, p);
+			    ("Railz Client"), this, p);
 		} catch (IOException e) {
 		    recover = true;
 		    setInfoText(e.getMessage());
@@ -154,7 +154,7 @@ FreerailsProgressMonitor {
 		    gc = new
 			GUIClient(lp.getRemoteServerAddress().getAddress(),
 				mode, cop.getDisplayMode(), Resources.get
-				("JFreerails Client"), this, p);
+				("Railz Client"), this, p);
 		} catch (IOException e) {
 		    setInfoText(e.getMessage());
 		    recover = true;
@@ -266,7 +266,7 @@ FreerailsProgressMonitor {
 
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        setTitle(jfreerails.util.Resources.get("JFreerails Launcher"));
+        setTitle(jfreerails.util.Resources.get("Railz Launcher"));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 exitForm(evt);

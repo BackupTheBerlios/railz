@@ -131,7 +131,7 @@ public class ServerGameEngine implements GameModel, Runnable {
     }
 
     public void run() {
-        Thread.currentThread().setName("JFreerails server");
+        Thread.currentThread().setName("Railz server");
 
         /*
          * bump this threads priority so we always gain control.

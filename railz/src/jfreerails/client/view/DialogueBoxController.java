@@ -287,7 +287,7 @@ public class DialogueBoxController {
         contentPanel.setBorder(defaultBorder);
 	switch (guiRoot.getScreenHandler().getMode()) {
 	    case ScreenHandler.FULL_SCREEN:
-		JInternalFrame jif = new JInternalFrame("JFreerails Dialog",
+		JInternalFrame jif = new JInternalFrame("Railz Dialog",
 			true);
 		jif.getContentPane().add(contentPanel);
 		jif.pack();
@@ -299,7 +299,7 @@ public class DialogueBoxController {
 		jif.show();
 		break;
 	    default:
-		JDialog jd = new JDialog(frame, "JFreerails Dialog", false);
+		JDialog jd = new JDialog(frame, "Railz Dialog", false);
 		jd.getContentPane().add(contentPanel);
 		jd.pack();
 		jd.setLocation(frame.getX() +

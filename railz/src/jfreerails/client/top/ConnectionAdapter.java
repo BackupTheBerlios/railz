@@ -232,7 +232,7 @@ public class ConnectionAdapter implements UntriedMoveReceiver,
             }
 
             /* start the game loop */
-            String threadName = "JFreerails client: " + guiClient.getTitle();
+            String threadName = "Railz client: " + guiClient.getTitle();
             Thread t = new Thread(gameLoop, threadName);
             t.start();
         } catch (IOException e) {
