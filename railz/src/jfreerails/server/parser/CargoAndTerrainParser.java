@@ -216,7 +216,7 @@ public class CargoAndTerrainParser implements ContentHandler {
     public void parse(final InputSource input)
         throws SAXException, javax.xml.parsers.ParserConfigurationException, 
             java.io.IOException {
-        parse(input, this);
+		    parse(input, this);
     }
 
     /**
@@ -263,7 +263,13 @@ public class CargoAndTerrainParser implements ContentHandler {
         final CargoAndTerrainHandler handler)
         throws SAXException, javax.xml.parsers.ParserConfigurationException, 
             java.io.IOException {
-        parse(new InputSource(url.toExternalForm()), handler);
+		try {
+		    parse(new InputSource(url.toExternalForm()), handler);
+		} catch (SAXParseException e) {
+		    System.out.println("Parse exception " + e.getMessage() +
+			    " at line " + e.getLineNumber());
+		    throw e;
+		}
     }
 
     private static void parse(final InputSource input,

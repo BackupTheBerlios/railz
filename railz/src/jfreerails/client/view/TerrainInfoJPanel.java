@@ -76,7 +76,7 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.GridBagLayout());
 
-        terrainImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jfreerails/client/graphics/terrain/City_0.png")));
+        terrainImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jfreerails/client/graphics/terrain/Clear_0000.png")));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(8, 8, 4, 4);
         add(terrainImage, gridBagConstraints);

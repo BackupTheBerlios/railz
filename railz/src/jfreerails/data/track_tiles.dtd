@@ -33,12 +33,12 @@
     maintenance CDATA #REQUIRED
   >
 
-  <!ELEMENT TrackPieceTemplate>
+  <!ELEMENT TrackPieceTemplate EMPTY>
   <!--
-    -- trackTemplate is a 9 bit binary number which encodes a track template.
-    -- A 1 indicates the presence of track.
-    -- Bit 8(MSB)   7	6   5	4   3	2   1	0(LSB)
-    --     NW	    N	NE  W	N/A E	SW  S	SE
+    ++ trackTemplate is a 9 bit binary number which encodes a track template.
+    ++ A 1 indicates the presence of track.
+    ++ Bit 8(MSB)   7	6   5	4   3	2   1	0(LSB)
+    ++     NW	    N	NE  W	N/A E	SW  S	SE
     -->
 
   <!ATTLIST TrackPieceTemplate

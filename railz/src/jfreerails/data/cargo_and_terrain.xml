@@ -17,21 +17,20 @@
    <Terrain_Types>
 <!-- Don't include slums for now, LL
       <Tile id="slums" Category="Urban" rgb="0" right-of-way="0"/>
+      <Tile id="Terminal" Category="Country" rgb="1" baseValue="1000" />
 -->
-      <Tile id="Clear" Category="Country" rgb="00b400" baseValue="2000"/>
-      <Tile id="Farm" Category="Country" rgb="48fc48" baseValue="3000"/>
-      <Tile id="Desert" Category="Country" rgb="b42400" baseValue="500"/>
-      <Tile id="Ocean" Category="Ocean" rgb="0000b4" baseValue="0"/>
-      <Tile id="River" Category="River" rgb="0048d8" baseValue="0"/>
-      <Tile id="Terminal" Category="Special" rgb="1" baseValue="1000"/>
-      <Tile id="Jungle" Category="Country" rgb="4890fc" baseValue="1500"/>
-      <Tile id="Hills" Category="Hill" rgb="b4b4b4" baseValue="1500"/>
-      <Tile id="Foothills" Category="Hill" rgb="90d8fc" baseValue="2000"/>
-      <Tile id="Mountain" Category="Hill" rgb="ffffff" baseValue="1000"/>
+      <Tile id="Clear" Category="Country" rgb="00b400" baseValue="2000" />
+      <Tile id="Desert" Category="Country" rgb="b42400" baseValue="500" />
+      <Tile id="Ocean" Category="Ocean" rgb="0000b4" baseValue="0" />
+      <Tile id="River" Category="River" rgb="0048d8" baseValue="0" />
+      <Tile id="Jungle" Category="Country" rgb="4890fc" baseValue="1500" />
+      <Tile id="Hills" Category="Hill" rgb="b4b4b4" baseValue="1500" />
+      <Tile id="Foothills" Category="Hill" rgb="90d8fc" baseValue="2000" />
+      <Tile id="Mountain" Category="Hill" rgb="ffffff" baseValue="1000" />
    </Terrain_Types>
    <Building_Types>
       <Building_Type id="Refinery" category="Industry"
-      baseValue="6000">
+      baseValue="6000" maintenance="0">
       <!-- rgb="7" -->
          <Converts input="Oil" output="Petroleum" />
       </Building_Type>
@@ -90,6 +89,11 @@
       <!-- rgb="4" -->
          <Produces Cargo="Livestock" Rate="160" />
       </Building_Type>
+      <Building_Type id="Farm" baseValue="3000" category="Resource"
+	maintenance="0">
+      <!-- rgb="48fc48" -->
+	<Produces Cargo="Grain" Rate="100" />
+	</Building_Type>
       <Building_Type id="Grain_Elevator" baseValue="3000" category="Resource"
       maintenance="0">
       <!-- rgb="fcfc48" -->

@@ -28,7 +28,8 @@
 
 <!ELEMENT Terrain_Types (Tile)*>
 
-<!ELEMENT Tile>
+<!ELEMENT Tile EMPTY>
+
 <!ATTLIST Tile
     Category (River | Ocean | Hill | Country) #REQUIRED
     rgb CDATA #REQUIRED
@@ -42,8 +43,8 @@
 	id ID #REQUIRED
 	baseValue CDATA #REQUIRED
 	maintenance CDATA #REQUIRED
-	stationRadius CDATA
-	category (Urban | Resource | Industry | Station) CDATA #REQUIRED
+	stationRadius CDATA #IMPLIED
+	category (Urban | Resource | Industry | Station) #REQUIRED
 >
 
 <!ELEMENT Types (Cargo_Types, Terrain_Types, Building_Types)>

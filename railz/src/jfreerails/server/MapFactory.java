@@ -74,7 +74,8 @@ public class MapFactory {
 
                 if (null == type) {
                     throw new NullPointerException(
-                        "There is no terrain type mapped to rgb value " + rgb +
+			"There is no terrain type mapped to rgb value " + 
+			Integer.toHexString(rgb) +
                         " at location " + x + ", " + y);
                 }
 

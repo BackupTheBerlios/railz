@@ -126,6 +126,7 @@ public class ChangeTrackPieceMoveTest extends AbstractMoveTestCase {
 
         //Try building the simplest piece of track.
         newConfig = CompassPoints.NORTH;
+	getWorld().getTile(0, 0).setOwner(testPlayer.getPrincipal());
         oldTrackPiece = getWorld().getTile(0, 0).getTrackTile();
 
         newTrackPiece = TrackTile.createTrackTile(getWorld(), newConfig, 0);
@@ -158,6 +159,7 @@ public class ChangeTrackPieceMoveTest extends AbstractMoveTestCase {
         TrackMove move;
         MoveStatus moveStatus;
 
+	getWorld().getTile(0, 0).setOwner(testPlayer.getPrincipal());
         //Try building the simplest piece of track.
         newConfig = CompassPoints.NORTH;
         oldTrackPiece = getWorld().getTile(0, 0).getTrackTile();
@@ -175,6 +177,7 @@ public class ChangeTrackPieceMoveTest extends AbstractMoveTestCase {
 
         newTrackPiece = TrackTile.createTrackTile(getWorld(), newConfig, 0);
 
+	getWorld().getTile(0, 0).setOwner(testPlayer.getPrincipal());
         Move move = new ChangeTrackPieceMove(oldTrackPiece, newTrackPiece,
                 new Point(0, 0), testPlayer.getPrincipal());
 

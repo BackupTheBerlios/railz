@@ -28,7 +28,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
+import org.xml.sax.SAXParseException;
 
 /**
  * The class reads XML documents according to specified DTD and
@@ -195,7 +195,13 @@ final public class Track_TilesParser implements org.xml.sax.ContentHandler {
     public static void parse(final java.net.URL url,
         final Track_TilesHandler handler, final Track_TilesParslet parslet)
         throws SAXException, ParserConfigurationException, IOException {
-        parse(new InputSource(url.toExternalForm()), handler, parslet);
+	    try {
+		parse(new InputSource(url.toExternalForm()), handler, parslet);
+	    } catch (SAXParseException e) {
+		System.err.println("Parse exception " + e.getMessage() + 
+			" at line " + e.getLineNumber());
+		throw e;
+	    }
     }
 
     private static void parse(final InputSource input,

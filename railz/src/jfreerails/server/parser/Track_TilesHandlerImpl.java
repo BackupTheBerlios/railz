@@ -90,7 +90,8 @@ public class Track_TilesHandlerImpl implements Track_TilesHandler {
     }
 
     public void end_TrackType() throws SAXException {
-	boolean[] buildPermissions = new boolean[TerrainType.MAX_CATEGORIES];
+	boolean[] buildPermissions = new boolean[TerrainType.MAX_CATEGORIES +
+	    1];
 	Iterator it = terrainTypes.iterator();
 	while (it.hasNext()) {
 	    Integer type = (Integer) it.next();

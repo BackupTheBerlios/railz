@@ -10,7 +10,7 @@
     <Component class="javax.swing.JLabel" name="terrainImage">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.openide.explorer.propertysheet.editors.IconEditor">
-          <Image iconType="3" name="/jfreerails/client/graphics/terrain/City_0.png"/>
+          <Image iconType="3" name="/jfreerails/client/graphics/terrain/Clear_0000.png"/>
         </Property>
       </Properties>
       <Constraints>
