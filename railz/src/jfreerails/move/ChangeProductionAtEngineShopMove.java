@@ -23,8 +23,7 @@ package jfreerails.move;
 
 import jfreerails.world.station.ProductionAtEngineShop;
 import jfreerails.world.station.StationModel;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.World;
+import jfreerails.world.top.*;
 import jfreerails.world.player.FreerailsPrincipal;
 import jfreerails.world.player.Player;
 
@@ -57,6 +56,15 @@ public class ChangeProductionAtEngineShopMove implements Move {
     }
 
     public MoveStatus tryDoMove(World w, FreerailsPrincipal p) {
+	/* Player must have at least 2 stations */
+	NonNullElements i = new NonNullElements(KEY.STATIONS, w, p);
+	int n = 0;
+	while (i.next() && n < 2) 
+	    n++;
+	
+	if (n < 2)
+	    return MoveStatus.moveFailed("Need at least 2 stations");
+
         return tryMove(w, before, p);
     }
 

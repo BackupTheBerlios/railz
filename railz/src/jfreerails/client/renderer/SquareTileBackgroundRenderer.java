@@ -39,11 +39,12 @@ final public class SquareTileBackgroundRenderer
     private MapLayerRenderer mapView;
 
     protected void paintBufferRectangle(int x, int y, int width, int height) {
-        Graphics gg = bg.create();
-        gg.setClip(x, y, width, height);
-        gg.translate(-bufferRect.x, -bufferRect.y);
-        mapView.paintRect(gg, bufferRect);
-	gg.dispose();
+        //Graphics gg = bg.create();
+        bg.setClip(x, y, width, height);
+        bg.translate(-bufferRect.x, -bufferRect.y);
+        mapView.paintRect(bg, bufferRect);
+        bg.translate(bufferRect.x, bufferRect.y);
+	//gg.dispose();
     }
 
     public SquareTileBackgroundRenderer(MapLayerRenderer mv, float _scale) {
@@ -55,9 +56,10 @@ final public class SquareTileBackgroundRenderer
     }
 
     public void refreshTile(int x, int y) {
-        Graphics gg = bg.create();
-        gg.translate(-bufferRect.x, -bufferRect.y);
-        mapView.paintTile(gg, x, y);
-	gg.dispose();
+      //  Graphics gg = bg.create();
+        bg.translate(-bufferRect.x, -bufferRect.y);
+        mapView.paintTile(bg, x, y);
+        bg.translate(bufferRect.x, bufferRect.y);
+	// gg.dispose();
     }
 }

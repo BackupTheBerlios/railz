@@ -56,15 +56,6 @@ public abstract class BufferedTiledBackgroundRenderer
     protected Graphics bg;
 
     /**
-     * Used to draw on the backbuffer. It is translated so that to its users,
-     * it appears they are drawing on the actual map, not a buffered region
-     * of the map.
-     *
-     *  translatedBg equals bg.translate(-bufferRect.x , -bufferRect.y);
-     */
-    protected Graphics translatedBg;
-
-    /**
      *  The bounds and location of the map region that is stored in the
      *  offscreen Image backgraoundBuffer
      */
@@ -155,13 +146,6 @@ public abstract class BufferedTiledBackgroundRenderer
         }
 
         bg = backgroundBuffer.getGraphics();
-
-        if (translatedBg != null) {
-            translatedBg.dispose();
-        }
-
-        translatedBg = bg.create();
-        translatedBg.translate(-bufferRect.x, -bufferRect.y);
         bg.clearRect(0, 0, w, h);
         refreshBackground();
     }

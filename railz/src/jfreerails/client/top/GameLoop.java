@@ -29,7 +29,7 @@ import jfreerails.util.GameModel;
 final public class GameLoop implements Runnable {
     boolean gameNotDone = false;
     final ScreenHandler screenHandler;
-    final static int TARGET_FPS = 60;
+    final static int TARGET_FPS = 30;
     private final GameModel model;
     private Integer loopMonitor = new Integer(0);
 

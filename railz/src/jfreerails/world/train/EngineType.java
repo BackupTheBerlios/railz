@@ -30,7 +30,7 @@ final public class EngineType implements FreerailsSerializable {
     /**
      * This is the conversion factor between "real" units and game-world ones
      */
-    public static final int TILE_HOURS_PER_MILE_BIGTICKS = 20;
+    public static final int TILE_HOURS_PER_MILE_BIGTICKS = 25;
 
     private final String engineTypeName;
     private final int powerAtDrawbar;

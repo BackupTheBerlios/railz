@@ -57,9 +57,9 @@ public class WagonAndEngineTypesFactory {
 
         //Engine types
         EngineType[] engineTypes = new EngineType[] {
-                new EngineType("Grasshopper", 1000, 10000, 10,
+                new EngineType("Grasshopper", 1000, 10000, 30,
                     5000),
-                new EngineType("Norris", 1000, 10000, 15,
+                new EngineType("Norris", 1000, 10000, 35,
                     8000),
             };
 
