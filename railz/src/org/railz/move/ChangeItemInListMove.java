@@ -60,15 +60,6 @@ public abstract class ChangeItemInListMove implements ListMove {
 	this.principal = principal;
     }
 
-    /**
-     * @deprecated in favour of ChangItemInListMove(KEY, int,
-     * FreerailsSerializable, FreerailsSerializable, FreerailsPrincipal)
-     */
-    protected ChangeItemInListMove(KEY k, int index,
-        FreerailsSerializable before, FreerailsSerializable after) {
-	this(k, index, before, after, Player.NOBODY);
-    }
-
     public MoveStatus tryDoMove(World w, FreerailsPrincipal p) {
         return tryMove(this.after, this.before, w, p);
     }

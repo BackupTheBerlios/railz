@@ -42,14 +42,6 @@ public class NonNullElements implements WorldIterator {
     int row = BEFORE_FIRST;
     int size = -1;
 
-    /**
-     * @deprecated in favour of NonNullElements(KEY, ReadOnlyWorld,
-     * FreerailsPrincipal)
-     */
-    public NonNullElements(KEY k, ReadOnlyWorld world) {
-        this(k, world, Player.NOBODY);
-    }
-
     public NonNullElements(KEY k, ReadOnlyWorld world, FreerailsPrincipal p) {
         key = k;
         w = world;

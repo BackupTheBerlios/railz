@@ -52,14 +52,6 @@ public class AddItemToListMove implements ListMove {
         return listKey;
     }
 
-    /**
-     * @deprecated in favour of AddItemToListMove(KEY, int,
-     * FreerailsSerializable, FreerailsPrincipal)
-     */
-    protected AddItemToListMove(KEY key, int i, FreerailsSerializable item) {
-	this(key, i, item, Player.NOBODY);
-    }
-
     protected AddItemToListMove(KEY key, int i, FreerailsSerializable item,
 	    FreerailsPrincipal principal) {
         this.listKey = key;
