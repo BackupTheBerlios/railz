@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
-!=Project-Id-Version\: PACKAGE VERSION\nReport-Msgid-Bugs-To\: \nPOT-Creation-Date\: 2004-04-04 13\:34+0100\nPO-Revision-Date\: YEAR-MO-DA HO\:MI+ZONE\nLast-Translator\: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team\: LANGUAGE <LL@li.org>\nMIME-Version\: 1.0\nContent-Type\: text/plain; charset\=UTF-8\nContent-Transfer-Encoding\: 8bit\n
+!=Project-Id-Version\: PACKAGE VERSION\nReport-Msgid-Bugs-To\: \nPOT-Creation-Date\: 2004-04-05 23\:19+0100\nPO-Revision-Date\: YEAR-MO-DA HO\:MI+ZONE\nLast-Translator\: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team\: LANGUAGE <LL@li.org>\nMIME-Version\: 1.0\nContent-Type\: text/plain; charset\=UTF-8\nContent-Transfer-Encoding\: 8bit\n
 
 #: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/model/DebugModel.java:34
 !Client\ move\ debug=
@@ -223,6 +223,9 @@
 
 #: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/ProfitLossJPanel.java:484
 !Profit\ and\ Loss\ Statement\ -\ =
+
+#: /Users/bob/programs/freerails/dev/railz/src/jfreerails/client/view/TrainScheduleJPanel.java:265
+!Select\ a\ Station=
 
 #: /Users/bob/programs/freerails/dev/railz/src/jfreerails/launcher/ClientOptionsJPanel.java:64
 !Please\ set\ a\ name\ for\ your\ player=

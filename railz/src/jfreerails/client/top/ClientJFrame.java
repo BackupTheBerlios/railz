@@ -103,7 +103,7 @@ UpdatedComponent {
 	    ((OverviewMapJComponent) mapOverview).setup(modelRoot);
 	    ((DateJLabel) datejLabel).setup(modelRoot);
 	    ((CashJLabel) cashjLabel).setup(modelRoot);
-	    ((TrainsJTabPane) trainsJTabPane1).setup(modelRoot);
+	    ((TrainsJTabPane) trainsJTabPane1).setup(modelRoot, guiRoot);
 	    ((BuildMenu) buildMenu).setup(modelRoot);
 	    setTitle("Railz Client");
 	    guiRoot.getMapMediator().setMainMap

@@ -179,7 +179,7 @@ public class DialogueBoxController {
         });
         
         trainDialogueJPanel = new TrainDialogueJPanel();
-        trainDialogueJPanel.setup(world, viewLists, modelRoot);
+        trainDialogueJPanel.setup(modelRoot, guiRoot);
         trainDialogueJPanel.setTrainDetailsButtonActionListener( new ActionListener() {            
             public void actionPerformed(ActionEvent arg0) {
                 closeContent();
@@ -343,8 +343,6 @@ public class DialogueBoxController {
         }
     }
     
-    
-    
     public void setDefaultFocusOwner(Component defaultFocusOwner) {
         this.defaultFocusOwner = defaultFocusOwner;
     }
@@ -368,5 +366,35 @@ public class DialogueBoxController {
             this.showTerrainInfo(x, y);
         }
     }
-    
+
+    public Component createDialog(JComponent content, String title) {
+	Component dialog;
+	switch (guiRoot.getScreenHandler().getMode()) {
+	    case ScreenHandler.FULL_SCREEN:
+		JInternalFrame jif = new JInternalFrame(title,
+			true);
+		jif.getContentPane().add(content);
+		jif.pack();
+		jif.setLocation((frame.getWidth() - jif.getWidth()) / 2,
+			(frame.getHeight() - jif.getHeight()) / 2);
+
+		frame.getLayeredPane().add(jif, JLayeredPane.MODAL_LAYER);
+		jif.setDefaultCloseOperation(jif.DISPOSE_ON_CLOSE);
+		dialog = jif;
+		break;
+	    default:
+		JDialog jd = new JDialog(frame, title, false);
+		jd.getContentPane().add(content);
+		jd.pack();
+		jd.setLocation(frame.getX() +
+			(frame.getWidth() - jd.getWidth()) / 2,
+		       	frame.getY() +
+			(frame.getHeight() - jd.getHeight()) / 2);
+		jd.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog = jd;
+		break;
+	}
+	dialog.setVisible(true);
+	return dialog;
+    }
 }

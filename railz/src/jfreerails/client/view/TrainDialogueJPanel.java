@@ -172,14 +172,12 @@ WorldListListener {
         }
     }//GEN-LAST:event_nextJButtonActionPerformed
     
-    public void setup(jfreerails.world.top.ReadOnlyWorld w,
-	    jfreerails.client.renderer.ViewLists vl, ModelRoot
-	    mr) {
-	wi = new NonNullElements(KEY.TRAINS, w, mr.getPlayerPrincipal());
-        newTrainScheduleJPanel1.setup(mr);
-        trainDetailsJPanel1.setup(mr, null);
-        this.w = w;
+    public void setup(ModelRoot mr, GUIRoot gr) {
 	modelRoot = mr;
+        w = modelRoot.getWorld();
+	wi = new NonNullElements(KEY.TRAINS, w, mr.getPlayerPrincipal());
+        newTrainScheduleJPanel1.setup(mr, gr);
+        trainDetailsJPanel1.setup(mr, null);
 	addComponentListener(componentListener);
     }
     

@@ -68,7 +68,6 @@ public class CargoWaitingAndDemandedJPanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.GridBagLayout());
 
-        setPreferredSize(new java.awt.Dimension(100, 200));
         stationName.setText("Station Name");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -93,9 +92,8 @@ public class CargoWaitingAndDemandedJPanel extends javax.swing.JPanel {
                 "Title 1", "Title 2"
             }
         ));
-        waitingJTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        waitingJTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         waitingJTable.setFocusable(false);
-        waitingJTable.setMinimumSize(new java.awt.Dimension(30, 32));
         waitingJTable.setRequestFocusEnabled(false);
         waitingJTable.setRowSelectionAllowed(false);
         waitingJTable.setShowHorizontalLines(false);
