@@ -28,6 +28,7 @@ import java.util.Calendar;
 
 import javax.swing.JLabel;
 
+import org.railz.util.*;
 import org.railz.client.model.ModelRoot;
 import org.railz.client.renderer.ViewLists;
 import org.railz.world.common.GameCalendar;
@@ -58,6 +59,10 @@ public class DateJLabel extends JLabel {
 			Calendar c = gameCalendar.getCalendar(time);
 				    
 			String s = dateFormat.format(c.getTime());
+
+			if (gameCalendar.getTicksPerSecond() == 0)
+			    s += " " + Resources.get("PAUSED");
+
 			super.setText(s);
 		}
 		super.paint(g);

@@ -101,7 +101,7 @@ class WorldFactory {
         new BuildingTilePositioner(w);
 
         //Set the time..
-        w.set(ITEM.CALENDAR, new GameCalendar(30, 1840));
+        w.set(ITEM.CALENDAR, new GameCalendar(30, 1840, 0));
         w.set(ITEM.TIME, new GameTime(0));
 
 	//Create the economy

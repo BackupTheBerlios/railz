@@ -158,8 +158,9 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
                     forwardMove(new UndoneMove(attempted), ms);
                     n++;
                 } else {
-		    System.err.println("FAILED to undo move " + attempted
-			    + " because " + ms);
+		    if (debug)
+			System.err.println("FAILED to undo move " + attempted
+				+ " because " + ms);
 		    assert false;
 		}
             }
@@ -254,22 +255,17 @@ public class NonAuthoritativeMoveExecuter implements UncommittedMoveReceiver,
 		}
 		GameTime t = (GameTime) world.get(ITEM.TIME,
 			Player.AUTHORITATIVE);
-		TrainPath tp1 = null, tp2 = null;
-		if (move instanceof ChangeTrainMove) {
-		    tp1 = ((TrainModel) world.get(KEY.TRAINS,
-				((ChangeTrainMove) move).getIndex(),
-				move.getPrincipal())).getPosition(t);
-		}
 		ms = move.doMove(world, move.getPrincipal());
-		if (move instanceof ChangeTrainMove) {
-		    tp2 = ((TrainModel) world.get
-			    (KEY.TRAINS, ((ChangeTrainMove) move).getIndex(),
-			     move.getPrincipal()))
-			.getPosition(t);
-		    System.out.println("before = " + tp1 + ", after = " + tp2);
-		}
 
                 if (ms != MoveStatus.MOVE_OK) {
+		    if (move instanceof TimeTickMove &&
+			    ((TimeTickMove) move).getNewTime().getTime() <=
+			    t.getTime()) {
+			// we have already received this TimeTick
+			// this can occur when we load the game initially
+			return;
+		    }
+
                     if (debug) {
                         System.out.println("Queueing blocked move " +
 			       move + " - " + ms.toString());

@@ -24,11 +24,18 @@ import java.util.GregorianCalendar;
  * measured in the game world.
  */
 final public class GameCalendar implements FreerailsSerializable {
-    private static final long serialVersionUID = -1153667197832054475L;
+    private static final long serialVersionUID = -2882743313864450614L;
 
     private final int ticksPerDay;
     private final int startYear;
     private GregorianCalendar t0;
+    
+    /** number of ticks per real-world second */
+    private int ticksPerSecond;
+
+    public int hashCode() {
+	return ticksPerDay ^ startYear;
+    }
 
     public GregorianCalendar getCalendar(GameTime time) {
 	GregorianCalendar c = new GregorianCalendar(startYear, 0, 1);
@@ -42,22 +49,31 @@ final public class GameCalendar implements FreerailsSerializable {
 		    (1000 * 60 * 60 * 24 / ticksPerDay)));
     }
 
-    public GameCalendar(int ticksPerDay, int startYear) {
-        this.ticksPerDay = ticksPerDay;
-        this.startYear = startYear;
-	t0 = new GregorianCalendar(startYear, 0, 1);
+    public GameCalendar(GameCalendar gc, int ticksPerSecond) {
+	this(gc.ticksPerDay, gc.startYear, gc.t0, ticksPerSecond);
+    }
+
+    public GameCalendar(int ticksPerDay, int startYear, int ticksPerSecond) {
+        this(ticksPerDay, startYear, new GregorianCalendar(startYear, 0, 1),
+		ticksPerSecond);
+    }
+
+    private GameCalendar(int ticksPerDay, int startYear, GregorianCalendar t0,
+	    int ticksPerSecond) {
+	this.ticksPerDay = ticksPerDay;
+	this.startYear = startYear;
+	this.t0 = t0;
+	this.ticksPerSecond = ticksPerSecond;
     }
 
     public boolean equals(Object o) {
         if (o instanceof GameCalendar) {
             GameCalendar test = (GameCalendar)o;
 
-            if (this.startYear != test.startYear ||
-                    this.ticksPerDay != test.ticksPerDay) {
-                return false;
-            } else {
-                return true;
-            }
+            return startYear == test.startYear &&
+                    ticksPerDay == test.ticksPerDay &&
+		    ticksPerSecond == test.ticksPerSecond &&
+		    t0.equals(test.t0);
         } else {
             return false;
         }
@@ -76,5 +92,9 @@ final public class GameCalendar implements FreerailsSerializable {
 	in.defaultReadObject();
 	if (t0 == null)
 	    t0 = new GregorianCalendar(startYear, 0, 1);
+    }
+
+    public int getTicksPerSecond() {
+	return ticksPerSecond;
     }
 }

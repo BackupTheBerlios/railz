@@ -28,6 +28,9 @@ import java.util.Enumeration;
 
 import org.railz.client.common.*;
 import org.railz.controller.ServerControlInterface;
+import org.railz.world.common.*;
+import org.railz.world.player.*;
+import org.railz.world.top.*;
 
 /**
  * Exposes the ServerControlInterface to client UI implementations
@@ -231,11 +234,26 @@ public class ServerControlModel {
         }
 
         newGameAction.setEnabled(enabled);
+
+	if (modelRoot.getWorld() != null) {
+	    GameCalendar gc = (GameCalendar)
+		modelRoot.getWorld().get(ITEM.CALENDAR, Player.AUTHORITATIVE);
+	    int ticks = gc.getTicksPerSecond();
+	    if (ticks == 0) {
+		targetTicksPerSecondActions.setSelectedItem("Pause");
+	    } else if (ticks <= 10) {
+		targetTicksPerSecondActions.setSelectedItem("Slow");
+	    } else if (ticks <= 30) {
+		targetTicksPerSecondActions.setSelectedItem("Moderate");
+	    } else if (ticks <= 50) {
+		targetTicksPerSecondActions.setSelectedItem("Fast");
+	    }
+	}
     }
 
     public ServerControlModel(ServerControlInterface i, ModelRoot mr) {
-        setServerControlInterface(i);
 	modelRoot = mr;
+        setServerControlInterface(i);
     }
 
     /**

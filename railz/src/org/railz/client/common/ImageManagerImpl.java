@@ -78,8 +78,9 @@ public class ImageManagerImpl implements ImageManager {
         if (null == url) {
             throw new IOException("Couldn't find: " + read);
         }
-	System.out.println("fetching " + read);
-	ImageIO.setUseCache(false);
+	// XXX This should improve performance, however uncommenting this line
+	// causes exceptions (due to a bug in the JDK?)
+	// ImageIO.setUseCache(false);
         BufferedImage tempImage = ImageIO.read(url);
 	BufferedImage compatibleImage =
 	    defaultConfiguration.createCompatibleImage(tempImage.getWidth(

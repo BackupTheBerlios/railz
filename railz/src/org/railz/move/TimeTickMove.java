@@ -28,6 +28,10 @@ public class TimeTickMove implements Move {
     private GameTime oldTime = null;
     private GameTime newTime = null;
 
+    public GameTime getNewTime() {
+	return newTime;
+    }
+
     public static TimeTickMove getMove(ReadOnlyWorld w) {
         TimeTickMove timeTickMove = new TimeTickMove();
         timeTickMove.oldTime = (GameTime)w.get(ITEM.TIME);

@@ -27,8 +27,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import org.railz.controller.*;
-import org.railz.move.ChangeProductionAtEngineShopMove;
-import org.railz.move.TimeTickMove;
+import org.railz.move.*;
 import org.railz.util.FreerailsProgressMonitor;
 import org.railz.util.GameModel;
 import org.railz.world.common.*;
@@ -100,9 +99,17 @@ public class ServerGameEngine implements GameModel, Runnable,
     }
 
     public synchronized void setTargetTicksPerSecond(int targetTicksPerSecond) {
+	if (this.targetTicksPerSecond == 0) {
+	    baseTime = System.currentTimeMillis();
+	} else {
+	    baseTime = frameStartTime;
+	}
         this.targetTicksPerSecond = targetTicksPerSecond;
 	n = 0;
-	baseTime = frameStartTime;
+	GameCalendar oldCal = (GameCalendar) world.get(ITEM.CALENDAR,
+		Player.AUTHORITATIVE);
+	GameCalendar newCal = new GameCalendar(oldCal, targetTicksPerSecond);
+	moveExecuter.processMove(new ChangeCalendarMove(oldCal, newCal));
     }
 
     /**

@@ -138,7 +138,7 @@ class TrainController {
 	NonNullElements i = null;
 	boolean flag = false;
 	StationModel sm;
-	while (j.next()) {
+	while (j.next() && ! flag) {
 	    sp = ((Player) j.getElement()).getPrincipal();
 	    i = new NonNullElements(KEY.STATIONS, world, sp);
 	    while (i.next()) {
