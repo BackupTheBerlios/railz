@@ -1,34 +1,39 @@
 Release Notes
 =============
 
-These are the release notes for the 0.2.2 Development build of Railz.
+These are the release notes for the 0.2.3 Development build of Railz.
 
 New Features since the last release:
 ====================================
-Profit and Loss Dialog
-Localised Date in GUI
-Load & Save File chooser dialogs.
-Multiplayer tiles, track, station and trains.
-Terrain tiles now cost different amounts of money to purchase before building
-track.
-Tooltips on track purchase buttons.
+Balance sheet
+Bank account interest
+Train maintenance charges
+Track maintenance charges
+Improved client message display
+Improved station selector
+Bug fixes
 
-Bugs fixed since last release:
-==============================
-1603	Stations generate too much cargo
-1604	Train Schedule Tab sizes layout is bad
-1611	Build Station/Track buttons in tab-pane are too big
+Bugs/features fixed since last release:
+=======================================
+2 Train Schedule Tab sizes layout is bad
+4 Select station popup looks awful
+10 station build buttons should show station prices 
+13 overview map is too big 
+15 station info states cars per year when tonnes per year 
+16 income tax not implemented 
+18 default directory for saving is in c:\windows 
+19 Images in CVS are stored as text 
+20 Server cannot send user messages to client 
+22 Train purchase dialog doesn't show train maintenance cost 
+24 All display mode selections result in same res being applied
 
 Known Bugs
 ==========
-
-001605 Train list button on schedule pane doesn't work
-001609 Top down and side-on train graphics don't match
-001694 train schedule dialog doesn't sccale gracefully
-001695 too easy to accidentally build track by clicking on map
-001697 freight and passenger revenues are not separated
-001699 overview map is too big
-001701 station info states cars per year when tonnes per year
-001702 income tax not implemented
-001703 resources don't all fit on station info tab
-001721 default directory for saving is in c:\windows
+3 Train list button on schedule pane doesn't work
+5 Station info tab prev/next buttons don't use icons
+6 Top-down engine gfx are just black rectangles
+7 Help and Build Menus missing accelerators
+8 train schedule dialog doesn't sccale gracefully
+9 too easy to accidentally build track by clicking on map
+11 freight and passenger revenues are not separated
+17 resources don't all fit on station info tab
