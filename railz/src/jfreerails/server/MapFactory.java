@@ -19,7 +19,7 @@
  * Created on 22-Mar-2003
  *
  */
-package jfreerails.server;
+package org.railz.server;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -27,11 +27,11 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
-import jfreerails.util.FreerailsProgressMonitor;
-import jfreerails.world.terrain.TerrainType;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.WorldImpl;
-import jfreerails.world.track.FreerailsTile;
+import org.railz.util.FreerailsProgressMonitor;
+import org.railz.world.terrain.TerrainType;
+import org.railz.world.top.KEY;
+import org.railz.world.top.WorldImpl;
+import org.railz.world.track.FreerailsTile;
 
 
 /**

@@ -14,7 +14,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.common;
+package org.railz.client.common;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -96,7 +96,7 @@ public final class FileUtils {
     private static File keysToFile(String dataType, String dataKey,
         String fileName) {
         /* the user's home directory is in the user.home system property */
-        String path = ".jfreerails" + File.separator + "client" +
+        String path = ".org.railz" + File.separator + "client" +
             File.separator + dataType + File.separator + dataKey +
             File.separator + fileName;
         path = System.getProperty("user.home") + File.separator + path;

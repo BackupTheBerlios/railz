@@ -18,11 +18,11 @@
 /**
  * @author rtuck99@users.berlios.de
  */
-package jfreerails.world.accounts;
+package org.railz.world.accounts;
 
-import jfreerails.world.common.*;
-import jfreerails.world.player.*;
-import jfreerails.world.top.*;
+import org.railz.world.common.*;
+import org.railz.world.player.*;
+import org.railz.world.top.*;
 public class BankAccountViewer {
     ReadOnlyWorld world;
     BankAccount bankAccount;

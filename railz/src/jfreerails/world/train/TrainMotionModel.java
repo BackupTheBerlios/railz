@@ -14,12 +14,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package jfreerails.world.train;
+package org.railz.world.train;
 
 import java.awt.Point;
 import java.util.HashMap;
 
-import jfreerails.world.common.*;
+import org.railz.world.common.*;
 /**
  * This class encapsulates the transient (non-serializable) portion of a
  * trains position and movement.

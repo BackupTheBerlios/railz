@@ -19,12 +19,12 @@
  * Created on 26-May-2003
  *
  */
-package jfreerails.move;
+package org.railz.move;
 
 import java.util.ArrayList;
-import jfreerails.world.top.World;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
+import org.railz.world.top.World;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
 
 /**
  *

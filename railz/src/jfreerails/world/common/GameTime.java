@@ -19,7 +19,7 @@
  * Created on 01-Jun-2003
  *
  */
-package jfreerails.world.common;
+package org.railz.world.common;
 
 
 /**This class represents a specific instant in time during a game.

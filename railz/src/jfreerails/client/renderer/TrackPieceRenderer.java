@@ -15,10 +15,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.renderer;
+package org.railz.client.renderer;
 
 import java.awt.image.BufferedImage;
-import jfreerails.client.common.ImageManager;
+import org.railz.client.common.ImageManager;
 
 
 /**

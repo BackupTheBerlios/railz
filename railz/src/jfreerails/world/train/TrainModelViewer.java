@@ -18,12 +18,12 @@
 /**
  * @author rtuck99@users.berlios.de
  */
-package jfreerails.world.train;
+package org.railz.world.train;
 
 import java.util.GregorianCalendar;
-import jfreerails.world.common.*;
-import jfreerails.world.player.*;
-import jfreerails.world.top.*;
+import org.railz.world.common.*;
+import org.railz.world.player.*;
+import org.railz.world.top.*;
 
 public class TrainModelViewer implements FixedAsset {
     private ReadOnlyWorld world;

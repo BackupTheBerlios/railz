@@ -15,7 +15,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.model;
+package org.railz.client.model;
 
 /**
 * Created on 08 August 2001, 20:25

@@ -14,15 +14,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.controller;
+package org.railz.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import jfreerails.move.Move;
-import jfreerails.world.top.World;
+import org.railz.move.Move;
+import org.railz.world.top.World;
 
 
 /**

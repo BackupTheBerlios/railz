@@ -20,14 +20,14 @@
 *
 * Created on 20 August 2001, 15:41
 */
-package jfreerails.client.renderer;
+package org.railz.client.renderer;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import jfreerails.client.common.ImageManager;
-import jfreerails.world.terrain.TerrainType;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.client.common.ImageManager;
+import org.railz.world.terrain.TerrainType;
+import org.railz.world.top.ReadOnlyWorld;
 
 
 /**

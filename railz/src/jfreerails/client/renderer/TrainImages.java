@@ -19,18 +19,18 @@
  * Created on 17-May-2003
  *
  */
-package jfreerails.client.renderer;
+package org.railz.client.renderer;
 
 import java.awt.Image;
 import java.io.IOException;
 import java.io.File;
-import jfreerails.client.common.ImageManager;
-import jfreerails.util.FreerailsProgressMonitor;
-import jfreerails.world.cargo.CargoType;
-import jfreerails.world.common.*;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.train.EngineType;
+import org.railz.client.common.ImageManager;
+import org.railz.util.FreerailsProgressMonitor;
+import org.railz.world.cargo.CargoType;
+import org.railz.world.common.*;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.train.EngineType;
 
 
 /**

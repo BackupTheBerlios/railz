@@ -19,13 +19,13 @@
  * Created on 25-Aug-2003
  *
   */
-package jfreerails.move;
+package org.railz.move;
 
-import jfreerails.world.common.*;
-import jfreerails.world.top.*;
-import jfreerails.world.train.ImmutableSchedule;
-import jfreerails.world.train.TrainModel;
-import jfreerails.world.train.TrainOrdersModel;
+import org.railz.world.common.*;
+import org.railz.world.top.*;
+import org.railz.world.train.ImmutableSchedule;
+import org.railz.world.train.TrainModel;
+import org.railz.world.train.TrainOrdersModel;
 
 /**
  * @author Luke Lindsay

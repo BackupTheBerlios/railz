@@ -15,28 +15,28 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.model;
+package org.railz.client.model;
 
 import java.util.GregorianCalendar;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 
-import jfreerails.controller.MoveReceiver;
-import jfreerails.move.*;
-import jfreerails.util.Resources;
-import jfreerails.world.accounts.*;
-import jfreerails.world.cargo.CargoBundle;
-import jfreerails.world.cargo.CargoType;
-import jfreerails.world.common.GameCalendar;
-import jfreerails.world.common.GameTime;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
-import jfreerails.world.station.StationModel;
-import jfreerails.world.top.ITEM;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.NonNullElements;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.train.TrainModel;
+import org.railz.controller.MoveReceiver;
+import org.railz.move.*;
+import org.railz.util.Resources;
+import org.railz.world.accounts.*;
+import org.railz.world.cargo.CargoBundle;
+import org.railz.world.cargo.CargoType;
+import org.railz.world.common.GameCalendar;
+import org.railz.world.common.GameTime;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
+import org.railz.world.station.StationModel;
+import org.railz.world.top.ITEM;
+import org.railz.world.top.KEY;
+import org.railz.world.top.NonNullElements;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.train.TrainModel;
 
 
 /**

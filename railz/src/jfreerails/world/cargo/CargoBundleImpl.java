@@ -19,7 +19,7 @@
  * Created on 24-May-2003
  *
  */
-package jfreerails.world.cargo;
+package org.railz.world.cargo;
 
 import java.util.Map.Entry;
 import java.util.HashMap;

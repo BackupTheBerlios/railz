@@ -20,14 +20,14 @@
 *
 * Created on 07 July 2001, 12:36
 */
-package jfreerails.client.renderer;
+package org.railz.client.renderer;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import jfreerails.client.common.BinaryNumberFormatter;
-import jfreerails.client.common.ImageManager;
-import jfreerails.world.terrain.TerrainType;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.client.common.BinaryNumberFormatter;
+import org.railz.client.common.ImageManager;
+import org.railz.world.terrain.TerrainType;
+import org.railz.world.top.ReadOnlyWorld;
 
 
 /**
@@ -35,7 +35,7 @@ import jfreerails.world.top.ReadOnlyWorld;
 * @author  Luke Lindsay
 */
 final public class RiverStyleTileRenderer
-    extends jfreerails.client.renderer.AbstractTileRenderer {
+    extends org.railz.client.renderer.AbstractTileRenderer {
     private static final int[] Y_LOOK_AT = {0, 1, 0, -1};
     private static final int[] X_LOOK_AT = {-1, 0, 1, 0};
 

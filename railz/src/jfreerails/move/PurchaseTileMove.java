@@ -14,19 +14,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.move;
+package org.railz.move;
 
 import java.awt.Point;
 
-import jfreerails.world.accounts.AddItemTransaction;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.common.GameTime;
-import jfreerails.world.player.Player;
-import jfreerails.world.top.ITEM;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.top.World;
-import jfreerails.world.track.FreerailsTile;
-import jfreerails.world.terrain.TerrainTileViewer;
+import org.railz.world.accounts.AddItemTransaction;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.common.GameTime;
+import org.railz.world.player.Player;
+import org.railz.world.top.ITEM;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.top.World;
+import org.railz.world.track.FreerailsTile;
+import org.railz.world.terrain.TerrainTileViewer;
 
 public class PurchaseTileMove extends CompositeMove implements Move {
     private static Move[] generateMoves(ReadOnlyWorld w, Point location,

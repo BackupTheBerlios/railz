@@ -19,23 +19,23 @@
  * Created on 28-Mar-2003
  *
  */
-package jfreerails.move;
+package org.railz.move;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import jfreerails.world.accounts.BankAccount;
-import jfreerails.world.common.GameCalendar;
-import jfreerails.world.common.GameTime;
-import jfreerails.world.player.Player;
-import jfreerails.world.track.FreerailsTile;
-import jfreerails.world.top.ITEM;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.MapFixtureFactory;
-import jfreerails.world.top.World;
-import jfreerails.world.top.WorldImpl;
+import org.railz.world.accounts.BankAccount;
+import org.railz.world.common.GameCalendar;
+import org.railz.world.common.GameTime;
+import org.railz.world.player.Player;
+import org.railz.world.track.FreerailsTile;
+import org.railz.world.top.ITEM;
+import org.railz.world.top.KEY;
+import org.railz.world.top.MapFixtureFactory;
+import org.railz.world.top.World;
+import org.railz.world.top.WorldImpl;
 import junit.framework.TestCase;
 
 

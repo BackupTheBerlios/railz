@@ -21,7 +21,7 @@
  * Created on 31 August 2003, 00:03
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.*;
 

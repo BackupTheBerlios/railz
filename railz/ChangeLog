@@ -1,6 +1,7 @@
 July 19, 2004:
 --------------
 Implemented cargo ageing - cargo becomes less valuable over time and each cargo type has a different expiry after which time it is removed from the station.
+Renamed packages from jfreerails.* to org.railz.*
 July 18, 2004:
 --------------
 Fix for bug 3 - Train list button on schedule pane doesn't work

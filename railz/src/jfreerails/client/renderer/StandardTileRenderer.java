@@ -20,14 +20,14 @@
 *
 * Created on 07 July 2001, 12:11
 */
-package jfreerails.client.renderer;
+package org.railz.client.renderer;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import jfreerails.client.common.ImageManager;
-import jfreerails.world.building.*;
-import jfreerails.world.terrain.TerrainType;
+import org.railz.client.common.ImageManager;
+import org.railz.world.building.*;
+import org.railz.world.terrain.TerrainType;
 
 
 /**
@@ -35,7 +35,7 @@ import jfreerails.world.terrain.TerrainType;
 * @author  Luke Lindsay
 */
 final public class StandardTileRenderer
-    extends jfreerails.client.renderer.AbstractTileRenderer {
+    extends org.railz.client.renderer.AbstractTileRenderer {
     public StandardTileRenderer(ImageManager imageManager, int[] rgbValues,
         TerrainType tileModel) throws IOException {
         super(tileModel.getTerrainTypeName(), rgbValues, LAYER_TERRAIN);

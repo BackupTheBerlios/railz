@@ -21,19 +21,19 @@
  * Created on 16 March 2004, 22:50
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.Color;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import javax.swing.UIManager;
 
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.model.ProfitLossModel;
-import jfreerails.world.top.ITEM;
-import jfreerails.world.common.GameTime;
-import jfreerails.world.common.GameCalendar;
-import jfreerails.util.Resources;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.model.ProfitLossModel;
+import org.railz.world.top.ITEM;
+import org.railz.world.common.GameTime;
+import org.railz.world.common.GameCalendar;
+import org.railz.util.Resources;
 
 /**
  *
@@ -97,7 +97,7 @@ class ProfitLossJPanel extends javax.swing.JPanel {
         setLayout(new java.awt.GridBagLayout());
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 14));
-        jLabel1.setText(jfreerails.util.Resources.get("Profit and Loss"));
+        jLabel1.setText(org.railz.util.Resources.get("Profit and Loss"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
@@ -105,8 +105,8 @@ class ProfitLossJPanel extends javax.swing.JPanel {
 
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 4, 0));
 
-        prevButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jfreerails/client/graphics/toolbar/previous.png")));
-        prevButton.setToolTipText(jfreerails.util.Resources.get("Previous Year"));
+        prevButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/railz/client/graphics/toolbar/previous.png")));
+        prevButton.setToolTipText(org.railz.util.Resources.get("Previous Year"));
         prevButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 prevButtonActionPerformed(evt);
@@ -115,8 +115,8 @@ class ProfitLossJPanel extends javax.swing.JPanel {
 
         jPanel2.add(prevButton);
 
-        nextButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jfreerails/client/graphics/toolbar/next.png")));
-        nextButton.setToolTipText(jfreerails.util.Resources.get("Next Year"));
+        nextButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/railz/client/graphics/toolbar/next.png")));
+        nextButton.setToolTipText(org.railz.util.Resources.get("Next Year"));
         nextButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nextButtonActionPerformed(evt);
@@ -134,7 +134,7 @@ class ProfitLossJPanel extends javax.swing.JPanel {
 
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
-        jLabel14.setText(jfreerails.util.Resources.get("Income Tax @"));
+        jLabel14.setText(org.railz.util.Resources.get("Income Tax @"));
         jPanel1.add(jLabel14);
 
         taxRateJLabel.setText("jLabel18");
@@ -158,7 +158,7 @@ class ProfitLossJPanel extends javax.swing.JPanel {
         jPanel3.add(totalProfitJLabel, gridBagConstraints);
 
         jLabel9.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel9.setText(jfreerails.util.Resources.get("Track Maintenance"));
+        jLabel9.setText(org.railz.util.Resources.get("Track Maintenance"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 9;
@@ -167,7 +167,7 @@ class ProfitLossJPanel extends javax.swing.JPanel {
         jPanel3.add(jLabel9, gridBagConstraints);
 
         jLabel10.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel10.setText(jfreerails.util.Resources.get("Rolling Stock Maintenance"));
+        jLabel10.setText(org.railz.util.Resources.get("Rolling Stock Maintenance"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 10;
@@ -176,7 +176,7 @@ class ProfitLossJPanel extends javax.swing.JPanel {
         jPanel3.add(jLabel10, gridBagConstraints);
 
         jLabel11.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel11.setText(jfreerails.util.Resources.get("Interest Payable"));
+        jLabel11.setText(org.railz.util.Resources.get("Interest Payable"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 11;
@@ -205,7 +205,7 @@ class ProfitLossJPanel extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         jPanel3.add(interestPayableJLabel, gridBagConstraints);
 
-        jLabel12.setText(jfreerails.util.Resources.get("Profit Before Tax"));
+        jLabel12.setText(org.railz.util.Resources.get("Profit Before Tax"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 14;
@@ -227,7 +227,7 @@ class ProfitLossJPanel extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         jPanel3.add(incomeTaxLabel, gridBagConstraints);
 
-        jLabel16.setText(jfreerails.util.Resources.get("Total Profit"));
+        jLabel16.setText(org.railz.util.Resources.get("Total Profit"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 17;
@@ -235,7 +235,7 @@ class ProfitLossJPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         jPanel3.add(jLabel16, gridBagConstraints);
 
-        jLabel2.setText(jfreerails.util.Resources.get("Revenue"));
+        jLabel2.setText(org.railz.util.Resources.get("Revenue"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -244,7 +244,7 @@ class ProfitLossJPanel extends javax.swing.JPanel {
         jPanel3.add(jLabel2, gridBagConstraints);
 
         jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel3.setText(jfreerails.util.Resources.get("Freight Haulage"));
+        jLabel3.setText(org.railz.util.Resources.get("Freight Haulage"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -252,14 +252,14 @@ class ProfitLossJPanel extends javax.swing.JPanel {
         jPanel3.add(jLabel3, gridBagConstraints);
 
         jLabel4.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel4.setText(jfreerails.util.Resources.get("Passenger Ticket Sales"));
+        jLabel4.setText(org.railz.util.Resources.get("Passenger Ticket Sales"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         jPanel3.add(jLabel4, gridBagConstraints);
 
-        jLabel5.setText(jfreerails.util.Resources.get("Expenses"));
+        jLabel5.setText(org.railz.util.Resources.get("Expenses"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
@@ -268,7 +268,7 @@ class ProfitLossJPanel extends javax.swing.JPanel {
         jPanel3.add(jLabel5, gridBagConstraints);
 
         jLabel6.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel6.setText(jfreerails.util.Resources.get("Fuel"));
+        jLabel6.setText(org.railz.util.Resources.get("Fuel"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
@@ -276,7 +276,7 @@ class ProfitLossJPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         jPanel3.add(jLabel6, gridBagConstraints);
 
-        jLabel7.setText(jfreerails.util.Resources.get("Gross Profit"));
+        jLabel7.setText(org.railz.util.Resources.get("Gross Profit"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 7;
@@ -284,7 +284,7 @@ class ProfitLossJPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         jPanel3.add(jLabel7, gridBagConstraints);
 
-        jLabel8.setText(jfreerails.util.Resources.get("Operating Expenses"));
+        jLabel8.setText(org.railz.util.Resources.get("Operating Expenses"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 8;
@@ -353,7 +353,7 @@ class ProfitLossJPanel extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         jPanel3.add(totalRevenueJLabel, gridBagConstraints);
 
-        jLabel15.setText(jfreerails.util.Resources.get("Total Revenue"));
+        jLabel15.setText(org.railz.util.Resources.get("Total Revenue"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -368,7 +368,7 @@ class ProfitLossJPanel extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         jPanel3.add(totalExpensesJLabel, gridBagConstraints);
 
-        jLabel18.setText(jfreerails.util.Resources.get("Total Expenses"));
+        jLabel18.setText(org.railz.util.Resources.get("Total Expenses"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 12;

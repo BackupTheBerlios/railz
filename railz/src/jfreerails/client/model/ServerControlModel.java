@@ -14,7 +14,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.model;
+package org.railz.client.model;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -26,8 +26,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import java.util.Enumeration;
 
-import jfreerails.client.common.*;
-import jfreerails.controller.ServerControlInterface;
+import org.railz.client.common.*;
+import org.railz.controller.ServerControlInterface;
 
 /**
  * Exposes the ServerControlInterface to client UI implementations

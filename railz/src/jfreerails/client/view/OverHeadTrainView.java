@@ -14,23 +14,23 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 
-import jfreerails.client.common.Painter;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.renderer.TrainRenderer;
-import jfreerails.client.renderer.ViewLists;
-import jfreerails.world.player.Player;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.NonNullElements;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.train.TrainModel;
+import org.railz.client.common.Painter;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.renderer.TrainRenderer;
+import org.railz.client.renderer.ViewLists;
+import org.railz.world.player.Player;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.top.KEY;
+import org.railz.world.top.NonNullElements;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.train.TrainModel;
 
 public class OverHeadTrainView implements Painter {
     private ModelRoot modelRoot;

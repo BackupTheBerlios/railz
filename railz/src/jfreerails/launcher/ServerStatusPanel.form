@@ -8,7 +8,7 @@
           <Border PropertyName="innerBorder" info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
             <EtchetBorder/>
           </Border>
-          <ResourceString PropertyName="titleX" bundle="jfreerails/data/l10n/jfreerails.properties" key="Server Status" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+          <ResourceString PropertyName="titleX" bundle="org/railz/data/l10n/org.railz.properties" key="Server Status" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
         </TitledBorder>
       </Border>
     </Property>

@@ -22,20 +22,20 @@
  * This class probes the tiles adjacent to a station for what cargo they supply
  * and then returns a vector of these cargo rates
  */
-package jfreerails.server;
+package org.railz.server;
 
 import java.util.Vector;
-import jfreerails.controller.CargoElementObject;
-import jfreerails.world.cargo.CargoType;
-import jfreerails.world.station.ConvertedAtStation;
-import jfreerails.world.station.DemandAtStation;
-import jfreerails.world.building.*;
-import jfreerails.world.player.*;
-import jfreerails.world.terrain.TerrainType;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.track.FreerailsTile;
-import jfreerails.world.track.TrackRule;
+import org.railz.controller.CargoElementObject;
+import org.railz.world.cargo.CargoType;
+import org.railz.world.station.ConvertedAtStation;
+import org.railz.world.station.DemandAtStation;
+import org.railz.world.building.*;
+import org.railz.world.player.*;
+import org.railz.world.terrain.TerrainType;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.track.FreerailsTile;
+import org.railz.world.track.TrackRule;
 
 class CalcCargoSupplyRateAtStation {
     /**

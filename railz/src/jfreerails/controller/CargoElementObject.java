@@ -22,7 +22,7 @@
  *
  * Small data object to store the rate of supply of a cargo
  */
-package jfreerails.controller;
+package org.railz.controller;
 
 public class CargoElementObject {
     private int rate;

@@ -21,7 +21,7 @@
  * Created on 19 April 2003, 16:41
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -29,8 +29,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-import jfreerails.client.renderer.ViewLists;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.client.renderer.ViewLists;
+import org.railz.world.top.ReadOnlyWorld;
 
 /**
  *  This JPanel displays a HTML document read from a URL.

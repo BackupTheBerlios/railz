@@ -14,10 +14,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.controller;
+package org.railz.controller;
 
-import jfreerails.move.Move;
-import jfreerails.move.MoveStatus;
+import org.railz.move.Move;
+import org.railz.move.MoveStatus;
 
 
 public interface UntriedMoveReceiver extends UncommittedMoveReceiver {

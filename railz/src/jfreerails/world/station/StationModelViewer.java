@@ -18,12 +18,12 @@
 /**
  * @author rtuck99@users.berlios.de
  */
-package jfreerails.world.station;
+package org.railz.world.station;
 
-import jfreerails.world.common.*;
-import jfreerails.world.player.*;
-import jfreerails.world.top.*;
-import jfreerails.world.track.*;
+import org.railz.world.common.*;
+import org.railz.world.player.*;
+import org.railz.world.top.*;
+import org.railz.world.track.*;
 
 public class StationModelViewer implements FixedAsset {
     private ReadOnlyWorld world;

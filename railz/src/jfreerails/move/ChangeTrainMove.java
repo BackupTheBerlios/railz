@@ -19,12 +19,12 @@
  * Created on 25-Aug-2003
  *
   */
-package jfreerails.move;
+package org.railz.move;
 
-import jfreerails.world.common.*;
-import jfreerails.world.player.*;
-import jfreerails.world.top.*;
-import jfreerails.world.train.*;
+import org.railz.world.common.*;
+import org.railz.world.player.*;
+import org.railz.world.top.*;
+import org.railz.world.train.*;
 
 /**
  * This Move can change a train's engine and wagons.

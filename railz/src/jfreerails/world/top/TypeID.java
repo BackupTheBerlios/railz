@@ -20,7 +20,7 @@
  *
  * Created on 22 August 2003, 20:20
  */
-package jfreerails.world.top;
+package org.railz.world.top;
 
 
 /**

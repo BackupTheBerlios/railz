@@ -15,9 +15,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.move;
+package org.railz.move;
 
-import jfreerails.world.common.FreerailsSerializable;
+import org.railz.world.common.FreerailsSerializable;
 
 
 /**
@@ -35,7 +35,7 @@ final public class MoveStatus implements FreerailsSerializable {
     static final MoveStatus MOVE_FAILED = new MoveStatus(false, "Move rejected");
     
     static final boolean debug =
-	(System.getProperty("jfreerails.move.MoveStatus.debug") != null);
+	(System.getProperty("org.railz.move.MoveStatus.debug") != null);
     
     public final boolean ok;
     public final String message;

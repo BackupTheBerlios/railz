@@ -15,13 +15,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.top;
+package org.railz.world.top;
 
 import java.util.HashSet;
 
-import jfreerails.world.common.*;
-import jfreerails.world.terrain.TerrainType;
-import jfreerails.world.track.*;
+import org.railz.world.common.*;
+import org.railz.world.terrain.TerrainType;
+import org.railz.world.track.*;
 
 /**
  * This class is used to generate fixures for Junit tests.

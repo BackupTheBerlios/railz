@@ -21,7 +21,7 @@
  * Created on 19 August 2003, 22:34
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -29,9 +29,9 @@ import java.awt.Insets;
 import javax.swing.Action;
 import javax.swing.JButton;
 
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.model.StationBuildModel;
-import jfreerails.client.renderer.ViewLists;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.model.StationBuildModel;
+import org.railz.client.renderer.ViewLists;
 
 /**
  *

@@ -14,12 +14,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.top;
+package org.railz.client.top;
 
 import java.awt.Toolkit;
-import jfreerails.client.common.ScreenHandler;
-import jfreerails.client.common.SynchronizedEventQueue;
-import jfreerails.util.GameModel;
+import org.railz.client.common.ScreenHandler;
+import org.railz.client.common.SynchronizedEventQueue;
+import org.railz.util.GameModel;
 
 
 /**

@@ -15,7 +15,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world;
+package org.railz.world;
 
 
 /**This class does nothing and is only here so that javadoc gets

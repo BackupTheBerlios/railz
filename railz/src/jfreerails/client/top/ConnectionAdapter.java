@@ -14,23 +14,23 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.top;
+package org.railz.client.top;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-import jfreerails.client.view.GUIRoot;
-import jfreerails.client.renderer.ViewLists;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.controller.*;
-import jfreerails.move.Move;
-import jfreerails.move.MoveStatus;
-import jfreerails.move.TimeTickMove;
-import jfreerails.util.*;
-import jfreerails.world.player.Player;
-import jfreerails.world.player.PlayerPrincipal;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.World;
+import org.railz.client.view.GUIRoot;
+import org.railz.client.renderer.ViewLists;
+import org.railz.client.model.ModelRoot;
+import org.railz.controller.*;
+import org.railz.move.Move;
+import org.railz.move.MoveStatus;
+import org.railz.move.TimeTickMove;
+import org.railz.util.*;
+import org.railz.world.player.Player;
+import org.railz.world.player.PlayerPrincipal;
+import org.railz.world.top.KEY;
+import org.railz.world.top.World;
 
 
 /**

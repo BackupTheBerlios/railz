@@ -14,9 +14,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package jfreerails.world.building;
+package org.railz.world.building;
 
-import jfreerails.world.common.FreerailsSerializable;
+import org.railz.world.common.FreerailsSerializable;
 /**
  * Represents a building in the game world.
  * @author rtuck99@users.berlios.de

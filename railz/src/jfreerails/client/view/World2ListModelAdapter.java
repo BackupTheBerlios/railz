@@ -19,7 +19,7 @@
  * Created on 23-Mar-2003
  * 
  */
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.lang.ref.*;
 import java.util.ArrayList;
@@ -28,11 +28,11 @@ import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import jfreerails.controller.*;
-import jfreerails.move.*;
-import jfreerails.util.*;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.top.*;
+import org.railz.controller.*;
+import org.railz.move.*;
+import org.railz.util.*;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.top.*;
 
 /**
  * This class implements the GoF Adapter pattern.  It converts the

@@ -17,12 +17,12 @@
 /*
  * Created on Feb 18, 2004
  */
-package jfreerails.server;
+package org.railz.server;
 
 import javax.swing.table.DefaultTableModel;
-import jfreerails.controller.ConnectionToServer;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
+import org.railz.controller.ConnectionToServer;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
 
 
 /**

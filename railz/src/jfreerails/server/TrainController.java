@@ -14,19 +14,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package jfreerails.server;
+package org.railz.server;
 
 import java.awt.Point;
 
-import jfreerails.move.*;
-import jfreerails.controller.*;
-import jfreerails.world.common.*;
-import jfreerails.world.building.*;
-import jfreerails.world.player.*;
-import jfreerails.world.station.*;
-import jfreerails.world.top.*;
-import jfreerails.world.track.*;
-import jfreerails.world.train.*;
+import org.railz.move.*;
+import org.railz.controller.*;
+import org.railz.world.common.*;
+import org.railz.world.building.*;
+import org.railz.world.player.*;
+import org.railz.world.station.*;
+import org.railz.world.top.*;
+import org.railz.world.track.*;
+import org.railz.world.train.*;
 
 /**
  * Responsible for controlling the state of trains. This package controls the

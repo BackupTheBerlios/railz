@@ -19,9 +19,9 @@
  * Created on 20-Mar-2003
  *
  */
-package jfreerails.world.top;
+package org.railz.world.top;
 
-import jfreerails.world.common.FreerailsSerializable;
+import org.railz.world.common.FreerailsSerializable;
 import junit.framework.TestCase;
 
 

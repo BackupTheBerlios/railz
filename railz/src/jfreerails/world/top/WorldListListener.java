@@ -19,9 +19,9 @@
  * Created on 25-Aug-2003
  *
  */
-package jfreerails.world.top;
+package org.railz.world.top;
 
-import jfreerails.world.player.FreerailsPrincipal;
+import org.railz.world.player.FreerailsPrincipal;
 
 /**
  * @author Luke Lindsay

@@ -20,7 +20,7 @@
  *
  *  Created on 31 July 2001, 16:36
  */
-package jfreerails.client.renderer;
+package org.railz.client.renderer;
 
 import java.awt.Graphics;
 

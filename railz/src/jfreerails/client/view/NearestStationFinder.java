@@ -18,14 +18,14 @@
 /*
  * Created on Feb 6, 2004
  */
-package jfreerails.client.view;
+package org.railz.client.view;
 
-import jfreerails.client.model.ModelRoot;
-import jfreerails.world.common.*;
-import jfreerails.world.station.StationModel;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.NonNullElements;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.client.model.ModelRoot;
+import org.railz.world.common.*;
+import org.railz.world.station.StationModel;
+import org.railz.world.top.KEY;
+import org.railz.world.top.NonNullElements;
+import org.railz.world.top.ReadOnlyWorld;
 
 /**
  * @author Luke

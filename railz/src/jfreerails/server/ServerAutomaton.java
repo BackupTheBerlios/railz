@@ -14,7 +14,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.server;
+package org.railz.server;
 
 
 /**
@@ -23,8 +23,8 @@ package jfreerails.server;
  * They are internal clients of the ServerGameEngine and need to be initialised
  * with a connection to the game when deserialized.
  */
-import jfreerails.world.common.FreerailsSerializable;
-import jfreerails.controller.MoveReceiver;
+import org.railz.world.common.FreerailsSerializable;
+import org.railz.controller.MoveReceiver;
 
 
 public interface ServerAutomaton extends FreerailsSerializable {

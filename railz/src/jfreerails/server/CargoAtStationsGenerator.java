@@ -19,24 +19,24 @@
  * Created on 31-May-2003
  *
  */
-package jfreerails.server;
+package org.railz.server;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import jfreerails.controller.FreerailsServerSerializable;
-import jfreerails.controller.MoveReceiver;
-import jfreerails.move.ChangeCargoBundleMove;
-import jfreerails.move.Move;
-import jfreerails.world.cargo.CargoBatch;
-import jfreerails.world.cargo.CargoBundle;
-import jfreerails.world.cargo.CargoType;
-import jfreerails.world.common.*;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
-import jfreerails.world.station.StationModel;
-import jfreerails.world.station.SupplyAtStation;
-import jfreerails.world.top.*;
+import org.railz.controller.FreerailsServerSerializable;
+import org.railz.controller.MoveReceiver;
+import org.railz.move.ChangeCargoBundleMove;
+import org.railz.move.Move;
+import org.railz.world.cargo.CargoBatch;
+import org.railz.world.cargo.CargoBundle;
+import org.railz.world.cargo.CargoType;
+import org.railz.world.common.*;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
+import org.railz.world.station.StationModel;
+import org.railz.world.station.SupplyAtStation;
+import org.railz.world.top.*;
 
 
 /**

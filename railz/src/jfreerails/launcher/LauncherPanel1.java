@@ -21,12 +21,12 @@
  * Created on 20 December 2003, 14:58
  */
 
-package jfreerails.launcher;
+package org.railz.launcher;
 
 import java.net.InetSocketAddress;
 
 import javax.swing.ButtonModel;
-import jfreerails.util.Resources;
+import org.railz.util.Resources;
 
 /**
  *
@@ -153,7 +153,7 @@ final class LauncherPanel1 extends javax.swing.JPanel {
 
         setLayout(new java.awt.GridBagLayout());
 
-        setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), jfreerails.util.Resources.get("Select Game Type")));
+        setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), org.railz.util.Resources.get("Select Game Type")));
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 formComponentShown(evt);
@@ -161,7 +161,7 @@ final class LauncherPanel1 extends javax.swing.JPanel {
         });
 
         singlePlayerButton.setSelected(true);
-        singlePlayerButton.setText(jfreerails.util.Resources.get("Single-Player"));
+        singlePlayerButton.setText(org.railz.util.Resources.get("Single-Player"));
         buttonGroup1.add(singlePlayerButton);
         singlePlayerButton.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -174,7 +174,7 @@ final class LauncherPanel1 extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         add(singlePlayerButton, gridBagConstraints);
 
-        startNetworkButton.setText(jfreerails.util.Resources.get("Start a network game"));
+        startNetworkButton.setText(org.railz.util.Resources.get("Start a network game"));
         buttonGroup1.add(startNetworkButton);
         startNetworkButton.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -188,7 +188,7 @@ final class LauncherPanel1 extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         add(startNetworkButton, gridBagConstraints);
 
-        joinNetworkButton.setText(jfreerails.util.Resources.get("Join a network game"));
+        joinNetworkButton.setText(org.railz.util.Resources.get("Join a network game"));
         buttonGroup1.add(joinNetworkButton);
         joinNetworkButton.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -202,7 +202,7 @@ final class LauncherPanel1 extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         add(joinNetworkButton, gridBagConstraints);
 
-        serverOnlyButton.setText(jfreerails.util.Resources.get("Server only"));
+        serverOnlyButton.setText(org.railz.util.Resources.get("Server only"));
         buttonGroup1.add(serverOnlyButton);
         serverOnlyButton.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -218,11 +218,11 @@ final class LauncherPanel1 extends javax.swing.JPanel {
 
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
 
-        jPanel1.setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), jfreerails.util.Resources.get("Remote server address")));
+        jPanel1.setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), org.railz.util.Resources.get("Remote server address")));
         jPanel1.setEnabled(false);
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        jLabel1.setText(jfreerails.util.Resources.get("IP Address:"));
+        jLabel1.setText(org.railz.util.Resources.get("IP Address:"));
         jPanel2.add(jLabel1);
 
         remoteIP.setColumns(15);
@@ -241,7 +241,7 @@ final class LauncherPanel1 extends javax.swing.JPanel {
 
         jPanel2.add(remoteIP);
 
-        jLabel2.setText(jfreerails.util.Resources.get("Port:"));
+        jLabel2.setText(org.railz.util.Resources.get("Port:"));
         jPanel2.add(jLabel2);
 
         remotePort.setColumns(5);
@@ -269,8 +269,8 @@ final class LauncherPanel1 extends javax.swing.JPanel {
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        jPanel3.setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), jfreerails.util.Resources.get("Server port")));
-        jLabel3.setText(jfreerails.util.Resources.get("Port:"));
+        jPanel3.setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), org.railz.util.Resources.get("Server port")));
+        jLabel3.setText(org.railz.util.Resources.get("Port:"));
         jPanel3.add(jLabel3);
 
         serverPort.setColumns(6);

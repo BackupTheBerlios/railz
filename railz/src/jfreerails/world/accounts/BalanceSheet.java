@@ -18,17 +18,17 @@
 /**
  * @author rtuck99@users.berlios.de
  */
-package jfreerails.world.accounts;
+package org.railz.world.accounts;
 
 import java.util.GregorianCalendar;
 
-import jfreerails.world.common.*;
-import jfreerails.world.player.*;
-import jfreerails.world.station.*;
-import jfreerails.world.top.*;
-import jfreerails.world.terrain.*;
-import jfreerails.world.track.*;
-import jfreerails.world.train.*;
+import org.railz.world.common.*;
+import org.railz.world.player.*;
+import org.railz.world.station.*;
+import org.railz.world.top.*;
+import org.railz.world.terrain.*;
+import org.railz.world.track.*;
+import org.railz.world.train.*;
 /**
  * Models a balance sheet. A balance sheet is created at the end of every
  * year, and stored as part of the Game World

@@ -127,7 +127,7 @@
     <Component class="javax.swing.JButton" name="addStationJButton">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.openide.explorer.propertysheet.editors.IconEditor">
-          <Image iconType="3" name="/jfreerails/client/graphics/toolbar/add_station.png"/>
+          <Image iconType="3" name="/org/railz/client/graphics/toolbar/add_station.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Add Station"/>
       </Properties>
@@ -141,7 +141,7 @@
     <Component class="javax.swing.JButton" name="priorityOrdersJButton">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.openide.explorer.propertysheet.editors.IconEditor">
-          <Image iconType="3" name="/jfreerails/client/graphics/toolbar/priority_orders.png"/>
+          <Image iconType="3" name="/org/railz/client/graphics/toolbar/priority_orders.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Add Priority Orders"/>
       </Properties>

@@ -14,9 +14,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package jfreerails.world.accounts;
+package org.railz.world.accounts;
 
-import jfreerails.world.common.*;
+import org.railz.world.common.*;
 
 public class InterestTransaction extends Transaction {
     public static final int SUBCATEGORY_LOAN = 1;

@@ -19,10 +19,10 @@
  */
 
 /*
- * $Id: TrainsJTabPane.java,v 1.8 2004/07/18 16:35:26 rtuck99 Exp $
+ * $Id: TrainsJTabPane.java,v 1.9 2004/07/19 17:51:50 rtuck99 Exp $
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,11 +30,11 @@ import java.awt.Point;
 
 import javax.swing.JTabbedPane;
 
-import jfreerails.client.model.CursorEventListener;
-import jfreerails.client.model.CursorEvent;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.renderer.ViewLists;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.client.model.CursorEventListener;
+import org.railz.client.model.CursorEvent;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.renderer.ViewLists;
+import org.railz.world.top.ReadOnlyWorld;
 
 public class TrainsJTabPane extends JTabbedPane implements CursorEventListener {
     private TerrainInfoJPanel terrainInfoPanel;

@@ -20,7 +20,7 @@
  *
  * Created on 08 September 2003, 21:56
  */
-package jfreerails.util;
+package org.railz.util;
 
 
 /** This interface defines callbacks that can be used to let the user know how a slow task is progressing.

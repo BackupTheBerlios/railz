@@ -15,18 +15,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.move;
+package org.railz.move;
 
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
-import jfreerails.world.building.*;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
-import jfreerails.world.terrain.TerrainType;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.World;
-import jfreerails.world.track.*;
+import org.railz.world.building.*;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
+import org.railz.world.terrain.TerrainType;
+import org.railz.world.top.KEY;
+import org.railz.world.top.World;
+import org.railz.world.track.*;
 
 /**
  * This Move adds, removes, or upgrades the track on a single tile.

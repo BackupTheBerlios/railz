@@ -14,10 +14,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.top;
+package org.railz.world.top;
 
-import jfreerails.world.common.FreerailsSerializable;
-import jfreerails.world.player.FreerailsPrincipal;
+import org.railz.world.common.FreerailsSerializable;
+import org.railz.world.player.FreerailsPrincipal;
 
 /**
  * Identifies a unique object within a table in the Game World

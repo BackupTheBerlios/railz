@@ -14,10 +14,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.move;
+package org.railz.move;
 
-import jfreerails.world.top.World;
-import jfreerails.world.player.FreerailsPrincipal;
+import org.railz.world.top.World;
+import org.railz.world.player.FreerailsPrincipal;
 
 /**
  * Specifies a move that has been undone by the MoveExecuter. This move has

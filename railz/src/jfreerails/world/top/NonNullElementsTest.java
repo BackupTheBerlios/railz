@@ -19,7 +19,7 @@
  * Created on 15-Apr-2003
  *
  */
-package jfreerails.world.top;
+package org.railz.world.top;
 
 import java.util.NoSuchElementException;
 
@@ -27,10 +27,10 @@ import junit.framework.TestCase;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import jfreerails.world.common.GameTime;
-import jfreerails.world.player.Player;
-import jfreerails.world.station.StationModel;
-import jfreerails.world.top.ITEM;
+import org.railz.world.common.GameTime;
+import org.railz.world.player.Player;
+import org.railz.world.station.StationModel;
+import org.railz.world.top.ITEM;
 
 /**
  * This junit TestCase tests NonNullElements.

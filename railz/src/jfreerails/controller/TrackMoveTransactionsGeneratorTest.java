@@ -19,21 +19,21 @@
  * Created on 10-Aug-2003
  *
  */
-package jfreerails.controller;
+package org.railz.controller;
 
 import java.awt.Point;
 import junit.framework.TestCase;
-import jfreerails.move.ChangeTrackPieceMove;
-import jfreerails.move.Move;
-import jfreerails.move.MoveStatus;
-import jfreerails.move.TrackMove;
-import jfreerails.world.common.*;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.MapFixtureFactory;
-import jfreerails.world.top.World;
-import jfreerails.world.top.WorldImpl;
-import jfreerails.world.track.*;
-import jfreerails.world.player.Player;
+import org.railz.move.ChangeTrackPieceMove;
+import org.railz.move.Move;
+import org.railz.move.MoveStatus;
+import org.railz.move.TrackMove;
+import org.railz.world.common.*;
+import org.railz.world.top.KEY;
+import org.railz.world.top.MapFixtureFactory;
+import org.railz.world.top.World;
+import org.railz.world.top.WorldImpl;
+import org.railz.world.track.*;
+import org.railz.world.player.Player;
 
 
 /**

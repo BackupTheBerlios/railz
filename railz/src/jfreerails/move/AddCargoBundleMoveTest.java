@@ -19,12 +19,12 @@
  * Created on 26-May-2003
  *
  */
-package jfreerails.move;
+package org.railz.move;
 
-import jfreerails.world.cargo.CargoBatch;
-import jfreerails.world.cargo.CargoBundle;
-import jfreerails.world.cargo.CargoBundleImpl;
-import jfreerails.world.top.KEY;
+import org.railz.world.cargo.CargoBatch;
+import org.railz.world.cargo.CargoBundle;
+import org.railz.world.cargo.CargoBundleImpl;
+import org.railz.world.top.KEY;
 
 
 /**

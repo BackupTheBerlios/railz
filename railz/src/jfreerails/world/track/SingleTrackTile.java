@@ -15,9 +15,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.track;
+package org.railz.world.track;
 
-import jfreerails.world.common.*;
+import org.railz.world.common.*;
 
 /**
  * @author rtuck99@users.berlios.de

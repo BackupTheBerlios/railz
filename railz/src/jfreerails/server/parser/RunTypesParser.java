@@ -20,9 +20,9 @@
  *
  * Created on 27 April 2003, 18:40
  */
-package jfreerails.server.parser;
+package org.railz.server.parser;
 
-import jfreerails.world.top.WorldImpl;
+import org.railz.world.top.WorldImpl;
 
 
 /**
@@ -33,7 +33,7 @@ public class RunTypesParser {
     public static void main(String[] args) {
         try {
             java.net.URL url = RunTypesParser.class.getResource(
-                    "/jfreerails/data/cargo_and_terrain.xml");
+                    "/org/railz/data/cargo_and_terrain.xml");
 
             CargoAndTerrainParser.parse(url,
                 new CargoAndTerrainHandlerImpl(new WorldImpl()));

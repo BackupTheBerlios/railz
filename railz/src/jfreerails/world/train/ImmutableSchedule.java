@@ -19,12 +19,12 @@
  * Created on 24-Aug-2003
  *
   */
-package jfreerails.world.train;
+package org.railz.world.train;
 
 import java.util.Arrays;
 
-import jfreerails.world.top.ObjectKey;
-import jfreerails.world.common.FreerailsSerializable;
+import org.railz.world.top.ObjectKey;
+import org.railz.world.common.FreerailsSerializable;
 
 /**
  * @author Luke Lindsay

@@ -14,7 +14,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.common;
+package org.railz.client.common;
 
 
 /**
@@ -26,7 +26,7 @@ public class Stats {
     String name;
     long started;
     public static boolean statsAreOn = (System.getProperty(
-            "jfreerails.client.common.Stats.statsAreOn") != null);
+            "org.railz.client.common.Stats.statsAreOn") != null);
 
     public Stats(String name) {
         this.name = name;

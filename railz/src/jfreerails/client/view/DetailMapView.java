@@ -14,23 +14,23 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.renderer.CityNamesRenderer;
-import jfreerails.client.renderer.MapBackgroundRender;
-import jfreerails.client.renderer.MapLayerRenderer;
-import jfreerails.client.renderer.MapRenderer;
-import jfreerails.client.renderer.SquareTileBackgroundRenderer;
-import jfreerails.client.renderer.StationNamesRenderer;
-import jfreerails.client.renderer.StationRadiusRenderer;
-import jfreerails.client.renderer.ViewLists;
-import jfreerails.client.common.Painter;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.renderer.CityNamesRenderer;
+import org.railz.client.renderer.MapBackgroundRender;
+import org.railz.client.renderer.MapLayerRenderer;
+import org.railz.client.renderer.MapRenderer;
+import org.railz.client.renderer.SquareTileBackgroundRenderer;
+import org.railz.client.renderer.StationNamesRenderer;
+import org.railz.client.renderer.StationRadiusRenderer;
+import org.railz.client.renderer.ViewLists;
+import org.railz.client.common.Painter;
+import org.railz.world.top.ReadOnlyWorld;
 
 
 public class DetailMapView implements MapRenderer {

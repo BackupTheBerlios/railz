@@ -21,7 +21,7 @@
  * Created on 24 August 2003, 17:13
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -34,12 +34,12 @@ import java.util.NoSuchElementException;
 import javax.swing.ListCellRenderer;
 import javax.swing.JList;
 
-import jfreerails.client.common.*;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.util.*;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.train.MutableSchedule;
-import jfreerails.world.top.*;
+import org.railz.client.common.*;
+import org.railz.client.model.ModelRoot;
+import org.railz.util.*;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.train.MutableSchedule;
+import org.railz.world.top.*;
 
 /**
  *
@@ -125,7 +125,7 @@ WorldListListener {
     private void initComponents() {//GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
-        newTrainScheduleJPanel1 = new jfreerails.client.view.TrainScheduleJPanel();
+        newTrainScheduleJPanel1 = new org.railz.client.view.TrainScheduleJPanel();
         jPanel1 = new javax.swing.JPanel();
         previousJButton = new javax.swing.JButton();
         nextJButton = new javax.swing.JButton();
@@ -144,7 +144,7 @@ WorldListListener {
 
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
-        previousJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jfreerails/client/graphics/toolbar/previous.png")));
+        previousJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/railz/client/graphics/toolbar/previous.png")));
         previousJButton.setToolTipText("Previous Train");
         previousJButton.setAlignmentX(1.0F);
         previousJButton.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -159,7 +159,7 @@ WorldListListener {
         gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
         jPanel1.add(previousJButton, gridBagConstraints);
 
-        nextJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jfreerails/client/graphics/toolbar/next.png")));
+        nextJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/railz/client/graphics/toolbar/next.png")));
         nextJButton.setToolTipText("Next Train");
         nextJButton.setAlignmentX(1.0F);
         nextJButton.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -289,7 +289,7 @@ WorldListListener {
      
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
-    private jfreerails.client.view.TrainScheduleJPanel newTrainScheduleJPanel1;
+    private org.railz.client.view.TrainScheduleJPanel newTrainScheduleJPanel1;
     private javax.swing.JButton nextJButton;
     private javax.swing.JButton previousJButton;
     // End of variables declaration//GEN-END:variables

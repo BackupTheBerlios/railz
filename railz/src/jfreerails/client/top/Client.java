@@ -14,10 +14,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.top;
+package org.railz.client.top;
 
-import jfreerails.controller.MoveChainFork;
-import jfreerails.world.player.Player;
+import org.railz.controller.MoveChainFork;
+import org.railz.world.player.Player;
 
 
 /**

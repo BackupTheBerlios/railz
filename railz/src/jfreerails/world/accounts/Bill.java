@@ -19,9 +19,9 @@
  * Created on 21-Jun-2003
  *
  */
-package jfreerails.world.accounts;
+package org.railz.world.accounts;
 
-import jfreerails.world.common.GameTime;
+import org.railz.world.common.GameTime;
 
 /**
  * @author Luke Lindsay

@@ -17,7 +17,7 @@
 /*
  * Created on Feb 18, 2004
  */
-package jfreerails.server;
+package org.railz.server;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,9 +25,9 @@ import java.io.Serializable;
 import java.util.Vector;
 import javax.swing.table.TableModel;
 
-import jfreerails.controller.*;
-import jfreerails.world.player.*;
-import jfreerails.util.FreerailsProgressMonitor;
+import org.railz.controller.*;
+import org.railz.world.player.*;
+import org.railz.util.FreerailsProgressMonitor;
 
 /**
  * associates an instance of ServerGameEngine with a set of game controls.

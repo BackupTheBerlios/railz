@@ -14,14 +14,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package jfreerails.server;
+package org.railz.server;
 
-import jfreerails.controller.MoveReceiver;
-import jfreerails.move.AddTransactionMove;
-import jfreerails.world.accounts.*;
-import jfreerails.world.common.*;
-import jfreerails.world.player.*;
-import jfreerails.world.top.*;
+import org.railz.controller.MoveReceiver;
+import org.railz.move.AddTransactionMove;
+import org.railz.world.accounts.*;
+import org.railz.world.common.*;
+import org.railz.world.player.*;
+import org.railz.world.top.*;
 
 /**
  * Responsible for adjusting accounts for interest due to being in credit or

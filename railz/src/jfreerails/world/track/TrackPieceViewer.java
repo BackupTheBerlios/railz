@@ -18,11 +18,11 @@
 /**
  * @author rtuck99@users.belios.de
  */
-package jfreerails.world.track;
+package org.railz.world.track;
 
-import jfreerails.world.common.*;
-import jfreerails.world.player.*;
-import jfreerails.world.top.*;
+import org.railz.world.common.*;
+import org.railz.world.player.*;
+import org.railz.world.top.*;
 
 public class TrackPieceViewer implements FixedAsset {
     private ReadOnlyWorld world;

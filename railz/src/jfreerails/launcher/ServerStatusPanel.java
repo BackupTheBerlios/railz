@@ -21,7 +21,7 @@
  * Created on 20 December 2003, 23:06
  */
 
-package jfreerails.launcher;
+package org.railz.launcher;
 
 import javax.swing.table.TableModel;
 
@@ -54,7 +54,7 @@ class ServerStatusPanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), jfreerails.util.Resources.get("Server Status")));
+        setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), org.railz.util.Resources.get("Server Status")));
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 formComponentShown(evt);

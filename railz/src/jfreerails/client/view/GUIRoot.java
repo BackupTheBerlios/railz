@@ -14,23 +14,23 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.Rectangle;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import jfreerails.client.common.ScreenHandler;
-import jfreerails.client.renderer.ViewLists;
-import jfreerails.client.renderer.ZoomedOutMapRenderer;
-import jfreerails.client.top.ClientJFrame;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.model.ModelRootListener;
-import jfreerails.controller.MoveChainFork;
-import jfreerails.controller.MoveReceiver;
-import jfreerails.controller.StationBuilder;
-import jfreerails.controller.UntriedMoveReceiver;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.client.common.ScreenHandler;
+import org.railz.client.renderer.ViewLists;
+import org.railz.client.renderer.ZoomedOutMapRenderer;
+import org.railz.client.top.ClientJFrame;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.model.ModelRootListener;
+import org.railz.controller.MoveChainFork;
+import org.railz.controller.MoveReceiver;
+import org.railz.controller.StationBuilder;
+import org.railz.controller.UntriedMoveReceiver;
+import org.railz.world.top.ReadOnlyWorld;
 
 /**
  * A central point for coordinating GUI components.

@@ -19,13 +19,13 @@
  * Created on 13-Apr-2003
  *
  */
-package jfreerails.move;
+package org.railz.move;
 
-import jfreerails.world.common.FreerailsSerializable;
-import jfreerails.world.player.Player;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.World;
+import org.railz.world.common.FreerailsSerializable;
+import org.railz.world.player.Player;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.top.KEY;
+import org.railz.world.top.World;
 
 /**
  * All moves that remove an item from a list should extend this class.

@@ -19,9 +19,9 @@
  * Created on 02-Aug-2003
  *
  */
-package jfreerails.world.accounts;
+package org.railz.world.accounts;
 
-import jfreerails.world.common.GameTime;
+import org.railz.world.common.GameTime;
 
 /**
  * This Transaction represents the charge/credit for buying/selling an asset.

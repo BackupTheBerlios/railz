@@ -14,7 +14,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -28,9 +28,9 @@ import javax.swing.event.MenuListener;
 import javax.swing.event.MenuEvent;
 import java.util.Enumeration;
 
-import jfreerails.client.common.ActionAdapter;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.model.ServerControlModel;
+import org.railz.client.common.ActionAdapter;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.model.ServerControlModel;
 
 public class GameMenu extends JMenu {
     private ServerControlModel sc;

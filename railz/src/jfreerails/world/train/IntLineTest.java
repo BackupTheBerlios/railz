@@ -14,9 +14,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.train;
+package org.railz.world.train;
 
-import jfreerails.world.common.IntLine;
+import org.railz.world.common.IntLine;
 import junit.framework.TestCase;
 
 

@@ -14,14 +14,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.move;
+package org.railz.move;
 
 import java.awt.Point;
 
-import jfreerails.world.track.FreerailsTile;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.top.World;
-import jfreerails.world.player.FreerailsPrincipal;
+import org.railz.world.track.FreerailsTile;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.top.World;
+import org.railz.world.player.FreerailsPrincipal;
 
 public class ChangeTileOwnershipMove implements Move {
     private final FreerailsPrincipal oldOwner;

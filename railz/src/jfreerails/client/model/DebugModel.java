@@ -14,13 +14,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.model;
+package org.railz.client.model;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import jfreerails.util.Resources;
-import jfreerails.client.common.ToggleActionAdapter;
+import org.railz.util.Resources;
+import org.railz.client.common.ToggleActionAdapter;
 
 /**
  * Control models for the debug menu

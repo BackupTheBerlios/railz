@@ -14,7 +14,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.top;
+package org.railz.world.top;
 
 import java.awt.Point;
 import java.io.ByteArrayInputStream;
@@ -22,15 +22,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import jfreerails.world.common.FreerailsSerializable;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
-import jfreerails.world.track.FreerailsTile;
+import org.railz.world.common.FreerailsSerializable;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
+import org.railz.world.track.FreerailsTile;
 
 
 public class WorldImpl implements World {
     private static final boolean debug = (System.getProperty(
-            "jfreerails.world.top.WorldImpl.debug") != null);
+            "org.railz.world.top.WorldImpl.debug") != null);
 
     /**
      * An array of ArrayList indexed by keyNumber.

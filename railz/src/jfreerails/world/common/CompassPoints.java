@@ -15,9 +15,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.common;
+package org.railz.world.common;
 
-import jfreerails.world.track.TrackTile;
+import org.railz.world.track.TrackTile;
 
 /**
  * Defines some convenient bitmasks and methods for handling compass

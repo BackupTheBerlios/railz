@@ -14,16 +14,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.track;
+package org.railz.world.track;
 
-import jfreerails.world.building.*;
-import jfreerails.world.common.FreerailsSerializable;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
-import jfreerails.world.terrain.TerrainTile;
-import jfreerails.world.terrain.TerrainType;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.world.building.*;
+import org.railz.world.common.FreerailsSerializable;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
+import org.railz.world.terrain.TerrainTile;
+import org.railz.world.terrain.TerrainType;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
 
 /**
  * Encapsulates all information about a map tile

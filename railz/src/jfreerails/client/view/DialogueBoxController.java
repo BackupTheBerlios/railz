@@ -21,7 +21,7 @@
  * Created on 29 December 2002, 02:05
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.Point;
@@ -37,22 +37,22 @@ import javax.swing.JLayeredPane;
 import javax.swing.JInternalFrame;
 import javax.swing.border.LineBorder;
 
-import jfreerails.client.common.ScreenHandler;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.renderer.ViewLists;
-import jfreerails.controller.MoveChainFork;
-import jfreerails.controller.UntriedMoveReceiver;
-import jfreerails.move.ChangeProductionAtEngineShopMove;
-import jfreerails.move.Move;
-import jfreerails.world.building.*;
-import jfreerails.world.player.*;
-import jfreerails.world.station.ProductionAtEngineShop;
-import jfreerails.world.station.StationModel;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.NonNullElements;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.top.WorldIterator;
-import jfreerails.world.track.FreerailsTile;
+import org.railz.client.common.ScreenHandler;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.renderer.ViewLists;
+import org.railz.controller.MoveChainFork;
+import org.railz.controller.UntriedMoveReceiver;
+import org.railz.move.ChangeProductionAtEngineShopMove;
+import org.railz.move.Move;
+import org.railz.world.building.*;
+import org.railz.world.player.*;
+import org.railz.world.station.ProductionAtEngineShop;
+import org.railz.world.station.StationModel;
+import org.railz.world.top.KEY;
+import org.railz.world.top.NonNullElements;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.top.WorldIterator;
+import org.railz.world.track.FreerailsTile;
 
 /**
  * This class is responsible for displaying dialogue boxes, adding borders
@@ -131,11 +131,11 @@ public class DialogueBoxController {
         stationInfo.setup(modelRoot);
         
         // setup the 'show controls' dialogue
-        showControls = new HtmlJPanel(DialogueBoxController.class.getResource("/jfreerails/client/view/game_controls.html"));
+        showControls = new HtmlJPanel(DialogueBoxController.class.getResource("/org/railz/client/view/game_controls.html"));
         
-        about = new HtmlJPanel(DialogueBoxController.class.getResource("/jfreerails/client/view/about.htm"));
+        about = new HtmlJPanel(DialogueBoxController.class.getResource("/org/railz/client/view/about.htm"));
         
-        how2play = new HtmlJPanel(DialogueBoxController.class.getResource("/jfreerails/client/view/how_to_play.htm"));
+        how2play = new HtmlJPanel(DialogueBoxController.class.getResource("/org/railz/client/view/how_to_play.htm"));
         
         //Set up select engine dialogue.
         selectEngine = new SelectEngineJPanel();

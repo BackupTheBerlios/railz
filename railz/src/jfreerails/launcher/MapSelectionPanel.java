@@ -21,14 +21,14 @@
  * Created on 20 December 2003, 15:16
  */
 
-package jfreerails.launcher;
+package org.railz.launcher;
 
 import javax.swing.JFileChooser;
 import java.io.File;
 
-import jfreerails.client.common.FileUtils;
-import jfreerails.server.GameServer;
-import jfreerails.util.Resources;
+import org.railz.client.common.FileUtils;
+import org.railz.server.GameServer;
+import org.railz.util.Resources;
 
 /**
  *
@@ -116,7 +116,7 @@ class MapSelectionPanel extends javax.swing.JPanel {
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 4));
 
         jPanel3.setAlignmentX(0.0F);
-        loadMapButton.setText(jfreerails.util.Resources.get("Load a saved game"));
+        loadMapButton.setText(org.railz.util.Resources.get("Load a saved game"));
         buttonGroup1.add(loadMapButton);
         loadMapButton.setMargin(new java.awt.Insets(2, 0, 2, 2));
         loadMapButton.addActionListener(new java.awt.event.ActionListener() {
@@ -150,7 +150,7 @@ class MapSelectionPanel extends javax.swing.JPanel {
         jPanel2.add(jPanel3);
 
         newMapButton.setSelected(true);
-        newMapButton.setText(jfreerails.util.Resources.get("Start a new map"));
+        newMapButton.setText(org.railz.util.Resources.get("Start a new map"));
         buttonGroup1.add(newMapButton);
         newMapButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         newMapButton.setMargin(new java.awt.Insets(2, 4, 2, 2));
@@ -166,7 +166,7 @@ class MapSelectionPanel extends javax.swing.JPanel {
 
         jPanel1.setLayout(new java.awt.BorderLayout(4, 4));
 
-        jPanel1.setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), jfreerails.util.Resources.get("Select Map")));
+        jPanel1.setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), org.railz.util.Resources.get("Select Map")));
         jScrollPane1.setViewportBorder(new javax.swing.border.BevelBorder(javax.swing.border.BevelBorder.LOWERED));
         jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(jList1);

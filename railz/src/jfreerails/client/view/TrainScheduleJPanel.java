@@ -15,7 +15,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.Container;
 import java.awt.Component;
@@ -32,21 +32,21 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.ListCellRenderer;
 
-import jfreerails.client.common.PortablePopupAdapter;
-import jfreerails.client.renderer.TrainImages;
-import jfreerails.client.renderer.ViewLists;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.move.ChangeTrainScheduleMove;
-import jfreerails.move.Move;
-import jfreerails.util.Resources;
-import jfreerails.world.cargo.CargoType;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ObjectKey;
-import jfreerails.world.top.NonNullElements;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.top.WorldListListener;
-import jfreerails.world.train.*;
+import org.railz.client.common.PortablePopupAdapter;
+import org.railz.client.renderer.TrainImages;
+import org.railz.client.renderer.ViewLists;
+import org.railz.client.model.ModelRoot;
+import org.railz.move.ChangeTrainScheduleMove;
+import org.railz.move.Move;
+import org.railz.util.Resources;
+import org.railz.world.cargo.CargoType;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ObjectKey;
+import org.railz.world.top.NonNullElements;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.top.WorldListListener;
+import org.railz.world.train.*;
 
 /**
  *  This JPanel displays a train's schedule and provides controls that let you
@@ -223,7 +223,7 @@ WorldListListener, ListCellRenderer {
 
         editOrderJPopupMenu.add(pushDownJMenuItem);
 
-        addStationJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jfreerails/client/graphics/toolbar/add_station.png")));
+        addStationJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/railz/client/graphics/toolbar/add_station.png")));
         addStationJButton.setToolTipText("Add Station");
         addStationJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -231,7 +231,7 @@ WorldListListener, ListCellRenderer {
             }
         });
 
-        priorityOrdersJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jfreerails/client/graphics/toolbar/priority_orders.png")));
+        priorityOrdersJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/railz/client/graphics/toolbar/priority_orders.png")));
         priorityOrdersJButton.setToolTipText("Add Priority Orders");
         priorityOrdersJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

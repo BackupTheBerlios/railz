@@ -14,18 +14,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.controller;
+package org.railz.controller;
 
 import java.util.ArrayList;
-import jfreerails.move.AddItemToListMove;
-import jfreerails.move.ChangeItemInListMove;
-import jfreerails.move.RemoveItemFromListMove;
-import jfreerails.move.CompositeMove;
-import jfreerails.move.Move;
-import jfreerails.move.UndoneMove;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.WorldListListener;
+import org.railz.move.AddItemToListMove;
+import org.railz.move.ChangeItemInListMove;
+import org.railz.move.RemoveItemFromListMove;
+import org.railz.move.CompositeMove;
+import org.railz.move.Move;
+import org.railz.move.UndoneMove;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.top.KEY;
+import org.railz.world.top.WorldListListener;
 
 
 /**

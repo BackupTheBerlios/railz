@@ -21,7 +21,7 @@
  * Created on 04 May 2003, 18:56
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.Component;
 import java.awt.Image;
@@ -35,23 +35,23 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import jfreerails.client.model.ModelRoot;
-import jfreerails.controller.MoveReceiver;
-import jfreerails.move.AddItemToListMove;
-import jfreerails.move.ListMove;
-import jfreerails.move.Move;
-import jfreerails.util.*;
-import jfreerails.world.building.*;
-import jfreerails.world.cargo.CargoBundle;
-import jfreerails.world.cargo.CargoType;
-import jfreerails.world.player.*;
-import jfreerails.world.station.StationModel;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.NonNullElements;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.top.WorldIterator;
-import jfreerails.world.track.*;
-import jfreerails.world.train.WagonType;
+import org.railz.client.model.ModelRoot;
+import org.railz.controller.MoveReceiver;
+import org.railz.move.AddItemToListMove;
+import org.railz.move.ListMove;
+import org.railz.move.Move;
+import org.railz.util.*;
+import org.railz.world.building.*;
+import org.railz.world.cargo.CargoBundle;
+import org.railz.world.cargo.CargoType;
+import org.railz.world.player.*;
+import org.railz.world.station.StationModel;
+import org.railz.world.top.KEY;
+import org.railz.world.top.NonNullElements;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.top.WorldIterator;
+import org.railz.world.track.*;
+import org.railz.world.train.WagonType;
 
 /** 
  * This JPanel displays the supply and demand at a station.
@@ -232,8 +232,8 @@ implements MoveReceiver {
         gridBagConstraints.weightx = 1.0;
         add(jLabel1, gridBagConstraints);
 
-        nextStation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jfreerails/client/graphics/toolbar/next.png")));
-        nextStation.setToolTipText(jfreerails.util.Resources.get("Next Station"));
+        nextStation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/railz/client/graphics/toolbar/next.png")));
+        nextStation.setToolTipText(org.railz.util.Resources.get("Next Station"));
         nextStation.setMargin(new java.awt.Insets(0, 0, 0, 0));
         nextStation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -250,8 +250,8 @@ implements MoveReceiver {
         gridBagConstraints.weightx = 1.0;
         add(nextStation, gridBagConstraints);
 
-        previousStation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jfreerails/client/graphics/toolbar/previous.png")));
-        previousStation.setToolTipText(jfreerails.util.Resources.get("Previous Station"));
+        previousStation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/railz/client/graphics/toolbar/previous.png")));
+        previousStation.setToolTipText(org.railz.util.Resources.get("Previous Station"));
         previousStation.setMargin(new java.awt.Insets(0, 0, 0, 0));
         previousStation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -306,7 +306,7 @@ implements MoveReceiver {
         gridBagConstraints.weighty = 1.0;
         add(jScrollPane1, gridBagConstraints);
 
-        jPanel1.setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), jfreerails.util.Resources.get("Cargo Types in Demand")));
+        jPanel1.setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), org.railz.util.Resources.get("Cargo Types in Demand")));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;

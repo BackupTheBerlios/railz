@@ -20,18 +20,18 @@
  *
  * Created on 25 January 2002, 23:49
  */
-package jfreerails.move;
+package org.railz.move;
 
 import java.util.ArrayList;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import jfreerails.world.building.*;
-import jfreerails.world.common.*;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
-import jfreerails.world.top.*;
-import jfreerails.world.track.*;
+import org.railz.world.building.*;
+import org.railz.world.common.*;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
+import org.railz.world.top.*;
+import org.railz.world.track.*;
 
 /**
  * This Move changes adds, removes, or upgrades the track between two tiles.

@@ -14,7 +14,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.train;
+package org.railz.world.train;
 
 import java.awt.Point;
 import java.util.Arrays;
@@ -24,9 +24,9 @@ import java.util.Map.Entry;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 
-import jfreerails.world.common.*;
-import jfreerails.world.top.*;
-import jfreerails.world.track.*;
+import org.railz.world.common.*;
+import org.railz.world.top.*;
+import org.railz.world.track.*;
 
 public class TrainModel implements FreerailsSerializable {
     /**

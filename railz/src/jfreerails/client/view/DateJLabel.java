@@ -19,7 +19,7 @@
  * Created on 01-Jun-2003
  * 
  */
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.Graphics;
 import java.awt.event.ActionListener;
@@ -28,12 +28,12 @@ import java.util.Calendar;
 
 import javax.swing.JLabel;
 
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.renderer.ViewLists;
-import jfreerails.world.common.GameCalendar;
-import jfreerails.world.common.GameTime;
-import jfreerails.world.top.ITEM;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.renderer.ViewLists;
+import org.railz.world.common.GameCalendar;
+import org.railz.world.common.GameTime;
+import org.railz.world.top.ITEM;
+import org.railz.world.top.ReadOnlyWorld;
 
 /**
  * This JLabel shows the current date.

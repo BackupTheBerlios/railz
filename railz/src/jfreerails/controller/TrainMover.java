@@ -16,16 +16,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.controller;
+package org.railz.controller;
 
 import java.awt.Point;
 
-import jfreerails.world.common.*;
-import jfreerails.world.player.*;
-import jfreerails.world.station.*;
-import jfreerails.world.top.*;
-import jfreerails.world.train.*;
-import jfreerails.world.track.*;
+import org.railz.world.common.*;
+import org.railz.world.player.*;
+import org.railz.world.station.*;
+import org.railz.world.top.*;
+import org.railz.world.train.*;
+import org.railz.world.track.*;
 
 /**
  * Responsible for moving the trains.

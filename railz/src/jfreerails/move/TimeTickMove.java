@@ -14,14 +14,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.move;
+package org.railz.move;
 
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
-import jfreerails.world.top.World;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.common.GameTime;
-import jfreerails.world.top.ITEM;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
+import org.railz.world.top.World;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.common.GameTime;
+import org.railz.world.top.ITEM;
 
 
 public class TimeTickMove implements Move {

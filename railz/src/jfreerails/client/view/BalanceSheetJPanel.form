@@ -14,7 +14,7 @@
         </Property>
         <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Balance Sheet:" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+          <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Balance Sheet:" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Constraints>
@@ -45,7 +45,7 @@
               <Font name="Dialog" size="14" style="1"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Assets" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Assets" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -60,7 +60,7 @@
               <Font name="Dialog" size="12" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Rolling Stock" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Rolling Stock" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -72,7 +72,7 @@
         <Component class="javax.swing.JLabel" name="jLabel4">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Current Assets" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Current Assets" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -97,7 +97,7 @@
               <Font name="Dialog" size="12" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Cash" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Cash" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -119,7 +119,7 @@
         <Component class="javax.swing.JLabel" name="jLabel8">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Long-term Assets" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Long-term Assets" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -134,7 +134,7 @@
               <Font name="Dialog" size="14" style="1"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Liabilities" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Liabilities" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -149,7 +149,7 @@
               <Font name="Dialog" size="12" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Property" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Property" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -171,7 +171,7 @@
         <Component class="javax.swing.JLabel" name="jLabel5">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Current Liabilities" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Current Liabilities" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -186,7 +186,7 @@
               <Font name="Dialog" size="12" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Train Maintenance" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Train Maintenance" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -211,7 +211,7 @@
               <Font name="Dialog" size="12" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Track Maintenance" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Track Maintenance" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -236,7 +236,7 @@
               <Font name="Dialog" size="12" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Income Tax" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Income Tax" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -261,7 +261,7 @@
               <Font name="Dialog" size="12" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Interest on Loans" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Interest on Loans" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -286,7 +286,7 @@
               <Font name="Dialog" size="12" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Overdraft" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Overdraft" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -318,7 +318,7 @@
         <Component class="javax.swing.JLabel" name="jLabel13">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Long-Term Liabilities" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Long-Term Liabilities" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -333,7 +333,7 @@
               <Font name="Dialog" size="12" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Bonds" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Bonds" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -348,7 +348,7 @@
               <Font name="Dialog" size="12" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Loans" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Loans" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -373,7 +373,7 @@
               <Font name="Dialog" size="12" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Retained Earnings" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Retained Earnings" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -385,7 +385,7 @@
         <Component class="javax.swing.JLabel" name="jLabel21">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Equity" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Equity" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -410,7 +410,7 @@
               <Font name="Dialog" size="12" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Initial Investment" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Initial Investment" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -435,7 +435,7 @@
               <Font name="Dialog" size="12" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Stock" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Stock" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -457,7 +457,7 @@
         <Component class="javax.swing.JLabel" name="jLabel11">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Total Current Assets" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Total Current Assets" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -469,7 +469,7 @@
         <Component class="javax.swing.JLabel" name="jLabel19">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Total Assets" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Total Assets" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -481,7 +481,7 @@
         <Component class="javax.swing.JLabel" name="jLabel22">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Total Current Liabilities" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Total Current Liabilities" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -493,7 +493,7 @@
         <Component class="javax.swing.JLabel" name="jLabel24">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Total Liabilities" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Total Liabilities" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -545,7 +545,7 @@
         <Component class="javax.swing.JLabel" name="jLabel26">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Total Equity" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Total Equity" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -577,7 +577,7 @@
         <Component class="javax.swing.JLabel" name="jLabel28">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Assets less Liabilities" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Assets less Liabilities" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -640,10 +640,10 @@
             <Component class="javax.swing.JButton" name="prevJButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.openide.explorer.propertysheet.editors.IconEditor">
-                  <Image iconType="3" name="/jfreerails/client/graphics/toolbar/previous.png"/>
+                  <Image iconType="3" name="/org/railz/client/graphics/toolbar/previous.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Previous Year" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Previous Year" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
               <Events>
@@ -653,10 +653,10 @@
             <Component class="javax.swing.JButton" name="nextJButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.openide.explorer.propertysheet.editors.IconEditor">
-                  <Image iconType="3" name="/jfreerails/client/graphics/toolbar/next.png"/>
+                  <Image iconType="3" name="/org/railz/client/graphics/toolbar/next.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="jfreerails/data/l10n/jfreerails_en.properties" key="Next Year" replaceFormat="jfreerails.util.Resources.get(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="org/railz/data/l10n/jfreerails_en.properties" key="Next Year" replaceFormat="org.railz.util.Resources.get(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
               <Events>

@@ -19,13 +19,13 @@
  * Created on 21-Jul-2003
  *
  */
-package jfreerails.move;
+package org.railz.move;
 
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import jfreerails.world.track.*;
-import jfreerails.world.player.FreerailsPrincipal;
+import org.railz.world.track.*;
+import org.railz.world.player.FreerailsPrincipal;
 
 /**
  * This CompositeMove changes the track type at a point

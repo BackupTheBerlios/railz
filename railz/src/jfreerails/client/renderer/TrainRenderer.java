@@ -15,15 +15,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.renderer;
+package org.railz.client.renderer;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import jfreerails.world.common.*;
-import jfreerails.world.track.*;
-import jfreerails.world.train.*;
+import org.railz.world.common.*;
+import org.railz.world.track.*;
+import org.railz.world.train.*;
 
 /**
  * This class draws a train from an overhead view.

@@ -19,21 +19,21 @@
  * Created on 30-Jul-2003
  *
  */
-package jfreerails.server;
+package org.railz.server;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import jfreerails.move.AddTransactionMove;
-import jfreerails.world.accounts.DeliverCargoReceipt;
-import jfreerails.world.cargo.*;
-import jfreerails.world.common.GameTime;
-import jfreerails.world.station.StationModel;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ITEM;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
+import org.railz.move.AddTransactionMove;
+import org.railz.world.accounts.DeliverCargoReceipt;
+import org.railz.world.cargo.*;
+import org.railz.world.common.GameTime;
+import org.railz.world.station.StationModel;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ITEM;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
 
 /** This class generates Moves that pay the player for delivering the cargo.
  *

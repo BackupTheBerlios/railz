@@ -19,9 +19,9 @@
  * Created on 28-Mar-2003
  *
  */
-package jfreerails.world.station;
+package org.railz.world.station;
 
-import jfreerails.world.common.FreerailsSerializable;
+import org.railz.world.common.FreerailsSerializable;
 
 
 /**

@@ -15,10 +15,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.cargo;
+package org.railz.world.cargo;
 
 import java.util.Iterator;
-import jfreerails.world.common.FreerailsSerializable;
+import org.railz.world.common.FreerailsSerializable;
 
 
 /** This interface defines a bundle of cargo made up of

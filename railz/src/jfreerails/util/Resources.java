@@ -14,7 +14,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.util;
+package org.railz.util;
  
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -28,7 +28,7 @@ public final class Resources {
    static {
        try {
 	   bundle = ResourceBundle.getBundle
-	       ("jfreerails.data.l10n.jfreerails");
+	       ("org.railz.data.l10n.jfreerails");
        } catch (MissingResourceException e) {
 	   bundle = null;
        }

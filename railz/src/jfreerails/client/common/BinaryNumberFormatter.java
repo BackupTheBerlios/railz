@@ -20,7 +20,7 @@
  *
  * Created on 30 April 2003, 20:23
  */
-package jfreerails.client.common;
+package org.railz.client.common;
 
 
 /**

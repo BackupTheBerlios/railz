@@ -14,7 +14,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -27,10 +27,10 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputAdapter;
 
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.renderer.BlankMapRenderer;
-import jfreerails.client.renderer.MapRenderer;
-import jfreerails.client.renderer.ZoomedOutMapRenderer;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.renderer.BlankMapRenderer;
+import org.railz.client.renderer.MapRenderer;
+import org.railz.client.renderer.ZoomedOutMapRenderer;
 
 public class OverviewMapJComponent extends JPanel {
     private GUIRoot guiRoot;

@@ -19,9 +19,9 @@
  * Created on 24-Aug-2003
  *
  */
-package jfreerails.world.train;
+package org.railz.world.train;
 
-import jfreerails.world.top.ObjectKey;
+import org.railz.world.top.ObjectKey;
 
 /**
  * @author Luke Lindsay

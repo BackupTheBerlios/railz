@@ -14,22 +14,22 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.server;
+package org.railz.server;
 
 import java.util.HashMap;
-import jfreerails.controller.ConnectionToServer;
-import jfreerails.controller.MoveChainFork;
-import jfreerails.controller.MoveReceiver;
-import jfreerails.controller.SourcedMoveReceiver;
-import jfreerails.move.AddPlayerMove;
-import jfreerails.move.Move;
-import jfreerails.move.MoveStatus;
-import jfreerails.move.RejectedMove;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.NonNullElements;
-import jfreerails.world.top.World;
+import org.railz.controller.ConnectionToServer;
+import org.railz.controller.MoveChainFork;
+import org.railz.controller.MoveReceiver;
+import org.railz.controller.SourcedMoveReceiver;
+import org.railz.move.AddPlayerMove;
+import org.railz.move.Move;
+import org.railz.move.MoveStatus;
+import org.railz.move.RejectedMove;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
+import org.railz.world.top.KEY;
+import org.railz.world.top.NonNullElements;
+import org.railz.world.top.World;
 
 
 /**

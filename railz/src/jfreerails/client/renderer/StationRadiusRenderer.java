@@ -14,12 +14,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.renderer;
+package org.railz.client.renderer;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import jfreerails.client.common.Painter;
+import org.railz.client.common.Painter;
 
 
 /** This class draws the radius of a station on the map */

@@ -14,16 +14,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.server;
+package org.railz.server;
 
 import java.util.LinkedList;
 
-import jfreerails.controller.SourcedMoveReceiver;
-import jfreerails.controller.ConnectionToServer;
-import jfreerails.move.Move;
-import jfreerails.world.common.FreerailsSerializable;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
+import org.railz.controller.SourcedMoveReceiver;
+import org.railz.controller.ConnectionToServer;
+import org.railz.move.Move;
+import org.railz.world.common.FreerailsSerializable;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
 
 
 /**

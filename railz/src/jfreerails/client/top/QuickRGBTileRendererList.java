@@ -19,18 +19,18 @@
  * Created on 28-Apr-2003
  *
  */
-package jfreerails.client.top;
+package org.railz.client.top;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
-import jfreerails.client.common.ImageManager;
-import jfreerails.client.renderer.TileRenderer;
-import jfreerails.client.renderer.TileRendererList;
-import jfreerails.world.terrain.TerrainType;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.client.common.ImageManager;
+import org.railz.client.renderer.TileRenderer;
+import org.railz.client.renderer.TileRendererList;
+import org.railz.world.terrain.TerrainType;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
 
 
 /**

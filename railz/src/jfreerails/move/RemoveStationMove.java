@@ -19,19 +19,19 @@
  * Created on 15-Apr-2003
  *
  */
-package jfreerails.move;
+package org.railz.move;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import jfreerails.world.station.StationModel;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ObjectKey;
-import jfreerails.world.top.NonNullElements;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.top.WorldIterator;
-import jfreerails.world.train.ImmutableSchedule;
-import jfreerails.world.train.MutableSchedule;
+import org.railz.world.station.StationModel;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ObjectKey;
+import org.railz.world.top.NonNullElements;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.top.WorldIterator;
+import org.railz.world.train.ImmutableSchedule;
+import org.railz.world.train.MutableSchedule;
 
 /**
  * This Move removes a station from the station list and from the map.

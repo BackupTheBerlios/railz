@@ -21,7 +21,7 @@
  *
  * Class that calls the object to input the City names and co-ords from an xml file.
  */
-package jfreerails.server.parser;
+package org.railz.server.parser;
 
 import java.io.*;
 import java.net.URL;
@@ -31,7 +31,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.ParserConfigurationException;
-import jfreerails.world.top.World;
+import org.railz.world.top.World;
 
 
 public class InputCityNames {

@@ -16,13 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.server;
+package org.railz.server;
 
 import java.io.File;
 import java.util.Vector;
 
-import jfreerails.controller.ServerControlInterface;
-import jfreerails.util.FreerailsProgressMonitor;
+import org.railz.controller.ServerControlInterface;
+import org.railz.util.FreerailsProgressMonitor;
 
 /**
  * This implements a game server. A game server may host a number of independent

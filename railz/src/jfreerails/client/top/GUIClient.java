@@ -14,25 +14,25 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.top;
+package org.railz.client.top;
 
 import java.awt.DisplayMode;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.security.GeneralSecurityException;
 import javax.swing.JFrame;
-import jfreerails.client.common.ScreenHandler;
-import jfreerails.client.common.SynchronizedEventQueue;
-import jfreerails.client.common.UpdatedComponent;
-import jfreerails.client.view.GUIRoot;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.controller.ConnectionToServer;
-import jfreerails.controller.InetConnection;
-import jfreerails.controller.LocalConnection;
-import jfreerails.controller.MoveChainFork;
-import jfreerails.controller.ServerControlInterface;
-import jfreerails.util.FreerailsProgressMonitor;
-import jfreerails.world.player.Player;
+import org.railz.client.common.ScreenHandler;
+import org.railz.client.common.SynchronizedEventQueue;
+import org.railz.client.common.UpdatedComponent;
+import org.railz.client.view.GUIRoot;
+import org.railz.client.model.ModelRoot;
+import org.railz.controller.ConnectionToServer;
+import org.railz.controller.InetConnection;
+import org.railz.controller.LocalConnection;
+import org.railz.controller.MoveChainFork;
+import org.railz.controller.ServerControlInterface;
+import org.railz.util.FreerailsProgressMonitor;
+import org.railz.world.player.Player;
 
 
 /**

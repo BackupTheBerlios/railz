@@ -20,12 +20,12 @@
  *
  * Created on 22 January 2002, 20:14
  */
-package jfreerails.world.train;
+package org.railz.world.train;
 
 import java.util.Vector;
 
-import jfreerails.world.common.FreerailsSerializable;
-import jfreerails.world.top.ObjectKey;
+import org.railz.world.common.FreerailsSerializable;
+import org.railz.world.top.ObjectKey;
 
 /** This class represents a train's schedule.  That is, which stations that the
  * train should visit and what wagons the engine should pull.

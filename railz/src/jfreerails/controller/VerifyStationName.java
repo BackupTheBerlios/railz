@@ -26,16 +26,16 @@
  * perhaps "Junction" or "Siding" to the name.
  *
  */
-package jfreerails.controller;
+package org.railz.controller;
 
 import java.util.Vector;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
-import jfreerails.world.station.StationModel;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.NonNullElements;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.top.WorldIterator;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
+import org.railz.world.station.StationModel;
+import org.railz.world.top.KEY;
+import org.railz.world.top.NonNullElements;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.top.WorldIterator;
 
 
 public class VerifyStationName {

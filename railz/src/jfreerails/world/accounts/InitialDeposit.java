@@ -20,9 +20,9 @@
  *
  * @author rtuck99@users.berlios.de
  */
-package jfreerails.world.accounts;
+package org.railz.world.accounts;
 
-import jfreerails.world.common.GameTime;
+import org.railz.world.common.GameTime;
 
 public class InitialDeposit extends Transaction {
     public InitialDeposit(GameTime t, long value) {

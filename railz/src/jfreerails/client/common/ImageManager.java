@@ -19,7 +19,7 @@
  * Created on 30-Apr-2003
  *
  */
-package jfreerails.client.common;
+package org.railz.client.common;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;

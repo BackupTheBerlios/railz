@@ -21,16 +21,16 @@
  * Created on 18 February 2004, 23:13
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.renderer.ViewLists;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.renderer.ViewLists;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
 
 /**
  *

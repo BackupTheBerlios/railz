@@ -18,10 +18,10 @@
 /*
  * Created on Dec 13, 2003
  */
-package jfreerails.world.accounts;
+package org.railz.world.accounts;
 
-import jfreerails.world.cargo.CargoBundle;
-import jfreerails.world.common.GameTime;
+import org.railz.world.cargo.CargoBundle;
+import org.railz.world.common.GameTime;
 
 /**
  *

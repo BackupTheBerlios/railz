@@ -19,26 +19,26 @@
  * Created on 28-Jun-2003
  *
  */
-package jfreerails.server;
+package org.railz.server;
 
 import junit.framework.TestCase;
 
-import jfreerails.controller.*;
-import jfreerails.move.Move;
-import jfreerails.move.MoveStatus;
-import jfreerails.world.accounts.BankAccount;
-import jfreerails.world.cargo.CargoBatch;
-import jfreerails.world.cargo.CargoBundle;
-import jfreerails.world.cargo.CargoBundleImpl;
-import jfreerails.world.cargo.CargoType;
-import jfreerails.world.common.GameTime;
-import jfreerails.world.station.DemandAtStation;
-import jfreerails.world.station.StationModel;
-import jfreerails.world.top.*;
-import jfreerails.world.train.TransportCategory;
-import jfreerails.world.train.WagonType;
-import jfreerails.world.train.TrainModel;
-import jfreerails.world.player.Player;
+import org.railz.controller.*;
+import org.railz.move.Move;
+import org.railz.move.MoveStatus;
+import org.railz.world.accounts.BankAccount;
+import org.railz.world.cargo.CargoBatch;
+import org.railz.world.cargo.CargoBundle;
+import org.railz.world.cargo.CargoBundleImpl;
+import org.railz.world.cargo.CargoType;
+import org.railz.world.common.GameTime;
+import org.railz.world.station.DemandAtStation;
+import org.railz.world.station.StationModel;
+import org.railz.world.top.*;
+import org.railz.world.train.TransportCategory;
+import org.railz.world.train.WagonType;
+import org.railz.world.train.TrainModel;
+import org.railz.world.player.Player;
 
 
 /** This Junit TestCase tests whether a train picks up and drops off the right cargo at a station.
@@ -70,11 +70,12 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
 	w.add(KEY.PLAYERS, testPlayer, Player.AUTHORITATIVE);
 
         //set up the cargo types.
-        w.add(KEY.CARGO_TYPES, new CargoType(0, "Mail", TransportCategory.MAIL));
-        w.add(KEY.CARGO_TYPES, new CargoType(0, "Passengers",
-                   TransportCategory.PASSENGER));
-        w.add(KEY.CARGO_TYPES, new CargoType(0, "Goods",
-                   TransportCategory.FAST_FREIGHT));
+        w.add(KEY.CARGO_TYPES, new CargoType("Mail", TransportCategory.MAIL,
+		    100, 100, 100));
+        w.add(KEY.CARGO_TYPES, new CargoType("Passengers",
+                   TransportCategory.PASSENGER, 100, 100, 100));
+        w.add(KEY.CARGO_TYPES, new CargoType("Goods",
+                   TransportCategory.FAST_FREIGHT, 100, 100, 100));
 
        w.add(KEY.WAGON_TYPES, new WagonType("Mail Wagon",
                    TransportCategory.MAIL, 40, 0));

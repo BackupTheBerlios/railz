@@ -19,16 +19,16 @@
  * Created on 07-Jul-2003
  *
  */
-package jfreerails.move;
+package org.railz.move;
 
-import jfreerails.world.accounts.BankAccount;
-import jfreerails.world.accounts.InitialDeposit;
-import jfreerails.world.accounts.Transaction;
-import jfreerails.world.accounts.AddItemTransaction;
-import jfreerails.world.common.GameTime;
-import jfreerails.world.player.Player;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ITEM;
+import org.railz.world.accounts.BankAccount;
+import org.railz.world.accounts.InitialDeposit;
+import org.railz.world.accounts.Transaction;
+import org.railz.world.accounts.AddItemTransaction;
+import org.railz.world.common.GameTime;
+import org.railz.world.player.Player;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ITEM;
 
 /**
  * @author Luke Lindsay

@@ -14,15 +14,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package jfreerails.client.renderer;
+package org.railz.client.renderer;
 
 import java.awt.Graphics;
 import java.awt.Shape;
 import java.awt.Rectangle;
 
-import jfreerails.world.building.*;
-import jfreerails.world.top.*;
-import jfreerails.world.track.*;
+import org.railz.world.building.*;
+import org.railz.world.top.*;
+import org.railz.world.track.*;
 
 /**
  * Renders the building layer (duh!).

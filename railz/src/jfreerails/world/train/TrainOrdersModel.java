@@ -20,12 +20,12 @@
  *
  * Created on 31 March 2003, 23:17
  */
-package jfreerails.world.train;
+package org.railz.world.train;
 
 import java.util.Arrays;
 
-import jfreerails.world.common.FreerailsSerializable;
-import jfreerails.world.top.ObjectKey;
+import org.railz.world.common.FreerailsSerializable;
+import org.railz.world.top.ObjectKey;
 
 /**
  * This class encapsulates the orders for a train at a particular stop on its

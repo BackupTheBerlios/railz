@@ -32,7 +32,7 @@ Compilation:
 ============
 
 To compile, either 
-(i) go to the directory src, and type: javac jfreerails/launcher/Launcher.java
+(i) go to the directory src, and type: javac org/railz/launcher/Launcher.java
 or	
 (ii) use the build.xml file and Ant version 1.5.
 

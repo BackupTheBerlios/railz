@@ -1,7 +1,7 @@
 #!/bin/sh
 cd `dirname $0`
 HERE=`pwd`
-L10NDIR=$HERE/src/jfreerails/data/l10n
+L10NDIR=$HERE/src/org/railz/data/l10n
 
 # define your supported languages here...
 LANGUAGES="en de_DE"
@@ -20,7 +20,7 @@ if [ -z "$MSGMERGE" ]; then
 	MSGMERGE=msgmerge
 fi
 
-JAVAFILES=`find $HERE/src/jfreerails -name \*.java`
+JAVAFILES=`find $HERE/src/org/railz -name \*.java`
 
 # create messages.pot
 $XGETTEXT -D $HERE -p $L10NDIR $KEYWORDS \

@@ -19,16 +19,16 @@
  *
  * Created on 21 July 2001, 01:04
  */
-package jfreerails.client.renderer;
+package org.railz.client.renderer;
 
 import java.awt.Image;
 import java.io.IOException;
 import java.util.Iterator;
-import jfreerails.client.common.ImageManager;
-import jfreerails.util.FreerailsProgressMonitor;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.track.TrackRule;
+import org.railz.client.common.ImageManager;
+import org.railz.util.FreerailsProgressMonitor;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.track.TrackRule;
 
 
 final public class TrackPieceRendererList {

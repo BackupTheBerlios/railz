@@ -17,7 +17,7 @@
 /*
  * Created on Feb 18, 2004
  */
-package jfreerails.controller;
+package org.railz.controller;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -26,9 +26,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.OptionalDataException;
 import java.io.StreamCorruptedException;
-import jfreerails.controller.ConnectionToServer.ConnectionState;
-import jfreerails.move.Move;
-import jfreerails.world.top.World;
+import org.railz.controller.ConnectionToServer.ConnectionState;
+import org.railz.move.Move;
+import org.railz.world.top.World;
 
 
 class Dispatcher implements Runnable {

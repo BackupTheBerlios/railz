@@ -14,21 +14,21 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.top;
+package org.railz.client.top;
 
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
-import jfreerails.client.model.CursorEvent;
-import jfreerails.client.model.CursorEventListener;
-import jfreerails.client.model.MapCursor;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.view.DialogueBoxController;
-import jfreerails.client.view.MapViewJComponent;
-import jfreerails.client.view.GUIRoot;
-import jfreerails.controller.TrackMoveProducer;
-import jfreerails.controller.UncommittedMoveReceiver;
-import jfreerails.move.MoveStatus;
+import org.railz.client.model.CursorEvent;
+import org.railz.client.model.CursorEventListener;
+import org.railz.client.model.MapCursor;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.view.DialogueBoxController;
+import org.railz.client.view.MapViewJComponent;
+import org.railz.client.view.GUIRoot;
+import org.railz.controller.TrackMoveProducer;
+import org.railz.controller.UncommittedMoveReceiver;
+import org.railz.move.MoveStatus;
 
 
 public class UserInputOnMapController implements CursorEventListener {

@@ -14,9 +14,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.controller;
+package org.railz.controller;
 
-import jfreerails.world.player.Player;
+import org.railz.world.player.Player;
 
 
 /**

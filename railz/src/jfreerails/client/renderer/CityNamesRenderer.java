@@ -21,15 +21,15 @@
  * Class to render the city names on the game map. Names are retrieved
  * from the KEY.CITIES object.
  */
-package jfreerails.client.renderer;
+package org.railz.client.renderer;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import jfreerails.client.common.Painter;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.city.CityModel;
+import org.railz.client.common.Painter;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.city.CityModel;
 
 
 public class CityNamesRenderer implements Painter {

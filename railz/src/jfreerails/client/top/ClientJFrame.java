@@ -21,7 +21,7 @@
  * Created on 01 June 2003, 15:56
  */
 
-package jfreerails.client.top;
+package org.railz.client.top;
 
 import java.awt.event.KeyEvent;
 import java.awt.Container;
@@ -35,22 +35,22 @@ import javax.swing.JViewport;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 
-import jfreerails.client.common.*;
-import jfreerails.client.view.MapViewJComponent;
-import jfreerails.client.view.MapViewJComponentConcrete;
-import jfreerails.client.view.CashJLabel;
-import jfreerails.client.view.DateJLabel;
-import jfreerails.client.view.GUIRoot;
-import jfreerails.client.view.HelpMenu;
-import jfreerails.client.view.DisplayMenu;
-import jfreerails.client.view.GameMenu;
-import jfreerails.client.view.DebugMenu;
-import jfreerails.client.view.OverviewMapJComponent;
-import jfreerails.client.view.TrainsJTabPane;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.world.top.KEY;
-import jfreerails.world.player.Player;
-import jfreerails.world.player.PlayerPrincipal;
+import org.railz.client.common.*;
+import org.railz.client.view.MapViewJComponent;
+import org.railz.client.view.MapViewJComponentConcrete;
+import org.railz.client.view.CashJLabel;
+import org.railz.client.view.DateJLabel;
+import org.railz.client.view.GUIRoot;
+import org.railz.client.view.HelpMenu;
+import org.railz.client.view.DisplayMenu;
+import org.railz.client.view.GameMenu;
+import org.railz.client.view.DebugMenu;
+import org.railz.client.view.OverviewMapJComponent;
+import org.railz.client.view.TrainsJTabPane;
+import org.railz.client.model.ModelRoot;
+import org.railz.world.top.KEY;
+import org.railz.world.player.Player;
+import org.railz.world.player.PlayerPrincipal;
 
 /**
  *

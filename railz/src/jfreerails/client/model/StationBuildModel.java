@@ -14,7 +14,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.model;
+package org.railz.client.model;
 
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -23,14 +23,14 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import java.util.Vector;
 
-import jfreerails.client.renderer.*;
-import jfreerails.controller.StationBuilder;
-import jfreerails.world.building.*;
-import jfreerails.world.common.*;
-import jfreerails.world.player.*;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.top.KEY;
-import jfreerails.world.track.TrackRule;
+import org.railz.client.renderer.*;
+import org.railz.controller.StationBuilder;
+import org.railz.world.building.*;
+import org.railz.world.common.*;
+import org.railz.world.player.*;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.top.KEY;
+import org.railz.world.track.TrackRule;
 
 /**
  * This class provides the UI model for building a station.

@@ -20,15 +20,15 @@
  *
  *  Created on 06 August 2001, 17:21
  */
-package jfreerails.client.renderer;
+package org.railz.client.renderer;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
-import jfreerails.world.terrain.TerrainTile;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.track.*;
+import org.railz.world.terrain.TerrainTile;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.track.*;
 
 /**
  * This class encapsulates the objects that make-up and paint the background

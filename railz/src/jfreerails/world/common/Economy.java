@@ -15,7 +15,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.common;
+package org.railz.world.common;
 
 /**
  *A repository for attributes common to the Railz economy.

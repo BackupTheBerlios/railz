@@ -21,7 +21,7 @@
  * Created on 19 August 2003, 22:19
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -34,9 +34,9 @@ import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.JToggleButton;
 
-import jfreerails.client.model.TrackBuildModel;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.renderer.ViewLists;
+import org.railz.client.model.TrackBuildModel;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.renderer.ViewLists;
 
 /**
  *

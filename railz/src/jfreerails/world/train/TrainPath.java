@@ -15,7 +15,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.train;
+package org.railz.world.train;
 
 import java.awt.Point;
 import java.util.Iterator;
@@ -23,9 +23,9 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.HashMap;
 
-import jfreerails.world.common.*;
-import jfreerails.world.player.*;
-import jfreerails.world.track.*;
+import org.railz.world.common.*;
+import org.railz.world.player.*;
+import org.railz.world.track.*;
 
 /**
  * Describes a continuous sequence of straight-line segments.

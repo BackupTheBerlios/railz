@@ -19,15 +19,15 @@
  * Created on 15-Apr-2003
  *
  */
-package jfreerails.move;
+package org.railz.move;
 
-import jfreerails.world.accounts.AddItemTransaction;
-import jfreerails.world.common.GameTime;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ITEM;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.train.*;
-import jfreerails.world.player.*;
+import org.railz.world.accounts.AddItemTransaction;
+import org.railz.world.common.GameTime;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ITEM;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.train.*;
+import org.railz.world.player.*;
 
 /**
  * This CompositeMove adds a train to the train list, a train schedule to the

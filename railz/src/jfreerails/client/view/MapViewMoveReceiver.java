@@ -14,16 +14,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import jfreerails.client.renderer.MapRenderer;
-import jfreerails.controller.MoveReceiver;
-import jfreerails.move.MapUpdateMove;
-import jfreerails.move.Move;
-import jfreerails.move.UndoneMove;
+import org.railz.client.renderer.MapRenderer;
+import org.railz.controller.MoveReceiver;
+import org.railz.move.MapUpdateMove;
+import org.railz.move.Move;
+import org.railz.move.UndoneMove;
 
 public class MapViewMoveReceiver implements MoveReceiver {
 
@@ -35,7 +35,7 @@ public class MapViewMoveReceiver implements MoveReceiver {
 	mapView=mv;
 
 	try {
-	    mapUpdateMoveClass = Class.forName("jfreerails.move.MapUpdateMove");
+	    mapUpdateMoveClass = Class.forName("org.railz.move.MapUpdateMove");
 
 	} catch (ClassNotFoundException e) {
 

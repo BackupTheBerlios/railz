@@ -21,13 +21,13 @@
  * Created on 23 August 2003, 17:25
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import javax.swing.*;
 
-import jfreerails.client.model.ModelRoot;
-import jfreerails.world.top.*;
-import jfreerails.world.station.*;
+import org.railz.client.model.ModelRoot;
+import org.railz.world.top.*;
+import org.railz.world.station.*;
 import java.awt.*;
 /**
  *
@@ -36,10 +36,10 @@ import java.awt.*;
 public class TrainOrderJPanel extends javax.swing.JPanel {
     private ModelRoot modelRoot;
     
-    jfreerails.world.top.ReadOnlyWorld w;
+    org.railz.world.top.ReadOnlyWorld w;
     
-    ImageIcon gotoNow = new ImageIcon(TrainOrderJPanel.class.getResource("/jfreerails/client/graphics/selected_arrow.png"));
-    ImageIcon gotoAfterPriorityOrders = new ImageIcon(TrainOrderJPanel.class.getResource("/jfreerails/client/graphics/deselected_arrow.png"));
+    ImageIcon gotoNow = new ImageIcon(TrainOrderJPanel.class.getResource("/org/railz/client/graphics/selected_arrow.png"));
+    ImageIcon gotoAfterPriorityOrders = new ImageIcon(TrainOrderJPanel.class.getResource("/org/railz/client/graphics/deselected_arrow.png"));
     ImageIcon dontGoto = null;
     
     private Color backgoundColor = (java.awt.Color) javax.swing.UIManager.getDefaults().get("List.background");
@@ -68,7 +68,7 @@ public class TrainOrderJPanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.GridBagLayout());
 
-        gotoIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jfreerails/client/graphics/selected_arrow.png")));
+        gotoIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/railz/client/graphics/selected_arrow.png")));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;

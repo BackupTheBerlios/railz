@@ -19,16 +19,16 @@
  * Created on 26-May-2003
  *
  */
-package jfreerails.move;
+package org.railz.move;
 
 import java.awt.Point;
-import jfreerails.world.building.*;
-import jfreerails.world.cargo.CargoBundleImpl;
-import jfreerails.world.common.GameTime;
-import jfreerails.world.station.StationModel;
-import jfreerails.world.player.*;
-import jfreerails.world.top.*;
-import jfreerails.world.track.TrackRule;
+import org.railz.world.building.*;
+import org.railz.world.cargo.CargoBundleImpl;
+import org.railz.world.common.GameTime;
+import org.railz.world.station.StationModel;
+import org.railz.world.player.*;
+import org.railz.world.top.*;
+import org.railz.world.track.TrackRule;
 
 
 /**

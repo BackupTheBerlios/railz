@@ -18,10 +18,10 @@
 /*
  * Created on 25-Aug-2003
  */
-package jfreerails.move;
+package org.railz.move;
 
-import jfreerails.world.top.KEY;
-import jfreerails.world.train.ImmutableSchedule;
+import org.railz.world.top.KEY;
+import org.railz.world.train.ImmutableSchedule;
 
 
 /**This Move changes a train's schedule.

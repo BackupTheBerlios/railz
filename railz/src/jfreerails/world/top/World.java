@@ -14,11 +14,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.top;
+package org.railz.world.top;
 
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.common.FreerailsSerializable;
-import jfreerails.world.track.FreerailsTile;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.common.FreerailsSerializable;
+import org.railz.world.track.FreerailsTile;
 
 
 /**

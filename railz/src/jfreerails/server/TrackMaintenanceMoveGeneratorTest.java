@@ -19,21 +19,21 @@
  * Created on 11-Aug-2003
  *
  */
-package jfreerails.server;
+package org.railz.server;
 
 import java.util.Arrays;
-import jfreerails.move.AddTransactionMove;
-import jfreerails.world.accounts.AddItemTransaction;
-import jfreerails.world.accounts.BankAccount;
-import jfreerails.world.accounts.Transaction;
-import jfreerails.world.common.GameTime;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ITEM;
-import jfreerails.world.top.MapFixtureFactory;
-import jfreerails.world.top.World;
-import jfreerails.world.top.WorldImpl;
+import org.railz.move.AddTransactionMove;
+import org.railz.world.accounts.AddItemTransaction;
+import org.railz.world.accounts.BankAccount;
+import org.railz.world.accounts.Transaction;
+import org.railz.world.common.GameTime;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ITEM;
+import org.railz.world.top.MapFixtureFactory;
+import org.railz.world.top.World;
+import org.railz.world.top.WorldImpl;
 import junit.framework.TestCase;
-import jfreerails.world.player.Player;
+import org.railz.world.player.Player;
 
 /**
  * @author Luke Lindsay

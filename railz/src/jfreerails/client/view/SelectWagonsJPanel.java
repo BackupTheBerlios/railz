@@ -21,7 +21,7 @@
  * Created on 29 December 2002, 16:54
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
@@ -38,12 +38,12 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.renderer.TrainImages;
-import jfreerails.client.renderer.ViewLists;
-import jfreerails.world.cargo.CargoType;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.renderer.TrainImages;
+import org.railz.client.renderer.ViewLists;
+import org.railz.world.cargo.CargoType;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
 /**
  * This JPanel lets the user add wagons to a train.
  * 
@@ -66,7 +66,7 @@ public class SelectWagonsJPanel extends javax.swing.JPanel {
     /** Creates new form SelectWagonsJPanel */
 	public SelectWagonsJPanel() {
 		initComponents();
-		URL url = SelectWagonsJPanel.class.getResource("/jfreerails/data/station.gif");
+		URL url = SelectWagonsJPanel.class.getResource("/org/railz/data/station.gif");
 		Image tempImage = (new javax.swing.ImageIcon(url)).getImage();
 		
 		stationView = defaultConfiguration.createCompatibleImage(tempImage.getWidth(null), tempImage.getHeight(null), Transparency.BITMASK);

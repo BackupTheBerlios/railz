@@ -14,7 +14,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.model;
+package org.railz.client.model;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -24,19 +24,19 @@ import javax.swing.KeyStroke;
 
 import java.util.ArrayList;
 
-import jfreerails.client.common.UserMessageLogger;
-import jfreerails.client.renderer.ViewLists;
-import jfreerails.client.view.DialogueBoxController;
-import jfreerails.controller.MoveChainFork;
-import jfreerails.controller.ServerControlInterface;
-import jfreerails.controller.StationBuilder;
-import jfreerails.controller.TrackMoveProducer;
-import jfreerails.controller.UntriedMoveReceiver;
-import jfreerails.move.Move;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.top.WorldListListener;
+import org.railz.client.common.UserMessageLogger;
+import org.railz.client.renderer.ViewLists;
+import org.railz.client.view.DialogueBoxController;
+import org.railz.controller.MoveChainFork;
+import org.railz.controller.ServerControlInterface;
+import org.railz.controller.StationBuilder;
+import org.railz.controller.TrackMoveProducer;
+import org.railz.controller.UntriedMoveReceiver;
+import org.railz.move.Move;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.top.WorldListListener;
 
 /**
  * Central point for accessing control models and common UI-independent services

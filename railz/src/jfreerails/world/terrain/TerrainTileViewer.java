@@ -18,12 +18,12 @@
 /**
  * @author rtuck99@users.berlios.de
  */
-package jfreerails.world.terrain;
+package org.railz.world.terrain;
 
-import jfreerails.world.player.Player;
-import jfreerails.world.track.FreerailsTile;
-import jfreerails.world.top.*;
-import jfreerails.world.common.*;
+import org.railz.world.player.Player;
+import org.railz.world.track.FreerailsTile;
+import org.railz.world.top.*;
+import org.railz.world.common.*;
 
 /**
  * This class provides methods describing properties of the tile which require

@@ -21,7 +21,7 @@
  * Created on 22 August 2003, 20:49
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -32,16 +32,16 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.renderer.ViewLists;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.top.WorldListListener;
-import jfreerails.world.train.*;
-import jfreerails.world.cargo.CargoBundle;
-import jfreerails.world.cargo.CargoType;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.renderer.ViewLists;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.top.WorldListListener;
+import org.railz.world.train.*;
+import org.railz.world.cargo.CargoBundle;
+import org.railz.world.cargo.CargoType;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
 
 /**
  *  This JPanel displays an engine and a number of wagons.

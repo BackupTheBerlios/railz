@@ -21,19 +21,19 @@
  * Created on 16 June 2030, 20:03
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.Graphics;
 import javax.swing.border.TitledBorder;
 
-import jfreerails.client.model.ModelRoot;
-import jfreerails.world.cargo.CargoBundle;
-import jfreerails.world.cargo.CargoType;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.top.WorldListListener;
-import jfreerails.world.train.TrainModel;
+import org.railz.client.model.ModelRoot;
+import org.railz.world.cargo.CargoBundle;
+import org.railz.world.cargo.CargoType;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.top.WorldListListener;
+import org.railz.world.train.TrainModel;
 /**
  * This JPanel displays a side-on view of a train and a summary of the
  * cargo that it is carrying.
@@ -65,7 +65,7 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements WorldListL
     private void initComponents() {//GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
-        trainViewJPanel1 = new jfreerails.client.view.TrainViewJPanel();
+        trainViewJPanel1 = new org.railz.client.view.TrainViewJPanel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -81,7 +81,7 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements WorldListL
 	    java.awt.event.ActionListener submitButtonCallBack) {
 	modelRoot = mr;
 	ReadOnlyWorld w = mr.getWorld();
-	jfreerails.client.renderer.ViewLists vl = mr.getViewLists();
+	org.railz.client.renderer.ViewLists vl = mr.getViewLists();
         this.trainViewJPanel1.setup(mr, submitButtonCallBack);
         trainViewJPanel1.setHeight(20);
          trainViewJPanel1.setCenterTrain(true);
@@ -131,7 +131,7 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements WorldListL
     }
                 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private jfreerails.client.view.TrainViewJPanel trainViewJPanel1;
+    private org.railz.client.view.TrainViewJPanel trainViewJPanel1;
     // End of variables declaration//GEN-END:variables
     
 

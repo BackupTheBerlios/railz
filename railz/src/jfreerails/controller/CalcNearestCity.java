@@ -23,11 +23,11 @@
  * Class to find the nearest city and return that name, so that a train station
  * can be named appropriately.
  */
-package jfreerails.controller;
+package org.railz.controller;
 
-import jfreerails.world.city.CityModel;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.world.city.CityModel;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
 
 
 public class CalcNearestCity {

@@ -15,16 +15,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.renderer;
+package org.railz.client.renderer;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import jfreerails.client.common.BinaryNumberFormatter;
-import jfreerails.client.common.ImageManager;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.track.TrackRule;
+import org.railz.client.common.BinaryNumberFormatter;
+import org.railz.client.common.ImageManager;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.track.TrackRule;
 
 /**
 *  This class renders a track piece.

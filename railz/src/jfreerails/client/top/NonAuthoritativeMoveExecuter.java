@@ -15,7 +15,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.top;
+package org.railz.client.top;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
@@ -23,17 +23,17 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
-import jfreerails.client.model.ModelRoot;
-import jfreerails.controller.*;
-import jfreerails.move.Move;
-import jfreerails.move.MoveStatus;
-import jfreerails.move.RejectedMove;
-import jfreerails.move.TimeTickMove;
-import jfreerails.move.UndoneMove;
-import jfreerails.world.common.FreerailsSerializable;
-import jfreerails.world.top.World;
-import jfreerails.util.GameModel;
-import jfreerails.util.SychronizedQueue;
+import org.railz.client.model.ModelRoot;
+import org.railz.controller.*;
+import org.railz.move.Move;
+import org.railz.move.MoveStatus;
+import org.railz.move.RejectedMove;
+import org.railz.move.TimeTickMove;
+import org.railz.move.UndoneMove;
+import org.railz.world.common.FreerailsSerializable;
+import org.railz.world.top.World;
+import org.railz.util.GameModel;
+import org.railz.util.SychronizedQueue;
 
 
 /**

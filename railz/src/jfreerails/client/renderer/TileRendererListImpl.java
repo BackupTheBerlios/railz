@@ -20,12 +20,12 @@
 *
 *  Created on 08 August 2001, 17:11
 */
-package jfreerails.client.renderer;
+package org.railz.client.renderer;
 
 import java.util.ArrayList;
-import jfreerails.world.terrain.TerrainType;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.world.terrain.TerrainType;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
 
 
 /**

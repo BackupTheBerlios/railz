@@ -15,13 +15,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.launcher;
+package org.railz.launcher;
 
 import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.ListModel;
 
-import jfreerails.client.view.MyDisplayMode;
+import org.railz.client.view.MyDisplayMode;
 
 /**
  * @author lindsal

@@ -19,7 +19,7 @@
  * Created on 20-Mar-2003
  *
  */
-package jfreerails.world.top;
+package org.railz.world.top;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

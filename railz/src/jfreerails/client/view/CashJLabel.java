@@ -19,7 +19,7 @@
  * Created on 01-Jun-2003
  * 
  */
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.Graphics;
 import java.awt.event.ActionListener;
@@ -27,11 +27,11 @@ import java.text.NumberFormat;
 
 import javax.swing.JLabel;
 
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.renderer.ViewLists;
-import jfreerails.world.accounts.BankAccount;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.renderer.ViewLists;
+import org.railz.world.accounts.BankAccount;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
 
 /**
  * This JLabel shows the amount of cash available.

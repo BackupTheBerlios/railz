@@ -17,7 +17,7 @@
 /**
  * Created on Feb 18, 2004
  */
-package jfreerails.controller;
+package org.railz.controller;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;

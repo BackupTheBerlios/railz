@@ -19,23 +19,23 @@
  * Created on 11-Aug-2003
  *
  */
-package jfreerails.server;
+package org.railz.server;
 
-import jfreerails.controller.MoveReceiver;
-import jfreerails.move.AddTransactionMove;
-import jfreerails.move.Move;
-import jfreerails.world.accounts.AddItemTransaction;
-import jfreerails.world.accounts.BankAccount;
-import jfreerails.world.accounts.Bill;
-import jfreerails.world.accounts.Transaction;
-import jfreerails.world.common.GameTime;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ITEM;
-import jfreerails.world.top.World;
-import jfreerails.world.track.TrackRule;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
-import jfreerails.world.top.NonNullElements;
+import org.railz.controller.MoveReceiver;
+import org.railz.move.AddTransactionMove;
+import org.railz.move.Move;
+import org.railz.world.accounts.AddItemTransaction;
+import org.railz.world.accounts.BankAccount;
+import org.railz.world.accounts.Bill;
+import org.railz.world.accounts.Transaction;
+import org.railz.world.common.GameTime;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ITEM;
+import org.railz.world.top.World;
+import org.railz.world.track.TrackRule;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
+import org.railz.world.top.NonNullElements;
 
 /**
  * This class iterates over the entries in the BankAccount

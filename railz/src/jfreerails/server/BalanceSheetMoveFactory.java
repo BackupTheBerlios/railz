@@ -18,12 +18,12 @@
 /**
  * @author rtuck99@users.berlios.de
  */
-package jfreerails.server;
+package org.railz.server;
 
-import jfreerails.move.*;
-import jfreerails.world.accounts.*;
-import jfreerails.world.player.*;
-import jfreerails.world.top.*;
+import org.railz.move.*;
+import org.railz.world.accounts.*;
+import org.railz.world.player.*;
+import org.railz.world.top.*;
 /**
  * Responsible for calculating balance sheets for all players at the year end.
  */

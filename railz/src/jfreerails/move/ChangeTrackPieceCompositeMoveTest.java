@@ -21,17 +21,17 @@
  *
  * Created on 26 January 2002, 00:33
  */
-package jfreerails.move;
+package org.railz.move;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import java.awt.Point;
-import jfreerails.world.accounts.BankAccount;
-import jfreerails.world.common.*;
-import jfreerails.world.player.Player;
-import jfreerails.world.top.KEY;
-import jfreerails.world.track.TrackRule;
+import org.railz.world.accounts.BankAccount;
+import org.railz.world.common.*;
+import org.railz.world.player.Player;
+import org.railz.world.top.KEY;
+import org.railz.world.track.TrackRule;
 
 /**
  *

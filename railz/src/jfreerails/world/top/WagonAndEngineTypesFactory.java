@@ -19,12 +19,12 @@
  * Created on 23-Mar-2003
  *
  */
-package jfreerails.world.top;
+package org.railz.world.top;
 
-import jfreerails.world.cargo.CargoType;
-import jfreerails.world.train.EngineType;
-import jfreerails.world.train.WagonType;
-import jfreerails.world.player.Player;
+import org.railz.world.cargo.CargoType;
+import org.railz.world.train.EngineType;
+import org.railz.world.train.WagonType;
+import org.railz.world.player.Player;
 
 /**
  * This class adds hard coded wagon and engine types to the World.  Later the wagon

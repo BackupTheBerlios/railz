@@ -19,21 +19,21 @@
  * Created on 10-Aug-2003
  *
  */
-package jfreerails.controller;
+package org.railz.controller;
 
 import java.util.ArrayList;
-import jfreerails.move.AddTransactionMove;
-import jfreerails.move.ChangeTrackPieceMove;
-import jfreerails.move.CompositeMove;
-import jfreerails.move.Move;
-import jfreerails.world.accounts.AddItemTransaction;
-import jfreerails.world.accounts.Transaction;
-import jfreerails.world.common.GameTime;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ITEM;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.track.*;
-import jfreerails.world.player.FreerailsPrincipal;
+import org.railz.move.AddTransactionMove;
+import org.railz.move.ChangeTrackPieceMove;
+import org.railz.move.CompositeMove;
+import org.railz.move.Move;
+import org.railz.world.accounts.AddItemTransaction;
+import org.railz.world.accounts.Transaction;
+import org.railz.world.common.GameTime;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ITEM;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.track.*;
+import org.railz.world.player.FreerailsPrincipal;
 
 
 /**

@@ -20,7 +20,7 @@
 *
 * Created on 01 August 2001, 06:16
 */
-package jfreerails.client.renderer;
+package org.railz.client.renderer;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;

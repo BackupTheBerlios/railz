@@ -21,14 +21,14 @@
  * Created on 23 August 2003, 17:49
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import javax.swing.*;
 
-import jfreerails.client.model.ModelRoot;
-import jfreerails.world.player.*;
-import jfreerails.world.top.*;
-import jfreerails.world.train.*;
+import org.railz.client.model.ModelRoot;
+import org.railz.world.player.*;
+import org.railz.world.top.*;
+import org.railz.world.train.*;
 
 /**
  *

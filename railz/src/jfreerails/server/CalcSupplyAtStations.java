@@ -22,21 +22,21 @@
  * This class loops through all of the known stations and recalculates
  * the cargoes that they supply.
  */
-package jfreerails.server;
+package org.railz.server;
 
 import java.util.Vector;
-import jfreerails.controller.CargoElementObject;
-import jfreerails.controller.MoveReceiver;
-import jfreerails.move.ChangeStationMove;
-import jfreerails.move.Move;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
-import jfreerails.world.station.StationModel;
-import jfreerails.world.station.SupplyAtStation;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.NonNullElements;
-import jfreerails.world.top.World;
-import jfreerails.world.top.WorldListListener;
+import org.railz.controller.CargoElementObject;
+import org.railz.controller.MoveReceiver;
+import org.railz.move.ChangeStationMove;
+import org.railz.move.Move;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
+import org.railz.world.station.StationModel;
+import org.railz.world.station.SupplyAtStation;
+import org.railz.world.top.KEY;
+import org.railz.world.top.NonNullElements;
+import org.railz.world.top.World;
+import org.railz.world.top.WorldListListener;
 
 
 public class CalcSupplyAtStations implements WorldListListener {

@@ -20,7 +20,7 @@
  *
  * Created on 31 July 2001, 13:56
  */
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -39,16 +39,16 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 
-import jfreerails.controller.MoveReceiver;
-import jfreerails.client.model.CursorEvent;
-import jfreerails.client.model.CursorEventListener;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.top.UserInputOnMapController;
-import jfreerails.client.top.StationTypesPopup;
-import jfreerails.client.common.FPSCounter;
-import jfreerails.client.common.Stats;
-import jfreerails.client.renderer.MapRenderer;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.controller.MoveReceiver;
+import org.railz.client.model.CursorEvent;
+import org.railz.client.model.CursorEventListener;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.top.UserInputOnMapController;
+import org.railz.client.top.StationTypesPopup;
+import org.railz.client.common.FPSCounter;
+import org.railz.client.common.Stats;
+import org.railz.client.renderer.MapRenderer;
+import org.railz.world.top.ReadOnlyWorld;
 
 
 /**

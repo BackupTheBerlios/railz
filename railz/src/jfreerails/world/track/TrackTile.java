@@ -14,13 +14,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package jfreerails.world.track;
+package org.railz.world.track;
 
 import java.awt.Point;
 
-import jfreerails.world.common.*;
-import jfreerails.world.player.Player;
-import jfreerails.world.top.*;
+import org.railz.world.common.*;
+import org.railz.world.player.Player;
+import org.railz.world.top.*;
 
 /**
  * The properties of a given tile which are specific to the track layer

@@ -21,7 +21,7 @@
  * Created on 06 February 2004, 16:34
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -31,16 +31,16 @@ import java.awt.event.KeyEvent;
 import java.util.NoSuchElementException;
 import javax.swing.JComponent;
 
-import jfreerails.client.renderer.*;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.world.station.StationModel;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.NonNullElements;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.track.FreerailsTile;
-import jfreerails.world.train.Schedule;
-import jfreerails.world.train.TrainModel;
-import jfreerails.world.train.TrainOrdersModel;
+import org.railz.client.renderer.*;
+import org.railz.client.model.ModelRoot;
+import org.railz.world.station.StationModel;
+import org.railz.world.top.KEY;
+import org.railz.world.top.NonNullElements;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.track.FreerailsTile;
+import org.railz.world.train.Schedule;
+import org.railz.world.train.TrainModel;
+import org.railz.world.train.TrainOrdersModel;
 /**
  * This JPanel lets the user select a stations from a map and add it to a train
  *  schedule.
@@ -295,7 +295,7 @@ public class SelectStationJPanel extends javax.swing.JPanel {
     private void initComponents() {//GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
-        cargoWaitingAndDemandedJPanel1 = new jfreerails.client.view.CargoWaitingAndDemandedJPanel();
+        cargoWaitingAndDemandedJPanel1 = new org.railz.client.view.CargoWaitingAndDemandedJPanel();
         jLabel1 = new javax.swing.JLabel();
 
         setLayout(new java.awt.GridBagLayout());
@@ -405,7 +405,7 @@ public class SelectStationJPanel extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private jfreerails.client.view.CargoWaitingAndDemandedJPanel cargoWaitingAndDemandedJPanel1;
+    private org.railz.client.view.CargoWaitingAndDemandedJPanel cargoWaitingAndDemandedJPanel1;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
     

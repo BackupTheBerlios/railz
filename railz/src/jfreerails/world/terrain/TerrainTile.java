@@ -14,10 +14,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.terrain;
+package org.railz.world.terrain;
 
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.track.FreerailsTile;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.track.FreerailsTile;
 
 /**
  * Defines the interface of a terrain tile.

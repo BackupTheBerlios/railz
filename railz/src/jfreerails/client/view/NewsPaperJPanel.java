@@ -21,7 +21,7 @@
  * Created on 21 December 2002, 18:38
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
@@ -30,8 +30,8 @@ import java.awt.Transparency;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import jfreerails.client.renderer.ViewLists;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.client.renderer.ViewLists;
+import org.railz.world.top.ReadOnlyWorld;
 /**
  *
  * @author  lindsal8
@@ -56,7 +56,7 @@ public class NewsPaperJPanel extends javax.swing.JPanel {
 			(new javax
 				.swing
 				.ImageIcon(
-					getClass().getResource("/jfreerails/data/newspaper.png")))
+					getClass().getResource("/org/railz/data/newspaper.png")))
 				.getImage();
 
 		pieceOfNewspaper =

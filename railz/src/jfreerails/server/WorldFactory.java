@@ -14,18 +14,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.server;
+package org.railz.server;
 
 import java.net.URL;
-import jfreerails.server.parser.*;
-import jfreerails.util.FreerailsProgressMonitor;
-import jfreerails.world.common.*;
-import jfreerails.world.player.Player;
-import jfreerails.world.top.ITEM;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.WagonAndEngineTypesFactory;
-import jfreerails.world.top.World;
-import jfreerails.world.top.WorldImpl;
+import org.railz.server.parser.*;
+import org.railz.util.FreerailsProgressMonitor;
+import org.railz.world.common.*;
+import org.railz.world.player.Player;
+import org.railz.world.top.ITEM;
+import org.railz.world.top.KEY;
+import org.railz.world.top.WagonAndEngineTypesFactory;
+import org.railz.world.top.World;
+import org.railz.world.top.WorldImpl;
 import org.xml.sax.SAXException;
 
 /**
@@ -53,15 +53,15 @@ class WorldFactory {
 
         //Load the xml file specifying terrain types.
         URL tiles_xml_url = WorldFactory.class.getResource(
-                "/jfreerails/data/terrain_tiles.xml");
+                "/org/railz/data/terrain_tiles.xml");
 
-        //	new jfreerails.TileSetFactoryImpl(tiles_xml_url);
+        //	new org.railz.TileSetFactoryImpl(tiles_xml_url);
         WorldImpl w = new WorldImpl();
         pm.setValue(++progess);
 
         try {
             java.net.URL url = RunTypesParser.class.getResource(
-                    "/jfreerails/data/cargo_and_terrain.xml");
+                    "/org/railz/data/cargo_and_terrain.xml");
 
             CargoAndTerrainParser.parse(url, new CargoAndTerrainHandlerImpl(w));
         } catch (Exception e) {
@@ -76,19 +76,19 @@ class WorldFactory {
         pm.setValue(++progess);
 
         URL track_xml_url = WorldFactory.class.getResource(
-                "/jfreerails/data/track_tiles.xml");
+                "/org/railz/data/track_tiles.xml");
 
 	Track_TilesHandlerImpl trackSetFactory = new
 	    Track_TilesHandlerImpl(track_xml_url, w);
         pm.setValue(++progess);
 
         //Load the terrain map
-        URL map_url = WorldFactory.class.getResource("/jfreerails/data/" +
+        URL map_url = WorldFactory.class.getResource("/org/railz/data/" +
                 mapName + ".png");
         MapFactory.setupMap(map_url, w, pm);
 
         //Load the city names
-        URL cities_xml_url = WorldFactory.class.getResource("/jfreerails/data/" +
+        URL cities_xml_url = WorldFactory.class.getResource("/org/railz/data/" +
                 mapName + "_cities.xml");
 
         try {

@@ -21,25 +21,25 @@
  * Created on 04 May 2003, 17:47
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import javax.swing.ImageIcon;
 
-import jfreerails.client.renderer.*;
-import jfreerails.util.*;
-import jfreerails.world.building.*;
-import jfreerails.world.cargo.CargoType;
-import jfreerails.world.player.Player;
-import jfreerails.world.track.*;
-import jfreerails.world.terrain.TerrainType;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.NonNullElements;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.terrain.TerrainTileViewer;
-import jfreerails.world.train.WagonType;
+import org.railz.client.renderer.*;
+import org.railz.util.*;
+import org.railz.world.building.*;
+import org.railz.world.cargo.CargoType;
+import org.railz.world.player.Player;
+import org.railz.world.track.*;
+import org.railz.world.terrain.TerrainType;
+import org.railz.world.top.KEY;
+import org.railz.world.top.NonNullElements;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.terrain.TerrainTileViewer;
+import org.railz.world.train.WagonType;
 
 /**
  * This JPanel shows information on a terrain type.
@@ -82,7 +82,7 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.GridBagLayout());
 
-        terrainImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jfreerails/client/graphics/terrain/Clear_0000.png")));
+        terrainImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/railz/client/graphics/terrain/Clear_0000.png")));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(8, 8, 4, 4);
         add(terrainImage, gridBagConstraints);

@@ -14,19 +14,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.controller;
+package org.railz.controller;
 
 import java.awt.Point;
 
-import jfreerails.move.ChangeTrackPieceCompositeMove;
-import jfreerails.move.Move;
-import jfreerails.move.MoveStatus;
-import jfreerails.move.UpgradeTrackMove;
-import jfreerails.world.common.*;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.track.*;
+import org.railz.move.ChangeTrackPieceCompositeMove;
+import org.railz.move.Move;
+import org.railz.move.MoveStatus;
+import org.railz.move.UpgradeTrackMove;
+import org.railz.world.common.*;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.track.*;
 
 
 final public class TrackMoveProducer {

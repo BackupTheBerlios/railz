@@ -19,11 +19,11 @@
  * Created on 15-Apr-2003
  *
  */
-package jfreerails.move;
+package org.railz.move;
 
-import jfreerails.world.top.KEY;
-import jfreerails.world.train.TrainModel;
-import jfreerails.world.player.FreerailsPrincipal;
+import org.railz.world.top.KEY;
+import org.railz.world.train.TrainModel;
+import org.railz.world.player.FreerailsPrincipal;
 
 /**
  * This Move removes a train from the list of trains.

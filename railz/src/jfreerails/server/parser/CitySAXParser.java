@@ -22,16 +22,16 @@
  * Class to parse an xml file that contains city names and co-ords.
  * Upon reading in the data, its stored in KEY.CITIES.
  */
-package jfreerails.server.parser;
+package org.railz.server.parser;
 
 import java.util.Vector;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import jfreerails.world.top.World;
-import jfreerails.world.top.KEY;
-import jfreerails.world.city.*;
-import jfreerails.world.player.Player;
+import org.railz.world.top.World;
+import org.railz.world.top.KEY;
+import org.railz.world.city.*;
+import org.railz.world.player.Player;
 
 
 public class CitySAXParser extends DefaultHandler {

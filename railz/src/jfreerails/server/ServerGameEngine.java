@@ -15,7 +15,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.server;
+package org.railz.server;
 
 import java.awt.Point;
 import java.io.File;
@@ -30,22 +30,22 @@ import java.util.Vector;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import jfreerails.controller.*;
-import jfreerails.move.ChangeProductionAtEngineShopMove;
-import jfreerails.move.TimeTickMove;
-import jfreerails.util.FreerailsProgressMonitor;
-import jfreerails.util.GameModel;
-import jfreerails.world.common.GameCalendar;
-import jfreerails.world.common.GameTime;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
-import jfreerails.world.station.ProductionAtEngineShop;
-import jfreerails.world.station.StationModel;
-import jfreerails.world.top.ITEM;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.NonNullElements;
-import jfreerails.world.top.World;
-import jfreerails.world.train.*;
+import org.railz.controller.*;
+import org.railz.move.ChangeProductionAtEngineShopMove;
+import org.railz.move.TimeTickMove;
+import org.railz.util.FreerailsProgressMonitor;
+import org.railz.util.GameModel;
+import org.railz.world.common.GameCalendar;
+import org.railz.world.common.GameTime;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
+import org.railz.world.station.ProductionAtEngineShop;
+import org.railz.world.station.StationModel;
+import org.railz.world.top.ITEM;
+import org.railz.world.top.KEY;
+import org.railz.world.top.NonNullElements;
+import org.railz.world.top.World;
+import org.railz.world.train.*;
 
 
 /**

@@ -19,13 +19,13 @@
  * Created on 07-Jul-2003
  *
  */
-package jfreerails.move;
+package org.railz.move;
 
-import jfreerails.world.accounts.BankAccount;
-import jfreerails.world.accounts.Transaction;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.World;
-import jfreerails.world.player.FreerailsPrincipal;
+import org.railz.world.accounts.BankAccount;
+import org.railz.world.accounts.Transaction;
+import org.railz.world.top.KEY;
+import org.railz.world.top.World;
+import org.railz.world.player.FreerailsPrincipal;
 
 /** This {@link Move} adds a {@link Transaction} to a players
  * {@link BankAccount}.

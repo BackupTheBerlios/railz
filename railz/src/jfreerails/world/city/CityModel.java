@@ -22,9 +22,9 @@
  * Class for a city. Simply storing the city name and x & y co-ords.
  * Possible potential for expansion?? Initial size of city, growth rate etc.???
  */
-package jfreerails.world.city;
+package org.railz.world.city;
 
-import jfreerails.world.common.FreerailsSerializable;
+import org.railz.world.common.FreerailsSerializable;
 
 
 public class CityModel implements FreerailsSerializable {

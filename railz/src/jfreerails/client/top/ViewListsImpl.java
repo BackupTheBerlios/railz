@@ -14,7 +14,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.top;
+package org.railz.client.top;
 
 import javax.swing.ImageIcon;
 import java.awt.image.BufferedImage;
@@ -25,16 +25,16 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.view.GUIRoot;
-import jfreerails.client.common.ImageManager;
-import jfreerails.client.common.ImageManagerImpl;
-import jfreerails.client.renderer.*;
-import jfreerails.util.*;
-import jfreerails.world.building.*;
-import jfreerails.world.player.*;
-import jfreerails.world.terrain.TerrainType;
-import jfreerails.world.top.*;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.view.GUIRoot;
+import org.railz.client.common.ImageManager;
+import org.railz.client.common.ImageManagerImpl;
+import org.railz.client.renderer.*;
+import org.railz.util.*;
+import org.railz.world.building.*;
+import org.railz.world.player.*;
+import org.railz.world.terrain.TerrainType;
+import org.railz.world.top.*;
 
 public class ViewListsImpl implements ViewLists {
     private final TileRendererList tiles;
@@ -50,11 +50,11 @@ public class ViewListsImpl implements ViewLists {
         throws IOException {
 	    guiRoot = gr;
 	    ReadOnlyWorld w = mr.getWorld();
-        URL in = ViewListsImpl.class.getResource("/jfreerails/client/graphics");
+        URL in = ViewListsImpl.class.getResource("/org/railz/client/graphics");
 
 	imageManager = new
 	    ImageManagerImpl(guiRoot.getClientJFrame(),
-		    "/jfreerails/client/graphics/");
+		    "/org/railz/client/graphics/");
         tiles = loadTerrainRenderers(w, pm);
 	buildingRenderers = loadBuildingRenderers(w, pm);
 
@@ -277,7 +277,7 @@ public class ViewListsImpl implements ViewLists {
  	if (icon == null) {
  	    URL iconURL;
  	    iconURL = this.getClass().getClass().getResource
- 		("/jfreerails/client/graphics/toolbar/" + iconName +
+ 		("/org/railz/client/graphics/toolbar/" + iconName +
  		 ".png");
  	    if (iconURL == null) {
  		System.err.println("Couldn't find icon for " + iconName);

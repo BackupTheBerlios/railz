@@ -21,7 +21,7 @@
  *
  *  Created on 06 August 2001, 14:12
  */
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -30,9 +30,9 @@ import java.awt.Rectangle;
 import javax.swing.JPanel;
 import javax.swing.Scrollable;
 
-import jfreerails.client.common.UserMessageLogger;
-import jfreerails.client.renderer.BlankMapRenderer;
-import jfreerails.client.renderer.MapRenderer;
+import org.railz.client.common.UserMessageLogger;
+import org.railz.client.renderer.BlankMapRenderer;
+import org.railz.client.renderer.MapRenderer;
 
 /**
  *@author     Luke Lindsay

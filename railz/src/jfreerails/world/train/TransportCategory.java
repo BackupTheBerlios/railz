@@ -14,12 +14,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.train;
+package org.railz.world.train;
                        
 import java.io.ObjectStreamException;
 import java.io.InvalidObjectException;
 
-import jfreerails.world.common.FreerailsSerializable;
+import org.railz.world.common.FreerailsSerializable;
        
 /**        
  * This class provides an enumeration of the various classifications of

@@ -19,7 +19,7 @@
  * Created on 18-May-2003
  *
  */
-package jfreerails.client.common;
+package org.railz.client.common;
 
 import java.awt.Container;
 import java.util.HashSet;

@@ -14,7 +14,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.controller;
+package org.railz.controller;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -22,10 +22,10 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import jfreerails.move.Move;
-import jfreerails.move.TimeTickMove;
-import jfreerails.world.common.FreerailsSerializable;
-import jfreerails.world.top.World;
+import org.railz.move.Move;
+import org.railz.move.TimeTickMove;
+import org.railz.world.common.FreerailsSerializable;
+import org.railz.world.top.World;
 
 
 /**

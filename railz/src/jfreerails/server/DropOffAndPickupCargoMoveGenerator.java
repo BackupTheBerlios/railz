@@ -15,26 +15,26 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.server;
+package org.railz.server;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import jfreerails.controller.*;
-import jfreerails.move.AddTransactionMove;
-import jfreerails.move.ChangeCargoBundleMove;
-import jfreerails.move.Move;
-import jfreerails.move.TransferCargoAtStationMove;
-import jfreerails.world.cargo.CargoBatch;
-import jfreerails.world.cargo.CargoBundle;
-import jfreerails.world.cargo.CargoBundleImpl;
-import jfreerails.world.station.ConvertedAtStation;
-import jfreerails.world.station.DemandAtStation;
-import jfreerails.world.station.StationModel;
-import jfreerails.world.top.*;
-import jfreerails.world.train.TrainModel;
-import jfreerails.world.train.WagonType;
-import jfreerails.world.player.*;
+import org.railz.controller.*;
+import org.railz.move.AddTransactionMove;
+import org.railz.move.ChangeCargoBundleMove;
+import org.railz.move.Move;
+import org.railz.move.TransferCargoAtStationMove;
+import org.railz.world.cargo.CargoBatch;
+import org.railz.world.cargo.CargoBundle;
+import org.railz.world.cargo.CargoBundleImpl;
+import org.railz.world.station.ConvertedAtStation;
+import org.railz.world.station.DemandAtStation;
+import org.railz.world.station.StationModel;
+import org.railz.world.top.*;
+import org.railz.world.train.TrainModel;
+import org.railz.world.train.WagonType;
+import org.railz.world.player.*;
 
 /**
  * This class generates moves that transfer cargo between train and the

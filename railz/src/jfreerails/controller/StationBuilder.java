@@ -24,17 +24,17 @@
  * city. If that name is taken then a "Junction" or "Siding" is added to
  * the name.
  */
-package jfreerails.controller;
+package org.railz.controller;
 
 import java.awt.Point;
-import jfreerails.move.*;
-import jfreerails.world.building.*;
-import jfreerails.world.common.*;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.track.FreerailsTile;
-import jfreerails.world.track.TrackRule;
-import jfreerails.world.player.*;
+import org.railz.move.*;
+import org.railz.world.building.*;
+import org.railz.world.common.*;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.track.FreerailsTile;
+import org.railz.world.track.TrackRule;
+import org.railz.world.player.*;
 
 public class StationBuilder {
     private UntriedMoveReceiver moveReceiver;

@@ -14,7 +14,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.model;
+package org.railz.client.model;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -25,15 +25,15 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 
-import jfreerails.client.common.ActionAdapter;
-import jfreerails.client.renderer.TrackPieceRenderer;
-import jfreerails.client.renderer.TrackPieceRendererList;
-import jfreerails.client.renderer.ViewLists;
-import jfreerails.controller.TrackMoveProducer;
-import jfreerails.world.common.*;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.track.TrackRule;
+import org.railz.client.common.ActionAdapter;
+import org.railz.client.renderer.TrackPieceRenderer;
+import org.railz.client.renderer.TrackPieceRendererList;
+import org.railz.client.renderer.ViewLists;
+import org.railz.controller.TrackMoveProducer;
+import org.railz.world.common.*;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.track.TrackRule;
 
 /**
  * provides the models for the TrackMoveProducer build mode

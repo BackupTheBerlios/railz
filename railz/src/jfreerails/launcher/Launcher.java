@@ -21,7 +21,7 @@
  * Created on 20 December 2003, 16:05
  */
 
-package jfreerails.launcher;
+package org.railz.launcher;
 
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -33,14 +33,14 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.security.GeneralSecurityException;
 
-import jfreerails.client.common.FileUtils;
-import jfreerails.client.common.ScreenHandler;
-import jfreerails.client.top.GUIClient;
-import jfreerails.controller.ServerControlInterface;
-import jfreerails.server.GameServer;
-import jfreerails.util.FreerailsProgressMonitor;
-import jfreerails.util.Resources;
-import jfreerails.world.player.Player;
+import org.railz.client.common.FileUtils;
+import org.railz.client.common.ScreenHandler;
+import org.railz.client.top.GUIClient;
+import org.railz.controller.ServerControlInterface;
+import org.railz.server.GameServer;
+import org.railz.util.FreerailsProgressMonitor;
+import org.railz.util.Resources;
+import org.railz.world.player.Player;
 
 /**
  * Launcher GUI for both the server and/or client.
@@ -320,7 +320,7 @@ FreerailsProgressMonitor {
         gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
         contentJPanel.add(jSeparator1, gridBagConstraints);
 
-        nextButton.setText(jfreerails.util.Resources.get("Next..."));
+        nextButton.setText(org.railz.util.Resources.get("Next..."));
         nextButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nextButtonActionPerformed(evt);
@@ -343,7 +343,7 @@ FreerailsProgressMonitor {
         gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
         contentJPanel.add(jProgressBar1, gridBagConstraints);
 
-        prevButton.setText(jfreerails.util.Resources.get("Back..."));
+        prevButton.setText(org.railz.util.Resources.get("Back..."));
         prevButton.setEnabled(false);
         prevButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

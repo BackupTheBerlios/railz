@@ -21,12 +21,12 @@
  * Created on 20 December 2003, 15:57
  */
 
-package jfreerails.launcher;
+package org.railz.launcher;
 
 import java.awt.DisplayMode;
 
-import jfreerails.client.view.MyDisplayMode;
-import jfreerails.util.Resources;
+import org.railz.client.view.MyDisplayMode;
+import org.railz.util.Resources;
 
 /**
  *
@@ -109,12 +109,12 @@ class ClientOptionsJPanel extends javax.swing.JPanel {
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        jPanel3.setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), jfreerails.util.Resources.get("Player Details")));
-        jLabel1.setText(jfreerails.util.Resources.get("Player name:"));
+        jPanel3.setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), org.railz.util.Resources.get("Player Details")));
+        jLabel1.setText(org.railz.util.Resources.get("Player name:"));
         jPanel3.add(jLabel1);
 
         playerName.setColumns(12);
-        playerName.setText(jfreerails.util.Resources.get("Player1"));
+        playerName.setText(org.railz.util.Resources.get("Player1"));
         playerName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 playerNameActionPerformed(evt);
@@ -132,7 +132,7 @@ class ClientOptionsJPanel extends javax.swing.JPanel {
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), jfreerails.util.Resources.get("Select Display Mode")));
+        jPanel1.setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), org.railz.util.Resources.get("Select Display Mode")));
         jScrollPane1.setBorder(new javax.swing.border.BevelBorder(javax.swing.border.BevelBorder.LOWERED));
         jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jList1.setEnabled(false);
@@ -143,11 +143,11 @@ class ClientOptionsJPanel extends javax.swing.JPanel {
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.Y_AXIS));
 
         windowedButton.setSelected(true);
-        windowedButton.setText(jfreerails.util.Resources.get("Windowed"));
+        windowedButton.setText(org.railz.util.Resources.get("Windowed"));
         buttonGroup1.add(windowedButton);
         jPanel2.add(windowedButton);
 
-        fullScreenButton.setText(jfreerails.util.Resources.get("Full screen"));
+        fullScreenButton.setText(org.railz.util.Resources.get("Full screen"));
         buttonGroup1.add(fullScreenButton);
         fullScreenButton.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {

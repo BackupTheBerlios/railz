@@ -19,12 +19,12 @@
  * Created on 08-Apr-2003
  *
  */
-package jfreerails.world.top;
+package org.railz.world.top;
 
 import java.util.NoSuchElementException;
-import jfreerails.world.common.FreerailsSerializable;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.player.Player;
+import org.railz.world.common.FreerailsSerializable;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.player.Player;
 
 
 /**

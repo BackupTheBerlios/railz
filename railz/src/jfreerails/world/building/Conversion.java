@@ -19,9 +19,9 @@
  * Created on 27-Apr-2003
  *
  */
-package jfreerails.world.building;
+package org.railz.world.building;
 
-import jfreerails.world.common.FreerailsSerializable;
+import org.railz.world.common.FreerailsSerializable;
 
 
 /**This class represents the conversion of one cargo type to another one

@@ -19,10 +19,10 @@
  * Created on 24-Jun-2003
  *
  */
-package jfreerails.world.accounts;
+package org.railz.world.accounts;
 
 import java.util.ArrayList;
-import jfreerails.world.common.FreerailsSerializable;
+import org.railz.world.common.FreerailsSerializable;
 
 /**
  * @author Luke Lindsay

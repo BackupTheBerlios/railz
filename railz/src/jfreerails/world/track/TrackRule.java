@@ -15,11 +15,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.track;
+package org.railz.world.track;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import jfreerails.world.common.*;
+import org.railz.world.common.*;
 
 /**
  * Describes a particular type of track (eg stone bridge, standard track,

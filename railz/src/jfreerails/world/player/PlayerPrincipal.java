@@ -14,7 +14,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.player;
+package org.railz.world.player;
 
 public class PlayerPrincipal extends FreerailsPrincipal {
     private final int id;

@@ -14,18 +14,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.model;
+package org.railz.client.model;
 
 import java.util.GregorianCalendar;
 
-import jfreerails.world.accounts.*;
-import jfreerails.world.common.Economy;
-import jfreerails.world.common.GameCalendar;
-import jfreerails.world.common.GameTime;
-import jfreerails.world.accounts.Transaction;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.ITEM;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.world.accounts.*;
+import org.railz.world.common.Economy;
+import org.railz.world.common.GameCalendar;
+import org.railz.world.common.GameTime;
+import org.railz.world.accounts.Transaction;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ITEM;
+import org.railz.world.top.ReadOnlyWorld;
 
 /**
  * Presents the information for a profit and loss statement for a given year.

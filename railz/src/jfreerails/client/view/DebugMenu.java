@@ -14,14 +14,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import javax.swing.JMenu;
 import javax.swing.JCheckBoxMenuItem;
 
-import jfreerails.util.Resources;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.model.DebugModel;
+import org.railz.util.Resources;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.model.DebugModel;
 
 /**
  * Debug menu which provides ability to turn on and off various debug info

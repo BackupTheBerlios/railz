@@ -15,12 +15,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.controller;
+package org.railz.controller;
 
 import java.text.MessageFormat;
 import java.io.Serializable;
 
-import jfreerails.util.Resources;
+import org.railz.util.Resources;
 
 /**
  * Used to send messages about what the server is doing to the client(s).

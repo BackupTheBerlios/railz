@@ -18,7 +18,7 @@
 /**
  * @author rtuck99@users.berlios.de
  */
-package jfreerails.world.common;
+package org.railz.world.common;
 
 /**
  * Implemented by a class which is a fixed asset

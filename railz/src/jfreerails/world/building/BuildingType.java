@@ -14,12 +14,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package jfreerails.world.building;
+package org.railz.world.building;
 
 import java.awt.Point;
 
-import jfreerails.world.common.*;
-import jfreerails.world.top.*;
+import org.railz.world.common.*;
+import org.railz.world.top.*;
 /**
  * Defines a type of building.
  * @author rtuck99@users.berlios.de

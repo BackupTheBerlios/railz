@@ -18,11 +18,11 @@
 /**
  * @author rtuck99@users.berlios.de
  */
-package jfreerails.move;
+package org.railz.move;
 
-import jfreerails.world.accounts.BalanceSheet;
-import jfreerails.world.player.FreerailsPrincipal;
-import jfreerails.world.top.*;
+import org.railz.world.accounts.BalanceSheet;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.top.*;
 public class AddBalanceSheetMove extends AddItemToListMove {
     public AddBalanceSheetMove(ReadOnlyWorld w, BalanceSheet bs,
 	    FreerailsPrincipal p) {

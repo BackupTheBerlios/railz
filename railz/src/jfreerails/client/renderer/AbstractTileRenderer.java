@@ -20,16 +20,16 @@
 *
 * Created on 04 July 2001, 07:01
 */
-package jfreerails.client.renderer;
+package org.railz.client.renderer;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import jfreerails.client.common.ImageManager;
-import jfreerails.world.building.*;
-import jfreerails.world.terrain.TerrainTile;
-import jfreerails.world.terrain.TerrainType;
-import jfreerails.world.top.ReadOnlyWorld;
-import jfreerails.world.track.*;
+import org.railz.client.common.ImageManager;
+import org.railz.world.building.*;
+import org.railz.world.terrain.TerrainTile;
+import org.railz.world.terrain.TerrainType;
+import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.track.*;
 
 
 /**

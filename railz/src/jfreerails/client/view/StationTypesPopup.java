@@ -15,7 +15,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.top;
+package org.railz.client.top;
 
 import java.awt.Component;
 import java.awt.Point;
@@ -30,9 +30,9 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import jfreerails.client.renderer.StationRadiusRenderer;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.model.StationBuildModel;
+import org.railz.client.renderer.StationRadiusRenderer;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.model.StationBuildModel;
 
 
 /**

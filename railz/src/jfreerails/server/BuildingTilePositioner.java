@@ -15,17 +15,17 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.server;
+package org.railz.server;
 
 import java.awt.Point;
 
 import java.util.ArrayList;
-import jfreerails.world.city.*;
-import jfreerails.world.terrain.TerrainType;
-import jfreerails.world.building.*;
-import jfreerails.world.player.*;
-import jfreerails.world.top.*;
-import jfreerails.world.track.FreerailsTile;
+import org.railz.world.city.*;
+import org.railz.world.terrain.TerrainType;
+import org.railz.world.building.*;
+import org.railz.world.player.*;
+import org.railz.world.top.*;
+import org.railz.world.track.FreerailsTile;
 
 class BuildingTilePositioner {
     private double[] probabilities;

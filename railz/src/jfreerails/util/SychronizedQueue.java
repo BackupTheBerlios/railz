@@ -18,10 +18,10 @@
 /*
  * Created on Dec 25, 2003
  */
-package jfreerails.util;
+package org.railz.util;
 
 import java.util.LinkedList;
-import jfreerails.world.common.FreerailsSerializable;
+import org.railz.world.common.FreerailsSerializable;
 
 
 /**

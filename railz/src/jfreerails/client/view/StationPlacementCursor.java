@@ -14,7 +14,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
@@ -23,9 +23,9 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 import javax.swing.event.MouseInputAdapter;
 
-import jfreerails.client.model.StationBuildModel;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.renderer.StationRadiusRenderer;
+import org.railz.client.model.StationBuildModel;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.renderer.StationRadiusRenderer;
 
 
 /**

@@ -20,8 +20,8 @@
       <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
    </target>
    <target depends="init" description="Copy data files" name="copydata">
-      <copy todir="${build}/jfreerails">
-         <fileset dir="${src}/jfreerails">
+      <copy todir="${build}/org/railz">
+         <fileset dir="${src}/org/railz">
             <include name="**/*.xml"/>
             <include name="**/*.png"/>
             <include name="**/*.dtd"/>
@@ -66,7 +66,7 @@
       <!-- Replace current latest with the jar file we have just created. -->
       	<jar basedir="${build}" destfile="${proto}/railz.jar">
          <manifest>
-            <attribute name="Main-Class" value="jfreerails.launcher.Launcher"/>
+            <attribute name="Main-Class" value="org.railz.launcher.Launcher"/>
          </manifest>
       </jar>      	      
       <copy todir="${proto}">
@@ -92,7 +92,7 @@
   	 </delete>             
    </target>
    <target depends="mkdirs, compile" description="Test run based on compile" name="run">
-      <java classname="jfreerails.launcher.Launcher" fork="true">
+      <java classname="org.railz.launcher.Launcher" fork="true">
          <classpath>
             <pathelement path="${build}"/>
          </classpath>

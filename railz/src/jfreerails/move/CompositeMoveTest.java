@@ -19,12 +19,12 @@
  * Created on 31-May-2003
  *
  */
-package jfreerails.move;
+package org.railz.move;
 
-import jfreerails.world.common.GameTime;
-import jfreerails.world.player.Player;
-import jfreerails.world.station.StationModel;
-import jfreerails.world.top.*;
+import org.railz.world.common.GameTime;
+import org.railz.world.player.Player;
+import org.railz.world.station.StationModel;
+import org.railz.world.top.*;
 
 
 /**

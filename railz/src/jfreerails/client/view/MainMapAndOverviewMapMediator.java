@@ -21,7 +21,7 @@
  * Created on 24 June 2002, 21:04
  */
 
-package jfreerails.client.view;
+package org.railz.client.view;
 import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.Rectangle;

@@ -14,10 +14,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.world.cargo;
+package org.railz.world.cargo;
 
-import jfreerails.world.common.FreerailsSerializable;
-import jfreerails.world.train.TransportCategory;
+import org.railz.world.common.FreerailsSerializable;
+import org.railz.world.train.TransportCategory;
 
 
 /** This class represents a type of cargo */
@@ -74,7 +74,7 @@ final public class CargoType implements FreerailsSerializable {
     public String toString() {
        return "CargoType: category=" + category +
 	   ", name=" + name + ", halfLife = " + halfLife + ", baseValue = " +
-	   baseValue;
+	   baseValue + ", expiryTime = " + expiryTime;
     }
 
     public TransportCategory getCategory() {

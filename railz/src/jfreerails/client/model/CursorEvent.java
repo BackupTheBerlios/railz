@@ -20,7 +20,7 @@
 *
 * Created on 08 August 2001, 20:10
 */
-package jfreerails.client.model;
+package org.railz.client.model;
 
 /** The cursor on the map fires these events when the
 * cursor moves or a key is pressed.  The object

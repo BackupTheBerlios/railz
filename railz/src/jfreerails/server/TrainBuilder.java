@@ -15,23 +15,23 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package jfreerails.server;
+package org.railz.server;
 
 import java.awt.Point;
-import jfreerails.controller.MoveReceiver;
-import jfreerails.move.AddCargoBundleMove;
-import jfreerails.move.AddTrainMove;
-import jfreerails.move.CompositeMove;
-import jfreerails.move.Move;
-import jfreerails.world.cargo.CargoBundle;
-import jfreerails.world.cargo.CargoBundleImpl;
-import jfreerails.world.common.*;
-import jfreerails.world.top.*;
-import jfreerails.world.track.FreerailsTile;
-import jfreerails.world.track.TrackRule;
-import jfreerails.world.train.*;
-import jfreerails.world.player.Player;
-import jfreerails.world.player.FreerailsPrincipal;
+import org.railz.controller.MoveReceiver;
+import org.railz.move.AddCargoBundleMove;
+import org.railz.move.AddTrainMove;
+import org.railz.move.CompositeMove;
+import org.railz.move.Move;
+import org.railz.world.cargo.CargoBundle;
+import org.railz.world.cargo.CargoBundleImpl;
+import org.railz.world.common.*;
+import org.railz.world.top.*;
+import org.railz.world.track.FreerailsTile;
+import org.railz.world.track.TrackRule;
+import org.railz.world.train.*;
+import org.railz.world.player.Player;
+import org.railz.world.player.FreerailsPrincipal;
 
 
 /**

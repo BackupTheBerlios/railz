@@ -18,7 +18,7 @@
 *
 * Created on 01 August 2001, 06:02
 */
-package jfreerails.client.view;
+package org.railz.client.view;
 
 import java.awt.BasicStroke;
 import java.awt.Dimension;
@@ -33,11 +33,11 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.util.Vector;
 
-import jfreerails.client.model.MapCursor;
-import jfreerails.client.model.CursorEvent;
-import jfreerails.client.model.CursorEventListener;
-import jfreerails.client.renderer.MapRenderer;
-import jfreerails.world.common.*;
+import org.railz.client.model.MapCursor;
+import org.railz.client.model.CursorEvent;
+import org.railz.client.model.CursorEventListener;
+import org.railz.client.renderer.MapRenderer;
+import org.railz.world.common.*;
 
 final public class FreerailsCursor implements KeyListener, MapCursor {
     public CursorRenderer cursorRenderer = new CursorRenderer();

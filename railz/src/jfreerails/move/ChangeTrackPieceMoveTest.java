@@ -21,15 +21,15 @@
  *
  * Created on 24 January 2002, 23:57
  */
-package jfreerails.move;
+package org.railz.move;
 
 import java.awt.Point;
 
-import jfreerails.world.common.*;
-import jfreerails.world.top.KEY;
-import jfreerails.world.top.MapFixtureFactory;
-import jfreerails.world.top.WorldImpl;
-import jfreerails.world.track.*;
+import org.railz.world.common.*;
+import org.railz.world.top.KEY;
+import org.railz.world.top.MapFixtureFactory;
+import org.railz.world.top.WorldImpl;
+import org.railz.world.track.*;
 
 /**
  *

@@ -20,17 +20,17 @@
 *
 * Created on 30 July 2001, 06:49
 */
-package jfreerails.client.top;
+package org.railz.client.top;
 
 import java.util.Enumeration;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.JRadioButtonMenuItem;
-import jfreerails.client.common.ActionAdapter;
-import jfreerails.client.model.ModelRoot;
-import jfreerails.client.model.TrackBuildModel;
-import jfreerails.world.top.ReadOnlyWorld;
+import org.railz.client.common.ActionAdapter;
+import org.railz.client.model.ModelRoot;
+import org.railz.client.model.TrackBuildModel;
+import org.railz.world.top.ReadOnlyWorld;
 
 
 /**
