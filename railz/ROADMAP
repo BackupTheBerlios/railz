@@ -7,6 +7,7 @@ Ability to place new trains on map
 Profit and loss
 I18N infrastructure
 Move to bugzilla bug database
+File select on load/save
 
 Optional 0.4 features
 =====================
@@ -15,10 +16,14 @@ Schedule in tab pane
 Icons in tab pane tabs
 "Paused" message when paused
 Better graphics
+Tile value map overlays
+Launcher/load/save cleanup.
+Network "robustness".
 Sound??
 
 Development features for 0.5 or later
 =====================================
+Separate Terrain and building layers
 Rename classe heirarchy from jfreerails.xx.xx.xx
 Rationalisation of package structure (split into client, server and common
 		packages)

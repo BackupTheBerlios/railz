@@ -3,7 +3,6 @@ package jfreerails.world.terrain;
 import java.io.ObjectStreamException;
 
 import jfreerails.world.common.FreerailsSerializable;
-import jfreerails.world.common.Money;
 
 public interface TerrainType extends FreerailsSerializable {
     String getTerrainTypeName();
@@ -20,7 +19,7 @@ public interface TerrainType extends FreerailsSerializable {
 
     String getDisplayName();
 
-    Money getBaseValue();
+    long getBaseValue();
 
     static final TerrainType NULL = (new TerrainType() {
             public Production[] getProduction() {
@@ -59,8 +58,8 @@ public interface TerrainType extends FreerailsSerializable {
                 return NULL;
             }
 
-	    public Money getBaseValue() {
-		return new Money(0);
+	    public long getBaseValue() {
+		return 0;
 	    }
         });
 }

@@ -87,7 +87,7 @@ public class TrackBuildModel {
 
 	    putValue(SMALL_ICON, new ImageIcon(scaledImage));
             putValue(SHORT_DESCRIPTION, trackRule.getTypeName() + " @ $" +
-		    trackRule.getPrice().toString());
+		    trackRule.getPrice());
 	}
 	    
 	public void actionPerformed(ActionEvent e) {

@@ -14,7 +14,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import jfreerails.world.cargo.CargoType;
-import jfreerails.world.common.Money;
 import jfreerails.world.terrain.Consumption;
 import jfreerails.world.terrain.Conversion;
 import jfreerails.world.terrain.Production;
@@ -34,7 +33,7 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
     HashSet rgbValuesAlreadyUsed = new HashSet();
 
     //Parsing variables for Tile
-    Money tileBaseValue;
+    long tileBaseValue;
     String tileID;
     String tileCategory;
     int tileRGB;
@@ -69,7 +68,7 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
         tileRGB = string2RGBValue(rgbString);
 
 	String baseValue = meta.getValue("baseValue");
-	tileBaseValue = new Money(Long.parseLong(baseValue));
+	tileBaseValue = Long.parseLong(baseValue);
 
         //Check if another type is already using this rgb value..
         Integer rgbInteger = new Integer(tileRGB);

@@ -35,6 +35,9 @@ public class CargoAtStationsGenerator implements FreerailsServerSerializable {
         moveReceiver = moveExecuter;
     }
 
+    /**
+     * Called once per month
+     */
     public void update(World w) {
 	NonNullElements players = new NonNullElements(KEY.PLAYERS, w,
 		Player.AUTHORITATIVE);
@@ -63,7 +66,8 @@ public class CargoAtStationsGenerator implements FreerailsServerSerializable {
 		    int amount = after.getAmount(cb);
 
 		    if (amount > 0) {
-			after.setAmount(cb, amount / 2);
+			after.setAmount(cb, (int) ((1.0 - Math.pow(0.5, 1.0 /
+					    12)) * amount));
 		    }
 		}
 
@@ -75,7 +79,7 @@ public class CargoAtStationsGenerator implements FreerailsServerSerializable {
 			CargoBatch cb = new CargoBatch(i, station.x,
 				station.y, 0, stationNumber);
 			int amountAlready = after.getAmount(cb);
-			after.setAmount(cb, (amountSupplied) + amountAlready);
+			after.setAmount(cb, (amountSupplied / 12) + amountAlready);
 		    }
 		}
 

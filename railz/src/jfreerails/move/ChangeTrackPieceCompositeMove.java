@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import jfreerails.world.common.Money;
 import jfreerails.world.common.OneTileMoveVector;
 import jfreerails.world.player.FreerailsPrincipal;
 import jfreerails.world.player.Player;
@@ -74,8 +73,6 @@ public final class ChangeTrackPieceCompositeMove extends CompositeMove
         a = getBuildTrackChangeTrackPieceMove(from, direction, trackRule, w, p);
 	b = getBuildTrackChangeTrackPieceMove(to, direction.getOpposite(),
 		trackRule, w, p);
-
-        Money price = new Money(trackRule.getPrice().getAmount() * 2);
 
         return new ChangeTrackPieceCompositeMove((Move []) moves.toArray(new
 		Move[moves.size()]), a, b);

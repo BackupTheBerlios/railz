@@ -11,8 +11,9 @@ import jfreerails.move.CompositeMove;
 import jfreerails.move.Move;
 import jfreerails.world.accounts.AddItemTransaction;
 import jfreerails.world.accounts.Transaction;
-import jfreerails.world.common.Money;
+import jfreerails.world.common.GameTime;
 import jfreerails.world.top.KEY;
+import jfreerails.world.top.ITEM;
 import jfreerails.world.top.ReadOnlyWorld;
 import jfreerails.world.track.NullTrackType;
 import jfreerails.world.track.TrackRule;
@@ -115,10 +116,11 @@ public class TrackMoveTransactionsGenerator {
 
             if (0 != numberAdded) {
                 TrackRule rule = (TrackRule)w.get(KEY.TRACK_RULES, i);
-                Money m = rule.getPrice();
-                Money total = new Money(-m.getAmount() * numberAdded);
-                Transaction t = new AddItemTransaction(AddItemTransaction.TRACK,
-                        i, numberAdded, total);
+                long m = rule.getPrice();
+                long total = -m * numberAdded;
+		GameTime now = (GameTime) w.get(ITEM.TIME, principal);
+		Transaction t = new AddItemTransaction(now,
+			AddItemTransaction.TRACK, i, numberAdded, total);
                 transactions.add(t);
             }
 
@@ -126,14 +128,13 @@ public class TrackMoveTransactionsGenerator {
 
             if (0 != numberRemoved) {
                 TrackRule rule = (TrackRule)w.get(KEY.TRACK_RULES, i);
-                Money m = rule.getPrice();
+                long m = rule.getPrice();
 
-                Money total = new Money((m.getAmount() * numberRemoved) / 2);
+                long total = m * numberRemoved / 2;
+		GameTime now = (GameTime) w.get(ITEM.TIME, principal);
 
-                //You only get half the money back.
-                total = new Money(total.getAmount() / 2);
-
-                Transaction t = new AddItemTransaction(AddItemTransaction.TRACK,
+		Transaction t = new AddItemTransaction(now,
+			AddItemTransaction.TRACK,
                         i, -numberRemoved, total);
                 transactions.add(t);
             }

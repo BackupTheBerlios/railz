@@ -132,7 +132,7 @@ public class SelectEngineJPanel extends javax.swing.JPanel {
             + " m.p.h. "
             + engine.getPowerAtDrawbar()
             + " hp $"
-            + engine.getPrice().toString()
+            + engine.getPrice()
             + (isSelected ? "</strong>" : "")
             + "</body></html>";
             label.setText(text);

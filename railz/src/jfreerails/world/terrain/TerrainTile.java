@@ -1,6 +1,5 @@
 package jfreerails.world.terrain;
 
-import jfreerails.world.common.Money;
 import jfreerails.world.top.ReadOnlyWorld;
 import jfreerails.world.track.FreerailsTile;
 
@@ -16,6 +15,5 @@ public interface TerrainTile {
     /**
      * @return the land value of a tile, excluding any buildings or track.
      */
-    public Money getTerrainValue(ReadOnlyWorld w,
-	    int x, int y);
+    public long getTerrainValue(ReadOnlyWorld w, int x, int y);
 }

@@ -9,8 +9,9 @@ import jfreerails.move.AddTransactionMove;
 import jfreerails.world.accounts.AddItemTransaction;
 import jfreerails.world.accounts.BankAccount;
 import jfreerails.world.accounts.Transaction;
-import jfreerails.world.common.Money;
+import jfreerails.world.common.GameTime;
 import jfreerails.world.top.KEY;
+import jfreerails.world.top.ITEM;
 import jfreerails.world.top.MapFixtureFactory;
 import jfreerails.world.top.World;
 import jfreerails.world.top.WorldImpl;
@@ -44,9 +45,9 @@ public class TrackMaintenanceMoveGeneratorTest extends TestCase {
 	    TrackMaintenanceMoveGenerator.generateMove(w);
 	AddTransactionMove m = moves[0];
         Transaction t = m.getTransaction();
-        Money expected = new Money(-500);
-        Money actual = t.getValue();
-        assertEquals(expected, actual);
+        long expected = -500;
+        long actual = t.getValue();
+        assertTrue(expected == actual);
     }
 
     public void testCalulateNumberOfEachTrackType() {
@@ -60,7 +61,6 @@ public class TrackMaintenanceMoveGeneratorTest extends TestCase {
 
         int quantity = 10;
 
-        AddItemTransaction t;
         addTrack(0, 10);
 
 	actual = TrackMaintenanceMoveGenerator.calulateNumberOfEachTrackType(w,
@@ -83,8 +83,10 @@ public class TrackMaintenanceMoveGeneratorTest extends TestCase {
     private BankAccount addTrack(int trackType, int quantity) {
 	BankAccount account = (BankAccount)w.get(KEY.BANK_ACCOUNTS, 0,
 		player.getPrincipal());
-        AddItemTransaction t = new AddItemTransaction(AddItemTransaction.TRACK,
-                trackType, quantity, new Money(trackType));
+	GameTime now = (GameTime) w.get(ITEM.TIME, player.getPrincipal());
+	AddItemTransaction t = new AddItemTransaction(now,
+		AddItemTransaction.TRACK,
+                trackType, quantity, trackType);
         account.addTransaction(t);
 
         return account;

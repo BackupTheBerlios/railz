@@ -1,6 +1,9 @@
 package jfreerails.client.model;
 
+import java.util.GregorianCalendar;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+
 import jfreerails.controller.MoveReceiver;
 import jfreerails.move.AddTransactionMove;
 import jfreerails.move.Move;
@@ -49,7 +52,7 @@ class UserMessageGenerator implements MoveReceiver {
 		transferCargoAtStationMove.getPayment();
 	    DeliverCargoReceipt deliverCargoReceipt =
 		(DeliverCargoReceipt)addTransactionMove.getTransaction();
-            long revenue = deliverCargoReceipt.getValue().getAmount();
+            long revenue = deliverCargoReceipt.getValue();
 
 	    // ignore other player's trains
 	    if (! move.getPrincipal().equals(mr.getPlayerPrincipal()))
@@ -103,7 +106,12 @@ class UserMessageGenerator implements MoveReceiver {
 
                 GameTime gt = (GameTime)world.get(ITEM.TIME);
                 GameCalendar gc = (GameCalendar)world.get(ITEM.CALENDAR);
-                String message = gc.getTimeOfDay(gt.getTime()) + "  Train #" +
+		GregorianCalendar cal = gc.getCalendar(gt);
+		DateFormat df =
+		    DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+			    DateFormat.MEDIUM);
+
+                String message = df.format(cal.getTime()) + "  Train #" +
                     trainNumber + " arrives at " + stationName + "\n";
 
                 for (int i = 0; i < world.size(KEY.CARGO_TYPES); i++) {

@@ -9,9 +9,10 @@ import jfreerails.move.AddTransactionMove;
 import jfreerails.world.accounts.DeliverCargoReceipt;
 import jfreerails.world.cargo.CargoBatch;
 import jfreerails.world.cargo.CargoBundle;
-import jfreerails.world.common.Money;
+import jfreerails.world.common.GameTime;
 import jfreerails.world.station.StationModel;
 import jfreerails.world.top.KEY;
+import jfreerails.world.top.ITEM;
 import jfreerails.world.top.ReadOnlyWorld;
 import jfreerails.world.player.FreerailsPrincipal;
 import jfreerails.world.player.Player;
@@ -43,9 +44,10 @@ public class ProcessCargoAtStationMoveGenerator {
             amount += cargoBundle.getAmount(batch) * Math.log(dist) * 100;
         }
 	System.out.println("amount for cargo is " + amount);
+	GameTime now = (GameTime) w.get(ITEM.TIME, tp);
 
-        DeliverCargoReceipt receipt = new DeliverCargoReceipt(new Money(
-                    (long)amount), cargoBundle);
+        DeliverCargoReceipt receipt = new DeliverCargoReceipt(now, (long)
+		amount, cargoBundle);
 
 	/* credit owner of the train for cargo delivery */
         return new AddTransactionMove(0, receipt, tp);

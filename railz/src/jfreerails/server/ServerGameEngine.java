@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.zip.GZIPInputStream;
@@ -79,6 +80,7 @@ public class ServerGameEngine implements GameModel, Runnable {
     private int n;
     ArrayList trainMovers = new ArrayList();
     private int currentYearLastTick = -1;
+    private int currentMonthLastTick = -1;
     private boolean keepRunning = true;
 
     public int getTargetTicksPerSecond() {
@@ -205,8 +207,13 @@ public class ServerGameEngine implements GameModel, Runnable {
             //Check whether we have just started a new year..
             GameTime time = (GameTime)world.get(ITEM.TIME);
             GameCalendar calendar = (GameCalendar)world.get(ITEM.CALENDAR);
-            int currentYear = calendar.getYear(time.getTime());
+            int currentYear = calendar.getCalendar(time).get(Calendar.YEAR);
+	    int currentMonth = calendar.getCalendar(time).get(Calendar.MONTH);
 
+	    if (this.currentMonthLastTick != currentMonth) {
+		this.currentMonthLastTick = currentMonth;
+		newMonth();
+	    }
             if (this.currentYearLastTick != currentYear) {
                 this.currentYearLastTick = currentYear;
                 newYear();
@@ -282,13 +289,16 @@ public class ServerGameEngine implements GameModel, Runnable {
         }
     }
 
-    /** This is called at the start of each new year. */
-    private void newYear() {
+    private void newMonth() {
         TrackMaintenanceMoveGenerator tmmg = new TrackMaintenanceMoveGenerator(moveExecuter);
         tmmg.update(world);
 
         CargoAtStationsGenerator cargoAtStationsGenerator = new CargoAtStationsGenerator(moveExecuter);
         cargoAtStationsGenerator.update(world);
+    }
+
+    /** This is called at the start of each new year. */
+    private void newYear() {
     }
 
     /**

@@ -1,7 +1,6 @@
 package jfreerails.world.track;
 
 import jfreerails.world.common.FreerailsSerializable;
-import jfreerails.world.common.Money;
 import jfreerails.world.player.FreerailsPrincipal;
 import jfreerails.world.player.Player;
 import jfreerails.world.terrain.TerrainTile;
@@ -103,12 +102,10 @@ public class FreerailsTile implements TrackPiece, TerrainTile,
      * @param y y coord for the tile for which to calculate the value
      * @param w reference to the game world.
      */
-    public Money getTerrainValue(ReadOnlyWorld w,
-	    int x, int y) {
+    public long getTerrainValue(ReadOnlyWorld w, int x, int y) {
 	TerrainType t = (TerrainType) w.get(KEY.TERRAIN_TYPES, terrainType,
 		Player.AUTHORITATIVE);
 
-	Money baseValue = t.getBaseValue();
-	return baseValue;
+	return t.getBaseValue();
     }
 }

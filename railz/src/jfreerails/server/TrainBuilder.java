@@ -109,7 +109,8 @@ class TrainBuilder {
 
             Move setupScheduleMove = tpf.initTarget(train, is);
 
-	    AddTrainMove addTrainMove = AddTrainMove.generateMove(trainNumber,
+	    AddTrainMove addTrainMove = AddTrainMove.generateMove(world,
+		    trainNumber,
 		    train, engineType.getPrice(), is, tp);
 
             Move compositeMove = new CompositeMove(new Move[] {

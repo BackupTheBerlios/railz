@@ -203,6 +203,12 @@ public class DialogueBoxController {
             showContent(selectEngine);
         }
     }
+
+    public void showProfitLoss() {
+	ProfitLossJPanel pl = new ProfitLossJPanel();
+	pl.setup(modelRoot);
+	showContent(pl);
+    }
     
     public void showGameControls() {
         
@@ -270,6 +276,7 @@ public class DialogueBoxController {
             constraints.gridy = 0;
             constraints.weightx = 1.0;
             constraints.weighty = 1.0;
+	    constraints.fill = GridBagConstraints.BOTH;
             contentPanel.add(component, constraints);
             
             constraints = new GridBagConstraints();

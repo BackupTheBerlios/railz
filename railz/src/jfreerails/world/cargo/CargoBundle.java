@@ -34,7 +34,6 @@ import jfreerails.world.common.FreerailsSerializable;
  *
  */
 public interface CargoBundle extends FreerailsSerializable {
-
     /**
      * @param cargoType index into the CARGO_TYPES table
      * @return amount of cargo of the specified type in tonnes
