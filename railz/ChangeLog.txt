@@ -1,3 +1,6 @@
+January 27, 2005:
+-----------------
+Fix for bug 25 - Station cargo delivery doesn't account for multiple stations
 January 26, 2005:
 -----------------
 Fix for bug 9 - too easy to accidentally build track by clicking on map
