@@ -51,7 +51,8 @@ import org.railz.world.train.*;
  * **************************************
  * @author  Luke Lindsay
  */
-public class TrainDetailsJPanel extends javax.swing.JPanel implements WorldListListener {
+public class TrainDetailsJPanel extends javax.swing.JPanel implements
+    WorldListListener, RefreshListener {
     private ImageIcon stoppedIcon = new ImageIcon(getClass()
 		.getResource("/org/railz/client/graphics/toolbar/stop.png"));
     
@@ -139,7 +140,7 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements WorldListL
 
     }//GEN-END:initComponents
 
-    public void setup(ModelRoot mr) {
+    public void setup(ModelRoot mr, GUIRoot gr) {
 	modelRoot = mr;
 	ReadOnlyWorld w = mr.getWorld();
         this.w = w;
@@ -157,6 +158,7 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements WorldListL
 	add(trainViewJPanel1, gbc);
 	
 	modelRoot.getMoveChainFork().addListListener(this);
+	gr.addRefreshListener(this);
     }    
     
     public void displayTrain(int trainNumber){
@@ -328,5 +330,9 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements WorldListL
 	    gg.fillRect(0, 0, getWidth() * waterRemaining / maxWater,
 		    getHeight());
 	}
+    }
+
+    public void doRefresh() {
+	waterBar.repaint();
     }
 }
