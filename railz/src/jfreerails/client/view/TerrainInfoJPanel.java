@@ -23,11 +23,12 @@
 
 package jfreerails.client.view;
 
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import javax.swing.ImageIcon;
 
-import jfreerails.client.renderer.ViewLists;
+import jfreerails.client.renderer.*;
 import jfreerails.util.*;
 import jfreerails.world.building.*;
 import jfreerails.world.cargo.CargoType;
@@ -57,7 +58,11 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
     private Point location;
 
     private TerrainTileViewer terrainTileViewer;
+
+    private Image tileImage;
     
+    private MapBackgroundRender mapBgRenderer;
+
     /** Creates new form TerrainInfoJPanel */
     public TerrainInfoJPanel() {
         initComponents();
@@ -111,6 +116,7 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
         this.w = w;
         this.vl = vl;
 	terrainTileViewer = new TerrainTileViewer(w);
+	mapBgRenderer = new MapBackgroundRender(w, vl);
     }    
     
     public void setTerrainLocation(Point point) {
@@ -193,9 +199,19 @@ public class TerrainInfoJPanel extends javax.swing.JPanel {
         terrainDescription.setText(labelString);
         terrainName.setText(type. getDisplayName());
         
-        Image tileIcon = vl.getTileViewList().getTileViewWithNumber
-	    (tile.getTerrainTypeNumber()).getDefaultIcon();
-        terrainImage.setIcon(new ImageIcon(tileIcon));
+	if (tileImage == null) {
+	    tileImage = terrainImage.createImage(TileRenderer.TILE_SIZE.width,
+		    TileRenderer.TILE_SIZE.height);
+	    terrainImage.setIcon(new ImageIcon(tileImage));
+	}
+
+	if (tileImage != null) {
+	    Graphics g = tileImage.getGraphics();
+	    g.translate(-point.x * TileRenderer.TILE_SIZE.width, -point.y *
+		    TileRenderer.TILE_SIZE.height);
+	    mapBgRenderer.paintTile(g, point.x, point.y);
+	    g.dispose();
+	}
         
         repaint();
     }
