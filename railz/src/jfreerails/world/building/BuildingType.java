@@ -25,6 +25,8 @@ import jfreerails.world.top.*;
  * @author rtuck99@users.berlios.de
  */
 public class BuildingType implements FreerailsSerializable {
+    static final long serialVersionUID = -3750704386608641745L;
+
     private final boolean[] validTrackLayouts = new boolean[256];
     private final Production[] production;
     private final Consumption[] consumption;
@@ -35,11 +37,30 @@ public class BuildingType implements FreerailsSerializable {
     private final int category;
     private final boolean[] acceptableTerrainTypes;
     private final boolean[] neighbouringTerrainTypes;
+    private transient final DistributionParams distributionParams[];
 
     public static final int CATEGORY_INDUSTRY = 0;
     public static final int CATEGORY_RESOURCE = 1;
     public static final int CATEGORY_URBAN = 2;
     public static final int CATEGORY_STATION = 3;
+
+    /**
+     * See comments in DTD for meanings of a, b, c.
+     * XXX This kind of info should not be part of the world object but for
+     * now leave it in this class since we have nowhere else to put it.
+     */
+    public static class DistributionParams {
+	public double a;
+	public double b;
+	public double c;
+
+	public DistributionParams(double a, double b, double
+		c) {
+	    this.a = a;
+	    this.b = b;
+	    this.c = c;
+	}
+    }
 
     /**
      * @return true if the terrain types on the squares near this tile are OK
@@ -79,7 +100,7 @@ public class BuildingType implements FreerailsSerializable {
 
     public BuildingType(String name, long baseValue, int stationRadius, byte[]
 	    validTrackLayouts, boolean[] acceptableTerrainTypes, boolean[]
-	    neighbouringTerrainTypes) {
+	    neighbouringTerrainTypes, DistributionParams[] distributionParams) {
 	this.name = name;
 	this.baseValue = baseValue;
 	this.stationRadius = stationRadius;
@@ -90,13 +111,14 @@ public class BuildingType implements FreerailsSerializable {
 	setTrackLayouts(validTrackLayouts);
 	this.neighbouringTerrainTypes = neighbouringTerrainTypes;
 	this.acceptableTerrainTypes = acceptableTerrainTypes;
+	this.distributionParams = distributionParams;
     }
 
     public BuildingType(String name, Production[] production, Consumption[]
 	    consumption, Conversion[] conversion, long baseValue, int
 	    category, byte[] validTrackLayouts, boolean[]
 	    acceptableTerrainTypes,  boolean[]
-	    neighbouringTerrainTypes) {
+	    neighbouringTerrainTypes, DistributionParams[] distributionParams) {
 	this.name = name;
 	this.production = production;
 	this.consumption = consumption;
@@ -107,6 +129,7 @@ public class BuildingType implements FreerailsSerializable {
 	setTrackLayouts(validTrackLayouts);
 	this.neighbouringTerrainTypes = neighbouringTerrainTypes;
 	this.acceptableTerrainTypes = acceptableTerrainTypes;
+	this.distributionParams = distributionParams;
     }
 
     public Production[] getProduction() {
@@ -139,5 +162,28 @@ public class BuildingType implements FreerailsSerializable {
 
     public boolean isTrackLayoutValid(byte trackLayout) {
 	return validTrackLayouts[trackLayout & 0xFF];
+    }
+
+    /**
+     * Calculate the probability of this building type appearing at a given
+     * map position
+     */
+    public double distributionProbability(ReadOnlyWorld w, Point p) {
+	int tt = w.getTile(p).getTerrainTypeNumber();
+	return distributionParams[tt].c;
+    }
+
+    /**
+     * Calculate the probability of this building type appearing at a given
+     * point within a city
+     */
+    public double distributionProbability(ReadOnlyWorld w, Point p, Point
+	    cityCentre) {
+	int tt = w.getTile(p).getTerrainTypeNumber();
+	int dx = p.x - cityCentre.x;
+	int dy = p.y - cityCentre.y;
+	double r = Math.sqrt(dx * dx + dy * dy);
+	return distributionParams[tt].a * Math.exp(-r *
+		distributionParams[tt].b);
     }
 }

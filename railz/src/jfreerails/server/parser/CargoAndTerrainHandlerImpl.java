@@ -33,6 +33,7 @@ import org.xml.sax.SAXException;
 
 import jfreerails.world.cargo.CargoType;
 import jfreerails.world.building.*;
+import jfreerails.world.building.BuildingType.DistributionParams;
 import jfreerails.world.common.*;
 import jfreerails.world.terrain.TerrainType;
 import jfreerails.world.top.KEY;
@@ -56,12 +57,29 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
     ArrayList typeProduces = new ArrayList();
     ArrayList typeConverts = new ArrayList();
     ArrayList trackTemplates = new ArrayList();
+
+    /** Array of TerrainTypeElement */
     private ArrayList neighbouringTerrainTypes = new ArrayList();
+    /** Array of TerrainTypeElement */
     private ArrayList acceptableTerrainTypes = new ArrayList();
+    /** Array of TerrainTypeElement */
     private ArrayList terrainTypes;
     boolean isStation;
     long maintenance;
     int stationRadius;
+
+    /** See comments in DTD for meanings of a, b, c */
+    private class TerrainTypeElement {
+	/** Index into TERRAIN_TYPES table */
+	public int terrainType;
+	public DistributionParams distributionParams;
+
+	public TerrainTypeElement(int terrainType, double a, double b, double
+		c) {
+	    this.terrainType = terrainType;
+	    distributionParams = new DistributionParams(a, b, c);
+	}
+    }
 
     public CargoAndTerrainHandlerImpl(World w) {
         world = w;
@@ -182,20 +200,28 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
 		Player.AUTHORITATIVE)];
 	boolean[] ntt = new boolean[world.size(KEY.TERRAIN_TYPES,
 	    Player.AUTHORITATIVE)];
+	DistributionParams[] dp = new DistributionParams
+	    [world.size(KEY.TERRAIN_TYPES, Player.AUTHORITATIVE)];
 
-	for (int i = 0; i < acceptableTerrainTypes.size(); i++)
-	    att[((Integer) acceptableTerrainTypes.get(i)).intValue()] = true;
+	for (int i = 0; i < acceptableTerrainTypes.size(); i++) {
+	    att[((TerrainTypeElement) acceptableTerrainTypes.get(i))
+		.terrainType] = true;
+	    dp[((TerrainTypeElement) acceptableTerrainTypes.get(i))
+		.terrainType] = ((TerrainTypeElement)
+			acceptableTerrainTypes.get(i)).distributionParams;
+	}
 
 	for (int i = 0; i < neighbouringTerrainTypes.size(); i++)
-	    ntt[((Integer) neighbouringTerrainTypes.get(i)).intValue()] = true;
+	    ntt[((TerrainTypeElement) neighbouringTerrainTypes.get(i))
+		.terrainType] = true;
 	
 	if (isStation) {
 	    buildingType = new BuildingType(tileID, tileBaseValue,
-		    stationRadius, tts, att, ntt);
+		    stationRadius, tts, att, ntt, dp);
 	} else {
 	    buildingType = new BuildingType(tileID, produces,
 		    consumes, converts, tileBaseValue, tileCategory, tts, att,
-		    ntt);
+		    ntt, dp);
 	}
 
 	world.add(KEY.BUILDING_TYPES, buildingType, Player.AUTHORITATIVE);
@@ -312,18 +338,21 @@ public class CargoAndTerrainHandlerImpl implements CargoAndTerrainHandler {
 	SAXException {
 	    int n = world.size(KEY.TERRAIN_TYPES, Player.AUTHORITATIVE);
 	    for (int i = 0; i < n; i++) {
-		terrainTypes.add(new Integer(i));
+		terrainTypes.add(new TerrainTypeElement(i, 0, 1, 0));
 	    }
 	}
 
     public void handle_TerrainType(final Attributes meta) throws SAXException {
 	int n = world.size(KEY.TERRAIN_TYPES, Player.AUTHORITATIVE);
 	String type = meta.getValue("terrainType");
+	double a = Double.parseDouble(meta.getValue("a"));
+	double b = Double.parseDouble(meta.getValue("b"));
+	double c = Double.parseDouble(meta.getValue("c"));
 	for (int i = 0; i < n; i++) {
 	    if (((TerrainType) world.get(KEY.TERRAIN_TYPES, i,
 			    Player.AUTHORITATIVE)).getTerrainTypeName().
 		    equals(type)) {
-		terrainTypes.add(new Integer(i));
+		terrainTypes.add(new TerrainTypeElement(i, a, b, c));
 		break;
 	    }
 	}

@@ -46,9 +46,19 @@
     baseValue CDATA #REQUIRED
   >
   
+<!--
+  ++ Buildings are placed according to two methods:
+  ++ 1. City based distribution
+  ++ p(x, y) = a*exp(-rb)
+  ++ 2. Rural distribution
+  ++ p(x, y) = c
+  -->
 <!ELEMENT TerrainType EMPTY>
 <!ATTLIST TerrainType 
-	terrainType CDATA #REQUIRED>
+	terrainType CDATA #REQUIRED
+	a CDATA "0"
+	b CDATA "1"
+	c CDATA "0">
 
 <!ELEMENT AllTerrainTypes EMPTY>
 
@@ -60,6 +70,7 @@
 
 <!ELEMENT Building_Type (AcceptableTerrainTypes, NeighbouringTerrainTypes,
        	(TrackPieceTemplate|Converts|Consumes|Produces)*)>
+
 <!ATTLIST Building_Type
 	id ID #REQUIRED
 	baseValue CDATA #REQUIRED

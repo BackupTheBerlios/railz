@@ -96,8 +96,8 @@ class WorldFactory {
         } catch (SAXException e) {
         }
 
-        //Randomly position the city tiles
-        CityTilePositioner ctp = new CityTilePositioner(w);
+        //Randomly position the city tiles - no need to assign this object
+        new BuildingTilePositioner(w);
 
         //Set the time..
         w.set(ITEM.CALENDAR, new GameCalendar(30, 1840));

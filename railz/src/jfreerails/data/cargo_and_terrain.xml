@@ -33,11 +33,11 @@
       baseValue="6000" maintenance="0">
       <!-- rgb="7" -->
 	<AcceptableTerrainTypes>
-	    <TerrainType terrainType="Clear" />
-	    <TerrainType terrainType="Desert" />
-	    <TerrainType terrainType="Jungle" />
-	    <TerrainType terrainType="Hills" />
-	    <TerrainType terrainType="Foothills" />
+	    <TerrainType terrainType="Clear" a="1" b="3" />
+	    <TerrainType terrainType="Desert" a="1" b="3"/>
+	    <TerrainType terrainType="Jungle" a="1" b="3" />
+	    <TerrainType terrainType="Hills" a="1" b="3" />
+	    <TerrainType terrainType="Foothills" a="1" b="3" />
 	</AcceptableTerrainTypes>
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
@@ -48,11 +48,11 @@
       maintenance="0">
       <!-- rgb="ef901e" -->
 	<AcceptableTerrainTypes>
-	    <TerrainType terrainType="Clear" />
-	    <TerrainType terrainType="Desert" />
-	    <TerrainType terrainType="Jungle" />
-	    <TerrainType terrainType="Hills" />
-	    <TerrainType terrainType="Foothills" />
+	    <TerrainType terrainType="Clear" a="2" b="1.5" />
+	    <TerrainType terrainType="Desert" a="2" b="1.5" />
+	    <TerrainType terrainType="Jungle" a="2" b="1.5" />
+	    <TerrainType terrainType="Hills" a="2" b="1.5" />
+	    <TerrainType terrainType="Foothills" a="2" b="1.5" />
 	</AcceptableTerrainTypes>
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
@@ -68,11 +68,11 @@
       maintenance="0">
       <!-- rgb="d86c48" -->
 	<AcceptableTerrainTypes>
-	    <TerrainType terrainType="Clear" />
-	    <TerrainType terrainType="Desert" />
-	    <TerrainType terrainType="Jungle" />
-	    <TerrainType terrainType="Hills" />
-	    <TerrainType terrainType="Foothills" />
+	    <TerrainType terrainType="Clear" a="0.2" b="1" c="0.005"/>
+	    <TerrainType terrainType="Desert" a="0.2" b="1"/>
+	    <TerrainType terrainType="Jungle" a="0.2" b="1" c="0.002" />
+	    <TerrainType terrainType="Hills" a="0.2" b="1" c="0.005" />
+	    <TerrainType terrainType="Foothills" a="0.2" b="1" c="0.005" />
 	</AcceptableTerrainTypes>
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
@@ -87,11 +87,11 @@
       category="Industry" maintenance="0">
 	<!--  rgb="0000b7" -->
 	<AcceptableTerrainTypes>
-	    <TerrainType terrainType="Clear" />
-	    <TerrainType terrainType="Desert" />
-	    <TerrainType terrainType="Jungle" />
-	    <TerrainType terrainType="Hills" />
-	    <TerrainType terrainType="Foothills" />
+	    <TerrainType terrainType="Clear" a="1" b="3" />
+	    <TerrainType terrainType="Desert" a="1" b="3" />
+	    <TerrainType terrainType="Jungle" a="1" b="3" />
+	    <TerrainType terrainType="Hills" a="1" b="3" />
+	    <TerrainType terrainType="Foothills" a="1" b="3" />
 	</AcceptableTerrainTypes>
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
@@ -105,11 +105,11 @@
       category="Industry" maintenance="0">
 	<!-- Category="Ocean" rgb="1eead2" -->
 	<AcceptableTerrainTypes>
-	    <TerrainType terrainType="Clear" />
-	    <TerrainType terrainType="Desert" />
-	    <TerrainType terrainType="Jungle" />
-	    <TerrainType terrainType="Hills" />
-	    <TerrainType terrainType="Foothills" />
+	    <TerrainType terrainType="Clear" a="0.5" b="0.8" />
+	    <TerrainType terrainType="Desert" a="0.5" b="0.8" />
+	    <TerrainType terrainType="Jungle" a="0.5" b="0.8" />
+	    <TerrainType terrainType="Hills" a="0.5" b="0.8" />
+	    <TerrainType terrainType="Foothills" a="1" b="0.8" />
 	</AcceptableTerrainTypes>
 	<NeighbouringTerrainTypes>
 	    <TerrainType terrainType="Ocean" />
@@ -128,11 +128,11 @@
       category="Industry" maintenance="0">
       <!-- rgb="3" -->
 	<AcceptableTerrainTypes>
-	    <TerrainType terrainType="Clear" />
-	    <TerrainType terrainType="Desert" />
-	    <TerrainType terrainType="Jungle" />
-	    <TerrainType terrainType="Hills" />
-	    <TerrainType terrainType="Foothills" />
+	    <TerrainType terrainType="Clear" a="1" b="3" />
+	    <TerrainType terrainType="Desert" a="1" b="3" />
+	    <TerrainType terrainType="Jungle" a="1" b="3" />
+	    <TerrainType terrainType="Hills" a="1" b="3" />
+	    <TerrainType terrainType="Foothills" a="1" b="3" />
 	</AcceptableTerrainTypes>
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
@@ -143,11 +143,11 @@
       maintenance="0">
       <!-- rgb="5" -->
 	<AcceptableTerrainTypes>
-	    <TerrainType terrainType="Clear" />
-	    <TerrainType terrainType="Desert" />
-	    <TerrainType terrainType="Jungle" />
-	    <TerrainType terrainType="Hills" />
-	    <TerrainType terrainType="Foothills" />
+	    <TerrainType terrainType="Clear" a="1" b="3" />
+	    <TerrainType terrainType="Desert" a="1" b="3" />
+	    <TerrainType terrainType="Jungle" a="1" b="3" />
+	    <TerrainType terrainType="Hills" a="1" b="3" />
+	    <TerrainType terrainType="Foothills" a="1" b="3" />
 	</AcceptableTerrainTypes>
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
@@ -158,11 +158,11 @@
       maintenance="0">
       <!-- rgb="4" -->
 	<AcceptableTerrainTypes>
-	    <TerrainType terrainType="Clear" />
-	    <TerrainType terrainType="Desert" />
-	    <TerrainType terrainType="Jungle" />
-	    <TerrainType terrainType="Hills" />
-	    <TerrainType terrainType="Foothills" />
+	    <TerrainType terrainType="Clear" c="0.0025"/>
+	    <TerrainType terrainType="Desert" c="0.0005" />
+	    <TerrainType terrainType="Jungle" c="0.0015" />
+	    <TerrainType terrainType="Hills" c="0.002" />
+	    <TerrainType terrainType="Foothills" c="0.0025" />
 	</AcceptableTerrainTypes>
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
@@ -173,11 +173,11 @@
 	maintenance="0">
       <!-- rgb="48fc48" -->
 	<AcceptableTerrainTypes>
-	    <TerrainType terrainType="Clear" />
-	    <TerrainType terrainType="Desert" />
-	    <TerrainType terrainType="Jungle" />
-	    <TerrainType terrainType="Hills" />
-	    <TerrainType terrainType="Foothills" />
+	    <TerrainType terrainType="Clear" c="0.004" />
+	    <TerrainType terrainType="Desert" c="0.00025" />
+	    <TerrainType terrainType="Jungle" c="0.001" />
+	    <TerrainType terrainType="Hills" c="0.0025" />
+	    <TerrainType terrainType="Foothills" c="0.0025" />
 	</AcceptableTerrainTypes>
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
@@ -188,11 +188,11 @@
       maintenance="0">
       <!-- rgb="fcfc48" -->
 	<AcceptableTerrainTypes>
-	    <TerrainType terrainType="Clear" />
-	    <TerrainType terrainType="Desert" />
-	    <TerrainType terrainType="Jungle" />
-	    <TerrainType terrainType="Hills" />
-	    <TerrainType terrainType="Foothills" />
+	    <TerrainType terrainType="Clear" c="0.004"/>
+	    <TerrainType terrainType="Desert" c="0.00025" />
+	    <TerrainType terrainType="Jungle" c="0.001" />
+	    <TerrainType terrainType="Hills" c="0.0025" />
+	    <TerrainType terrainType="Foothills" c="0.0025" />
 	</AcceptableTerrainTypes>
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
@@ -203,11 +203,11 @@
       maintenance="0">
       <!-- rgb="ef901d" -->
 	<AcceptableTerrainTypes>
-	    <TerrainType terrainType="Clear" />
-	    <TerrainType terrainType="Desert" />
-	    <TerrainType terrainType="Jungle" />
-	    <TerrainType terrainType="Hills" />
-	    <TerrainType terrainType="Foothills" />
+	    <TerrainType terrainType="Clear" c="0.0015" />
+	    <TerrainType terrainType="Desert" c="0.005" />
+	    <TerrainType terrainType="Jungle" c="0.0015" />
+	    <TerrainType terrainType="Hills" c="0.002" />
+	    <TerrainType terrainType="Foothills"  c="0.002"/>
 	</AcceptableTerrainTypes>
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
@@ -218,11 +218,11 @@
       maintenance="0">
       <!-- rgb="ef901c" -->
 	<AcceptableTerrainTypes>
-	    <TerrainType terrainType="Clear" />
-	    <TerrainType terrainType="Desert" />
-	    <TerrainType terrainType="Jungle" />
-	    <TerrainType terrainType="Hills" />
-	    <TerrainType terrainType="Foothills" />
+	    <TerrainType terrainType="Clear" c="0.001" />
+	    <TerrainType terrainType="Desert" c="0.001" />
+	    <TerrainType terrainType="Jungle" c="0.01" />
+	    <TerrainType terrainType="Hills" c="0.001" />
+	    <TerrainType terrainType="Foothills" c="0.001" />
 	</AcceptableTerrainTypes>
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />
@@ -233,11 +233,11 @@
       maintenance="0">
       <!-- rgb="ef901f" -->
 	<AcceptableTerrainTypes>
-	    <TerrainType terrainType="Clear" />
-	    <TerrainType terrainType="Desert" />
-	    <TerrainType terrainType="Jungle" />
-	    <TerrainType terrainType="Hills" />
-	    <TerrainType terrainType="Foothills" />
+	    <TerrainType terrainType="Clear" c="0.003" />
+	    <TerrainType terrainType="Desert" c="0.001" />
+	    <TerrainType terrainType="Jungle" c="0.005" />
+	    <TerrainType terrainType="Hills" c="0.002" />
+	    <TerrainType terrainType="Foothills" c="0.002" />
 	</AcceptableTerrainTypes>
 	<NeighbouringTerrainTypes>
 	    <AllTerrainTypes />

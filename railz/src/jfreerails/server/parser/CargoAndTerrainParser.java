@@ -282,6 +282,8 @@ public class CargoAndTerrainParser implements ContentHandler {
 		} catch (SAXParseException e) {
 		    System.out.println("Parse exception " + e.getMessage() +
 			    " at line " + e.getLineNumber());
+		    if (e.getException() != null)
+			e.getException().printStackTrace();
 		    throw e;
 		}
     }
