@@ -41,6 +41,18 @@ public class ChangeTrainMove extends ChangeItemInListMove {
     }
 
     /**
+     * Reset ticksInService counter
+     */
+    public static ChangeTrainMove generateResetTicksInServiceMove
+	(ObjectKey trainKey, ReadOnlyWorld w) {
+	    TrainModel oldModel = (TrainModel) w.get(trainKey.key,
+		    trainKey.index, trainKey.principal);
+	    TrainModel newModel = oldModel.resetTicksInService();
+	    return new ChangeTrainMove(trainKey.index, oldModel, newModel,
+		    trainKey.principal);
+	}
+
+    /**
      * Change trains scheduled stop
      */
     public static ChangeTrainMove generateMove(int id,
