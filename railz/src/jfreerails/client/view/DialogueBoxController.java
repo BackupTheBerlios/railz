@@ -113,13 +113,10 @@ public class DialogueBoxController {
         
         // setup the 'show controls' dialogue
         showControls = new HtmlJPanel(DialogueBoxController.class.getResource("/jfreerails/client/view/game_controls.html"));
-        showControls.setup(w, vl, this.closeCurrentDialogue);
         
         about = new HtmlJPanel(DialogueBoxController.class.getResource("/jfreerails/client/view/about.htm"));
-        about.setup(w, vl, this.closeCurrentDialogue);
         
         how2play = new HtmlJPanel(DialogueBoxController.class.getResource("/jfreerails/client/view/how_to_play.htm"));
-        how2play.setup(w, vl, this.closeCurrentDialogue);
         
         //Set up select engine dialogue.
         selectEngine = new SelectEngineJPanel();
@@ -268,7 +265,9 @@ public class DialogueBoxController {
     
     public void showContent(JComponent component) {
         JComponent contentPanel;
-        if (!(component instanceof View)) {
+        if (!((component instanceof SelectEngineJPanel) ||
+		    (component instanceof SelectWagonsJPanel) ||
+		    (component instanceof TrainListJPanel))) {
             contentPanel = new javax.swing.JPanel();
             contentPanel.setLayout(new java.awt.GridBagLayout());
             GridBagConstraints constraints = new GridBagConstraints();

@@ -75,6 +75,7 @@ public class ServerControlModel {
             if (serverInterface != null) {
 		JFileChooser chooser = new JFileChooser(currentDirectory);
 		chooser.setMultiSelectionEnabled(false);
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		int option = chooser.showSaveDialog(null);
 		if (option == JFileChooser.APPROVE_OPTION) {
 		    File f = chooser.getSelectedFile();
