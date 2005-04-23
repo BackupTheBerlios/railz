@@ -93,7 +93,7 @@ final public class TrackMoveProducer {
         }
 
         Move moveAndTransaction = transactionsGenerator.addTransactions(move);
-	return moveAndTransaction
+	return moveAndTransaction;
     }
 
     /**
