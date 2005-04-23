@@ -16,6 +16,7 @@
  */
 package org.railz.controller;
 
+import java.awt.*;
 import java.util.*;
 import java.util.logging.*;
 
@@ -85,7 +86,7 @@ public final class RouteBuilderPathExplorer implements  PathExplorer {
      * straight-on direction first, then left and right turns.
      */ 
     public boolean hasNextDirection() {
-	return getNextDirection(direction) == 0;
+	return getNextDirection(direction) != 0;
     }
 
     private byte getNextDirection(byte d) {
@@ -121,7 +122,7 @@ public final class RouteBuilderPathExplorer implements  PathExplorer {
 	FreerailsTile ft = world.getTile(newX, newY);
 	if (! (Player.AUTHORITATIVE.equals(ft.getOwner()) ||
 		    settings.owner.equals(ft.getOwner())) ||
-		(ft.getBuildingTile() != null && ft.getTrackTile() != null))
+		(ft.getBuildingTile() != null && ft.getTrackTile() == null))
 	    return getNextDirection(nextDirection);
 
 	// can we build here?
@@ -134,12 +135,58 @@ public final class RouteBuilderPathExplorer implements  PathExplorer {
 	return nextDirection;
     }
 
+    public Point getLocation() {
+	return new Point(x, y);
+    }
+
     public int getX() {
 	return x;
     }
 
     public int getY() {
 	return y;
+    }
+
+    /**
+     * @return the estimated cost of traversing from the centre of this tile
+     * to the specified tile
+     */
+    public int getEstimatedCost(Point p) {
+	int anglePenalty = 0;
+	byte d1 = initialDirection;
+	byte d2 = CompassPoints.deltasToDirection(p.x - x, p.y - y);
+
+	if (d2 == 0) {
+	    // already at p!
+	    return 0;
+	}
+
+	while (d1 != d2) {
+	    d1 = CompassPoints.rotateClockwise(d1);
+	    anglePenalty++;
+	}
+	if (anglePenalty > 4)
+	    anglePenalty = 8 - anglePenalty;
+	// 1st turn is "free"
+	if (anglePenalty > 0)
+	    anglePenalty--;
+
+	return (int) (1.1f * getCost() * (anglePenalty + 
+	    ((int) new PathLength(x, y, p.x, p.y).getLength())));
+    }
+
+    private int cumulativeCost = Integer.MIN_VALUE;
+    
+    public int getCumulativeCost() {
+	if (cumulativeCost != Integer.MIN_VALUE)
+	    return cumulativeCost;
+
+	int c = getCost();
+	if (parent != null) {
+	    c += parent.getCumulativeCost();
+	}
+	cumulativeCost = c;
+	return c;
     }
 
     /**
@@ -153,7 +200,7 @@ public final class RouteBuilderPathExplorer implements  PathExplorer {
 	cost = 0;
 	boolean nodebug = ! logger.isLoggable(Level.FINEST);
 	if (parent != null) 
-	    cost = parent.getIncrementalCost();
+	    cost = parent.getIncrementalCost(initialDirection);
 	logger.log (Level.FINEST, nodebug ? "" : "Incremental cost:" + cost);
 
 	// calculate the cost of purchasing the tile, if required.
@@ -277,14 +324,14 @@ public final class RouteBuilderPathExplorer implements  PathExplorer {
      * @return the incremental cost in 100s of $ of building track from the
      * centre of this tile to the edge of the last tile returned.
      */
-    private int getIncrementalCost() {
-	if (direction == 0)
+    private int getIncrementalCost(byte d) {
+	if (d == 0)
 	    return 0;
 	FreerailsTile ft = world.getTile(x, y);
 	byte config1 = CompassPoints.invert(initialDirection);
 	if (ft.getTrackTile() != null) 
 	    config1 |= ft.getTrackTile().getTrackConfiguration();
-	byte config2 = (byte) (config1 | direction);
+	byte config2 = (byte) (config1 | d);
 	TrackTile tt1 = TrackTile.createTrackTile(world, config1,
 		settings.trackRuleIndex);
 	TrackTile tt2 = TrackTile.createTrackTile(world, config2,
@@ -297,6 +344,33 @@ public final class RouteBuilderPathExplorer implements  PathExplorer {
 	    cost += t[i].getValue();
 	}
 	return (int) (cost / 100);
+    }
+
+    public void reset() {
+	direction = 0;
+    }
+
+    public boolean equals(Object o) {
+	if (o instanceof RouteBuilderPathExplorer) {
+	    RouteBuilderPathExplorer pe = (RouteBuilderPathExplorer) o;
+	    return x == pe.x && y == pe.y;
+	       //	&& initialDirection ==
+		// pe.initialDirection;
+	}
+       return false;	
+    }
+
+    public int hashCode() {
+	return x ^ (y << 16);
+       //	^ initialDirection;
+    }
+
+    public PathExplorer getParent() {
+	return parent;
+    }
+
+    public String toString() {
+	return "RouteBuilderPathExplorer: x=" + x + ", y=" + y;
     }
 }
 

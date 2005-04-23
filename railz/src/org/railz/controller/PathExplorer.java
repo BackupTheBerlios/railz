@@ -16,9 +16,13 @@
  */
 package org.railz.controller;
 
+import java.awt.*;
+
 /**
  * Represents the internal state of a single tile in the exploration of the
  * map by the PathFinder.
+ * This class should implement equals() and hashCode() such that two equal
+ * PathExplorers provide identical neighbour tiles when iterated.
  */
 public interface PathExplorer {
     /**
@@ -33,6 +37,8 @@ public interface PathExplorer {
      */ 
     public boolean hasNextDirection();
 
+    public Point getLocation();
+
     public int getX();
 
     public int getY();
@@ -42,6 +48,11 @@ public interface PathExplorer {
      * the centre of this tile.
      */
     public int getCost();
+
+    /**
+     * @return the cumulative cost of traversing from the start to this point.
+     */
+    public int getCumulativeCost(); 
 
     /**
      * @return a copy of this PathExplorer. This is used for saving the state
@@ -54,4 +65,21 @@ public interface PathExplorer {
      * this tile (the parent tile), to this tile.
      */
     public byte getDirection();
+
+    /**
+     * @return the estimated cost from the location of this tile to the
+     * specified location
+     */
+    public int getEstimatedCost(Point p);
+
+    /**
+     * Reset the iterator provided by the exploreNewTile() and
+     * hasNextDirection() methods.
+     */
+    public void reset();
+
+    /**
+     * @return the tile traversed to reach this tile.
+     */
+    public PathExplorer getParent();
 }

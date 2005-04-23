@@ -314,6 +314,56 @@ public final class CompassPoints implements FreerailsSerializable {
 	}
     }
 
+    public static final double  SSW_RADIANS = - (Math.PI * 7) / 8;
+    public static final double  WSW_RADIANS = - (Math.PI * 5) / 8;
+    public static final double  WNW_RADIANS = - (Math.PI * 3) / 8;
+    public static final double  NNW_RADIANS = - (Math.PI) / 8;
+    public static final double  NNE_RADIANS = (Math.PI) / 8;
+    public static final double  ENE_RADIANS = (Math.PI * 3) / 8;
+    public static final double  ESE_RADIANS = (Math.PI * 5) / 8;
+    public static final double  SSE_RADIANS = (Math.PI * 7) / 8;
+
+    /**
+     * @return the 8bit direction closest to the specified vector
+     * if the delta is 0, 0, then return 0.
+     */
+    public static byte deltasToDirection(int dx, int dy) {
+	if (dx == 0) {
+	    if (dy > 0) {
+		return SOUTH;
+	    } else if (dy < 0) {
+		return NORTH;
+	    }
+	    return 0;
+	} else if (dy == 0) {
+	    if (dx > 0) {
+		return EAST;
+	    } else {
+		return WEST;
+	    }
+	}
+	// angle to CompassPoints.NORTH
+	double theta = Math.atan(((double) dx) / dy);
+	if (theta < SSW_RADIANS)
+	    return SOUTH;
+	if (theta < WSW_RADIANS)
+	    return SOUTHWEST;
+	if (theta < WNW_RADIANS)
+	    return WEST;
+	if (theta < NNW_RADIANS)
+	    return NORTHWEST;
+	if (theta < NNE_RADIANS)
+	    return NORTH;
+	if (theta < ENE_RADIANS)
+	    return NORTHEAST;
+	if (theta < ESE_RADIANS)
+	    return EAST;
+	if (theta < SSE_RADIANS)
+	    return SOUTHEAST;
+
+	return SOUTH;
+    }
+
     public static byte unitDeltasToDirection(int dx, int dy) {
 	switch (dx) {
 	    case -1:

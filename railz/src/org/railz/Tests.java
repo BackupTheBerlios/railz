@@ -47,6 +47,7 @@ public class Tests {
 	       	"Logging enabled at level " + l.getLevel());
 	
 	TestSuite ts = new TestSuite();
+	ts.addTestSuite(org.railz.controller.RouteBuilderPathExplorerTest.class);
 	ts.addTestSuite(org.railz.client.ai.tasks.RouteBuilderTest.class);
 	ts.addTestSuite(org.railz.client.common.BinaryNumberFormatterTest.class);
 	ts.addTestSuite(org.railz.client.common.WorldOverlayTest.class);

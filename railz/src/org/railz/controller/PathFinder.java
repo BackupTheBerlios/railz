@@ -26,9 +26,124 @@ import org.railz.world.track.*;
  * to a given destination.
  */
 public final class PathFinder {
-    private LinkedList bestPath;
-    private int bestCost;
-    private ExplorerList currentPath;
+    /**
+     * List of unexplored PathExplorers, ordered by increasing estimated cost
+     * to target.
+     */
+    private OpenList open = new OpenList();
+
+    /**
+     * HashMap of explored PathExplorer.
+     */
+    private HashMap closed = new HashMap();
+
+    private class OpenList {
+	private static final int FAST_SIZE = 25;
+
+	/**
+	 * HashSet of PathExplorer
+	 */
+	private HashSet openSet = new HashSet();
+
+	/**
+	 * LinkedList of PathExplorer, in order of ascending size
+	 */
+	private LinkedList fastList = new LinkedList();
+
+	/**
+	 * LinkedList of PathExplorer
+	 */
+	private LinkedList slowList = new LinkedList();
+
+	public boolean isEmpty() {
+	    return fastList.isEmpty() && slowList.isEmpty();
+	}
+
+	public PathExplorer removeFirst() {
+	    if (fastList.isEmpty()) {
+		// populate the fastList from the slowList
+		logger.log(Level.FINE, "Rebuilding fastList");
+		ListIterator i = slowList.listIterator();
+		int maxFastCost = Integer.MAX_VALUE;
+		while (i.hasNext()) {
+		    PathExplorer pe = (PathExplorer) i.next();
+		    int cost = pe.getCumulativeCost() +
+			pe.getEstimatedCost(target);
+		    if (cost < maxFastCost) {
+			i.remove();
+			if (fastList.size() >= FAST_SIZE) {
+			    PathExplorer pe2 = (PathExplorer)
+				fastList.removeLast();
+			    i.add(pe2);
+			    maxFastCost = pe2.getCumulativeCost() +
+				pe2.getEstimatedCost(target);
+			}
+			// add to fast list
+			ListIterator j = fastList.listIterator();
+			while (j.hasNext()) {
+			    PathExplorer pe2 = (PathExplorer) j.next();
+			    if (pe2.getCumulativeCost() +
+				    pe2.getEstimatedCost(target) > cost) {
+				j.previous();
+				break;
+			    }
+			}
+			j.add(pe);
+		    }
+		}
+	    }
+	    PathExplorer pe = (PathExplorer) fastList.removeFirst();
+	    openSet.remove(pe);
+	    return pe;
+	}
+
+	public void remove(PathExplorer pathExplorer) {
+	    if (! fastList.remove(pathExplorer))
+		slowList.remove(pathExplorer);
+
+	    openSet.remove(pathExplorer);
+	}
+
+	/**
+	 * Add the PathExplorer at a position in order of ascending cost to
+	 * target.
+	 */
+	public boolean add(PathExplorer pathExplorer) {
+	    int pos = 0;
+	    int cost = pathExplorer.getEstimatedCost(target) +
+		pathExplorer.getCumulativeCost();
+	    PathExplorer pe;
+	    openSet.add(pathExplorer);
+	    ListIterator i = fastList.listIterator();
+	    while (i.hasNext()) {
+		pos++;
+		pe = (PathExplorer) i.next();
+		if (pe.getEstimatedCost(target) + pe.getCumulativeCost() >=
+			cost) {
+		    i.previous();
+		   // logger.log(Level.FINEST, "Adding " + pathExplorer + 
+		//	    " at cost " + cost + ", pos " + pos);
+		    i.add(pathExplorer);
+		    if (fastList.size() > FAST_SIZE) {
+			slowList.addFirst(fastList.removeLast());
+		    }
+		    return true;
+		}
+	    }
+
+	    slowList.add(pathExplorer);
+	    return true;
+	}
+
+	public boolean contains(PathExplorer pe) {
+	    return openSet.contains(pe);
+	}
+	
+	public int size() {
+	    return slowList.size() + fastList.size();
+	}
+    }
+
     private Point start;
     private Point target;
     private int maxCost;
@@ -76,12 +191,6 @@ public final class PathFinder {
     }
 
     /**
-     * A HashSet of Point instances which describe the track tiles which have
-     * already been explored.
-     */
-    private HashSet exploredTiles = new HashSet();
-
-    /**
      * @param minCost the minimum cost for this route. If we find a path
      * between the start and end points where the total path cost is less than
      * or equal to this cost, we stop searching and return the route found.
@@ -98,91 +207,87 @@ public final class PathFinder {
     }
 
     /**
+     * @return a linkedList of PathExplorers from the origin to reach this
+     * point
+     */
+    private LinkedList getBestPath(PathExplorer pe) {
+	LinkedList ll = new LinkedList();
+	while (pe != null) {
+	    ll.addFirst(pe);
+	    pe = pe.getParent();
+	}
+	return ll;
+    }
+
+    /**
+     * Don't re-open closed nodes unless new route is less than this fraction
+     * of current best cost to the node
+     */
+    private static final float TOLERANCE = 0.9f;
+
+    /**
      * Perform the exploration.
      * @return a LinkedList of PathExplorer objects. The first object in the
      * link is at the starting point, and the last contains the destination.
      * Return null if no path could be found.
      */
     public LinkedList explore() {
+	int iterations = 0;
 	logger.log(Level.FINE, "exploring from " + start + " to " + target);
 	logger.log(Level.FINE, "best minCost=" + minCost + ", maxCost=" +
 	       maxCost);
-	currentPath = new ExplorerList();
-	bestPath = null;
-	bestCost = maxCost;
 	
-	/* "Stupidity" filter... */
-	if (start.equals(target))
-	    return currentPath;
-
 	PathExplorer pe = startExplorer;
-	Point currentPos = new Point();
-	exploredTiles.clear();
-	do {
-	    currentPath.add(pe);
+	
+	open.add(pe);
+	int cost = 0;
+	while (! open.isEmpty()) {
+	    pe = (PathExplorer) open.removeFirst();
+	    logger.log(Level.FINEST, "fetched tile " +
+		    pe.getLocation());
+	    if (iterations % 2000 == 0) {
+		logger.log(Level.INFO, "current path cost: " +
+			(pe.getEstimatedCost(target) + pe.getCumulativeCost())
+			+ " iterations: " + iterations);
+		logger.log(Level.INFO, "open size=" + open.size() +
+		       	", closed size=" + closed.size() + " efficiency: " +
+			((closed.size() * 100) / 
+			 (iterations == 0 ? 1 : iterations)) );
+	    }
+	    if (pe.getLocation().equals(target)) {
+		logger.log(Level.INFO, "found target " + target + 
+			" after " + iterations + " iterations");
+		return getBestPath(pe);
+	    }
 
-	    pe = pe.exploreNewTile();
-
-	    if (pe == null) {
-		if (currentPath.size() == 1) {
-		    // we have already explored all tiles
-		    break;
-		} else {
-		    // remove the current tile, and continue searching with
-		    // the previous tile.
-		    currentPath.removeLast();
-		    pe = (PathExplorer) currentPath.removeLast();
-		    continue;
+	    while (pe.hasNextDirection()) {
+		PathExplorer neighbour = (PathExplorer) pe.exploreNewTile();
+	//	logger.log(Level.FINEST, "testing neighbour " +
+	//		neighbour.getLocation());
+		int neighbourCumCost = neighbour.getCumulativeCost();
+		int neighbourCost = neighbourCumCost +
+		    neighbour.getEstimatedCost(target);
+		boolean isOpen = open.contains(neighbour);
+		PathExplorer closedPathExplorer = (PathExplorer)
+		    closed.get(neighbour);
+		boolean isClosed = (closedPathExplorer != null);
+		if (isClosed && neighbourCumCost < 
+			 (int) 
+			 (closedPathExplorer.getCumulativeCost() * TOLERANCE)) {
+		    // we found a better path to this tile
+		    closed.remove(neighbour);
+		    isClosed = false;
+		}
+		if (!isClosed && !isOpen) {
+		    if (neighbourCost <= maxCost)
+			open.add(neighbour);
 		}
 	    }
+	    closed.put(pe, pe);
+	    iterations++;
+	}
 
-	    /* Is this tile already explored?
-	     * Have we explored further than our current bestCost? */
-	    currentPos.setLocation(pe.getX(), pe.getY());
-	    if (exploredTiles.contains(currentPos) ||
-		    currentPath.getCost() > bestCost) {
-		/* go back to old tile */
-		pe = (PathExplorer) currentPath.removeLast();
-		continue;
-	    }
-
-	    /* have we doubled back on ourselves ? */
-	    /*if (currentPath.haveLocation(currentPos.x, currentPos.y)) {
-		    pe = (PathExplorer) currentPath.removeLast();
-		    continue;
-	    }*/
-
-	    /* have we reached the target ? */
-	    if (currentPos.equals(target)) {
-		Iterator i = currentPath.iterator();
-		int cost = 0;
-		do {
-		    cost += ((PathExplorer) i.next()).getCost();
-		} while (i.hasNext());
-		if (cost < bestCost) {
-		    /* this is the new best route */
-		    logger.log(Level.FINE, "Found new route cost " + 
-			    cost);
-		    bestCost = cost;
-		    if (bestPath == null)
-			bestPath = new LinkedList();
-		    bestPath.clear();
-		    i = currentPath.iterator();
-		    do {
-			bestPath.add(((PathExplorer) i.next()).getCopy());
-		    } while (i.hasNext());
-		}
-		// remove the current tile, and continue searching with
-		// the previous tile.
-		// currentPath.removeLast();
-		pe = (PathExplorer) currentPath.removeLast();
-		continue;
-	    }
-
-	    exploredTiles.add(new Point(pe.getX(), pe.getY()));
-
-	} while (bestCost > minCost);
-
-	return bestPath;
+	// no path was found
+	return null;
     }
 }

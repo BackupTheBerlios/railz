@@ -16,8 +16,11 @@
  */
 package org.railz.controller;
 
+import java.awt.*;
+
 import org.railz.world.common.*;
 import org.railz.world.top.*;
+import org.railz.world.track.*;
 /**
  * The PathExplorer for finding the path for a train between two stops.
  * TODO calculate cost from terrain and track layout.
@@ -31,13 +34,26 @@ public class TrainPathExplorer implements PathExplorer {
 
     private byte initialDirection;
 
+    private int parentCost;
+
+    private TrainPathExplorer parent;
+
     /**
      * Direction of last returned tile, or 0 if no tile returned
      */
     private byte direction;
 
+    private TrainPathExplorer(TrainPathExplorer tpe) {
+	x = tpe.x;
+	y = tpe.y;
+	world = tpe.world;
+	initialDirection = tpe.initialDirection;
+	direction = tpe.direction;
+	parent = tpe.parent;
+    }
+
     public PathExplorer getCopy() {
-	return new TrainPathExplorer (world, x, y, initialDirection);
+	return new TrainPathExplorer (this);
     }
 
     public PathExplorer exploreNewTile() {
@@ -89,6 +105,7 @@ public class TrainPathExplorer implements PathExplorer {
 	this.initialDirection = initialDirection;
 	direction = initialDirection;
 	world = w;
+	parent = null;
     }
 
     private TrainPathExplorer (TrainPathExplorer pe, int x, int y) {
@@ -97,6 +114,7 @@ public class TrainPathExplorer implements PathExplorer {
 	world = pe.world;
 	initialDirection = CompassPoints.invert(pe.direction);
 	direction = initialDirection;
+	parent = pe;
     }
 
     public boolean hasNextDirection() {
@@ -123,6 +141,10 @@ public class TrainPathExplorer implements PathExplorer {
 	return 0;
     }
 
+    public Point getLocation() {
+	return new Point(x, y);
+    }
+
     public int getX() {
 	return x;
     }
@@ -135,7 +157,44 @@ public class TrainPathExplorer implements PathExplorer {
 	return CompassPoints.getLength(initialDirection);
     }
 
+    public int getCumulativeCost() {
+	TrainPathExplorer tpe = this;
+	int cost = 0;
+	while (tpe != null) {
+	    cost += tpe.getCost();
+	    tpe = tpe.parent;
+	}
+
+	return cost;
+    }
+
     public byte getDirection() {
 	return CompassPoints.invert(initialDirection);
+    }
+
+    public int getEstimatedCost(Point p) {
+	PathLength pl = new PathLength(x, y, p.x, p.y);
+	return (int) (pl.getLength() * TrackTile.DELTAS_PER_TILE);
+    }
+
+    public void reset() {
+	direction = initialDirection;
+    }
+
+    public boolean equals(Object o) {
+	if (o instanceof TrainPathExplorer) {
+	    TrainPathExplorer tpe = (TrainPathExplorer) o;
+	    return x == tpe.x && y == tpe.y &&
+	       	initialDirection == tpe.initialDirection;
+	}
+	return false;
+    }
+
+    public int hashCode() {
+	return x ^ y;
+    }
+
+    public PathExplorer getParent() {
+	return parent;
     }
 }

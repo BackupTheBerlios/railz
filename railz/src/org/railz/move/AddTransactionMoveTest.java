@@ -38,7 +38,7 @@ public class AddTransactionMoveTest extends AbstractMoveTestCase {
     public void testMove() {
         BankAccount account = (BankAccount)getWorld().get(KEY.BANK_ACCOUNTS, 0,
 		testPlayer.getPrincipal());
-        assertTrue(0 == account.getCurrentBalance());
+        assertTrue(1000000L == account.getCurrentBalance());
 
         Transaction t = new InitialDeposit((GameTime)
 		getWorld().get(ITEM.TIME, Player.AUTHORITATIVE), 100);
@@ -48,7 +48,7 @@ public class AddTransactionMoveTest extends AbstractMoveTestCase {
         assertDoMoveIsOk(m);
 	account = (BankAccount) getWorld().get(KEY.BANK_ACCOUNTS, 0,
 		testPlayer.getPrincipal());
-        assertTrue(100 == account.getCurrentBalance());
+        assertTrue(1000100L == account.getCurrentBalance());
 
         Move m2 = new AddTransactionMove(5, t, testPlayer.getPrincipal());
         assertTryMoveFails(m2);
@@ -60,12 +60,12 @@ public class AddTransactionMoveTest extends AbstractMoveTestCase {
     public void testConstrainedMove() {
         BankAccount account = (BankAccount)getWorld().get(KEY.BANK_ACCOUNTS, 0,
 		testPlayer.getPrincipal());
-        assertTrue(0 == account.getCurrentBalance());
+        assertTrue(1000000L == account.getCurrentBalance());
 
 	GameTime now = (GameTime) getWorld().get(ITEM.TIME,
 		testPlayer.getPrincipal());
 	Transaction t = new AddItemTransaction(now, AddItemTransaction.TRACK,
-		0, 1, -100);
+		0, 1, -1000100L);
         Move m = new AddTransactionMove(0, t, true, testPlayer.getPrincipal());
 
         //This move should fail since there is no money in the account and 

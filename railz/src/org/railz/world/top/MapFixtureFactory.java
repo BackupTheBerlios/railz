@@ -77,7 +77,7 @@ public class MapFixtureFactory {
         };
 
         legalTrackConfigurations[0] = trackTemplates0;
-        legalTrackPlacement[0] = new boolean[] { true, true, true, true };
+        legalTrackPlacement[0] = new boolean[] { true, false, true, true };
         trackRulesArray[0] = new TrackRule(0, "standard track", false, 10,
 		legalTrackConfigurations[0], 0, legalTrackPlacement[0], false);
 
@@ -87,13 +87,13 @@ public class MapFixtureFactory {
 	    CompassPoints.NORTH | CompassPoints.SOUTH
 	};
 
-        legalTrackPlacement[1] = new boolean[] { true, true, true, true };
+        legalTrackPlacement[1] = new boolean[] { true, false, true, true };
         trackRulesArray[1] = new TrackRule(0, "type1", false, 20,
 		legalTrackConfigurations[1], 0, legalTrackPlacement[1], false);
 
         //3rd track type..
         legalTrackConfigurations[2] = new byte[0];
-        legalTrackPlacement[2] = new boolean[] { true, true, true, true };
+        legalTrackPlacement[2] = new boolean[] { true, false, true, true };
         trackRulesArray[2] = new TrackRule(0, "type2", false, 30,
 		legalTrackConfigurations[2], 0, legalTrackPlacement[2], false);
 
@@ -107,8 +107,11 @@ public class MapFixtureFactory {
         //We need this since when we built track, the terrain type gets check to see if we can
         //built track on it and an exception is thrown if terrain type 0 does not exist.
 	world.add(KEY.TERRAIN_TYPES, new TerrainType(0,
-		    TerrainType.CATEGORY_COUNTRY, "Clear", 0L, 0, 0),
+		    TerrainType.CATEGORY_COUNTRY, "Clear", 1000L, 0, 0),
 	       	Player.NOBODY);
+	world.add(KEY.TERRAIN_TYPES, new TerrainType(1,
+		    TerrainType.CATEGORY_OCEAN, "Ocean", 0L, 0, 0),
+		Player.NOBODY);
     }
 
     public FreerailsPrincipal addPlayer(String name, int id) {
@@ -119,6 +122,7 @@ public class MapFixtureFactory {
     }
 
     public static final int TT_CLEAR = 0;
+    public static final int TT_OCEAN = 1;
     public static final int BT_CITY = 0;
     public static final int CT_PASSENGER = 0;
 
@@ -135,19 +139,21 @@ public class MapFixtureFactory {
 		new Production[] {new Production(CT_PASSENGER, 100)},       
 		new Consumption[] {new Consumption(CT_PASSENGER)},
 		new Conversion[0],
-		1000L, 0, new byte[0], new boolean[] {true},
-	       	new boolean[] {true},
+		1000L, 0, new byte[0], new boolean[] {true, false},
+	       	new boolean[] {true, true},
 	       	new BuildingType.DistributionParams[] 
-		{new BuildingType.DistributionParams(1.0, 1.0, 1.0)}),
+		{new BuildingType.DistributionParams(1.0, 1.0, 1.0),
+		new BuildingType.DistributionParams(1.0, 1.0, 1.0)}),
 		Player.NOBODY);
 	// add a station building type
 	world.add(KEY.BUILDING_TYPES,
 		new BuildingType("station",
 		    1000L, 2, new byte[] { CompassPoints.NORTH,
 		     (byte) (CompassPoints.NORTH | CompassPoints.SOUTH)},
-		     new boolean[] {true}, new boolean[]
-		    {true}, new BuildingType.DistributionParams[]
-		    {new BuildingType.DistributionParams(1.0, 1.0, 1.0)}),
+		     new boolean[] {true, false}, new boolean[]
+		    {true, true}, new BuildingType.DistributionParams[]
+		    {new BuildingType.DistributionParams(1.0, 1.0, 1.0),
+		   new BuildingType.DistributionParams(1.0, 1.0, 1.0) }),
 		Player.NOBODY);
     }
 

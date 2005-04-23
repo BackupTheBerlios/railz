@@ -94,7 +94,7 @@ public class TrainPathFinder {
 	startCentre = TrackTile.tileCoordsToDeltas(startCentre);
 
 	/* all possible paths have been explored, but no route was found */
-	if (bestPath.isEmpty())
+	if (bestPath == null | bestPath.isEmpty())
 	    return null;
 
 	/* convert the ArrayList to a TrainPath. bestPath always contains the

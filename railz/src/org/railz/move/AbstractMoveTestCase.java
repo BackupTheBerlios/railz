@@ -26,7 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import org.railz.world.accounts.BankAccount;
+import org.railz.world.accounts.*;
 import org.railz.world.common.GameCalendar;
 import org.railz.world.common.GameTime;
 import org.railz.world.player.Player;
@@ -66,7 +66,11 @@ public abstract class AbstractMoveTestCase extends TestCase {
 	getWorld().set(ITEM.CALENDAR, new GameCalendar(12000, 1840, 30),
 		Player.AUTHORITATIVE);
         getWorld().set(ITEM.TIME, new GameTime(0), Player.AUTHORITATIVE);
-	getWorld().add(KEY.BANK_ACCOUNTS, new BankAccount(),
+	BankAccount ba = new BankAccount();
+	ba = ba.addTransaction(new InitialDeposit((GameTime)
+		    getWorld().get(ITEM.TIME, Player.AUTHORITATIVE),
+		    1000000L));
+	getWorld().add(KEY.BANK_ACCOUNTS, ba,
 		testPlayer.getPrincipal());
     }
 

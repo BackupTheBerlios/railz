@@ -55,10 +55,13 @@ final public class TrackMoveProducer {
     private TrackMoveTransactionsGenerator transactionsGenerator;
 
     /**
+     * @return a Move which builds track from the specified point to the new
+     * tile, and makes any appropriate ownership changes/charges.
+     * @param from the tile from which to build
      * @param trackVector a CompassPoints representing a single direction in
      * which to add track
      */
-    public MoveStatus buildTrack(Point from, byte trackVector) {
+    private Move generateMove(Point from, byte trackVector) {
         ChangeTrackPieceCompositeMove move = null;
 	switch (trackBuilderMode) {
 	    case UPGRADE_TRACK:
@@ -68,11 +71,11 @@ final public class TrackMoveProducer {
 		return upgradeTrack(point, trackRule);
 	    case BUILD_TRACK:
 		try {
-		    Logger.getLogger("global").log(Level.INFO, "generating " +
+		    Logger.getLogger("global").log(Level.FINEST, "generating " +
 			    "build track");
 		    move = ChangeTrackPieceCompositeMove.generateBuildTrackMove
 			(from, trackVector, trackRule, w, principal);
-		    Logger.getLogger("global").log(Level.INFO, "generated " +
+		    Logger.getLogger("global").log(Level.FINEST, "generated " +
 			    "build track");
 		} catch (IllegalArgumentException e) {
 		    return MoveStatus.moveFailed("Track already exists");
@@ -89,18 +92,21 @@ final public class TrackMoveProducer {
 			trackBuilderMode);
         }
 
-	Logger.getLogger("global").log(Level.INFO, "adding transactions " +
-		"to build track move");
         Move moveAndTransaction = transactionsGenerator.addTransactions(move);
-	Logger.getLogger("global").log(Level.INFO, "trying " +
-		"build track move" + move.toString());
+	return moveAndTransaction
+    }
+
+    /**
+     * Build track from the specified tile in the specified direction.
+     * @param from the tile from which to build
+     * @param trackVector a CompassPoints representing a single direction in
+     * which to add track
+     */
+    public MoveStatus buildTrack(Point from, byte trackVector) {
+	Move moveAndTransaction = generateMove(from, trackVector);
         MoveStatus ms = moveReceiver.tryDoMove(moveAndTransaction);
 
-	Logger.getLogger("global").log(Level.INFO, "processing " +
-		"build track move");
         moveReceiver.processMove(moveAndTransaction);
-	Logger.getLogger("global").log(Level.INFO, "processed " +
-		"build track move");
         return ms;
     }
 
