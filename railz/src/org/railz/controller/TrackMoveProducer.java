@@ -78,7 +78,7 @@ final public class TrackMoveProducer {
 		    Logger.getLogger("global").log(Level.FINEST, "generated " +
 			    "build track");
 		} catch (IllegalArgumentException e) {
-		    return MoveStatus.moveFailed("Track already exists");
+		    return null;
 		}
 		break;
 	    case REMOVE_TRACK:
@@ -86,7 +86,7 @@ final public class TrackMoveProducer {
 		    (from, trackVector, w, principal);
 		break;
 	    case IGNORE_TRACK:
-		return MoveStatus.MOVE_OK;
+		return null;
 	    default:
 		throw new IllegalStateException("Illegal trackBuilderMode " +
 			trackBuilderMode);
@@ -103,7 +103,13 @@ final public class TrackMoveProducer {
      * which to add track
      */
     public MoveStatus buildTrack(Point from, byte trackVector) {
+	if (trackBuilderMode == IGNORE_TRACK)
+	    return MoveStatus.MOVE_OK;
+
 	Move moveAndTransaction = generateMove(from, trackVector);
+	if (moveAndTransaction == null) {
+	    return MoveStatus.moveFailed("Couldn't generate move");
+	}
         MoveStatus ms = moveReceiver.tryDoMove(moveAndTransaction);
 
         moveReceiver.processMove(moveAndTransaction);
@@ -112,7 +118,10 @@ final public class TrackMoveProducer {
 
     public MoveStatus upgradeTrack(Point point) {
         if (trackBuilderMode == UPGRADE_TRACK) {
-            return upgradeTrack(point, trackRule);
+            Move move = upgradeTrack(point, trackRule);
+	    MoveStatus ms = moveReceiver.tryDoMove(move);
+	    moveReceiver.processMove(move);
+	    return ms;
         } else {
             throw new IllegalStateException(
                 "Track builder not set to upgrade track!");
@@ -161,23 +170,21 @@ final public class TrackMoveProducer {
                 principal);
     }
 
-    private MoveStatus upgradeTrack(Point point, int trackRule) {
+    private Move upgradeTrack(Point point, int trackRule) {
         TrackTile before = w.getTile(point.x, point.y).getTrackTile();
 	if (before == null)
-	    return MoveStatus.moveFailed("Can't upgrade non-existent track");
+	    return null;
 
 	TrackTile after = TrackTile.createTrackTile(w,
 		before.getTrackConfiguration(), trackRule);
 	if (before.equals(after))
-	    return MoveStatus.moveFailed("Can't upgrade track with identical"
-		    + " type");
+	    return null;
 
         Move move = UpgradeTrackMove.generateMove(before, after, point,
 		principal);
-	MoveStatus ms = moveReceiver.tryDoMove(move);
-        moveReceiver.processMove(transactionsGenerator.addTransactions(move));
+	move = transactionsGenerator.addTransactions(move);
 
-        return ms;
+        return move;
     }
 
     public int getTrackBuilderMode() {
