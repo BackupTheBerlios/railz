@@ -53,7 +53,8 @@ public class DisplayModeListModel implements ListModel {
 	      */
 	     if (displayModes[i].getWidth() < 800 ||
 		     displayModes[i].getHeight() < 600 ||
-		     displayModes[i].getBitDepth() < 16)
+		     (displayModes[i].getBitDepth() < 16 
+                     && displayModes[i].getBitDepth() != DisplayMode.BIT_DEPTH_MULTI))
 		 continue;
              acceptableModes.add(new MyDisplayMode(displayModes[i]));
          }       

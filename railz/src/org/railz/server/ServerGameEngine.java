@@ -329,7 +329,7 @@ public class ServerGameEngine implements GameModel, Runnable,
 	    try {
 		//When the game is frozen we don't want to be spinning in a
 		//loop.
-		Thread.sleep(200);
+		this.wait(200);
 	    } catch (InterruptedException e) {
 		// do nothing
 	    }

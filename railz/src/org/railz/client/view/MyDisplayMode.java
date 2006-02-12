@@ -39,7 +39,14 @@ public class MyDisplayMode {
     }
     
     public String toString() {
-        return displayMode.getWidth()+"x"+displayMode.getHeight()+" "+displayMode.getBitDepth()+" bit "+displayMode.getRefreshRate()+"Hz";
+        String desc = displayMode.getWidth() + "x"+displayMode.getHeight();
+        if (displayMode.getBitDepth() != DisplayMode.BIT_DEPTH_MULTI) {
+            desc += " " + displayMode.getBitDepth()+" bit";
+        }
+        if (displayMode.getRefreshRate() != DisplayMode.REFRESH_RATE_UNKNOWN) {
+            desc += " " + displayMode.getRefreshRate()+"Hz";
+        }
+        return  desc;
     }
     
     public boolean equals(Object o){

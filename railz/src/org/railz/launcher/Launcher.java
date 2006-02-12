@@ -167,7 +167,9 @@ FreerailsProgressMonitor {
 		    setInfoText(e.getMessage());
 		    logger.log(Level.SEVERE, "Caught " +
 			    "GeneralSecurityException", e);
-		} finally {
+		} catch (Exception e) {
+                    logger.log(Level.SEVERE, "Caught unexpected exception", e);
+                } finally {                
 		    if (recover) {
 			sci.quitGame();
 			cop.setControlsEnabled(true);
