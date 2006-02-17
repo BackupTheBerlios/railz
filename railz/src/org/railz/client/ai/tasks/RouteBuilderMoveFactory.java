@@ -37,9 +37,13 @@ final class RouteBuilderMoveFactory {
     /* Start & end points of route */
     private Point startP = null;
     private Point endP = null;
+    
+    /** BUILDING_TYPES index for the station to be built */
+    private int stationType;
 
     public RouteBuilderMoveFactory(ClientDataProvider aic) {
 	aiClient = aic;
+        this.stationType = WorldConstants.get().BT_LARGE_STATION;
     }
 
     /**
@@ -95,10 +99,31 @@ final class RouteBuilderMoveFactory {
 	endP = new Point(pe.getX(), pe.getY());
     }
 
+    private void addBuildStationMove(ArrayList moves, Point p)
+    {
+        StationBuilderMoveFactory sbmf = new StationBuilderMoveFactory
+                (aiClient.getWorld());
+        moves.add(sbmf.createStationBuilderMove(p, 
+                aiClient.getPlayerPrincipal(), 
+                WorldConstants.get().BT_LARGE_STATION));
+    }
+    
     private void addBuildStationMoves(ArrayList moves) {
+        if (plannedRoute.site1 != null)
+            addBuildStationMove(moves, plannedRoute.site1);
+        if (plannedRoute.site2 != null)
+            addBuildStationMove(moves, plannedRoute.site2);
     }
 
+    private void addBuildStationImprovementMove(ArrayList moves, 
+            int stationId) {
+    }
+    
     private void addBuildStationImprovementMoves(ArrayList moves) {
+        if (plannedRoute.site1 != null)
+            addBuildStationImprovementMove(moves, plannedRoute.station1);
+        if (plannedRoute.site2 != null)
+            addBuildStationImprovementMove(moves, plannedRoute.station2);
     }
 
     private void addPurchaseEngineMoves(ArrayList moves) {

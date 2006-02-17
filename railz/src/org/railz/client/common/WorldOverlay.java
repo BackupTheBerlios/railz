@@ -181,16 +181,16 @@ public final class WorldOverlay implements World {
      * Returns the tile at the specified position on the map.
      */
     public FreerailsTile getTile(int x, int y) {
-	LinkedList ll = (LinkedList) tiles.get(new Point(x, y));
+        return getTile(new Point(x, y));
+    }
+
+    public FreerailsTile getTile(Point p) {
+	LinkedList ll = (LinkedList) tiles.get(p);
 	if (ll != null) {
 	    return (FreerailsTile) ll.getLast();
 	}
 
-	return world.getTile(x, y);
-    }
-
-    public FreerailsTile getTile(Point p) {
-	return getTile(p.x, p.y);
+	return world.getTile(p);
     }
 
     public boolean boundsContain(int x, int y) {

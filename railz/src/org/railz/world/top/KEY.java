@@ -26,7 +26,7 @@ import org.railz.world.common.FreerailsSerializable;
  * <p>It implements the typesafe enum pattern (see Bloch, <I>Effective Java</I>
  * item 21)</p>
  */
-public class KEY implements FreerailsSerializable {
+public final class KEY implements FreerailsSerializable {
     /** Maps key numbers to KEYs */
     private static KEY[] keys = new KEY[17];
 

@@ -70,6 +70,10 @@ class RouteBuilder extends TaskPlanner {
      */
     private ArrayList cityDistances = new ArrayList();
 
+    /** The maximum number of times the detailed cost estimation should attempt
+     * to find a route if none could be found */
+    private static final int MAX_ROUTING_ATTEMPTS = 3;
+    
     private static final long MIN_BALANCE = 60000L;
     /** Cost of a large station */
     private long LARGE_STATION_COST = 0L;
@@ -440,6 +444,7 @@ class RouteBuilder extends TaskPlanner {
 	if (shouldRebuildCache) {
 	    rebuildCache();
 	    shouldRebuildCache = false;
+            logger.info("Cache rebuild - initial estimates:");
 	    dumpTop10();
 	}
 
@@ -450,17 +455,19 @@ class RouteBuilder extends TaskPlanner {
 	CityEntry ce = (CityEntry) cityDistances.get(0);
 	if (! ce.detailedEstimate) {
 	    doDetailedCostEstimation(ce);
-	    logger.log(Level.INFO, "Detailed estimate for: " + ce);
 	}
 	if (! ce.detailedEstimate) {
 	    // no route was possible - ditch this route, and bail out - we
 	    // will try again next time
 	    cityDistances.remove(0);
+            logger.log(Level.INFO, "No viable route to " + ce);
 	    return false;
 	}
 
 	// are we better than the last route?
 	Collections.sort(cityDistances);
+        logger.log(Level.INFO, "Detailed estimate for: " + ce);
+        dumpTop10();
 
 	ce = (CityEntry) cityDistances.get(0);
 	if (ce.detailedEstimate) {
@@ -592,6 +599,8 @@ class RouteBuilder extends TaskPlanner {
 	    setupStationSites(ce.city2, sites2);
 	}
 
+        long fixedConstructionCosts = getFixedConstructionCosts();
+        
 	/* choose the best combination of locations */
 	SupplyDemandViewer sdv = new SupplyDemandViewer(aiClient.getWorld());
 	CargoInfo ci = new CargoInfo();
@@ -633,6 +642,7 @@ class RouteBuilder extends TaskPlanner {
 	siteList = tmp;
 	int nStations = siteList.size();
 	int currentN = 0;
+        int routingAttempts = 0;
 	while (!siteList.isEmpty()) {
 	    currentN++;
 		logger.log(Level.FINE, "examining " + currentN
@@ -647,11 +657,23 @@ class RouteBuilder extends TaskPlanner {
 		RouteBuilderPathExplorer(aiClient.getWorld(), cd.p1.x,
 			cd.p1.y, CompassPoints.NORTH, s);
 	    PathFinder pf = new PathFinder(pe, cd.p2.x, cd.p2.y, 0,
-		    (int) ((cashAvailable + COMFORT_ZONE) / 100));
+		    (int) ((cashAvailable - fixedConstructionCosts) / 100));
 	    LinkedList results = pf.explore();
-	    if (results == null) {
+	    if (results == null) {                
 		// no route to this destination
 		cd = null;
+                if (pf.getBestEstimatedCost() > 20000) {
+                    // bail out if we needed to spend at least $200 000
+                    // more than we budgeted
+                    logger.info("Didn't get close enough to target - " + 
+                            pf.getBestEstimatedCost() + " remaining");
+                    break;
+                }
+                routingAttempts++;
+                if (routingAttempts >= MAX_ROUTING_ATTEMPTS)
+                {                        
+                    break;
+                }
 		continue;
 	    }
 
@@ -665,7 +687,7 @@ class RouteBuilder extends TaskPlanner {
 	    // Costs in PathExplorers is in 100$ units
 	    cost *= 100;
 	    ce.detailedEstimate = true;
-	    ce.constructionEstimate = cost + getFixedConstructionCosts();
+	    ce.constructionEstimate = cost + fixedConstructionCosts;
 	    ce.annualRevenueEstimate = cd.returnTripRevenue;
 	    ce.plannedRoute = results;
 
@@ -674,8 +696,17 @@ class RouteBuilder extends TaskPlanner {
 	    logger.log(Level.INFO, "The best route between for " + ce +
 		    " was found");
 
+            // store in CityEntry the site for the station
+            if (ce.station1 < 0) {
+                ce.site1 = cd.p1;
+            }
+            if (ce.station2 < 0) {
+                ce.site2 = cd.p2;
+            }
+            
 	    return;
-	}
+	} // (!siteList.isEmpty())
+        // no route was found
     }
 
     /** compute a score indicating the priority of building the most favoured
@@ -698,8 +729,6 @@ class RouteBuilder extends TaskPlanner {
 	routeBuilderMoveFactory.processPlannedRoute(taskPlan);
 	shouldRebuildCache = true;
 	taskPlan = null;
-
-
     }
 
     public long getTaskCost() {
@@ -892,12 +921,13 @@ class RouteBuilder extends TaskPlanner {
 
     private void dumpTop10() {
 	if (logger.isLoggable(Level.INFO)) {
-	    // log top 10 routes
-	    logger.log(Level.INFO, "Cost estimates initial estimate:");
+            String msg = "Cost estimates initial estimate:\n";
 	    for (int i = 0; i < (cityDistances.size() > 10 ? 10 :
 			cityDistances.size()); i++) {
-		logger.log(Level.INFO, cityDistances.get(i).toString());
+		msg += cityDistances.get(i).toString() + "\n";
 	    }
-	    }
+	    // log top 10 routes
+	    logger.log(Level.INFO, msg);
+	}
     }
 }

@@ -41,6 +41,7 @@ public class StationBuilder {
     private ReadOnlyWorld w;
     private int ruleNumber;
     private FreerailsPrincipal stationOwner;
+    private StationBuilderMoveFactory moveFactory;
 
     public StationBuilder(UntriedMoveReceiver moveReceiver,
         ReadOnlyWorld world, FreerailsPrincipal p) {
@@ -59,81 +60,39 @@ public class StationBuilder {
         } while (bType.getCategory() != BuildingType.CATEGORY_STATION);
 
         ruleNumber = i;
+        moveFactory = new StationBuilderMoveFactory(world);
     }
 
     public boolean canBuiltStationHere(Point p) {
         FreerailsTile oldTile = w.getTile(p.x, p.y);
-
+        
         if (oldTile.getTrackTile() == null)
-	    return false;
-
-	/* if there is a building present, it must be a station */
-	BuildingTile bTile = oldTile.getBuildingTile();
-	if (bTile != null) {
-	   BuildingType bType = (BuildingType) w.get(KEY.BUILDING_TYPES,
-		   bTile.getType(), Player.AUTHORITATIVE);
-		if (bType.getCategory() != BuildingType.CATEGORY_STATION)
-		    return false;
-	}
-
-	return true;
+            return false;
+        
+        /* if there is a building present, it must be a station */
+        BuildingTile bTile = oldTile.getBuildingTile();
+        if (bTile != null) {
+            BuildingType bType = (BuildingType) w.get(KEY.BUILDING_TYPES,
+                    bTile.getType(), Player.AUTHORITATIVE);
+            if (bType.getCategory() != BuildingType.CATEGORY_STATION)
+                return false;
+        }
+        
+        return true;
     }
 
     public void buildStation(Point p) {
-        FreerailsTile oldTile = w.getTile(p.x, p.y);
-
-        //Only build a station if there is track at the specified point.
         if (canBuiltStationHere(p)) {
-	    System.err.println("Can build station");
-            String cityName;
-            String stationName;
-
-	    BuildingTile bTile = oldTile.getBuildingTile();
-	    BuildingType bType = null;
-	    if (bTile != null) {
-		bType = (BuildingType) w.get(KEY.BUILDING_TYPES,
-			bTile.getType(), Player.AUTHORITATIVE);
-	    }
-
-	    if (bTile == null || bType.getCategory() !=
-		    BuildingType.CATEGORY_STATION) {
-		System.err.println("Adding new station");
-		//There isn't already a station here, we need to pick a name
-		//and add an entry to the station list.
-		CalcNearestCity cNC = new CalcNearestCity(w, p.x, p.y);
-		cityName = cNC.findNearestCity();
-
-		VerifyStationName vSN = new VerifyStationName(w, cityName);
-		stationName = vSN.getName();
-
-		if (stationName == null) {
-		    //there are no cities, this should never happen
-		    stationName = "Central Station";
-		}
-
-		//check the terrain to see if we can build a station on it...
-		Move m = AddStationMove.generateMove(w, stationName, p,
-			stationOwner, ruleNumber);
-
-		moveReceiver.processMove(m);
-
-		System.err.println("move done");
-	    } else {
-		//Upgrade an existing station.
-		ChangeBuildingMove cbm = new ChangeBuildingMove(p, bTile,
-			new BuildingTile(ruleNumber), stationOwner);
-		this.moveReceiver.processMove(cbm);
-            }
-        } else {
-            System.err.println(
-                "Can't build station here");
+            Move m = moveFactory.createStationBuilderMove(p, stationOwner, ruleNumber);
+            if (m != null)
+                moveReceiver.processMove(m);
         }
     }
 
-	/**
-	 * @param ruleNumber an index into the BUILDING_TYPES table
-	 */
+    /**
+     * @param ruleNumber an index into the BUILDING_TYPES table
+     */
     public void setStationType(int ruleNumber) {
         this.ruleNumber = ruleNumber;
-    }
+    }    
 }

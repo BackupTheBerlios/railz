@@ -44,6 +44,13 @@ public class AddStationMove extends CompositeMove {
         super(moves);
     }
 
+    /**
+     * @param p the location of the station to add, in map tiles
+     * @param w a copy of the world to add the station to
+     * @param buildingType index into the BUILDING_TYPES table defining the type
+     * of station to build
+     * @param stationName the name of the station
+     */
     public static AddStationMove generateMove(ReadOnlyWorld w,
 	String stationName, Point p, FreerailsPrincipal owner, int
 	buildingType) {

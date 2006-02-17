@@ -33,9 +33,6 @@ import org.railz.world.track.FreerailsTile;
  * no client will be able to view privileged information about other clients.
  */
 public class WorldImpl implements World {
-    private static final boolean debug = (System.getProperty(
-            "org.railz.world.top.WorldImpl.debug") != null);
-
     /**
      * An array of ArrayList indexed by keyNumber.
      * If the key is shared, then the ArrayList consists of instances of the
@@ -101,10 +98,6 @@ public class WorldImpl implements World {
 
     public void set(KEY key, int index, FreerailsSerializable element,
         FreerailsPrincipal p) {
-        if (debug) {
-            System.err.println("Setting " + element + " of type " + key +
-                " at index " + index + " for " + p);
-        }
 
         if (key.shared) {
             lists[key.getKeyNumber()].set(index, element);
@@ -117,11 +110,6 @@ public class WorldImpl implements World {
     }
 
     public int add(KEY key, FreerailsSerializable element, FreerailsPrincipal p) {
-        if (debug) {
-            System.err.println("Adding " + element + " to " + key + " for " +
-                p);
-        }
-
         if (key == KEY.PLAYERS) {
             return addPlayer((Player)element, p);
         }
@@ -173,26 +161,14 @@ public class WorldImpl implements World {
     }
 
     public boolean boundsContain(int x, int y) {
-        if (x >= 0 && x < map.length && y >= 0 && y < map[0].length) {
-            return true;
-        } else {
-            return false;
-        }
+        return x >= 0 && x < map.length && y >= 0 && y < map[0].length;
     }
 
     public boolean boundsContain(KEY k, int index, FreerailsPrincipal p) {
-        if (index >= 0 && index < this.size(k, p)) {
-            return true;
-        } else {
-            return false;
-        }
+        return index >= 0 && index < this.size(k, p);
     }
 
     public FreerailsSerializable removeLast(KEY key, FreerailsPrincipal p) {
-        if (debug) {
-            System.err.println("Removing last " + key + " for " + p);
-        }
-
         int size;
 
         if (key.shared) {
@@ -298,7 +274,7 @@ public class WorldImpl implements World {
     private static final int playerKey = KEY.PLAYERS.getKeyNumber();
 
     private int getPlayerIndex(FreerailsPrincipal p) {
-        for (int i = 0; i < lists[playerKey].size(); i++) {
+        for (int i = lists[playerKey].size() - 1; i >= 0; --i) {
             if (p.equals(((Player)(lists[playerKey].get(i))).getPrincipal())) {
                 return i;
             }

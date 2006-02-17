@@ -105,15 +105,25 @@ final class CityEntry implements Comparable {
 	}
 	return 0;
     }
-
+    
     public String toString() {
 	CityModel cm1 = (CityModel) aiClient.getWorld().get
 	    (KEY.CITIES, city1, Player.AUTHORITATIVE);
 	CityModel cm2 = (CityModel) aiClient.getWorld().get
 	    (KEY.CITIES, city2, Player.AUTHORITATIVE);
-	return cm1.getCityName() + " <=> " + cm2.getCityName() + ", c=" +
+	String s = cm1.getCityName();
+        s += (station1 < 0) ? 
+            ((site1 != null) ? "(" + site1.x + ", " + site1.y + ") " : "(?)") :
+            "(station " + station1 + ") ";
+        s += " <=> " + cm2.getCityName();
+        s += (station2 < 0) ? 
+            ((site2 != null) ? "(" + site2.x + ", " + site2.y + ") " : "(?)") :
+            "(station " + station2 + ") ";
+        s += ", c=" +
 	    constructionEstimate + ", ar= " + annualRevenueEstimate +
-	    ", ac= " + annualCostEstimate;
+	    ", ac= " + annualCostEstimate + ", detailed=" + detailedEstimate + 
+                ", annualReturn=%" + getAnnualReturn() * 100;
+        return s;
     }
 }
 

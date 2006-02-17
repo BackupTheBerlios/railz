@@ -149,7 +149,8 @@ public final class PathFinder {
     private int maxCost;
     private int minCost;
     private PathExplorer startExplorer;
-    
+    private int bestEstimate;
+            
     private static Logger logger = Logger.getLogger("global");
 
     private static class ExplorerList extends LinkedList {
@@ -225,6 +226,14 @@ public final class PathFinder {
      */
     private static final float TOLERANCE = 0.9f;
 
+    /** @return the lowest estimated remaining cost to the target achieved 
+     * during exploration (i.e. how close did we get to the target before
+     * we gave up) */
+    public int getBestEstimatedCost()
+    {
+        return bestEstimate;
+    }
+    
     /**
      * Perform the exploration.
      * @return a LinkedList of PathExplorer objects. The first object in the
@@ -232,6 +241,7 @@ public final class PathFinder {
      * Return null if no path could be found.
      */
     public LinkedList explore() {
+        bestEstimate = Integer.MAX_VALUE;
 	int iterations = 0;
 	logger.log(Level.FINE, "exploring from " + start + " to " + target);
 	logger.log(Level.FINE, "best minCost=" + minCost + ", maxCost=" +
@@ -246,10 +256,10 @@ public final class PathFinder {
 	    logger.log(Level.FINEST, "fetched tile " +
 		    pe.getLocation());
 	    if (iterations % 2000 == 0) {
-		logger.log(Level.INFO, "current path cost: " +
+		logger.log(Level.FINE, "current path cost: " +
 			(pe.getEstimatedCost(target) + pe.getCumulativeCost())
 			+ " iterations: " + iterations);
-		logger.log(Level.INFO, "open size=" + open.size() +
+		logger.log(Level.FINE, "open size=" + open.size() +
 		       	", closed size=" + closed.size() + " efficiency: " +
 			((closed.size() * 100) / 
 			 (iterations == 0 ? 1 : iterations)) );
@@ -264,23 +274,26 @@ public final class PathFinder {
 		PathExplorer neighbour = (PathExplorer) pe.exploreNewTile();
 	//	logger.log(Level.FINEST, "testing neighbour " +
 	//		neighbour.getLocation());
-		int neighbourCumCost = neighbour.getCumulativeCost();
-		int neighbourCost = neighbourCumCost +
-		    neighbour.getEstimatedCost(target);
 		boolean isOpen = open.contains(neighbour);
 		PathExplorer closedPathExplorer = (PathExplorer)
 		    closed.get(neighbour);
-		boolean isClosed = (closedPathExplorer != null);
-		if (isClosed && neighbourCumCost < 
-			 (int) 
+		boolean isClosed = (closedPathExplorer != null);		
+		if (isClosed) {
+                    if (neighbour.getCumulativeCost() < (int) 
 			 (closedPathExplorer.getCumulativeCost() * TOLERANCE)) {
-		    // we found a better path to this tile
-		    closed.remove(neighbour);
-		    isClosed = false;
+                        // we found a better path to this tile
+                        closed.remove(neighbour);
+                        isClosed = false;
+                    }
 		}
 		if (!isClosed && !isOpen) {
+                    int estimate = neighbour.getEstimatedCost(target);
+                    int neighbourCost = neighbour.getCumulativeCost() +
+                        estimate;                    
 		    if (neighbourCost <= maxCost)
 			open.add(neighbour);
+                    else if (estimate <= bestEstimate)
+                        bestEstimate = estimate;
 		}
 	    }
 	    closed.put(pe, pe);

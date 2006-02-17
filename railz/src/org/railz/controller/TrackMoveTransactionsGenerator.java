@@ -203,6 +203,28 @@ public class TrackMoveTransactionsGenerator {
 	processTrackChange(config1, config2);
     }
 
+    /** 
+     * This is called from the {@link RouteBuilderPathExplorer} as it 
+     * doesn't have the overhead of object creation
+     * @return the total cost for the track change.
+     */
+    public long getTotalCost() {
+        long totalCost = 0;
+        //For each track type, generate a transaction if any pieces of the type have been added or removed.
+        for (int i = 0; i < trackAdded.length; i++) {
+            int numberAdded = trackAdded[i];
+            int numberRemoved = trackRemoved[i];
+
+            if (0 != numberAdded || 0 !=  numberRemoved) {
+                TrackRule rule = (TrackRule)w.get(KEY.TRACK_RULES, i,
+			Player.AUTHORITATIVE);
+                totalCost += numberAdded * rule.getPrice();
+                totalCost -= rule.getPrice() * numberRemoved / 2;		
+            }
+        }
+        return totalCost;
+    }
+    
     /**
      * @return the calculated transactions.
      */

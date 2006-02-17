@@ -34,13 +34,13 @@ import org.railz.world.train.*;
  * taking into account terrain and construction cost.
  */
 public final class RouteBuilderPathExplorer implements  PathExplorer {
-    private RouteBuilderPathExplorer parent;
-    private int x;
-    private int y;
-    private byte initialDirection;
+    private final RouteBuilderPathExplorer parent;
+    private final int x;
+    private final int y;
+    private final byte initialDirection;
     private byte direction;
-    private ReadOnlyWorld world;
-    private RouteBuilderPathExplorerSettings settings;
+    private final ReadOnlyWorld world;
+    private final RouteBuilderPathExplorerSettings settings;
     private static final Logger logger = Logger.getLogger("global");
     private int cost = Integer.MIN_VALUE;
 
@@ -194,9 +194,11 @@ public final class RouteBuilderPathExplorer implements  PathExplorer {
      * the centre of this tile.
      */
     public int getCost() {
+        // return the cached cost if we already calculated it
 	if (cost != Integer.MIN_VALUE) {
 	    return cost;
 	}
+        
 	cost = 0;
 	boolean nodebug = ! logger.isLoggable(Level.FINEST);
 	if (parent != null) 
@@ -223,9 +225,7 @@ public final class RouteBuilderPathExplorer implements  PathExplorer {
 		settings.trackRuleIndex);
 	settings.transactionsGenerator.resetTransactions();
 	settings.transactionsGenerator.addTrackChange(ft, tt1, tt2);
-	Transaction[] t = settings.transactionsGenerator.createTransactions();
-	for (int i = 0; i < t.length; i++)
-	    cost += t[i].getValue() / 100;
+        cost += settings.transactionsGenerator.getTotalCost() / 100;
 	logger.log (Level.FINEST, nodebug ? "" : "After track laying cost:" + cost);
 
 	// calculate penalties / bonus due to terrain
@@ -328,8 +328,9 @@ public final class RouteBuilderPathExplorer implements  PathExplorer {
 	if (d == 0)
 	    return 0;
 	FreerailsTile ft = world.getTile(x, y);
-	byte config1 = CompassPoints.invert(initialDirection);
-	if (ft.getTrackTile() != null) 
+	// byte config1 = CompassPoints.invert(initialDirection);
+        byte config1 = initialDirection;
+        if (ft.getTrackTile() != null) 
 	    config1 |= ft.getTrackTile().getTrackConfiguration();
 	byte config2 = (byte) (config1 | d);
 	TrackTile tt1 = TrackTile.createTrackTile(world, config1,
@@ -337,12 +338,8 @@ public final class RouteBuilderPathExplorer implements  PathExplorer {
 	TrackTile tt2 = TrackTile.createTrackTile(world, config2,
 		settings.trackRuleIndex);
 	settings.transactionsGenerator.resetTransactions();
-	settings.transactionsGenerator.addTrackChange(ft, tt1, tt2);
-	Transaction[] t = settings.transactionsGenerator.createTransactions();
-	long cost = 0L;
-	for (int i = 0; i < t.length; i++) {
-	    cost += t[i].getValue();
-	}
+	settings.transactionsGenerator.addTrackChange(ft, tt1, tt2);        
+        long cost = settings.transactionsGenerator.getTotalCost();        
 	return (int) (cost / 100);
     }
 
@@ -360,7 +357,7 @@ public final class RouteBuilderPathExplorer implements  PathExplorer {
        return false;	
     }
 
-    public int hashCode() {
+    public int hashCode() {         
 	return x ^ (y << 16);
        //	^ initialDirection;
     }

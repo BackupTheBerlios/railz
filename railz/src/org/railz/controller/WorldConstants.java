@@ -17,6 +17,7 @@
 package org.railz.controller;
 
 import java.util.logging.*;
+import org.railz.world.building.BuildingType;
 
 import org.railz.world.station.*;
 import org.railz.world.terrain.*;
@@ -36,6 +37,8 @@ public final class WorldConstants {
     public final int TT_CLEAR;
     /** The track rule that represents standard single, unelectrified  track */
     public final int TR_STANDARD_TRACK;
+    /** The building type that represents a large station*/
+    public final int BT_LARGE_STATION;
 
     private static WorldConstants instance = null;
     private static ReadOnlyWorld world;
@@ -74,13 +77,26 @@ public final class WorldConstants {
 	    }
 	}
 	TR_STANDARD_TRACK = tmp;
-
-	if (SI_WATER_TOWER == -1 || TT_CLEAR == -1 || TR_STANDARD_TRACK == -1) {
+        
+	i = new NonNullElements(KEY.BUILDING_TYPES,
+		w, Player.AUTHORITATIVE);
+        tmp = -1;
+	while (i.next()) {
+	    BuildingType bt = (BuildingType) i.getElement();
+	    if (bt.getStationRadius() == 3) {		
+		tmp = i.getIndex();
+	    }	
+	}
+        BT_LARGE_STATION = tmp;
+        
+	if (SI_WATER_TOWER == -1 || TT_CLEAR == -1 || TR_STANDARD_TRACK == -1
+                || BT_LARGE_STATION == -1) {
 	    logger.log(Level.SEVERE, "A special configuration value " + 
 		    "needed to function could not be found:" +
 		    "SI_WATER_TOWER=" + SI_WATER_TOWER + 
 		    ", TT_CLEAR=" + TT_CLEAR + 
-		    ", TR_STANDARD_TRACK=" + TR_STANDARD_TRACK);
+		    ", TR_STANDARD_TRACK=" + TR_STANDARD_TRACK +
+                    ", BT_LARGE_STATION=" + BT_LARGE_STATION);
 	    System.exit(1);
 	}
     }
