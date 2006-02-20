@@ -23,9 +23,11 @@ package org.railz.move;
 
 import org.railz.world.cargo.CargoBatch;
 import org.railz.world.cargo.CargoBundle;
-import org.railz.world.cargo.CargoBundleImpl;
+import org.railz.world.cargo.CargoBundle;
+import org.railz.world.cargo.MutableCargoBundle;
 import org.railz.world.player.*;
 import org.railz.world.top.KEY;
+import org.railz.world.top.ObjectKey2;
 
 
 /**
@@ -34,18 +36,18 @@ import org.railz.world.top.KEY;
  */
 public class AddCargoBundleMoveTest extends AbstractMoveTestCase {
     public void testMove() {
-        CargoBundle bundleA;
-        CargoBundle bundleB;
-        bundleA = new CargoBundleImpl();
-        bundleB = new CargoBundleImpl();
-        bundleA.setAmount(new CargoBatch(1, 2, 3, 4, 0), 5);
-        bundleB.setAmount(new CargoBatch(1, 2, 3, 4, 0), 5);
+        MutableCargoBundle m1 = new MutableCargoBundle();
+        m1.setAmount(new CargoBatch(1, 2, 3, 4, 0), 5);
+        CargoBundle bundleA = new CargoBundle(m1);
+        MutableCargoBundle m2 = new MutableCargoBundle(bundleA);
+        m2.setAmount(new CargoBatch(1, 2, 3, 4, 0), 5);
+        CargoBundle bundleB = new CargoBundle(m2);
         assertEquals(bundleA, bundleB);
 
-        Move m = new AddCargoBundleMove(0, bundleA);
+        ObjectKey2 key = new ObjectKey2(KEY.CARGO_BUNDLES, Player.NOBODY, bundleA.getUUID());
+        Move m = new AddCargoBundleMove(key, bundleA);
         assertDoMoveIsOk(m);
-	assertEquals(getWorld().size(KEY.CARGO_BUNDLES, Player.AUTHORITATIVE),
-		1);
+	assertTrue(getWorld().contains(key));
         assertUndoMoveIsOk(m);
         assertEqualsSurvivesSerialisation(m);
         assertOkButNotRepeatable(m);

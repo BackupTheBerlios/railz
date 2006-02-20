@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003 Luke Lindsay
+ * Copyright (C) 2006 Robert Tuck
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -15,24 +15,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/*
- * Created on 26-May-2003
- *
- */
-package org.railz.move;
 
-import org.railz.world.cargo.CargoBundle;
-import org.railz.world.top.KEY;
-import org.railz.world.top.ObjectKey2;
+package org.railz.world.common;
 
+import org.railz.world.top.UUID;
 
 /**
- * This move removes a cargo bundle from the cargo bundle list.
- * @author Luke
- *
+ * Implemented by all game objects which use 
+ * {@link org.railz.world.top.ObjectKey2}
  */
-public class RemoveCargoBundleMove extends RemoveObjectMove {
-    public RemoveCargoBundleMove(ObjectKey2 key, CargoBundle item) {
-        super(key, item);
-    }
+public interface WorldObject extends FreerailsSerializable {
+    public UUID getUUID();
 }

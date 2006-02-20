@@ -81,10 +81,12 @@ public final class WorldConstants {
 	i = new NonNullElements(KEY.BUILDING_TYPES,
 		w, Player.AUTHORITATIVE);
         tmp = -1;
+        int stationRadius = 0;
 	while (i.next()) {
 	    BuildingType bt = (BuildingType) i.getElement();
-	    if (bt.getStationRadius() == 3) {		
+	    if (bt.getStationRadius() > stationRadius) {		
 		tmp = i.getIndex();
+                stationRadius = bt.getStationRadius();
 	    }	
 	}
         BT_LARGE_STATION = tmp;

@@ -34,6 +34,7 @@ import org.railz.world.station.StationModel;
 import org.railz.world.station.SupplyAtStation;
 import org.railz.world.top.KEY;
 import org.railz.world.top.NonNullElements;
+import org.railz.world.top.ObjectKey2;
 import org.railz.world.top.World;
 import org.railz.world.top.WorldListListener;
 
@@ -124,5 +125,14 @@ public class CalcSupplyAtStations implements WorldListListener {
         if (key == KEY.STATIONS) {
             this.doProcessing();
         }
+    }
+
+    public void listUpdated(ObjectKey2 key) {
+    }
+
+    public void itemRemoved(ObjectKey2 key) {
+    }
+
+    public void itemAdded(ObjectKey2 key) {
     }
 }

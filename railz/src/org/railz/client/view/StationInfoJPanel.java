@@ -39,6 +39,7 @@ import org.railz.controller.MoveReceiver;
 import org.railz.move.AddItemToListMove;
 import org.railz.move.ListMove;
 import org.railz.move.Move;
+import org.railz.move.ObjectMove;
 import org.railz.util.*;
 import org.railz.world.building.*;
 import org.railz.world.cargo.CargoBundle;
@@ -69,7 +70,7 @@ implements MoveReceiver {
     /**
      * The index of the cargoBundle associated with this station
      */
-    private int cargoBundleIndex;
+    private ObjectKey2 cargoBundleKey;
     
     private class StationTableCellRenderer implements TableCellRenderer {
 	public Component getTableCellRendererComponent(JTable table, Object
@@ -148,8 +149,8 @@ implements MoveReceiver {
 
 	    StationModel station = (StationModel) world.get(KEY.STATIONS,
 		    wi.getIndex(), modelRoot.getPlayerPrincipal());
-	    CargoBundle cb = (CargoBundle) world.get(KEY.CARGO_BUNDLES,
-		    station.getCargoBundleNumber(), Player.AUTHORITATIVE);
+	    CargoBundle cb = (CargoBundle) 
+                world.get(station.getCargoBundle());
 	    for (int i = 0; i < world.size(KEY.CARGO_TYPES,
 			Player.AUTHORITATIVE); i++) {
 		if (station.getSupply().getSupply(i) == 0)
@@ -409,10 +410,9 @@ implements MoveReceiver {
 		    world.get(KEY.BUILDING_TYPES,
 			tile.getBuildingTile().getType(),
 			Player.AUTHORITATIVE)).getName();
-            cargoBundleIndex = station.getCargoBundleNumber();
+            cargoBundleKey = station.getCargoBundle();
             CargoBundle cargoWaiting = (CargoBundle) world.get
-		(KEY.CARGO_BUNDLES, station.getCargoBundleNumber(),
-		 Player.AUTHORITATIVE);
+		(cargoBundleKey);
             String title = station.getStationName()
 		+ " (" + stationTypeName + ")";
             for (int i = 0; i < world.size(KEY.CARGO_TYPES,
@@ -430,7 +430,7 @@ implements MoveReceiver {
             }
             label = title;
         } else {
-            cargoBundleIndex = WorldIterator.BEFORE_FIRST;
+            cargoBundleKey = null;
             label = Resources.get("No Station");
         }
         jLabel1.setText(label);
@@ -457,6 +457,15 @@ implements MoveReceiver {
         if(ignoreMoves){
             return;
         }
+        if (move instanceof ObjectMove) {
+            ObjectMove om = (ObjectMove) move;
+            ObjectKey2 key = (om.getKeyAfter() == null) ? om.getKeyBefore() : om.getKeyAfter();
+            if (key.equals(cargoBundleKey)) {
+                /* update our cargo bundle */
+                display();
+                return;
+            }
+        }         
         if (!(move instanceof ListMove)) {
             return;
         }
@@ -464,13 +473,7 @@ implements MoveReceiver {
         int currentIndex = wi.getIndex();
         int changedIndex = lm.getIndex();
         KEY key = lm.getKey();
-        if (key == KEY.CARGO_BUNDLES) {
-            if (changedIndex == cargoBundleIndex) {
-                /* update our cargo bundle */
-                display();
-                return;
-            }
-        } else if (key == KEY.STATIONS) {
+        if (key == KEY.STATIONS) {
             wi.reset();
             if (currentIndex != WorldIterator.BEFORE_FIRST) {
                 wi.gotoIndex(currentIndex);

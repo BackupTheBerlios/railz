@@ -21,6 +21,7 @@
  */
 package org.railz.move;
 
+import org.railz.world.cargo.CargoBundle;
 import org.railz.world.common.GameTime;
 import org.railz.world.player.Player;
 import org.railz.world.station.StationModel;
@@ -37,14 +38,20 @@ public class CompositeMoveTest extends AbstractMoveTestCase {
     StationModel station3;
     StationModel station4;
 
+    private ObjectKey2 getNewCBKey() {
+        CargoBundle cb = new CargoBundle();
+        ObjectKey2 cbKey = new ObjectKey2(KEY.CARGO_TYPES, Player.NOBODY, cb.getUUID());
+        return cbKey;
+    }
+    
     public void setUp() {
 	super.setUp();
 	GameTime now = (GameTime) getWorld().get(ITEM.TIME,
 		Player.AUTHORITATIVE);
-	station1 = new StationModel(1, 1, "station1", 10, 0, now);
-	station2 = new StationModel(2, 3, "station2", 10, 0, now);
-	station3 = new StationModel(3, 3, "station3", 10, 0, now);
-	station4 = new StationModel(4, 4, "station4", 10, 0, now);
+	station1 = new StationModel(1, 1, "station1", 10, getNewCBKey(), now);
+	station2 = new StationModel(2, 3, "station2", 10, getNewCBKey(), now);
+	station3 = new StationModel(3, 3, "station3", 10, getNewCBKey(), now);
+	station4 = new StationModel(4, 4, "station4", 10, getNewCBKey(), now);
     }
 
     public void testMove() {

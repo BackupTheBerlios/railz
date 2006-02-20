@@ -115,8 +115,7 @@ public class TrainModelViewer implements FixedAsset {
 	}
 
 	// add mass of cargo
-	CargoBundle cb = (CargoBundle) world.get(KEY.CARGO_BUNDLES,
-		trainModel.getCargoBundleNumber(), Player.AUTHORITATIVE);
+	CargoBundle cb = (CargoBundle) world.get(trainModel.getCargoBundle());
 	for (int i = 0; i < world.size(KEY.CARGO_TYPES, Player.AUTHORITATIVE);
 		    i++) {
 		mass += cb.getAmount(i);

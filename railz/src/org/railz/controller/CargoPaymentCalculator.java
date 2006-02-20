@@ -46,8 +46,8 @@ public final class CargoPaymentCalculator {
 	    Iterator batches = cb.cargoBatchIterator();
 	    long freightAmount = 0;
 	    long passengerAmount = 0;
-	    CargoBundle passengerBundle = new CargoBundleImpl();
-	    CargoBundle freightBundle = new CargoBundleImpl();
+	    MutableCargoBundle passengerBundle = new MutableCargoBundle();
+	    MutableCargoBundle freightBundle = new MutableCargoBundle();
 	    while (batches.hasNext()) {
 		CargoBatch cBatch = (CargoBatch) ((Entry)
 			batches.next()).getKey();
@@ -72,10 +72,10 @@ public final class CargoPaymentCalculator {
 	    }
 
 	    Transaction[] tr = new Transaction[2];
-	    tr[0] = new DeliverCargoReceipt(t, freightAmount, freightBundle,
+	    tr[0] = new DeliverCargoReceipt(t, freightAmount, new CargoBundle(freightBundle),
 		    DeliverCargoReceipt.SUBCATEGORY_FREIGHT);
 	    tr[1] = new DeliverCargoReceipt(t, passengerAmount,
-		    passengerBundle,
+		    new CargoBundle(passengerBundle),
 		    DeliverCargoReceipt.SUBCATEGORY_PASSENGERS);
 	    return tr;
     }

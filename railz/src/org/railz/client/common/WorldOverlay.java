@@ -37,6 +37,8 @@ public final class WorldOverlay implements World {
 
     private HashMap tiles = new HashMap();
     private HashMap objects = new HashMap();
+    
+    private HashMap objects2 = new HashMap();
 
     /**
      * The current transaction which is being applied
@@ -52,6 +54,7 @@ public final class WorldOverlay implements World {
 	Move move;
 	LinkedList tileKeys = new LinkedList();
 	LinkedList objectKeys = new LinkedList();
+        LinkedList objectKeys2 = new LinkedList();
     }
 
     /* temporary objects */
@@ -68,6 +71,7 @@ public final class WorldOverlay implements World {
     public void reset() {
 	tiles.clear();
 	objects.clear();
+        objects2.clear();
 	appliedMoves.clear();
     }
 
@@ -86,6 +90,13 @@ public final class WorldOverlay implements World {
 	    if (ll.isEmpty())
 		objects.remove(ok);
 	}
+        while (! ms.objectKeys2.isEmpty()) {
+            ObjectKey2 ok2 = (ObjectKey2) ms.objectKeys2.removeFirst();
+            LinkedList ll = (LinkedList) objects2.get(ok2);
+            ll.removeLast();
+            if (ll.isEmpty())
+                objects2.remove(ok2);
+        }
     }
 
     private class WorldViewReceiver implements UncommittedMoveReceiver {
@@ -124,6 +135,13 @@ public final class WorldOverlay implements World {
 	    ll.removeFirst();
 	    if (ll.isEmpty())
 		objects.remove(ok);
+	}
+	while (! ms.objectKeys2.isEmpty()) {
+	    ObjectKey2 ok = (ObjectKey2) ms.objectKeys2.removeFirst();
+	    LinkedList ll = (LinkedList) objects.get(ok);
+	    ll.removeFirst();
+	    if (ll.isEmpty())
+		objects2.remove(ok);
 	}
     }
 
@@ -270,4 +288,93 @@ public final class WorldOverlay implements World {
     public World getWorld() {
 	return (World) world;
     }
+
+    public Iterator getIterator(KEY k) {
+        return new OverlayIterator(k, null);
+    }
+
+    public Iterator getIterator(KEY k, FreerailsPrincipal p) {
+        return new OverlayIterator(k, p);
+    }
+    
+    private class OverlayIterator implements Iterator {
+        private FreerailsPrincipal p;
+        private KEY k;
+        private Object nextObject;
+        Iterator i1;
+        Iterator i2;
+        
+        public OverlayIterator(KEY k, FreerailsPrincipal p) {
+            this.k = k;
+            this.p = p;
+            if (p != null)
+                i1 = world.getIterator(k, p);
+            else
+                i1 = world.getIterator(k);
+            
+            i2 = objects2.entrySet().iterator();            
+            nextObject = nextImpl();
+        }
+        
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Object next() {
+            Object retVal = nextObject;
+            nextObject = nextImpl();
+            return retVal;
+        }
+        
+        public boolean hasNext() {
+            return nextObject != null;
+        }
+        
+        /** TODO try to avoid double-counting changed objects */
+        private Object nextImpl() {
+            if (i1.hasNext())
+                return i1.next();
+        
+            while (i2.hasNext()) {
+                Map.Entry e = (Map.Entry) i2.next();
+                if (p != null &&
+                        ! p.equals(((ObjectKey2) e.getKey()).principal)) {
+                    continue;
+                }
+                return e.getValue();
+            }
+            return null;            
+        }
+    }
+            
+
+    public void set(ObjectKey2 key, WorldObject object) {
+        currentTransaction.objectKeys2.addLast(key);
+	LinkedList ll = (LinkedList)
+	    objects2.get(key);
+	if (ll == null) {
+	    ll = new LinkedList();
+	    objects2.put(key, ll);
+	}
+	ll.addLast(object);
+
+    }
+
+    public WorldObject remove(ObjectKey2 key) {	
+	WorldObject fs = get(key);
+	set(key, null);
+        return fs;
+    }
+
+    public WorldObject get(ObjectKey2 key) {
+	LinkedList ll = (LinkedList) objects2.get(key);
+	if (ll != null)
+	    return (WorldObject) ll.getLast();
+
+	return world.get(key);        
+    }
+
+    public boolean contains(ObjectKey2 object) {
+        return get(object) == null;
+    }        
 }

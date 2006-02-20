@@ -34,6 +34,7 @@ public class RouteBuilderPathExplorerTest extends PathFinderTest {
 	mff.setupEconomy();
 	mff.setupEngineTypes();
 	mff.setupStationImprovements();
+        mff.setupBuildingTypes();
 	p = mff.addPlayer("Test Player", 0);
 	WorldConstants.init(mff.world);
 	RouteBuilderPathExplorer.RouteBuilderPathExplorerSettings s = new

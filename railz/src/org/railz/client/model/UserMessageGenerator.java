@@ -35,6 +35,7 @@ import org.railz.world.station.StationModel;
 import org.railz.world.top.ITEM;
 import org.railz.world.top.KEY;
 import org.railz.world.top.NonNullElements;
+import org.railz.world.top.ObjectKey2;
 import org.railz.world.top.ReadOnlyWorld;
 import org.railz.world.train.TrainModel;
 
@@ -68,12 +69,12 @@ class UserMessageGenerator implements MoveReceiver {
 	    TransferCargoAtStationMove transferCargoAtStationMove =
 		(TransferCargoAtStationMove)move;
 
-	    int trainCargoBundle =
+	    ObjectKey2 trainCargoBundle =
 		transferCargoAtStationMove.getChangeOnTrain()
-		.getIndex();
-	    int stationCargoBundle =
+		.getKeyAfter();
+	    ObjectKey2 stationCargoBundle =
 		transferCargoAtStationMove.getChangeAtStation()
-		.getIndex();
+		.getKeyAfter();
 	    NonNullElements trains = new NonNullElements(KEY.TRAINS, world,
 		    mr.getPlayerPrincipal());
 	    NonNullElements players = new NonNullElements(KEY.PLAYERS,
@@ -86,7 +87,7 @@ class UserMessageGenerator implements MoveReceiver {
 	    while (trains.next()) {
 		TrainModel train = (TrainModel)trains.getElement();
 
-		if (train.getCargoBundleNumber() == trainCargoBundle) {
+		if (train.getCargoBundle().equals(trainCargoBundle)) {
 		    trainNumber = trains.getIndex() + 1;
 
 		    break;
@@ -102,8 +103,7 @@ class UserMessageGenerator implements MoveReceiver {
 		    StationModel station = (StationModel)stations
 			.getElement();
 
-		    if (station.getCargoBundleNumber() ==
-			    stationCargoBundle) {
+		    if (station.getCargoBundle().equals(stationCargoBundle)) {
 			statonNumber = stations.getRowNumber();
 			stationName = station.getStationName();
 			break;

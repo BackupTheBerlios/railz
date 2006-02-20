@@ -75,7 +75,7 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements
      * The id of the bundle of cargo that the train is carrying - we need to
      * update the view when the bundle is updated.
      */
-    private int bundleID = -1;
+    private ObjectKey2 trainCargoBundleKey = null;
     
     private GUIRoot guiRoot;
 
@@ -197,12 +197,10 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements
 	int state = TrainModel.STATE_STOPPED;
 	if (trainNumber >= 0) {
 	    TrainModel train = (TrainModel)w.get(KEY.TRAINS, trainNumber,
-		    modelRoot.getPlayerPrincipal());
+		    modelRoot.getPlayerPrincipal());	    
 
-	    this.bundleID = train.getCargoBundleNumber();
-
-	    CargoBundle cb = (CargoBundle)w.get(KEY.CARGO_BUNDLES,
-		    train.getCargoBundleNumber(), Player.AUTHORITATIVE);
+            trainCargoBundleKey = train.getCargoBundle();
+	    CargoBundle cb = (CargoBundle)w.get(train.getCargoBundle());
 	    s="Train #"+trainNumber+": ";
 	    ScheduleIterator si = train.getScheduleIterator();
 	    TrainOrdersModel tom = si.getCurrentOrder(w);
@@ -229,12 +227,9 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements
 		p.equals(modelRoot.getPlayerPrincipal())) {
 	    //The train has been updated.
 	    this.displayTrain(this.trainNumber);
-	}else if(KEY.CARGO_BUNDLES == key && index == bundleID){ 
-	    //The train's cargo has changed.
-	    this.displayTrain(this.trainNumber);
-	}			
-	trainViewJPanel1.listUpdated(key, index, p);
-	repaint();
+            repaint();
+	}
+        trainViewJPanel1.listUpdated(key, index, p);
     }
 
     public void itemAdded(KEY key, int index, FreerailsPrincipal p) {
@@ -399,5 +394,20 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements
 
     public void doRefresh() {
 	waterBar.repaint();
+    }
+
+    public void listUpdated(ObjectKey2 key) {        
+        if(key.equals(trainCargoBundleKey)){ 
+	    //The train's cargo has changed.
+	    this.displayTrain(this.trainNumber);
+            repaint();
+	}			
+        trainViewJPanel1.listUpdated(key);
+    }
+
+    public void itemRemoved(ObjectKey2 key) {
+    }
+
+    public void itemAdded(ObjectKey2 key) {
     }
 }

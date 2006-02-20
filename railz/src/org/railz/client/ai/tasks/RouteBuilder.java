@@ -830,7 +830,7 @@ class RouteBuilder extends TaskPlanner {
     private CargoBundle getCargoBundle
 	(int stationId, int cityId, int[] amounts) {
 	CargoBatch cb;
-	CargoBundle cBundle = new CargoBundleImpl();
+	MutableCargoBundle cBundle = new MutableCargoBundle();
 	int x, y;
 	if (stationId >= 0) {
 	    StationModel sm = (StationModel) aiClient.getWorld().get
@@ -848,7 +848,7 @@ class RouteBuilder extends TaskPlanner {
 		       	0L, stationId);
 		cBundle.addCargo(cb, amounts[i]);
 	}
-	return cBundle;
+	return new CargoBundle(cBundle);
     }
 
     /**

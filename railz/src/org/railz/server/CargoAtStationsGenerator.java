@@ -31,6 +31,7 @@ import org.railz.move.Move;
 import org.railz.world.cargo.CargoBatch;
 import org.railz.world.cargo.CargoBundle;
 import org.railz.world.cargo.CargoType;
+import org.railz.world.cargo.MutableCargoBundle;
 import org.railz.world.common.*;
 import org.railz.world.player.FreerailsPrincipal;
 import org.railz.world.player.Player;
@@ -57,8 +58,8 @@ public class CargoAtStationsGenerator implements FreerailsServerSerializable {
      * Remove all cargo from the bundle older than the expiry time
      * @return a new CargoBundle without the expired cargo
      */
-    private CargoBundle expireOldCargo(CargoBundle cb, ReadOnlyWorld w) {
-	CargoBundle newCb = cb.getCopy();
+    private MutableCargoBundle expireOldCargo(CargoBundle cb, ReadOnlyWorld w) {
+	MutableCargoBundle newCb = new MutableCargoBundle(cb);
 	Iterator i = newCb.cargoBatchIterator();
 	int now = ((GameTime) w.get(ITEM.TIME,
 		    Player.AUTHORITATIVE)).getTime();
@@ -88,10 +89,10 @@ public class CargoAtStationsGenerator implements FreerailsServerSerializable {
 		StationModel station =
 		    (StationModel)nonNullStations.getElement();
 		SupplyAtStation supply = station.getSupply();
-		CargoBundle cargoBundle = (CargoBundle)w.get(KEY.CARGO_BUNDLES,
-			station.getCargoBundleNumber(), Player.AUTHORITATIVE);
-		CargoBundle before = cargoBundle.getCopy();
-		CargoBundle after = expireOldCargo(cargoBundle, w);
+		CargoBundle cargoBundle = 
+                        (CargoBundle)w.get(station.getCargoBundle());
+		CargoBundle before = cargoBundle;
+		MutableCargoBundle after = expireOldCargo(cargoBundle, w);
 		int stationNumber = nonNullStations.getIndex();
 
 		GameTime gt = (GameTime) w.get(ITEM.TIME,
@@ -111,8 +112,8 @@ public class CargoAtStationsGenerator implements FreerailsServerSerializable {
 		    }
 		}
 
-		Move m = new ChangeCargoBundleMove(before, after,
-			station.getCargoBundleNumber());
+		Move m = new ChangeCargoBundleMove(before, new CargoBundle(after),
+			station.getCargoBundle());
 		moveReceiver.processMove(m);
 	    }
         }

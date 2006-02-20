@@ -19,7 +19,11 @@ package org.railz.world.top;
 import java.awt.Point;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import org.railz.world.common.FreerailsSerializable;
+import org.railz.world.common.WorldObject;
 import org.railz.world.player.FreerailsPrincipal;
 import org.railz.world.player.Player;
 import org.railz.world.track.FreerailsTile;
@@ -42,9 +46,13 @@ public class WorldImpl implements World {
      * KEY type.
      */
     private final ArrayList[] lists = new ArrayList[KEY.getNumberOfKeys()];
+    
     private final FreerailsSerializable[] items = new FreerailsSerializable[ITEM.getNumberOfKeys()];
     private FreerailsTile[][] map;
 
+    private final HashMap[] sharedObjects = new HashMap[KEY.getNumberOfKeys()];
+    private final ArrayList[] playerObjects = new ArrayList[KEY.getNumberOfKeys()];
+    
     public WorldImpl(int mapWidth, int mapHeight) {
         this.setupMap(mapWidth, mapHeight);
         this.setupLists();
@@ -54,22 +62,46 @@ public class WorldImpl implements World {
 	this(0, 0);
     }
     
+    /**
+     * Create a shallow copy of the specified world which only exposes
+     * those objects which the specified player is permitted to access
+     */
     private WorldImpl(WorldImpl wi, FreerailsPrincipal viewer) {
 	setupLists();
 	int pi = wi.getPlayerIndex(viewer);
 	for (int i = 0; i < lists.length; i++) {
-	    ArrayList al = wi.lists[i];
 	    KEY k = KEY.getKey(i);
-	    for (int j = 0; j < al.size(); j++) {
-		if (k.isPrivate && pi != j) {
-		    lists[i].add(null);
-		} else {
-		    lists[i].add(al.get(j));
-		}
-	    }
+            if (! k.usesObjectKey2) {
+                ArrayList al = wi.lists[i];
+                for (int j = 0; j < al.size(); j++) {                
+                    if (k.isPrivate && pi != j) {
+                        // this player isn't allowed to see
+                        lists[i].add(null);
+                    } else {
+                        // this player can see, make a shallow copy
+                        lists[i].add(al.get(j));
+                    }
+                }
+            } else {
+                if (k.shared) {
+                    sharedObjects[i] = wi.sharedObjects[i];
+                } else {
+                    ArrayList al = wi.playerObjects[i];
+                    for (int j = 0; j < al.size(); j++) {
+                        if (k.isPrivate && pi != j) {
+                            playerObjects[i].add(null);
+                        } else {
+                            playerObjects[i].add(al.get(j));
+                        }
+                    }
+                }
+            }
 	}
+        // All ITEMs are accessible
 	for (int i = 0; i < wi.items.length; i++)
 	    items[i] = wi.items[i];
+        
+        // The map is viewable to all
 	map = wi.map;
     }
 
@@ -81,13 +113,29 @@ public class WorldImpl implements World {
         map = new FreerailsTile[mapWidth][mapHeight];
     }
 
+    /**
+     * Initialise the world contents (note that since there are no players,
+     * only the 1st level of nesting is created.
+     */
     private void setupLists() {
         for (int i = 0; i < lists.length; i++) {
-            lists[i] = new ArrayList();
+            KEY k = KEY.getKey(i);
+            if (k.usesObjectKey2) {
+                if (k.shared) {
+                    sharedObjects[i] = new HashMap();
+                } else {
+                    playerObjects[i] = new ArrayList();
+                }
+            } else {
+                lists[i] = new ArrayList();
+            }
         }
     }
 
     public FreerailsSerializable get(KEY key, int index, FreerailsPrincipal p) {
+        if (key.usesObjectKey2)
+            throw new IllegalArgumentException("KEY " + key + " uses ObjectKey2");
+        
         if (key.shared) {
             return (FreerailsSerializable)lists[key.getKeyNumber()].get(index);
         }
@@ -96,9 +144,23 @@ public class WorldImpl implements World {
                 p))).get(index);
     }
 
+    public WorldObject get(ObjectKey2 key) {
+        if (key.key.shared)
+            return (WorldObject) sharedObjects[key.key.getKeyNumber()].get(key.uuid);
+        else {
+            int playerId = getPlayerIndex(key.principal);
+            return (WorldObject) 
+                ((HashMap) 
+                    ((ArrayList) playerObjects[key.key.getKeyNumber()]).get(playerId))
+                .get(key.uuid);
+        }
+    }
+    
     public void set(KEY key, int index, FreerailsSerializable element,
         FreerailsPrincipal p) {
-
+        if (key.usesObjectKey2)
+            throw new IllegalArgumentException("KEY " + key + " uses ObjectKey2");
+        
         if (key.shared) {
             lists[key.getKeyNumber()].set(index, element);
 
@@ -109,7 +171,21 @@ public class WorldImpl implements World {
             element);
     }
 
+    public void set(ObjectKey2 key, WorldObject object) {
+        if (key.key.shared) {
+            HashMap m = sharedObjects[key.key.getKeyNumber()];
+            m.put(key.uuid, object);
+        } else {
+            ArrayList l = playerObjects[key.key.getKeyNumber()];
+            HashMap m = (HashMap) l.get(getPlayerIndex(key.principal));
+            m.put(key.uuid, object);
+        }
+    }
+        
     public int add(KEY key, FreerailsSerializable element, FreerailsPrincipal p) {
+        if (key.usesObjectKey2)
+            throw new IllegalArgumentException("KEY " + key + " uses ObjectKey2");
+        
         if (key == KEY.PLAYERS) {
             return addPlayer((Player)element, p);
         }
@@ -126,6 +202,15 @@ public class WorldImpl implements World {
     }
 
     public int size(KEY key, FreerailsPrincipal p) {
+        if (key.usesObjectKey2) {
+            if (key.shared) {
+                return sharedObjects[key.getKeyNumber()].size();
+            } else {
+                ArrayList l = playerObjects[key.getKeyNumber()];
+                return ((HashMap) l.get(getPlayerIndex(p))).size();
+            }
+        }
+        
         if (key.shared) {
             return lists[key.getKeyNumber()].size();
         }
@@ -165,10 +250,26 @@ public class WorldImpl implements World {
     }
 
     public boolean boundsContain(KEY k, int index, FreerailsPrincipal p) {
+        if (k.usesObjectKey2)
+            throw new IllegalArgumentException("KEY " + k + " uses ObjectKey2");
+        
         return index >= 0 && index < this.size(k, p);
     }
 
+    public boolean contains(ObjectKey2 key) {
+        if (key.key.shared) {
+            return sharedObjects[key.key.getKeyNumber()].containsKey(key.uuid);            
+        } else {
+            ArrayList l = playerObjects[key.key.getKeyNumber()];
+            HashMap m = (HashMap) l.get(getPlayerIndex(key.principal));
+            return m.containsKey(key.uuid);
+        }
+    }
+    
     public FreerailsSerializable removeLast(KEY key, FreerailsPrincipal p) {
+        if (key.usesObjectKey2)
+            throw new IllegalArgumentException("KEY " + key + " uses ObjectKey2");
+        
         int size;
 
         if (key.shared) {
@@ -187,20 +288,34 @@ public class WorldImpl implements World {
                 p))).remove(index);
     }
 
+    public WorldObject remove(ObjectKey2 key) {
+        if (key.key.shared) {
+            return (WorldObject) sharedObjects[key.key.getKeyNumber()].remove(key.uuid);
+        } else {
+            ArrayList l = playerObjects[key.key.getKeyNumber()];
+            return (WorldObject) ((HashMap) l.get(getPlayerIndex(key.principal))).remove(key.uuid);
+        }
+    }
+    
     public boolean equals(Object o) {
         if (o instanceof WorldImpl) {
             WorldImpl test = (WorldImpl)o;
-
+            
             if (lists.length != test.lists.length) {
                 return false;
             } else {
                 for (int i = 0; i < lists.length; i++) {
-                    if (!lists[i].equals(test.lists[i])) {
+                    if (lists[i] != null && !lists[i].equals(test.lists[i])) {
                         return false;
                     }
                 }
             }
 
+            if (! (Arrays.equals(sharedObjects, test.sharedObjects)
+                && Arrays.equals(playerObjects, test.playerObjects))) {                
+                return false;
+            }
+            
             if ((this.getMapWidth() != test.getMapWidth()) ||
                     (this.getMapHeight() != test.getMapHeight())) {
                 return false;
@@ -293,4 +408,38 @@ public class WorldImpl implements World {
 	IOException, ClassNotFoundException {
 	    in.defaultReadObject();
 	}
+
+    public Iterator getIterator(KEY k) {
+        return new WorldIteratorImpl
+                (sharedObjects[k.getKeyNumber()].values().iterator());
+    }
+
+    public Iterator getIterator(KEY k, FreerailsPrincipal p) {
+        if (k.shared)
+            return getIterator(k);
+        
+        return new WorldIteratorImpl(((HashMap) playerObjects[k.getKeyNumber()]
+                .get(getPlayerIndex(p))).values().iterator());
+    }        
+    
+    /** Enforces read-only semantics on an iterator */
+    private static class WorldIteratorImpl implements Iterator {
+        private Iterator i;
+        
+        public WorldIteratorImpl(Iterator i) {
+            this.i = i;
+        }
+
+        public boolean hasNext() {
+            return i.hasNext();
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Object next() {
+            return i.next();
+        }                
+    }
 }

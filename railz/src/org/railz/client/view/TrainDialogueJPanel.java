@@ -286,4 +286,13 @@ WorldListListener {
     // End of variables declaration//GEN-END:variables
     
     private PopupJButton popupJButton;
+
+    public void listUpdated(ObjectKey2 key) {
+    }
+
+    public void itemRemoved(ObjectKey2 key) {
+    }
+
+    public void itemAdded(ObjectKey2 key) {
+    }
 }

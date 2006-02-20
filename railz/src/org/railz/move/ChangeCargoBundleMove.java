@@ -23,7 +23,7 @@ package org.railz.move;
 
 import org.railz.world.cargo.CargoBundle;
 import org.railz.world.player.*;
-import org.railz.world.top.KEY;
+import org.railz.world.top.ObjectKey2;
 
 
 /**
@@ -32,10 +32,9 @@ import org.railz.world.top.KEY;
  * @author Luke
  *
  */
-public class ChangeCargoBundleMove extends ChangeItemInListMove {
-    public ChangeCargoBundleMove(CargoBundle before, CargoBundle after,
-        int bundleNumber) {
-	super(KEY.CARGO_BUNDLES, bundleNumber, before, after,
-		Player.NOBODY);
+public class ChangeCargoBundleMove extends ChangeObjectMove {
+    public ChangeCargoBundleMove(CargoBundle before, CargoBundle after, 
+            ObjectKey2 key) {
+	super(key, before, after);
     }
 }

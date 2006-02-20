@@ -17,8 +17,10 @@
 package org.railz.world.top;
 
 import java.awt.Point;
+import java.util.Iterator;
 
 import org.railz.world.common.FreerailsSerializable;
+import org.railz.world.common.WorldObject;
 import org.railz.world.track.FreerailsTile;
 import org.railz.world.player.FreerailsPrincipal;
 
@@ -48,10 +50,13 @@ public interface ReadOnlyWorld extends FreerailsSerializable {
     FreerailsSerializable get(ITEM item, FreerailsPrincipal p);
 
     /**
+     * @deprecated in favour of {@link #get(ObjectKey2)}
      * Returns the element at the specified position in the specified list.
      */
     FreerailsSerializable get(KEY key, int index, FreerailsPrincipal p);
 
+    WorldObject get(ObjectKey2 key);
+    
     /**
      * Returns the number of elements in the specified list.
      */
@@ -74,5 +79,16 @@ public interface ReadOnlyWorld extends FreerailsSerializable {
 
     boolean boundsContain(int x, int y);
 
+    /**
+     * @deprecated in favour of {@link #contains(ObjectKey2)}
+     */
     boolean boundsContain(KEY k, int index, FreerailsPrincipal p);
+    
+    boolean contains(ObjectKey2 object);
+    
+    /** @return a read-only iterator (no remove) */
+    Iterator getIterator(KEY k, FreerailsPrincipal p);
+
+    /** @return a read-only iterator (no remove) */
+    Iterator getIterator(KEY k);
 }

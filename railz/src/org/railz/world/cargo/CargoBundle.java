@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Luke Lindsay
+ * Copyright (C) 2003 Luke Lindsay
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -15,69 +15,69 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+/*
+ * Created on 24-May-2003
+ *
+ */
 package org.railz.world.cargo;
 
+import java.util.Map.Entry;
+import java.util.HashMap;
 import java.util.Iterator;
-import org.railz.world.common.FreerailsSerializable;
+import org.railz.world.common.WorldObject;
+import org.railz.world.top.UUID;
 
 
-/** This interface defines a bundle of cargo made up of
- * quantities of cargo from different {@link CargoBatch}s.
- * <p>For example:</p>
- * <table width="75%" border="0">
-  <tr>
-    <td><strong>Cargo Batch</strong></td>
-    <td><strong>Quantity</strong></td>
-  </tr>
-  <tr>
-    <td>passengers from (1, 5) created at 01:00</td>
-    <td>2</td>
-  </tr>
-  <tr>
-    <td>passengers from (1, 5) created at 01:25</td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td>coal from (4,10) created at 02:50</td>
-    <td>8</td>
-  </tr>
-  <tr>
-    <td>mail from (6, 10) created at 04:45</td>
-    <td>10</td>
-  </tr>
-</table>
-
+/**This CargoBundle uses a <code>java.util.HashMap</code> to
+ * map quantities to cargo batches.
+ *
  * @author Luke
  *
  */
-public interface CargoBundle extends FreerailsSerializable {
-    /**
-     * @param cargoType index into the CARGO_TYPES table
-     * @return amount of cargo of the specified type in tonnes
-     */
-    int getAmount(int cargoType);
+public class CargoBundle extends BaseCargoBundle implements WorldObject {
+    protected CargoBundle(CargoBundle cb) {
+        super(cb);
+    }
+    
+    public CargoBundle() {
+        // call default super constructor
+    }    
+    
+    public CargoBundle(MutableCargoBundle cb) {
+        super(cb);
+    }
+    
+    public String toString() {
+        String s = "CargoBundle {\n";
+        Iterator it = this.cargoBatchIterator();
 
-    int getAmount(CargoBatch cb);
+        while (it.hasNext()) {
+            CargoBatch cb = (CargoBatch)((Entry) it.next()).getKey();
+            s += this.getAmount(cb) + " units of cargo type " +
+            cb.getCargoType() + "\n";
+        }
 
-    /**
-     * @param amount Amount of cargo in tonnes
-     */
-    void setAmount(CargoBatch cb, int amount);
+        s += "}";
 
-    /**
-     * Adds the specified amount of the specified CargoBatch to the
-     * amount already present in the Bundle.
-     * @param amount Amount of cargo in tonnes.
-     */
-    void addCargo(CargoBatch cb, int amount);
+        return s;
+    }
 
-    boolean contains(CargoBatch cb);
+    public boolean equals(Object o) {
+        if (o instanceof CargoBundle) {
+            CargoBundle test = (CargoBundle) o;
 
-    /**
-     * @return an iterator over a set of Map.Entry. The keys are CargoBatch
-     * instances, the values are Integer amounts
-     */
-    Iterator cargoBatchIterator();
+            return uuid.equals(test.uuid) &&
+                    hashMap.equals(test.hashMap);
+        } else {
+            return false;
+        }
+    }
 
-    CargoBundle getCopy();
+    public int hashCode() {
+        return uuid.hashCode();
+    }
+    
+    public Object clone() {        
+        return new CargoBundle(this);
+    }
 }

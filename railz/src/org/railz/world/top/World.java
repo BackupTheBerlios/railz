@@ -16,6 +16,7 @@
 
 package org.railz.world.top;
 
+import org.railz.world.common.WorldObject;
 import org.railz.world.player.FreerailsPrincipal;
 import org.railz.world.common.FreerailsSerializable;
 import org.railz.world.track.FreerailsTile;
@@ -41,6 +42,7 @@ public interface World extends ReadOnlyWorld {
         FreerailsPrincipal principal);
 
     /**
+     * @deprecated in favour of {@link #set(ObjectKey2 key, FreerailsSerializable object)}
      * Replaces the element at the specified position in the specified list
      * with the specified element.
      */
@@ -48,16 +50,28 @@ public interface World extends ReadOnlyWorld {
         FreerailsPrincipal principal);
 
     /**
+     * Adds or replaces the object in the game world
+     */
+    void set(ObjectKey2 key, WorldObject object);
+    
+    /**
+     * @deprecated in favour of {@link #set(ObjectKey2 key, FreerailsSerializable object)}
      * Appends the specified element to the end of the specifed list and
      * returns the index that can be used to retrieve it.
      */
     int add(KEY key, FreerailsSerializable element, FreerailsPrincipal principal);
 
     /**
+     * @deprecated in favour of {@link #remove(ObjectKey2 key)}
      * Removes the last element from the specified list.
      */
     FreerailsSerializable removeLast(KEY key, FreerailsPrincipal principal);
 
+    /*
+     * Removes the object from the game world
+     */
+    WorldObject remove(ObjectKey2 key);
+    
     /**
      * Replaces the tile at the specified position on the map with the
      * specified tile.

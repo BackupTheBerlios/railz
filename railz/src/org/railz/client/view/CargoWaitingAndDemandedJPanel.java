@@ -36,6 +36,7 @@ import org.railz.world.cargo.CargoType;
 import org.railz.world.player.*;
 import org.railz.world.station.StationModel;
 import org.railz.world.top.KEY;
+import org.railz.world.top.ObjectKey2;
 import org.railz.world.top.ReadOnlyWorld;
 import org.railz.world.train.WagonType;
 
@@ -136,11 +137,9 @@ public class CargoWaitingAndDemandedJPanel extends javax.swing.JPanel {
     public void display(int newStationID) {
 	StationModel station = (StationModel)world.get(KEY.STATIONS,
 		newStationID, modelRoot.getPlayerPrincipal());
-        this.stationName.setText(station.getStationName());
-        int cargoBundleIndex = station.getCargoBundleNumber();
+        this.stationName.setText(station.getStationName());        
         final CargoBundle cargoWaiting = (CargoBundle) world.get
-	    (KEY.CARGO_BUNDLES, station.getCargoBundleNumber(),
-	     Player.AUTHORITATIVE);
+	    (station.getCargoBundle());
         
         //count the number of cargo types waiting and demanded.
         final ArrayList typeWaiting = new ArrayList();

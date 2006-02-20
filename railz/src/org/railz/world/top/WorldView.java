@@ -19,6 +19,7 @@ package org.railz.world.top;
 
 import java.awt.*;
 import java.io.*;
+import java.util.Iterator;
 
 import org.railz.world.common.*;
 import org.railz.world.player.*;
@@ -116,5 +117,58 @@ public class WorldView implements World {
 
     private Object writeReplace() throws ObjectStreamException {
 	return world.getReadOnlyView(viewer);
+    }
+
+    public void set(ObjectKey2 key, WorldObject object) {
+        if (key.key.isPrivate && ! viewer.equals(key.principal))
+            return;
+        
+        world.set(key, object);
+    }
+
+    public WorldObject remove(ObjectKey2 key) {
+        if (key.key.isPrivate && ! viewer.equals(key.principal))
+            return null;
+
+        return world.get(key);
+    }
+
+    public WorldObject get(ObjectKey2 key) {
+        if (key.key.isPrivate && ! viewer.equals(key.principal))
+            return null;
+
+        return world.get(key);
+    }
+
+    public boolean contains(ObjectKey2 object) {
+        if (object.key.isPrivate && ! viewer.equals(object.principal))
+            return false;
+        
+        return world.contains(object);
+    }
+
+    public Iterator getIterator(KEY k) {
+        return world.getIterator(k);        
+    }
+
+    public Iterator getIterator(KEY k, FreerailsPrincipal p) {
+        if (k.isPrivate && ! viewer.equals(p))
+            return new DummyIterator();
+        
+        return world.getIterator(k);
+    }
+    
+    private static class DummyIterator implements Iterator {
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Object next() {
+            return null;
+        }
+
+        public boolean hasNext() {
+            return false;
+        }        
     }
 }

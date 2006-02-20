@@ -277,8 +277,7 @@ class StationJPanel extends javax.swing.JPanel {
 	}	
 
 	// display supplied cargo
-	CargoBundle cargoWaiting = (CargoBundle) w.get(KEY.CARGO_BUNDLES, 
-		sm.getCargoBundleNumber(), Player.AUTHORITATIVE);
+	CargoBundle cargoWaiting = (CargoBundle) w.get(sm.getCargoBundle());
 	for (int i = 0; i < w.size(KEY.CARGO_TYPES, Player.AUTHORITATIVE);
 		i++) {
 	    if (cargoWaiting.getAmount(i) > 0) {

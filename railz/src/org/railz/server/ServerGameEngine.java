@@ -100,11 +100,11 @@ public class ServerGameEngine implements GameModel, Runnable,
     }
 
     public synchronized void setTargetTicksPerSecond(int targetTicksPerSecond) {
-	if (this.targetTicksPerSecond == 0) {
+//	if (this.targetTicksPerSecond == 0) {
 	    baseTime = System.currentTimeMillis();
-	} else {
-	    baseTime = frameStartTime;
-	}
+//	} else {
+//	    baseTime = frameStartTime;
+//	}
         this.targetTicksPerSecond = targetTicksPerSecond;
 	n = 0;
 	GameCalendar oldCal = (GameCalendar) world.get(ITEM.CALENDAR,

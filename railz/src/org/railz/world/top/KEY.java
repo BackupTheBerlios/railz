@@ -31,25 +31,25 @@ public final class KEY implements FreerailsSerializable {
     private static KEY[] keys = new KEY[17];
 
     //START OF KEYS
-    public static final KEY TRAINS = new KEY(false, false);
-    public static final KEY CARGO_TYPES = new KEY(true, false);
-    public static final KEY CITIES = new KEY(true, false);
-    public static final KEY ENGINE_TYPES = new KEY(true, false);
-    public static final KEY TRACK_RULES = new KEY(true, false);
-    public static final KEY STATIONS = new KEY(false, false);
-    public static final KEY TERRAIN_TYPES = new KEY(true, false);
-    public static final KEY WAGON_TYPES = new KEY(true, false);
-    public static final KEY BANK_ACCOUNTS = new KEY(false, false);
-    public static final KEY BALANCE_SHEETS = new KEY(false, false);
+    public static final KEY TRAINS = new KEY(false, false, false);
+    public static final KEY CARGO_TYPES = new KEY(true, false, false);
+    public static final KEY CITIES = new KEY(true, false, false);
+    public static final KEY ENGINE_TYPES = new KEY(true, false, false);
+    public static final KEY TRACK_RULES = new KEY(true, false, false);
+    public static final KEY STATIONS = new KEY(false, false, false);
+    public static final KEY TERRAIN_TYPES = new KEY(true, false, false);
+    public static final KEY WAGON_TYPES = new KEY(true, false, false);
+    public static final KEY BANK_ACCOUNTS = new KEY(false, false, false);
+    public static final KEY BALANCE_SHEETS = new KEY(false, false, false);
 
     /** The cargo waiting at stations or carried by trains. */
-    public static final KEY CARGO_BUNDLES = new KEY(true, false);
-    public static final KEY TRAIN_SCHEDULES = new KEY(false, false);
-    public static final KEY PLAYERS = new KEY(true, false);
-    public static final KEY BUILDING_TYPES = new KEY(true, false);
-    public static final KEY STATISTICS = new KEY(false, false);
-    public static final KEY STATION_IMPROVEMENTS = new KEY(true, false);
-    public static final KEY SCRIPTING_EVENTS = new KEY(true, true);
+    public static final KEY CARGO_BUNDLES = new KEY(true, false, true);
+    public static final KEY TRAIN_SCHEDULES = new KEY(false, false, false);
+    public static final KEY PLAYERS = new KEY(true, false, false);
+    public static final KEY BUILDING_TYPES = new KEY(true, false, false);
+    public static final KEY STATISTICS = new KEY(false, false, false);
+    public static final KEY STATION_IMPROVEMENTS = new KEY(true, false, false);
+    public static final KEY SCRIPTING_EVENTS = new KEY(true, true, false);
 
     //END OF KEYS		
     private static int numberOfKeys;
@@ -69,13 +69,21 @@ public final class KEY implements FreerailsSerializable {
     public final boolean isPrivate;
 
     /**
+     * Whether the objects of this key type use ObjectKey2.
+     * This is meant to be a temporary property until all object types are
+     * converted to use it.
+     */
+    final boolean usesObjectKey2;
+    
+    /**
      * @param shared Whether the objects are common to all Principals in the
      * game
      */
-    private KEY(boolean shared, boolean serverPrivate) {
+    private KEY(boolean shared, boolean serverPrivate, boolean usesObjectKey2) {
         this.keyNumber = numberOfKeys;
         this.shared = shared;
 	this.isPrivate = serverPrivate;
+        this.usesObjectKey2 = usesObjectKey2;
         keys[keyNumber] = this;
         numberOfKeys++;
     }

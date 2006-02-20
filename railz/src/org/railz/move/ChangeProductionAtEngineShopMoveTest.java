@@ -21,6 +21,7 @@
  */
 package org.railz.move;
 
+import org.railz.world.cargo.CargoBundle;
 import org.railz.world.common.GameTime;
 import org.railz.world.player.Player;
 import org.railz.world.station.ProductionAtEngineShop;
@@ -45,14 +46,16 @@ public class ChangeProductionAtEngineShopMoveTest extends AbstractMoveTestCase {
     protected void setUp() {
         super.setUp();
 	GameTime gt = (GameTime) getWorld().get(ITEM.TIME, Player.AUTHORITATIVE);
+        CargoBundle cb = new CargoBundle();
+        ObjectKey2 cbKey = new ObjectKey2(KEY.CARGO_BUNDLES, Player.NOBODY, cb.getUUID());
         getWorld().add(KEY.STATIONS,
-	       	new StationModel(0, 0, "No name", 0, 0, gt),
+	       	new StationModel(0, 0, "No name", 0, cbKey, gt),
 	       	testPlayer.getPrincipal());
         getWorld().add(KEY.STATIONS,
-	       	new StationModel(0, 0, "No name", 0, 0, gt),
+	       	new StationModel(0, 0, "No name", 0, cbKey, gt),
 		testPlayer.getPrincipal());
         getWorld().add(KEY.STATIONS, 
-		new StationModel(0, 0, "No name", 0, 0, gt),
+		new StationModel(0, 0, "No name", 0, cbKey, gt),
 		testPlayer.getPrincipal());
 
 	getWorld().add(KEY.WAGON_TYPES, new WagonType("WagonType1",

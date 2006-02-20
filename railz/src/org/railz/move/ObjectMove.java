@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003 Luke Lindsay
+ * Copyright (C) 2006 Robert Tuck
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -15,24 +15,29 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/*
- * Created on 26-May-2003
- *
- */
 package org.railz.move;
 
-import org.railz.world.cargo.CargoBundle;
-import org.railz.world.top.KEY;
+import org.railz.world.common.WorldObject;
+import org.railz.world.player.FreerailsPrincipal;
 import org.railz.world.top.ObjectKey2;
 
-
 /**
- * This move removes a cargo bundle from the cargo bundle list.
- * @author Luke
- *
+ * This interface supersedes {@link ListMove}
+ * @author bob
  */
-public class RemoveCargoBundleMove extends RemoveObjectMove {
-    public RemoveCargoBundleMove(ObjectKey2 key, CargoBundle item) {
-        super(key, item);
-    }
+public interface ObjectMove extends Move {
+    /** @return null if the object was added */
+    public ObjectKey2 getKeyBefore();
+    
+    /** @return null if the object was removed */
+    public ObjectKey2 getKeyAfter();
+
+    /** @return null if the object was added */    
+    public WorldObject getBefore();
+    
+    /** @return null if the object was removed */
+    public WorldObject getAfter();
+    
+    /** @return the principal on whose behalf this move is being executed */
+    public FreerailsPrincipal getPrincipal();
 }

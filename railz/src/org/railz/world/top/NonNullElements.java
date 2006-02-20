@@ -43,6 +43,9 @@ public class NonNullElements implements WorldIterator {
     int size = -1;
 
     public NonNullElements(KEY k, ReadOnlyWorld world, FreerailsPrincipal p) {
+        if (k.usesObjectKey2)
+            throw new IllegalArgumentException();
+        
         key = k;
         w = world;
         principal = p;

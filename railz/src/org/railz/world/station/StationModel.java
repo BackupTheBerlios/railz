@@ -20,6 +20,7 @@ package org.railz.world.station;
 import java.util.*;
 
 import org.railz.world.common.*;
+import org.railz.world.top.ObjectKey2;
 /**
  * This class represents a station.
  *
@@ -27,7 +28,7 @@ import org.railz.world.common.*;
  *
  */
 public class StationModel implements FreerailsSerializable {
-    static final long serialVersionUID = 5866243529680687772L;
+    static final long serialVersionUID = 5866243529680687773L;
 
     public final int x;
     public final int y;
@@ -35,7 +36,7 @@ public class StationModel implements FreerailsSerializable {
     private SupplyAtStation supply;
     private DemandAtStation demand;
     private ConvertedAtStation converted;
-    private final int cargoBundleNumber;
+    private final ObjectKey2 cargoBundle;
     private final GameTime creationDate;
     private int[] improvements;
 
@@ -52,7 +53,7 @@ public class StationModel implements FreerailsSerializable {
     }
 
     public StationModel(int x, int y, String stationName,
-        int numberOfCargoTypes, int cargoBundle, GameTime now) {
+        int numberOfCargoTypes, ObjectKey2 cargoBundle, GameTime now) {
         this.name = stationName;
         this.x = x;
         this.y = y;
@@ -62,7 +63,7 @@ public class StationModel implements FreerailsSerializable {
         supply = new SupplyAtStation(new int[numberOfCargoTypes]);
         demand = new DemandAtStation(new boolean[numberOfCargoTypes]);
         converted = ConvertedAtStation.emptyInstance(numberOfCargoTypes);
-        cargoBundleNumber = cargoBundle;
+        this.cargoBundle = cargoBundle;
 	improvements = new int[0];
     }
 
@@ -107,7 +108,7 @@ public class StationModel implements FreerailsSerializable {
 	supply = s.supply;
 	demand = s.demand;
 	converted = s.converted;
-	cargoBundleNumber = s.cargoBundleNumber;
+	cargoBundle = s.cargoBundle;
 	creationDate = s.creationDate;
 	improvements = (int[]) s.improvements.clone();
 	production = s.production;
@@ -118,15 +119,15 @@ public class StationModel implements FreerailsSerializable {
         this.supply = supply;
     }
 
-    public int getCargoBundleNumber() {
-        return cargoBundleNumber;
+    public ObjectKey2 getCargoBundle() {
+        return cargoBundle;
     }
 
     public boolean equals(Object o) {
         if (o instanceof StationModel) {
             StationModel test = (StationModel)o;
 
-	    if (cargoBundleNumber == test.cargoBundleNumber &&
+	    if (cargoBundle.equals(test.cargoBundle) &&
 		    x == test.x &&
 		    y == test.y &&
 		    demand.equals(test.demand) &&
@@ -174,7 +175,7 @@ public class StationModel implements FreerailsSerializable {
     public String toString() {
 	String s = "StationModel: x=" + x + ", y=" + y + ", name=" + name +
 	    ", supply=" + supply + ", demand=" + demand + ", converted=" +
-	    converted + ", cargoBundleNumber=" + cargoBundleNumber +
+	    converted + ", cargoBundle=" + cargoBundle +
 	    ", creationDate=" + creationDate + ", improvements=(";
 	for (int i = 0; i < improvements.length; i++)
 	    s += improvements[i] + ", ";

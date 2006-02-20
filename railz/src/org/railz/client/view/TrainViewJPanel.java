@@ -35,6 +35,7 @@ import javax.swing.ListCellRenderer;
 import org.railz.client.model.ModelRoot;
 import org.railz.client.renderer.ViewLists;
 import org.railz.world.top.KEY;
+import org.railz.world.top.ObjectKey2;
 import org.railz.world.top.ReadOnlyWorld;
 import org.railz.world.top.WorldListListener;
 import org.railz.world.train.*;
@@ -110,8 +111,7 @@ public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldLi
 	if (trainNumber >= 0) {
 	    TrainModel train = (TrainModel) w.get(KEY.TRAINS, trainNumber,
 		    modelRoot.getPlayerPrincipal());
-	    CargoBundle cargoBundle = (CargoBundle) w.get(KEY.CARGO_BUNDLES,
-		    train.getCargoBundleNumber(), Player.AUTHORITATIVE);
+	    CargoBundle cargoBundle = (CargoBundle) w.get(train.getCargoBundle());
 
 	    //evaluate amount of each cargo on the train
 	    int cargoAmounts[] = new int [w.size(KEY.CARGO_TYPES,
@@ -267,5 +267,14 @@ public class TrainViewJPanel extends JPanel implements ListCellRenderer, WorldLi
     
     public void itemRemoved(KEY key, int index, FreerailsPrincipal princpal) {
 	// do nothing
+    }
+
+    public void listUpdated(ObjectKey2 key) {
+    }
+
+    public void itemRemoved(ObjectKey2 key) {
+    }
+
+    public void itemAdded(ObjectKey2 key) {
     }
 }

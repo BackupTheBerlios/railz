@@ -23,9 +23,11 @@ package org.railz.move;
 
 import org.railz.world.cargo.CargoBatch;
 import org.railz.world.cargo.CargoBundle;
-import org.railz.world.cargo.CargoBundleImpl;
+import org.railz.world.cargo.CargoBundle;
+import org.railz.world.cargo.MutableCargoBundle;
 import org.railz.world.player.*;
 import org.railz.world.top.KEY;
+import org.railz.world.top.ObjectKey2;
 
 
 /**
@@ -34,18 +36,19 @@ import org.railz.world.top.KEY;
  */
 public class ChangeCargoBundleMoveTest extends AbstractMoveTestCase {
     public void testMove() {
-        CargoBundle before;
-        CargoBundle after;
-        before = new CargoBundleImpl();
-        after = new CargoBundleImpl();
-        before.setAmount(new CargoBatch(1, 2, 3, 4, 0), 5);
-        after.setAmount(new CargoBatch(1, 2, 3, 4, 0), 8);
+        MutableCargoBundle m1 = new MutableCargoBundle();
+        m1.setAmount(new CargoBatch(1, 2, 3, 4, 0), 5);
+        CargoBundle before = new CargoBundle(m1);
+        MutableCargoBundle m2 = new MutableCargoBundle(before);                
+        m2.setAmount(new CargoBatch(1, 2, 3, 4, 0), 8);
+        CargoBundle after = new CargoBundle(m2);
 
-        Move m = new ChangeCargoBundleMove(before, after, 0);
+        ObjectKey2 key = new ObjectKey2(KEY.CARGO_BUNDLES, Player.NOBODY, before.getUUID());
+        Move m = new ChangeCargoBundleMove(before, after, key);
         assertEqualsSurvivesSerialisation(m);
 
         assertTryMoveFails(m);
         assertTryUndoMoveFails(m);
-        getWorld().add(KEY.CARGO_BUNDLES, before, Player.AUTHORITATIVE);
+        getWorld().set(key, before);
     }
 }

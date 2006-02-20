@@ -112,8 +112,8 @@ public class TrainViewJPanel2 extends JPanel {
 		Player.AUTHORITATIVE)];
 	if (train != null) {
 	    if (showCargo) {
-		CargoBundle cargoBundle = (CargoBundle) w.get(KEY.CARGO_BUNDLES,
-			train.getCargoBundleNumber(), Player.AUTHORITATIVE);
+		CargoBundle cargoBundle = 
+                        (CargoBundle) w.get(train.getCargoBundle());
 
 		//evaluate amount of each cargo on the train
 		String cargoText = "Empty train";

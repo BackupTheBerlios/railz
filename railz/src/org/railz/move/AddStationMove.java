@@ -24,7 +24,7 @@ package org.railz.move;
 import java.awt.Point;
 import org.railz.world.accounts.*;
 import org.railz.world.building.*;
-import org.railz.world.cargo.CargoBundleImpl;
+import org.railz.world.cargo.CargoBundle;
 import org.railz.world.common.GameTime;
 import org.railz.world.station.StationModel;
 import org.railz.world.player.*;
@@ -54,14 +54,16 @@ public class AddStationMove extends CompositeMove {
     public static AddStationMove generateMove(ReadOnlyWorld w,
 	String stationName, Point p, FreerailsPrincipal owner, int
 	buildingType) {
-        int cargoBundleNumber = w.size(KEY.CARGO_BUNDLES, Player.AUTHORITATIVE);
-        Move addCargoBundleMove = new AddCargoBundleMove(cargoBundleNumber,
-                new CargoBundleImpl());
+        CargoBundle cb = new CargoBundle();
+        ObjectKey2 cargoBundleKey = new ObjectKey2(KEY.CARGO_BUNDLES, 
+                Player.NOBODY, cb.getUUID());
+        Move addCargoBundleMove = new AddCargoBundleMove(cargoBundleKey,
+                cb);
         int stationNumber = w.size(KEY.STATIONS, owner);
 	GameTime now = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
         StationModel station = new StationModel(p.x, p.y, stationName,
 		w.size(KEY.CARGO_TYPES, Player.AUTHORITATIVE),
-		cargoBundleNumber, now);
+		cargoBundleKey, now);
 
         Move addStation = new AddItemToListMove(KEY.STATIONS, stationNumber,
                 station, owner);

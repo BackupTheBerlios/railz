@@ -19,6 +19,7 @@
 package org.railz.world.top;
 
 import java.util.Random;
+import org.railz.world.common.FreerailsSerializable;
 
 /**
  * Represents a Universally Unique Identifier which uniquely identifies an 
@@ -27,12 +28,12 @@ import java.util.Random;
  * which doesn't have the UUID class in the SDK
  * @author bob
  */
-public class UUID {
+public class UUID implements FreerailsSerializable {
     private long idPart1;
     private long idPart2;
     
-    private long lastCalled;
-    private static int callsThisMillisecond;
+    private static long lastCalled;
+    private static int callsThisMillisecond = 0;
     private static final Object mutex = new Integer(1);
     private static int clock_sequence;
     
@@ -67,18 +68,19 @@ public class UUID {
         // millis to nanos       
         now *= 1000000;                
         int time_low = ((int) (now & 0xFFFFFFFF)) | callsThisMillisecond;
-        int time_mid = ((int) (now >> 16)) & 0xFFFF0000;
-        int time_high_version = 0x1000 | (int) (now >> 48);
+        long ltime_low = ((long) time_low) << 32;
+        int time_mid = ((int) (now >>> 16)) & 0xFFFF0000;
+        int time_high_version = 0x1000 | (int) (now >>> 48);
         int time_mid_high_version = time_mid | time_high_version;
-        idPart1 = (time_low << 32) | time_mid_high_version;
+        long ltime_mid_high_version = ((long) time_high_version) & 0xFFFFFFFFL;
+        idPart1 = ltime_low | ltime_mid_high_version;
         
         int clock_seq_hi_res_lo_res_node_0_2 = 
                 ((clock_sequence & 0xFF) << 24) |
                 ((clock_sequence & 0xFF00) << 8) |
-                node_0_1;
-        
-        idPart2 = (clock_seq_hi_res_lo_res_node_0_2 << 32) |
-                node_2_5;
+                node_0_1;        
+        idPart2 = (((long) clock_seq_hi_res_lo_res_node_0_2) << 32) |
+                (((long) node_2_5) & 0xffffffffL);
     }
         
     public boolean equals(Object o) {
@@ -90,7 +92,24 @@ public class UUID {
     }
     
     public int hashCode() {
-        return ((int) (idPart1 >> 32)) ^ ((int) (idPart1 & 0xFFFFFFFF)) 
-            ^ ((int) (idPart2 >> 32)) ^ ((int) (idPart2 & 0xFFFFFFFF));
+        return ((int) (idPart1 >>> 32)) ^ ((int) (idPart1 & 0xFFFFFFFF)) 
+            ^ ((int) (idPart2 >>> 32)) ^ ((int) (idPart2 & 0xFFFFFFFF));
     }
+    
+    public String toString() {
+        StringBuffer sb = new StringBuffer("{");
+        String part1 = Long.toHexString(idPart1);
+        String part2 = Long.toHexString(idPart2);
+        // 64 bits = 8 bytes = 16 chars
+        for (int i = 16 - part1.length(); i > 0; i--) {
+            sb.append("0");
+        }
+        sb.append(part1);
+        for (int i = 16 - part2.length(); i > 0; i--) {
+            sb.append("0");
+        }
+        sb.append(part2);
+        sb.append("}");
+        return sb.toString();
+    }    
 }

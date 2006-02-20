@@ -21,7 +21,9 @@
   */
 package org.railz.move;
 
+import org.railz.world.cargo.CargoBundle;
 import org.railz.world.common.*;
+import org.railz.world.player.Player;
 import org.railz.world.top.*;
 import org.railz.world.train.ImmutableSchedule;
 import org.railz.world.train.TrainModel;
@@ -35,7 +37,9 @@ public class AddTrainMoveTest extends AbstractMoveTestCase {
     public void testMove() {
 	GameTime now = (GameTime) getWorld().get(ITEM.TIME,
 		testPlayer.getPrincipal());
-        TrainModel train = new TrainModel(0, new int[] {0, 1, 0}, 0,
+        CargoBundle cb = new CargoBundle();
+        ObjectKey2 cbKey = new ObjectKey2(KEY.CARGO_TYPES, Player.NOBODY, cb.getUUID());
+        TrainModel train = new TrainModel(0, new int[] {0, 1, 0}, cbKey,
 		now);
 
 	TrainOrdersModel orders = new TrainOrdersModel(new

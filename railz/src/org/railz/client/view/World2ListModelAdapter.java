@@ -109,6 +109,15 @@ public class World2ListModelAdapter implements ListModel {
 		    }
 		}
 	    }
+
+            public void listUpdated(ObjectKey2 key) {
+            }
+
+            public void itemRemoved(ObjectKey2 key) {
+            }
+
+            public void itemAdded(ObjectKey2 key) {
+            }
 	};
 
 	public World2ListModelAdapter(ReadOnlyWorld world, KEY key,

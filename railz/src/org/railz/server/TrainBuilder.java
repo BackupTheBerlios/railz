@@ -24,7 +24,7 @@ import org.railz.move.AddTrainMove;
 import org.railz.move.CompositeMove;
 import org.railz.move.Move;
 import org.railz.world.cargo.CargoBundle;
-import org.railz.world.cargo.CargoBundleImpl;
+import org.railz.world.cargo.CargoBundle;
 import org.railz.world.common.*;
 import org.railz.world.top.*;
 import org.railz.world.track.FreerailsTile;
@@ -72,11 +72,11 @@ class TrainBuilder {
         if (null != tile.getTrackTile()) {
             //Add train to train list.
 
-            CargoBundle cb = new CargoBundleImpl();
-	    int cargoBundleNumber = world.size(KEY.CARGO_BUNDLES,
-		    Player.AUTHORITATIVE);
-            Move addCargoBundleMove = new AddCargoBundleMove(cargoBundleNumber,
-                    cb);
+            CargoBundle cb = new CargoBundle();
+            ObjectKey2 cargoBundleKey = 
+                    new ObjectKey2(KEY.CARGO_BUNDLES, Player.NOBODY, cb.getUUID());
+            Move addCargoBundleMove = new AddCargoBundleMove
+                    (cargoBundleKey, cb);
 	    ObjectKey scheduleKey = new ObjectKey 
 		(KEY.TRAIN_SCHEDULES,
 		 tp, world.size(KEY.TRAIN_SCHEDULES, tp));
@@ -84,7 +84,7 @@ class TrainBuilder {
 	    GameTime now = (GameTime) world.get(ITEM.TIME,
 		    Player.AUTHORITATIVE);
             TrainModel train = new TrainModel(engineTypeNumber, wagons,
-                    cargoBundleNumber, now);
+                    cargoBundleKey, now);
 
             EngineType engineType = (EngineType)world.get(KEY.ENGINE_TYPES,
                     engineTypeNumber, Player.AUTHORITATIVE);

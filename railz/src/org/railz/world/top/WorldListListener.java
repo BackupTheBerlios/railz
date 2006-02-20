@@ -29,8 +29,11 @@ import org.railz.world.player.FreerailsPrincipal;
  */
 public interface WorldListListener {
     void listUpdated(KEY key, int index, FreerailsPrincipal principal);
+    void listUpdated(ObjectKey2 key);
 
     void itemAdded(KEY key, int index, FreerailsPrincipal principal);
+    void itemAdded(ObjectKey2 key);
 
     void itemRemoved(KEY key, int index, FreerailsPrincipal principal);
+    void itemRemoved(ObjectKey2 key);
 }
