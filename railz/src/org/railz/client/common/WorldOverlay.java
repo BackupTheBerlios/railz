@@ -138,7 +138,7 @@ public final class WorldOverlay implements World {
 	}
 	while (! ms.objectKeys2.isEmpty()) {
 	    ObjectKey2 ok = (ObjectKey2) ms.objectKeys2.removeFirst();
-	    LinkedList ll = (LinkedList) objects.get(ok);
+	    LinkedList ll = (LinkedList) objects2.get(ok);
 	    ll.removeFirst();
 	    if (ll.isEmpty())
 		objects2.remove(ok);
@@ -174,13 +174,27 @@ public final class WorldOverlay implements World {
      * Returns the number of elements in the specified list.
      */
     public int size(KEY key, FreerailsPrincipal p) {
-	int sz = world.size(key, p);
-	while (objects.containsKey(new ObjectKey(key, p, sz)) &&
-		((LinkedList) objects.get(new ObjectKey(key, p, sz)))
-		.getLast() != null) {
-	    sz++;
-	}
-	return sz;
+        int sz = world.size(key, p);
+        if (key.usesObjectKey2) {
+            Iterator i = objects2.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry e = (Map.Entry) i.next();
+                ObjectKey2 ok2 = (ObjectKey2) e.getKey();
+                if (key.equals(ok2.key) && 
+                        (! world.contains(ok2)) &&
+                        ((LinkedList) e.getValue()).getLast() != null) {
+                    sz++;
+                }                
+            }
+            return sz;        
+        } else {
+            while (objects.containsKey(new ObjectKey(key, p, sz)) &&
+                    ((LinkedList) objects.get(new ObjectKey(key, p, sz)))
+                    .getLast() != null) {
+                sz++;
+            }
+            return sz;
+        }
     }
 
     /** Returns the width of the map in tiles.
@@ -290,27 +304,46 @@ public final class WorldOverlay implements World {
     }
 
     public Iterator getIterator(KEY k) {
-        return new OverlayIterator(k, null);
+        return new OverlayIterator(k, null, true);
     }
 
     public Iterator getIterator(KEY k, FreerailsPrincipal p) {
-        return new OverlayIterator(k, p);
+        return new OverlayIterator(k, p, true);
     }
-    
+        
+    public Iterator getObjectKey2Iterator(KEY k) {
+        return new OverlayIterator(k, null, false);
+    }
+
+    public Iterator getObjectKey2Iterator(KEY k, FreerailsPrincipal p) {
+        return new OverlayIterator(k, p, false);
+    }
+
     private class OverlayIterator implements Iterator {
         private FreerailsPrincipal p;
         private KEY k;
         private Object nextObject;
+        private boolean getValues;
         Iterator i1;
         Iterator i2;
         
-        public OverlayIterator(KEY k, FreerailsPrincipal p) {
+        /**
+         * @param getValues true if we should return values, false if we should 
+         * return keys
+         */
+        public OverlayIterator(KEY k, FreerailsPrincipal p, boolean getValues) {
             this.k = k;
             this.p = p;
-            if (p != null)
-                i1 = world.getIterator(k, p);
-            else
+            this.getValues = getValues;
+            if (p != null) {
+                if (getValues) {
+                    i1 = world.getIterator(k, p);
+                } else {
+                    i1 = world.getObjectKey2Iterator(k, p);
+                }
+            } else {
                 i1 = world.getIterator(k);
+            }
             
             i2 = objects2.entrySet().iterator();            
             nextObject = nextImpl();
@@ -341,7 +374,11 @@ public final class WorldOverlay implements World {
                         ! p.equals(((ObjectKey2) e.getKey()).principal)) {
                     continue;
                 }
-                return e.getValue();
+                if (getValues) {
+                    return ((LinkedList) e.getValue()).getLast();
+                } else {
+                    return e.getKey();
+                }                
             }
             return null;            
         }
@@ -375,6 +412,6 @@ public final class WorldOverlay implements World {
     }
 
     public boolean contains(ObjectKey2 object) {
-        return get(object) == null;
+        return get(object) != null;
     }        
 }

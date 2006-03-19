@@ -20,11 +20,13 @@
  */
 package org.railz.client.view;
 
+import java.util.Iterator;
 import org.railz.client.model.ModelRoot;
 import org.railz.world.common.*;
 import org.railz.world.station.StationModel;
 import org.railz.world.top.KEY;
 import org.railz.world.top.NonNullElements;
+import org.railz.world.top.ObjectKey2;
 import org.railz.world.top.ReadOnlyWorld;
 
 /**
@@ -44,15 +46,15 @@ public class NearestStationFinder {
 	world = mr.getWorld();
     }
 
-    public int findNearestStation(int x, int y) {
+    public ObjectKey2 findNearestStation(int x, int y) {
 	//Find nearest station.
 	int distanceToClosestSquared = Integer.MAX_VALUE;
 
-	NonNullElements it = new NonNullElements(KEY.STATIONS, world,
+	Iterator it = world.getIterator(KEY.STATIONS,
 		modelRoot.getPlayerPrincipal());
-	int nearestStation = NOT_FOUND;
-	while (it.next()) {
-	    StationModel station = (StationModel) it.getElement();
+	ObjectKey2 nearestStation = null;
+	while (it.hasNext()) {
+	    StationModel station = (StationModel) it.next();
 
 	    int deltaX = x - station.x;
 
@@ -61,38 +63,40 @@ public class NearestStationFinder {
 	    if (distanceSquared < distanceToClosestSquared
 		    && MAX_DISTANCE_TO_SELECT_SQUARED > distanceSquared) {
 		distanceToClosestSquared = distanceSquared;
-		nearestStation = it.getIndex();
+		nearestStation = new ObjectKey2(KEY.STATIONS, 
+                        modelRoot.getPlayerPrincipal(), station.getUUID());
 
 	    }
 	}
 	return nearestStation;
     }
 
-    public int findNearestStationInDirection(
-	    int startStation,
+    public ObjectKey2 findNearestStationInDirection(
+	    ObjectKey2 startStationKey,
 	    byte direction) {
 	int distanceToClosestSquared = Integer.MAX_VALUE;
-	NonNullElements it = new NonNullElements(KEY.STATIONS, world,
+	Iterator it = world.getIterator(KEY.STATIONS,
 		modelRoot.getPlayerPrincipal());
 
 	StationModel currentStation =
-	    (StationModel) world.get(KEY.STATIONS, startStation,
-				     modelRoot.getPlayerPrincipal());
+	    (StationModel) world.get(startStationKey);
 
-	int nearestStation = NOT_FOUND;
+	ObjectKey2 nearestStation = null;
 
-	while (it.next()) {
-	    StationModel station = (StationModel) it.getElement();
+	while (it.hasNext()) {
+	    StationModel station = (StationModel) it.next();
 	    int deltaX = station.x - currentStation.x;
 	    int deltaY = station.y - currentStation.y;
 	    int distanceSquared = deltaX * deltaX + deltaY * deltaY;			
 	    byte directionOfStation;						
 	    boolean closer = distanceSquared < distanceToClosestSquared;
-	    boolean notTheSameStation = startStation != it.getIndex();
+	    boolean notTheSameStation = ! startStationKey.uuid.equals
+                    (station.getUUID());
 	    boolean inRightDirection = isInRightDirection(direction, deltaX, deltaY);
 	    if (closer && inRightDirection && notTheSameStation) {
 		distanceToClosestSquared = distanceSquared;
-		nearestStation = it.getIndex();				
+		nearestStation = new ObjectKey2(KEY.STATIONS, 
+                        modelRoot.getPlayerPrincipal(), station.getUUID());				
 	    }
 	}
 	return nearestStation;

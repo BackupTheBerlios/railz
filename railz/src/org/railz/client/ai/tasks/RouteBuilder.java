@@ -122,18 +122,13 @@ class RouteBuilder extends TaskPlanner {
 	cargoPaymentCalculator = new
 	    CargoPaymentCalculator(aiClient.getWorld());
 
-	/* initialise cost of large station */
-	NonNullElements i = new NonNullElements(KEY.BUILDING_TYPES,
-		aiClient.getWorld(), Player.AUTHORITATIVE);
-	while (i.next()) {
-	    BuildingType bt = (BuildingType) i.getElement();
-	    if (bt.getStationRadius() > LARGE_STATION_RADIUS) {
-		LARGE_STATION_RADIUS = bt.getStationRadius();
-		LARGE_STATION_COST = bt.getBaseValue();
-	    }	
-	}
-	
 	WorldConstants.init(aiClient.getWorld());
+
+        /* initialise cost of large station */
+        BuildingType bt = (BuildingType) aiClient.getWorld().get(KEY.BUILDING_TYPES, 
+                WorldConstants.get().BT_LARGE_STATION, Player.AUTHORITATIVE);
+        LARGE_STATION_RADIUS = bt.getStationRadius();
+        LARGE_STATION_COST = bt.getBaseValue();	
     }
 
     /**
@@ -156,11 +151,11 @@ class RouteBuilder extends TaskPlanner {
 	    int nStations = 0;
 	    cityModelViewer.setCityModel((CityModel) w.get(KEY.CITIES, ce.city1,
 			Player.AUTHORITATIVE));
-	    if ((ce.station1 = cityModelViewer.hasStation(p)) >= 0)
+	    if ((ce.station1 = cityModelViewer.hasStation(p)) != null)
 		nStations++;
 	    cityModelViewer.setCityModel((CityModel) w.get(KEY.CITIES, ce.city2,
 			Player.AUTHORITATIVE));
-	    if ((ce.station2 = cityModelViewer.hasStation(p)) >= 0)
+	    if ((ce.station2 = cityModelViewer.hasStation(p)) != null)
 		nStations++;
 	    if (nStations == 0 || nStations == 2) {
 		logger.log(Level.INFO, "Discarded route " + ce);
@@ -582,17 +577,17 @@ class RouteBuilder extends TaskPlanner {
     private void doDetailedCostEstimation(CityEntry ce) {
 	ArrayList sites1 = new ArrayList();
 	ArrayList sites2 = new ArrayList();
-	if (ce.station1 >= 0) {
+	if (ce.station1 != null) {
 	    StationModel sm = (StationModel) aiClient.getWorld().get
-		(KEY.STATIONS, ce.station1, aiClient.getPlayerPrincipal());
+		(ce.station1);
 	    ce.site1 = new Point(sm.getStationX(), sm.getStationY());
 	    sites1.add(ce.site1);
 	} else {
 	    setupStationSites(ce.city1, sites1);
 	}
-	if (ce.station2 >= 0) {
+	if (ce.station2 != null) {
 	    StationModel sm = (StationModel) aiClient.getWorld().get
-		(KEY.STATIONS, ce.station2, aiClient.getPlayerPrincipal());
+		(ce.station2);
 	    ce.site2 = new Point(sm.getStationX(), sm.getStationY());
 	    sites2.add(ce.site2);
 	} else {
@@ -697,10 +692,10 @@ class RouteBuilder extends TaskPlanner {
 		    " was found");
 
             // store in CityEntry the site for the station
-            if (ce.station1 < 0) {
+            if (ce.station1 == null) {
                 ce.site1 = cd.p1;
             }
-            if (ce.station2 < 0) {
+            if (ce.station2 == null) {
                 ce.site2 = cd.p2;
             }
             
@@ -742,17 +737,16 @@ class RouteBuilder extends TaskPlanner {
      * Setup the SupplyDemandViewer with either the location corresponding to
      * the stationId if specified, or the city using the city radius.
      */
-    private void setupSupplyDemandViewer(int stationId, int cityId,
+    private void setupSupplyDemandViewer(ObjectKey2 stationKey, int cityId,
 	    SupplyDemandViewer sdv) {
 	ReadOnlyWorld w = aiClient.getWorld();
-	if (stationId == -1) {
+	if (stationKey == null) {
 	    CityModel cm = (CityModel) w.get(KEY.CITIES,
 		    cityId, Player.AUTHORITATIVE);
 	    sdv.setStationNotBuilt(true);
 	    sdv.setLocation(cm.getCityX(), cm.getCityY(), cm.getCityRadius());
 	} else {
-	    StationModel sm = (StationModel) w.get
-		(KEY.STATIONS, stationId, aiClient.getPlayerPrincipal());
+	    StationModel sm = (StationModel) w.get (stationKey);
 	    FreerailsTile ft = (FreerailsTile) w.getTile(sm.getStationX(),
 		    sm.getStationY());
 	    BuildingType bt = (BuildingType) w.get(KEY.BUILDING_TYPES, 
@@ -805,17 +799,17 @@ class RouteBuilder extends TaskPlanner {
 	    }
 	}
 
-    private Transaction[] getTransactions(int stationId, int cityId,
+    private Transaction[] getTransactions(ObjectKey2 stationKey, int cityId,
 	    CargoBundle cb, long t) {
 	int x, y;
-	if (stationId < 0) {
+	if (stationKey == null) {
 	    CityModel cm = (CityModel) aiClient.getWorld().get
 		(KEY.CITIES, cityId, Player.AUTHORITATIVE);
 	    x = cm.getCityX();
 	    y = cm.getCityY();
 	} else {
 	    StationModel sm = (StationModel) aiClient.getWorld().get
-		(KEY.STATIONS, stationId, aiClient.getPlayerPrincipal());
+		(stationKey);
 	    x = sm.getStationX();
 	    y = sm.getStationY();
 	}
@@ -828,13 +822,13 @@ class RouteBuilder extends TaskPlanner {
      * station or city.
      */
     private CargoBundle getCargoBundle
-	(int stationId, int cityId, int[] amounts) {
+	(ObjectKey2 stationKey, int cityId, int[] amounts) {
 	CargoBatch cb;
 	MutableCargoBundle cBundle = new MutableCargoBundle();
 	int x, y;
-	if (stationId >= 0) {
+	if (stationKey != null) {
 	    StationModel sm = (StationModel) aiClient.getWorld().get
-		(KEY.STATIONS, stationId, aiClient.getPlayerPrincipal());
+		(stationKey);
 	    x = sm.getStationX();
 	    y = sm.getStationY();
 	} else {
@@ -845,7 +839,7 @@ class RouteBuilder extends TaskPlanner {
 	}
 	for (int i = 0; i < nCargoTypes; i++) {
 		cb = new CargoBatch(i, x, y,
-		       	0L, stationId);
+		       	0L, stationKey);
 		cBundle.addCargo(cb, amounts[i]);
 	}
 	return new CargoBundle(cBundle);

@@ -44,8 +44,8 @@ import org.railz.world.top.*;
  */
 class StationJPanel extends javax.swing.JPanel {
     private ModelRoot modelRoot;
-    private ObjectKey stationKey;
-    private World2ListModelAdapter w2lma;
+    private ObjectKey2 stationKey;
+    private World2ListModelAdapter2 w2lma;
     private static final int ICON_HEIGHT = 12;
 
     private void updateButtonInfo(int improvementId) {
@@ -55,8 +55,7 @@ class StationJPanel extends javax.swing.JPanel {
 	impNameJLabel.setText(Resources.get(si.getName()));
 	impDescrJTextArea.setText(Resources.get(si.getDescription()));
 	StationModelViewer smv = new StationModelViewer(modelRoot.getWorld());
-	StationModel sm = (StationModel) modelRoot.getWorld().get(KEY.STATIONS,
-		stationKey.index, stationKey.principal);
+	StationModel sm = (StationModel) modelRoot.getWorld().get(stationKey);
 	smv.setStationModel(sm);
 	impCostJLabel.setText("$" + smv.getImprovementCost(improvementId));
 	purchaseInfoJPanel.repaint();
@@ -101,8 +100,7 @@ class StationJPanel extends javax.swing.JPanel {
     private void updateAvailableImprovements() {
 	availableImprovementsJPanel.removeAll();
 
-	StationModel sm = (StationModel) modelRoot.getWorld().get
-	    (stationKey.key, stationKey.index, stationKey.principal);
+	StationModel sm = (StationModel) modelRoot.getWorld().get(stationKey);
 	StationModelViewer smv = new StationModelViewer(modelRoot.getWorld());
 	smv.setStationModel(sm);
 	for (int i = 0; i <
@@ -120,8 +118,8 @@ class StationJPanel extends javax.swing.JPanel {
     private ListDataListener availableImprovementsListener =
        	new ListDataListener() {
 	public void contentsChanged(ListDataEvent e) {
-	    if (e.getIndex0() <= stationKey.index &&
-		    e.getIndex1() >= stationKey.index) {
+	    if (e.getIndex0() <= w2lma.getIndex(stationKey) &&
+		    e.getIndex1() >= w2lma.getIndex(stationKey)) {
 		updateAvailableImprovements();
 	    }
 	}
@@ -183,11 +181,10 @@ class StationJPanel extends javax.swing.JPanel {
 	public void contentsChanged(ListDataEvent e) {
 	    int[] oldImprovements;
 	    oldImprovements = improvements;
-	    if (e.getIndex0() <= stationKey.index &&
-		stationKey.index <= e.getIndex1()) {
-		StationModel sm = (StationModel)
-		    modelRoot.getWorld().get(stationKey.key, stationKey.index,
-		    stationKey.principal);
+	    if (e.getIndex0() <= w2lma.getIndex(stationKey) &&
+		w2lma.getIndex(stationKey) <= e.getIndex1()) {
+		StationModel sm = (StationModel) 
+                    modelRoot.getWorld().get(stationKey);
 		improvements = sm.getImprovements();
 		if (improvements.length > oldImprovements.length) {
 		    fireIntervalAdded(this, oldImprovements.length,
@@ -213,8 +210,7 @@ class StationJPanel extends javax.swing.JPanel {
 	public PurchasedImprovementsListModel() {
 	    w2lma.addListDataListener(this);
 	    StationModel stationModel = (StationModel)
-		modelRoot.getWorld().get(stationKey.key, stationKey.index,
-			stationKey.principal);
+		modelRoot.getWorld().get(stationKey);
 		improvements = stationModel.getImprovements();
 	}
 
@@ -228,11 +224,11 @@ class StationJPanel extends javax.swing.JPanel {
 	}
     }
 
-    public void setup(ModelRoot mr, ObjectKey stationKey) {
+    public void setup(ModelRoot mr, ObjectKey2 stationKey) {
 	modelRoot = mr;
 	this.stationKey = stationKey;
 
-	w2lma = new World2ListModelAdapter(modelRoot.getWorld(),
+	w2lma = new World2ListModelAdapter2(modelRoot.getWorld(),
 		stationKey.key, stationKey.principal,
 		modelRoot.getMoveChainFork());
 
@@ -251,8 +247,7 @@ class StationJPanel extends javax.swing.JPanel {
 
     private void update() {
 	ReadOnlyWorld w = modelRoot.getWorld();
-	StationModel sm = (StationModel) w.get(stationKey.key,
-		stationKey.index, stationKey.principal);
+	StationModel sm = (StationModel) w.get(stationKey);
 
 	// display station name
 	nameJLabel.setText(sm.getStationName());

@@ -26,6 +26,7 @@ import java.util.*;
 
 import org.railz.world.common.FreerailsSerializable;
 import org.railz.world.top.ObjectKey;
+import org.railz.world.top.ObjectKey2;
 
 /**
  * This class represents a train's schedule.  That is, which stations that the
@@ -81,7 +82,7 @@ public class MutableSchedule implements Schedule {
         return ((TrainOrdersModel) orders.get(i));
     }
 
-    public void removeAllStopsAtStation(ObjectKey stationNumber) {
+    public void removeAllStopsAtStation(ObjectKey2 station) {
 	while (!orders.isEmpty())
 	    orders.remove(0);
     }

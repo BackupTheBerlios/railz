@@ -28,9 +28,12 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -60,12 +63,14 @@ implements MoveReceiver {
     private static final int ICON_HEIGHT = 12;
     private ModelRoot modelRoot;
     private GUIRoot guiRoot;
-    private WorldIterator wi;
+    private World2ListModelAdapter2 stationsListModel;
+    private ObjectKey2 currentStation;
     private boolean ignoreMoves = true;
     private ReadOnlyWorld world;
     private StationTableModel stationTableModel;
     private StationTableCellRenderer stationTableCellRenderer;
     private ModdableResourceFinder graphicsResourceFinder;
+    private StationsListener stationsListener;
     
     /**
      * The index of the cargoBundle associated with this station
@@ -114,6 +119,9 @@ implements MoveReceiver {
 	}
     }
 
+    /**
+     * The table model for the supply and demand at this station
+     */
     private class StationTableModel extends AbstractTableModel {
 	/**
 	 * Array of StationTableRow
@@ -142,13 +150,12 @@ implements MoveReceiver {
 
 	public void updateModel() {
 	    rows.clear();
-	    if (wi.getIndex() == WorldIterator.BEFORE_FIRST) {
+	    if (currentStation == null) {
 		fireTableDataChanged();
 		return;
 	    }
 
-	    StationModel station = (StationModel) world.get(KEY.STATIONS,
-		    wi.getIndex(), modelRoot.getPlayerPrincipal());
+	    StationModel station = (StationModel) world.get(currentStation);
 	    CargoBundle cb = (CargoBundle) 
                 world.get(station.getCargoBundle());
 	    for (int i = 0; i < world.size(KEY.CARGO_TYPES,
@@ -188,8 +195,7 @@ implements MoveReceiver {
     ActionListener infoJButtonListener = new ActionListener() {
 	public void actionPerformed(ActionEvent e) {
 	    StationJPanel sjp = new StationJPanel();
-	    sjp.setup(modelRoot, new ObjectKey(KEY.STATIONS,
-			modelRoot.getPlayerPrincipal(), wi.getIndex()));
+	    sjp.setup(modelRoot, currentStation);
 	    guiRoot.getDialogueBoxController().showContent(sjp);
 	}
     };
@@ -333,11 +339,13 @@ implements MoveReceiver {
     java.awt.event.ActionEvent evt) {
 		//GEN-FIRST:event_previousStationActionPerformed
         // Add your handling code here:
-        if (wi.previous()) {
-            Point p =
-            new Point(
-            ((StationModel) wi.getElement()).getStationX(),
-            ((StationModel) wi.getElement()).getStationY());
+        int currentIndex = stationsListModel.getIndex(currentStation);
+        if (currentIndex > 0)
+        {
+            currentStation = stationsListModel.getKey(currentIndex - 1);
+            StationModel sm = (StationModel) stationsListModel.getElementAt
+                    (currentIndex - 1);
+            Point p = new Point(sm.getStationX(), sm.getStationY());
             modelRoot.getCursor().tryMoveCursor(p);
             
             display();
@@ -350,11 +358,12 @@ implements MoveReceiver {
     java.awt.event.ActionEvent evt) {
 		//GEN-FIRST:event_nextStationActionPerformed
         // Add your handling code here:
-        if (wi.next()) {
-            Point p =
-            new Point(
-            ((StationModel) wi.getElement()).getStationX(),
-            ((StationModel) wi.getElement()).getStationY());
+        int currentIndex = stationsListModel.getIndex(currentStation);
+        if (currentIndex >= 0 && currentIndex + 1 < stationsListModel.getSize()) {
+            currentStation = stationsListModel.getKey(currentIndex + 1);
+            StationModel sm = (StationModel) 
+                stationsListModel.getElementAt(currentIndex + 1);
+            Point p = new Point(sm.getStationX(), sm.getStationY());
             modelRoot.getCursor().tryMoveCursor(p);
             display();
         } else {
@@ -365,8 +374,10 @@ implements MoveReceiver {
     
     public void setup(ModelRoot mr) {
 	modelRoot = mr;
-	this.wi = new NonNullElements(KEY.STATIONS, modelRoot.getWorld(),
-		modelRoot.getPlayerPrincipal());
+	setListModel(new World2ListModelAdapter2(modelRoot.getWorld(), 
+                KEY.STATIONS, 
+		modelRoot.getPlayerPrincipal(), 
+                modelRoot.getMoveChainFork()));
         addComponentListener(componentListener);
 	modelRoot.getMoveChainFork().addSplitMoveReceiver(this);
 	world = modelRoot.getWorld();
@@ -377,34 +388,37 @@ implements MoveReceiver {
 	    setCellRenderer(stationTableCellRenderer);
     }
     
-    public void setStation(int stationNumber) {
-        this.wi.gotoIndex(stationNumber);
+    public void setStation(ObjectKey2 key) {
+        currentStation = key;
         display();
     }
     
     public void display() {
-	jButton1.setEnabled(wi.getRowNumber() >= 0);
-
-        if (wi.getRowNumber() > 0) {
+        int currentIndex = -1;
+        if (currentStation != null) {
+            currentIndex = stationsListModel.getIndex(currentStation);
+            jButton1.setEnabled(true);
+        }
+        
+        if (currentStation != null && currentIndex > 0) {
             this.previousStation.setEnabled(true);
         } else {
             this.previousStation.setEnabled(false);
         }
         
-        if (wi.getRowNumber() < (wi.size() - 1)) {
+        if (currentStation != null &&
+                currentIndex < (stationsListModel.getSize() - 1)) {
             this.nextStation.setEnabled(true);
         } else {
             this.nextStation.setEnabled(false);
         }
         stationTableModel.updateModel();
 	jPanel1.removeAll();
-
-        int stationNumber = wi.getIndex();
+        
         String label;
-        if (stationNumber != WorldIterator.BEFORE_FIRST) {
+        if (currentStation != null) {
             StationModel station =
-	    (StationModel) world.get(KEY.STATIONS, stationNumber,
-				     modelRoot.getPlayerPrincipal());
+                (StationModel) world.get(currentStation);
             FreerailsTile tile = world.getTile(station.x, station.y);
 	    String stationTypeName = ((BuildingType)
 		    world.get(KEY.BUILDING_TYPES,
@@ -439,16 +453,16 @@ implements MoveReceiver {
     
     ComponentAdapter componentListener = new ComponentAdapter() {
         public void componentHidden(ComponentEvent e) {
-            ignoreMoves = true;
+            stationsListModel.dispose();            
         }
         
         public void componentShown(ComponentEvent e) {
-            ignoreMoves = false;
-            int i = wi.getIndex();
-            wi.reset();
-            if (i != WorldIterator.BEFORE_FIRST) {
-                wi.gotoIndex(i);
-            }
+            setListModel(new World2ListModelAdapter2(modelRoot.getWorld(),
+                    KEY.STATIONS, modelRoot.getPlayerPrincipal(),
+                    modelRoot.getMoveChainFork()));
+            if (currentStation != null &&
+                    ! modelRoot.getWorld().contains(currentStation))
+                currentStation = null;
             display();
         }
     };
@@ -463,36 +477,49 @@ implements MoveReceiver {
             if (key.equals(cargoBundleKey)) {
                 /* update our cargo bundle */
                 display();
-                return;
+                return;        
             }
         }         
-        if (!(move instanceof ListMove)) {
-            return;
+    }
+    
+    private void setListModel(World2ListModelAdapter2 w2lma2) {
+        if (stationsListener != null) {
+            // unregister the old listeners
+            stationsListModel.removeListDataListener(stationsListener);
+            stationsListener = null;
         }
-        ListMove lm = (ListMove) move;
-        int currentIndex = wi.getIndex();
-        int changedIndex = lm.getIndex();
-        KEY key = lm.getKey();
-        if (key == KEY.STATIONS) {
-            wi.reset();
-            if (currentIndex != WorldIterator.BEFORE_FIRST) {
-                wi.gotoIndex(currentIndex);
-            }
-            if (lm instanceof AddItemToListMove
-            && wi.getIndex() == WorldIterator.BEFORE_FIRST) {
-                if (wi.next()) {
-                    display();
-                }
-            }
-            if (changedIndex < currentIndex) {
-                previousStation.setEnabled(lm.getBefore() != null);
-            } else if (changedIndex > currentIndex) {
-                nextStation.setEnabled(lm.getAfter() != null);
-            } else {
+        
+        stationsListModel = w2lma2;
+        if (stationsListModel != null)
+            stationsListModel.addListDataListener(new StationsListener());
+    }
+    
+    private class StationsListener implements ListDataListener {
+        public void contentsChanged(ListDataEvent e) {
+            if (stationsListModel.getIndex(currentStation) >= e.getIndex0() &&
+                    stationsListModel.getIndex(currentStation) <= e.getIndex1()) {
                 display();
             }
         }
-        return;
+
+        public void intervalRemoved(ListDataEvent e) {
+            if (stationsListModel.getIndex(currentStation) < 0) {
+                // the station was removed
+                if (stationsListModel.getSize() > 0) {
+                    currentStation = stationsListModel.getKey(0);
+                } else {
+                    currentStation = null;
+                }
+                display();
+            }
+        }
+
+        public void intervalAdded(ListDataEvent e) {
+            if (currentStation == null) {
+                currentStation = stationsListModel.getKey(0);
+            }
+            display();
+        }        
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -40,7 +40,7 @@ import org.railz.world.player.Player;
 public class ChangeProductionAtEngineShopMove implements Move {
     final ProductionAtEngineShop before;
     final ProductionAtEngineShop after;
-    final int stationNumber;
+    final ObjectKey2 stationKey;
 
     private FreerailsPrincipal principal;
 
@@ -49,23 +49,22 @@ public class ChangeProductionAtEngineShopMove implements Move {
     }
 
     public ChangeProductionAtEngineShopMove(ProductionAtEngineShop b,
-        ProductionAtEngineShop a, int station, FreerailsPrincipal p) {
+        ProductionAtEngineShop a, ObjectKey2 stationKey, FreerailsPrincipal p) {
         this.before = b;
         this.after = a;
-        this.stationNumber = station;
+        this.stationKey = stationKey;
 	this.principal = p;
     }
 
     public MoveStatus tryDoMove(World w, FreerailsPrincipal p) {
-	/* Player must have at least 2 stations */
-	NonNullElements i = new NonNullElements(KEY.STATIONS, w, p);
-	int n = 0;
-	while (i.next() && n < 2) 
-	    n++;
-	
-	if (n < 2)
+	/* Player must have at least 2 stations */	
+	if (w.size(KEY.STATIONS, p) < 2)
 	    return MoveStatus.moveFailed("Need at least 2 stations");
 
+        // p must be the same player as owns the station
+        if (! p.equals(Player.AUTHORITATIVE) && ! p.equals(stationKey.principal))
+            return MoveStatus.moveFailed("Not your station");
+        
 	/* new engineType must be available */
 	if (after != null) {
 	    int etIndex = after.getEngineType();
@@ -81,14 +80,9 @@ public class ChangeProductionAtEngineShopMove implements Move {
     private MoveStatus tryMove(World w, ProductionAtEngineShop stateA,
 	    FreerailsPrincipal p) {
         //Check that the specified station exists.
-        if (!w.boundsContain(KEY.STATIONS, this.stationNumber, p)) {
-            return MoveStatus.MOVE_FAILED;
-        }
+	StationModel station = (StationModel) w.get(stationKey);
 
-	StationModel station = (StationModel)w.get(KEY.STATIONS,
-		stationNumber, p);
-
-        if (null == station) {
+        if (station == null) {
             return MoveStatus.MOVE_FAILED;
         }
 
@@ -116,10 +110,9 @@ public class ChangeProductionAtEngineShopMove implements Move {
         MoveStatus status = tryDoMove(w, p);
 
         if (status.isOk()) {
-            StationModel station = (StationModel)w.get(KEY.STATIONS,
-		    stationNumber, p);
+            StationModel station = (StationModel) w.get(stationKey);
             station = new StationModel(station, this.after);
-            w.set(KEY.STATIONS, stationNumber, station, p);
+            w.set(stationKey, station);
         }
 
         return status;
@@ -129,10 +122,9 @@ public class ChangeProductionAtEngineShopMove implements Move {
         MoveStatus status = tryUndoMove(w, p);
 
         if (status.isOk()) {
-            StationModel station = (StationModel)w.get(KEY.STATIONS,
-                    stationNumber, p);
+            StationModel station = (StationModel) w.get(stationKey);
             station = new StationModel(station, this.before);
-            w.set(KEY.STATIONS, stationNumber, station, p);
+            w.set(stationKey, station);
         }
 
         return status;
@@ -145,19 +137,16 @@ public class ChangeProductionAtEngineShopMove implements Move {
 		return false;
 	    }
 
-            boolean stationNumbersEqual = (this.stationNumber == arg.stationNumber);
+            boolean stationKeysEqual = stationKey.equals(arg.stationKey);
             boolean beforeFieldsEqual = (before == null ? arg.before == null
                                                         : before.equals(arg.before));
             boolean afterFieldsEqual = (after == null ? arg.after == null
                                                       : after.equals(arg.after));
 
-            if (stationNumbersEqual && beforeFieldsEqual && afterFieldsEqual) {
+            if (stationKeysEqual && beforeFieldsEqual && afterFieldsEqual) {
                 return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
+            } 
+        } 
+        return false;
     }
 }

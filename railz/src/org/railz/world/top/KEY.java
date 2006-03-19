@@ -36,7 +36,7 @@ public final class KEY implements FreerailsSerializable {
     public static final KEY CITIES = new KEY(true, false, false);
     public static final KEY ENGINE_TYPES = new KEY(true, false, false);
     public static final KEY TRACK_RULES = new KEY(true, false, false);
-    public static final KEY STATIONS = new KEY(false, false, false);
+    public static final KEY STATIONS = new KEY(false, false, true);
     public static final KEY TERRAIN_TYPES = new KEY(true, false, false);
     public static final KEY WAGON_TYPES = new KEY(true, false, false);
     public static final KEY BANK_ACCOUNTS = new KEY(false, false, false);
@@ -73,7 +73,7 @@ public final class KEY implements FreerailsSerializable {
      * This is meant to be a temporary property until all object types are
      * converted to use it.
      */
-    final boolean usesObjectKey2;
+    public final boolean usesObjectKey2;
     
     /**
      * @param shared Whether the objects are common to all Principals in the

@@ -28,6 +28,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import javax.swing.JComponent;
 
@@ -36,6 +37,7 @@ import org.railz.client.model.ModelRoot;
 import org.railz.world.station.StationModel;
 import org.railz.world.top.KEY;
 import org.railz.world.top.NonNullElements;
+import org.railz.world.top.ObjectKey2;
 import org.railz.world.top.ReadOnlyWorld;
 import org.railz.world.track.FreerailsTile;
 import org.railz.world.train.Schedule;
@@ -55,7 +57,7 @@ public class SelectStationJPanel extends javax.swing.JPanel {
     private int trainID = 0;
     private double scale = 1;
     private boolean needsUpdating = true;
-    private int selectedStationID = 0;
+    private ObjectKey2 selectedStationKey = null;
     private StationMapJPanel stationMapJPanel;
     
     public void addActionListener(ActionListener l) {
@@ -125,12 +127,12 @@ public class SelectStationJPanel extends javax.swing.JPanel {
 
 	    NearestStationFinder stationFinder = new
 		NearestStationFinder(modelRoot);
-	    int station = stationFinder.findNearestStation((int)x, (int)y);
+	    ObjectKey2 station = stationFinder.findNearestStation((int)x, (int)y);
 
-	    if(selectedStationID != station && station !=
-		    NearestStationFinder.NOT_FOUND) {
-		selectedStationID = station;
-		cargoWaitingAndDemandedJPanel1.display(selectedStationID);
+	    if(selectedStationKey != null &&
+                    ! selectedStationKey.equals(station)) {
+		selectedStationKey = station;
+		cargoWaitingAndDemandedJPanel1.display(selectedStationKey);
 		repaint();
 	    }
 	}
@@ -149,10 +151,9 @@ public class SelectStationJPanel extends javax.swing.JPanel {
 	    int bottomRightX = 0;
 	    int bottomRightY = 0;
 
-	    NonNullElements it = new NonNullElements(KEY.STATIONS, world,
-		    modelRoot.getPlayerPrincipal());
-	    while(it.next()){
-		StationModel station = (StationModel)it.getElement();
+            Iterator i = world.getIterator(KEY.STATIONS, modelRoot.getPlayerPrincipal());
+            while(i.hasNext()){
+		StationModel station = (StationModel) i.next();
 		if(station.x < topLeftX) topLeftX = station.x;
 		if(station.y < topLeftY) topLeftY = station.y;
 		if(station.x > bottomRightX) bottomRightX = station.x;
@@ -218,14 +219,14 @@ public class SelectStationJPanel extends javax.swing.JPanel {
 	     * player
 	    */
 	    Graphics2D g2 = (Graphics2D)g;
-	    NonNullElements it = new NonNullElements(KEY.STATIONS, world,
+            Iterator i = world.getIterator(KEY.STATIONS,
 		    modelRoot.getPlayerPrincipal());
 
 	    //Draw background
 	    zomr.paintRect(g2, null);
 
 	    //Draw stations
-	    while(it.next()){
+	    while(i.hasNext()){
 
 		/*
 		 * (1)	The selected station is drawn green.
@@ -239,7 +240,7 @@ public class SelectStationJPanel extends javax.swing.JPanel {
 		 * (6)	The stop numbers drawn above the stations are drawn
 		 * using the same colour as used to draw the station.
 		 */
-		StationModel station = (StationModel)it.getElement();
+		StationModel station = (StationModel) i.next();
 		double x = station.x - visibleMapTiles.x;
 		x = x * scale;
 		double y = station.y - visibleMapTiles.y;
@@ -251,10 +252,10 @@ public class SelectStationJPanel extends javax.swing.JPanel {
 		boolean stationIsOnSchedule = false;
 		for(int orderNumber = 0; orderNumber <
 			schedule.getNumOrders(); orderNumber++) {
-		    int stationID = (orderNumber == selectedOrderNumber)
-			? selectedStationID :
-			schedule.getOrder(orderNumber).getStationNumber().index;
-		    if(it.getIndex() == stationID){
+		    ObjectKey2 stationKey = (orderNumber == selectedOrderNumber)
+			? selectedStationKey :
+			schedule.getOrder(orderNumber).getStation();
+		    if(station.getUUID().equals(stationKey.uuid)) {
 			if(stationIsOnSchedule){
 			    stopNumbersString = stopNumbersString + ", " + 
 				String.valueOf(orderNumber+1);
@@ -265,7 +266,7 @@ public class SelectStationJPanel extends javax.swing.JPanel {
 		    }
 		}
 		if(stationIsOnSchedule){
-		    if(it.getIndex() == selectedStationID){
+		    if(station.getUUID().equals(selectedStationKey.uuid)) {
 			g2.setColor(Color.GREEN);
 		    }else{
 			g2.setColor(Color.BLUE);
@@ -372,13 +373,13 @@ public class SelectStationJPanel extends javax.swing.JPanel {
 	stationMapJPanel.setStationSchedule(schedule);
 
         TrainOrdersModel order = schedule.getOrder(selectedOrderNumber);
-        this.selectedStationID = order.getStationNumber().index;
+        this.selectedStationKey = order.getStation();
         
         //Set the text on the title JLabel.
         this.jLabel1.setText("Train #"+String.valueOf(trainID+1)+" Stop "+String.valueOf(selectedOrderNumber+1));
         
         //Set the station info panel to show the current selected station.
-        cargoWaitingAndDemandedJPanel1.display(selectedStationID);
+        cargoWaitingAndDemandedJPanel1.display(selectedStationKey);
 	revalidate();
     }
     
@@ -398,8 +399,8 @@ public class SelectStationJPanel extends javax.swing.JPanel {
         add(stationMapJPanel, gridBagConstraints);
     }
     
-    public int getSelectedStationID(){
-        return this.selectedStationID;
+    public ObjectKey2 getSelectedStationKey(){
+        return this.selectedStationKey;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

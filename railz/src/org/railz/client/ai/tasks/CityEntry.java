@@ -35,10 +35,10 @@ final class CityEntry implements Comparable {
     int city1;
     /** index to CITIES table */
     int city2;
-    /** index to STATIONS table */
-    int station1 = -1;
-    /** index to STATIONS table */
-    int station2 = -1;
+    /** key in STATIONS table */
+    ObjectKey2 station1 = null;
+    /** key in STATIONS table */
+    ObjectKey2 station2 = null;
 
     /** Distance between city1 and city2 */
     PathLength distance;
@@ -112,11 +112,11 @@ final class CityEntry implements Comparable {
 	CityModel cm2 = (CityModel) aiClient.getWorld().get
 	    (KEY.CITIES, city2, Player.AUTHORITATIVE);
 	String s = cm1.getCityName();
-        s += (station1 < 0) ? 
+        s += (station1 == null) ? 
             ((site1 != null) ? "(" + site1.x + ", " + site1.y + ") " : "(?)") :
             "(station " + station1 + ") ";
         s += " <=> " + cm2.getCityName();
-        s += (station2 < 0) ? 
+        s += (station2 == null) ? 
             ((site2 != null) ? "(" + site2.x + ", " + site2.y + ") " : "(?)") :
             "(station " + station2 + ") ";
         s += ", c=" +

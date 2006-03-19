@@ -16,6 +16,7 @@
  */
 package org.railz.world.city;
 
+import java.util.Iterator;
 import org.railz.world.player.*;
 import org.railz.world.station.*;
 import org.railz.world.top.*;
@@ -34,9 +35,9 @@ public class CityModelViewer {
 	cityModel = cm;
     }
 
-    /** @return the index in the STATIONS table of the  station owned by
+    /** @return the ObjectKey2 in the STATIONS table of the  station owned by
      * player p within the city radius, or -1 if there is no station */
-    public int hasStation(FreerailsPrincipal p) {
+    public ObjectKey2 hasStation(FreerailsPrincipal p) {
 	int xmin = cityModel.getCityX() - cityModel.getCityRadius();
 	int xmax = cityModel.getCityX() + cityModel.getCityRadius();
 	int ymin = cityModel.getCityY() - cityModel.getCityRadius();
@@ -47,16 +48,16 @@ public class CityModelViewer {
 	xmax = xmax >= world.getMapWidth() ? world.getMapWidth() - 1 : xmax;
 	ymax = ymax >= world.getMapHeight() ? world.getMapHeight() - 1 : ymax;
 
-	NonNullElements i = new NonNullElements(KEY.STATIONS, world, p);
-	while (i.next()) {
-	    StationModel sm = (StationModel) i.getElement();
+	Iterator  i = world.getIterator(KEY.STATIONS, p);
+	while (i.hasNext()) {
+	    StationModel sm = (StationModel) i.next();
 	    int x = sm.getStationX();
 	    int y = sm.getStationY();
 	    if (x >= xmin && x <= xmax && y >= ymin && y <= ymax) {
-		return i.getIndex();
+		return new ObjectKey2(KEY.STATIONS, p, sm.getUUID());
 	    }
 	}
-	return -1;
+	return null;
     }
 }
 

@@ -134,9 +134,8 @@ public class CargoWaitingAndDemandedJPanel extends javax.swing.JPanel {
         this.world = modelRoot.getWorld();
     }
     
-    public void display(int newStationID) {
-	StationModel station = (StationModel)world.get(KEY.STATIONS,
-		newStationID, modelRoot.getPlayerPrincipal());
+    public void display(ObjectKey2 newStationKey) {
+	StationModel station = (StationModel) world.get(newStationKey);
         this.stationName.setText(station.getStationName());        
         final CargoBundle cargoWaiting = (CargoBundle) world.get
 	    (station.getCargoBundle());

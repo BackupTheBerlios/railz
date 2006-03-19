@@ -50,21 +50,43 @@ public abstract class WorldTest extends TestCase {
     protected FreerailsTile t2 = new FreerailsTile(1, null, null);
     protected FreerailsTile t3 = new FreerailsTile(2, null, null);
 
+    public void testWorldObjectStorage() {
+        World w = getWorld(10, 10);
+        System.out.println("class of w is " + w.getClass().getName());
+        TestWorldObject2 two1 = new TestWorldObject2();
+        TestWorldObject2 two2 = new TestWorldObject2();
+        ObjectKey2 two1Key = new ObjectKey2(KEY.STATIONS, p1, two1.getUUID());
+        ObjectKey2 two2Key = new ObjectKey2(KEY.STATIONS, p1, two2.getUUID());
+        
+        assertEquals(0, w.size(KEY.STATIONS, p1));
+        w.set(two1Key, two1);
+        assertEquals(two1, w.get(two1Key));
+        assertTrue(w.contains(two1Key));
+        assertEquals(1, w.size(KEY.STATIONS, p1));
+        w.set(two2Key, two2);
+        assertEquals(2, w.size(KEY.STATIONS, p1));
+        assertEquals(two1, w.get(two1Key));
+        assertEquals(two2, w.get(two2Key));
+        w.remove(two1Key);
+        assertEquals(1, w.size(KEY.STATIONS, p1));
+        assertFalse(w.contains(two1Key));
+        assertTrue(w.contains(two2Key));        
+    }
 
     public void testObjectStorage() {
-	World w = getWorld(10, 10);
-	w.add(KEY.STATIONS, o1, p1);
-	assertEquals(o1, w.get(KEY.STATIONS, 0, p1));
-	assertTrue(w.boundsContain(KEY.STATIONS, 0, p1));
-	assertFalse(w.boundsContain(KEY.STATIONS, 1, p1));
-	w.set(KEY.STATIONS, 0, o2, p1);
-	assertEquals(o2, w.get(KEY.STATIONS, 0, p1));
-	assertEquals(1, w.size(KEY.STATIONS, p1));
-	w.add(KEY.STATIONS, o2, p1);
-	assertTrue(w.boundsContain(KEY.STATIONS, 1, p1));
-	assertEquals(2, w.size(KEY.STATIONS, p1));
-	assertEquals(o2, w.removeLast(KEY.STATIONS, p1));
-	assertEquals(1, w.size(KEY.STATIONS, p1));
+	World w = getWorld(10, 10);        
+	w.add(KEY.TRAINS, o1, p1);
+	assertEquals(o1, w.get(KEY.TRAINS, 0, p1));
+	assertTrue(w.boundsContain(KEY.TRAINS, 0, p1));
+	assertFalse(w.boundsContain(KEY.TRAINS, 1, p1));
+	w.set(KEY.TRAINS, 0, o2, p1);
+	assertEquals(o2, w.get(KEY.TRAINS, 0, p1));
+	assertEquals(1, w.size(KEY.TRAINS, p1));
+	w.add(KEY.TRAINS, o2, p1);
+	assertTrue(w.boundsContain(KEY.TRAINS, 1, p1));
+	assertEquals(2, w.size(KEY.TRAINS, p1));
+	assertEquals(o2, w.removeLast(KEY.TRAINS, p1));
+	assertEquals(1, w.size(KEY.TRAINS, p1));
     }
 
     public void testItemStorage() {
@@ -108,5 +130,24 @@ public abstract class WorldTest extends TestCase {
 	public int hashCode() {
 	    return id;
 	}
+    }
+    
+    private class TestWorldObject2 implements WorldObject {
+        private UUID uuid = new UUID();
+        
+        public UUID getUUID() {
+            return uuid;
+        }        
+        
+        public boolean equals(Object o) {
+            if (o instanceof WorldObject) {
+                return uuid.equals(((WorldObject) o).getUUID());
+            }
+            return false;
+        }
+        
+        public int hashCode() {
+            return uuid.hashCode();
+        }
     }
 }

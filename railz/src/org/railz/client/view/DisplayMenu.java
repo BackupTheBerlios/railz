@@ -23,6 +23,11 @@ import javax.swing.JMenuItem;
 
 import org.railz.util.Resources;
 import org.railz.client.model.*;
+import org.railz.world.player.FreerailsPrincipal;
+import org.railz.world.station.StationModel;
+import org.railz.world.top.KEY;
+import org.railz.world.top.ObjectKey2;
+import org.railz.world.top.ReadOnlyWorld;
 
 public class DisplayMenu extends JMenu {
     private GUIRoot guiRoot;
@@ -49,10 +54,15 @@ public class DisplayMenu extends JMenu {
 	    (Resources.get("Station Supply and Demand"));
         stationInfoJMenuItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
+                    FreerailsPrincipal p = modelRoot.getPlayerPrincipal();
+                    ReadOnlyWorld w = modelRoot.getWorld();
 		    DialogueBoxController dbc =
 		    guiRoot.getDialogueBoxController();
-		    if (dbc != null)
-			dbc.showStationInfo(0);
+                    if (w.size(KEY.STATIONS, p) > 0) {                        
+                        if (dbc != null)
+                            dbc.showStationInfo(new ObjectKey2(KEY.STATIONS, p,
+                                    ((StationModel) w.getIterator(KEY.STATIONS, p).next()).getUUID()));                        
+                    }
                 }
             });
 

@@ -369,19 +369,21 @@ public class ServerGameEngine implements GameModel, Runnable,
 	while (j.next()) {
 	    FreerailsPrincipal principal = ((Player)
 		    j.getElement()).getPrincipal();
-	    for (int i = 0; i < world.size(KEY.STATIONS, principal); i++) {
-		StationModel station = (StationModel)world.get(KEY.STATIONS, i,
-			principal);
+            Iterator i = world.getIterator(KEY.STATIONS, principal);
+	    while (i.hasNext()) {
+		StationModel station = (StationModel) i.next();
 
-		if (null != station && null != station.getProduction()) {
+		if (null != station.getProduction()) {
 		    ProductionAtEngineShop production = station.getProduction();
 		    Point p = new Point(station.x, station.y);
 		    
 		    tb.buildTrain (production.getEngineType(),
 			 production.getWagonTypes(), p, principal);
-
+                    
+                    ObjectKey2 ok = new ObjectKey2(KEY.STATIONS, principal, 
+                            station.getUUID());
 		    moveExecuter.processMove(new ChangeProductionAtEngineShopMove(
-				production, null, i, principal));
+				production, null, ok, principal));
 		}
 	    }
 	}

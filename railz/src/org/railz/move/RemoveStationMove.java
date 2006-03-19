@@ -23,12 +23,15 @@ package org.railz.move;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Iterator;
 import org.railz.world.station.StationModel;
 import org.railz.world.player.*;
 import org.railz.world.top.KEY;
 import org.railz.world.top.ObjectKey;
 import org.railz.world.top.NonNullElements;
+import org.railz.world.top.ObjectKey2;
 import org.railz.world.top.ReadOnlyWorld;
+import org.railz.world.top.UUID;
 import org.railz.world.top.WorldIterator;
 import org.railz.world.train.*;
 
@@ -38,9 +41,9 @@ import org.railz.world.train.*;
  *
  */
 public class RemoveStationMove extends CompositeMove implements TrackMove {
-    private static boolean stopsAtStation(Schedule s, ObjectKey station) {
+    private static boolean stopsAtStation(Schedule s, ObjectKey2 station) {
 	for (int i = 0; i < s.getNumOrders(); i++) {
-	    if (s.getOrder(i).getStationNumber().equals(station))
+	    if (s.getOrder(i).getStation().equals(station))
 		return true;
 	}
 	return false;
@@ -52,33 +55,33 @@ public class RemoveStationMove extends CompositeMove implements TrackMove {
 
     static RemoveStationMove getInstance(ReadOnlyWorld w,
         ChangeTrackPieceMove removeTrackMove, FreerailsPrincipal p) {
-        WorldIterator wi = new NonNullElements(KEY.STATIONS, w, p);
-        int stationIndex = -1;
+        Iterator wi = w.getIterator(KEY.STATIONS, p);
+        UUID stationId = null;
 
-        while (wi.next()) {
-            StationModel station = (StationModel)wi.getElement();
+        StationModel station = null;
+        while (wi.hasNext()) {
+            station = (StationModel) wi.next();
 
             if (station.x == removeTrackMove.getLocation().x &&
                     station.y == removeTrackMove.getLocation().y) {
                 //We have found the station!
-                stationIndex = wi.getIndex();
+                stationId = station.getUUID();
 
                 break;
             }
         }
 
-        if (-1 == stationIndex) {
+        if (stationId == null) {
             throw new IllegalArgumentException("Could find a station at " +
                 removeTrackMove.getLocation().x + ", " +
                 removeTrackMove.getLocation().y);
         }
 
-        StationModel station2remove = (StationModel)w.get(KEY.STATIONS,
-                stationIndex, p);
+        StationModel station2remove = station;
         ArrayList moves = new ArrayList();
         moves.add(removeTrackMove);
-        moves.add(new RemoveItemFromListMove(KEY.STATIONS, stationIndex,
-                station2remove, p));
+        moves.add(new RemoveObjectMove(new ObjectKey2(KEY.STATIONS, p, station.getUUID()),
+                station2remove));
 
         //Now update any train schedules that include this station.
         WorldIterator schedules = new NonNullElements(KEY.TRAIN_SCHEDULES, w,
@@ -87,8 +90,8 @@ public class RemoveStationMove extends CompositeMove implements TrackMove {
         while (schedules.next()) {
             ImmutableSchedule schedule = (ImmutableSchedule)schedules.getElement();
 
-	    ObjectKey stationKey = new ObjectKey(KEY.STATIONS, p,
-		    stationIndex);
+	    ObjectKey2 stationKey = new ObjectKey2(KEY.STATIONS, p,
+		    stationId);
             if (stopsAtStation(schedule, stationKey)) {
                 MutableSchedule mutableSchedule = new MutableSchedule(schedule);
                 mutableSchedule.removeAllStopsAtStation(stationKey);

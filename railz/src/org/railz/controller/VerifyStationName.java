@@ -28,6 +28,7 @@
  */
 package org.railz.controller;
 
+import java.util.Iterator;
 import java.util.Vector;
 import org.railz.world.player.FreerailsPrincipal;
 import org.railz.world.player.Player;
@@ -99,10 +100,10 @@ public class VerifyStationName {
 	while (i.next()) {
 	    FreerailsPrincipal p = (FreerailsPrincipal) ((Player)
 		    i.getElement()).getPrincipal();
-	    WorldIterator wi = new NonNullElements(KEY.STATIONS, w, p);
+	    Iterator wi = w.getIterator(KEY.STATIONS, p);
 
-	    while (wi.next()) { //loop over non null stations
-		tempStation = (StationModel)wi.getElement();
+	    while (wi.hasNext()) { //loop over non null stations
+		tempStation = (StationModel) wi.next();
 
 		if ((testName).equals(tempStation.getStationName())) {
 		    //station already exists with that name

@@ -18,6 +18,7 @@
 package org.railz.server;
 
 import java.awt.Point;
+import java.util.Iterator;
 import org.railz.controller.MoveReceiver;
 import org.railz.move.AddCargoBundleMove;
 import org.railz.move.AddTrainMove;
@@ -26,6 +27,7 @@ import org.railz.move.Move;
 import org.railz.world.cargo.CargoBundle;
 import org.railz.world.cargo.CargoBundle;
 import org.railz.world.common.*;
+import org.railz.world.station.StationModel;
 import org.railz.world.top.*;
 import org.railz.world.track.FreerailsTile;
 import org.railz.world.track.TrackRule;
@@ -90,7 +92,7 @@ class TrainBuilder {
                     engineTypeNumber, Player.AUTHORITATIVE);
             int trainNumber = world.size(KEY.TRAINS, tp);
 
-            WorldIterator wi = new NonNullElements(KEY.STATIONS, world, tp);
+            Iterator wi = world.getObjectKey2Iterator(KEY.STATIONS, tp);
 
             MutableSchedule s = new MutableSchedule();
 
@@ -98,10 +100,9 @@ class TrainBuilder {
 	     * Add upto 4 stations to the schedule. Stations are selected from
 	     * those owned by the train owner.
 	     */
-            while (wi.next() && s.getNumOrders() < 5) {
+            while (wi.hasNext() && s.getNumOrders() < 5) {                
                 TrainOrdersModel orders = new TrainOrdersModel
-		    (new ObjectKey(KEY.STATIONS, tp, wi.getIndex()),
-                        wagons, false, true, true);
+		    ((ObjectKey2) wi.next(), wagons, false, true, true);
                 s.addOrder(orders);
             }
 

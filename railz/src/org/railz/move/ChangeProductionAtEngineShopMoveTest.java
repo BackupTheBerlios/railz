@@ -43,20 +43,27 @@ public class ChangeProductionAtEngineShopMoveTest extends AbstractMoveTestCase {
     private int wagonType;
     private int[] wagons;
 
+    private ObjectKey2 stationKey1 = null;
+    private ObjectKey2 stationKey2 = null;
+    private ObjectKey2 stationKey3 = null;
+    
     protected void setUp() {
         super.setUp();
 	GameTime gt = (GameTime) getWorld().get(ITEM.TIME, Player.AUTHORITATIVE);
         CargoBundle cb = new CargoBundle();
         ObjectKey2 cbKey = new ObjectKey2(KEY.CARGO_BUNDLES, Player.NOBODY, cb.getUUID());
-        getWorld().add(KEY.STATIONS,
-	       	new StationModel(0, 0, "No name", 0, cbKey, gt),
-	       	testPlayer.getPrincipal());
-        getWorld().add(KEY.STATIONS,
-	       	new StationModel(0, 0, "No name", 0, cbKey, gt),
-		testPlayer.getPrincipal());
-        getWorld().add(KEY.STATIONS, 
-		new StationModel(0, 0, "No name", 0, cbKey, gt),
-		testPlayer.getPrincipal());
+        StationModel stationModel1 = new StationModel(0, 0, "No name", 0, cbKey, gt);
+        StationModel stationModel2 = new StationModel(0, 0, "No name", 0, cbKey, gt);
+        StationModel stationModel3 = new StationModel(0, 0, "No name", 0, cbKey, gt);
+        stationKey1 = new ObjectKey2(KEY.STATIONS, testPlayer.getPrincipal(), 
+                stationModel1.getUUID());
+        stationKey2 = new ObjectKey2(KEY.STATIONS, testPlayer.getPrincipal(), 
+                stationModel2.getUUID());
+        stationKey3 = new ObjectKey2(KEY.STATIONS, testPlayer.getPrincipal(), 
+                stationModel3.getUUID());
+        getWorld().set(stationKey1, stationModel1);
+        getWorld().set(stationKey2, stationModel2);
+        getWorld().set(stationKey3, stationModel3);
 
 	getWorld().add(KEY.WAGON_TYPES, new WagonType("WagonType1",
 		    TransportCategory.MAIL, 10, 0, 10), Player.AUTHORITATIVE);
@@ -77,20 +84,21 @@ public class ChangeProductionAtEngineShopMoveTest extends AbstractMoveTestCase {
 
         ChangeProductionAtEngineShopMove m;
 
-        //Should fail because current production at station 0 is null;
-        m = new ChangeProductionAtEngineShopMove(after, before, 0,
+        //Should fail because current production at station 1 is null;
+        m = new ChangeProductionAtEngineShopMove(after, before, stationKey1,
 		testPlayer.getPrincipal());
         assertTryMoveFails(m);
         assertDoMoveFails(m);
 
-        //Should fail because station 6 does not exist.
-        m = new ChangeProductionAtEngineShopMove(before, after, 6,
+        //Should fail because this station does not exist.
+        m = new ChangeProductionAtEngineShopMove(before, after, 
+                new ObjectKey2(KEY.STATIONS, testPlayer.getPrincipal(), new UUID()),
 		testPlayer.getPrincipal());
         assertTryMoveFails(m);
         assertDoMoveFails(m);
 
         //Should go through
-        m = new ChangeProductionAtEngineShopMove(before, after, 0,
+        m = new ChangeProductionAtEngineShopMove(before, after, stationKey1,
 		testPlayer.getPrincipal());
         assertTryMoveIsOk(m);
         assertDoMoveIsOk(m);

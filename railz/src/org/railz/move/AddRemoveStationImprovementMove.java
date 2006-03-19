@@ -27,11 +27,10 @@ import org.railz.world.accounts.*;
 
 public class AddRemoveStationImprovementMove extends CompositeMove {
     public static AddRemoveStationImprovementMove
-	generateAddImprovementMove(ReadOnlyWorld w, ObjectKey stationKey,
+	generateAddImprovementMove(ReadOnlyWorld w, ObjectKey2 stationKey,
 		ObjectKey improvementKey)
 	{
-	    StationModel before = (StationModel) w.get(KEY.STATIONS,
-		    stationKey.index, stationKey.principal);
+	    StationModel before = (StationModel) w.get(stationKey);
 
 	    // determine whether we can build this improvement
 	    StationModelViewer smv = new StationModelViewer(w);
@@ -62,8 +61,8 @@ public class AddRemoveStationImprovementMove extends CompositeMove {
 	    StationModel after = (StationModel)
 		before.setImprovements(newImprovements);
 
-	    Move changeStationMove = new ChangeStationMove(stationKey.index,
-		    before, after, stationKey.principal);
+	    Move changeStationMove = new ChangeStationMove(stationKey,
+		    before, after);
 
 	    // generate transaction
 	    GameTime now = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
@@ -79,9 +78,8 @@ public class AddRemoveStationImprovementMove extends CompositeMove {
 
     public static AddRemoveStationImprovementMove
 	generateRemoveImprovementMove(ReadOnlyWorld w,
-		ObjectKey stationKey, ObjectKey improvementKey) {
-	    StationModel before = (StationModel) w.get(KEY.STATIONS,
-		    stationKey.index, stationKey.principal);
+		ObjectKey2 stationKey, ObjectKey improvementKey) {
+	    StationModel before = (StationModel) w.get(stationKey);
 
 	    // determine whether we can build this improvement
 	    StationModelViewer smv = new StationModelViewer(w);
@@ -103,8 +101,8 @@ public class AddRemoveStationImprovementMove extends CompositeMove {
 	    StationModel after = (StationModel)
 		before.setImprovements(newImprovements);
 
-	    Move changeStationMove = new ChangeStationMove(stationKey.index,
-		    before, after, stationKey.principal);
+	    Move changeStationMove = new ChangeStationMove(stationKey,
+		    before, after);
 
 	    StationImprovement si = (StationImprovement)
 		w.get(KEY.STATION_IMPROVEMENTS, improvementKey.index,

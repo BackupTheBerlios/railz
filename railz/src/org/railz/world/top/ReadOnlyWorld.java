@@ -91,4 +91,10 @@ public interface ReadOnlyWorld extends FreerailsSerializable {
 
     /** @return a read-only iterator (no remove) */
     Iterator getIterator(KEY k);
+    
+    /** @return a read-only iterator (no remove) */
+    Iterator getObjectKey2Iterator(KEY k, FreerailsPrincipal p);
+    
+    /** @return a read-only iterator (no remove) */
+    Iterator getObjectKey2Iterator(KEY k);
 }

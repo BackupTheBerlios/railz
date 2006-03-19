@@ -136,18 +136,16 @@ public final class AuthoritativeTrainMover {
 	    trainPrincipal, int trainIndex, GameTime t) {
 	ScheduleIterator si = tm.getScheduleIterator();
 	TrainOrdersModel departsOrder = si.getCurrentOrder(world);
-	StationModel departsStation = (StationModel) world.get(KEY.STATIONS,
-		departsOrder.getStationNumber().index,
-		departsOrder.getStationNumber().principal); 
+	StationModel departsStation = (StationModel) world.get
+                (departsOrder.getStation()); 
 	/* don't update the world model with the new schedule since our state
 	 * is STATE_UNLOADING */
 	si = si.nextOrder(world);
 	// tm = new TrainModel (tm, si = si.nextOrder(world));
 	// world.set(KEY.TRAINS, trainIndex, tm, trainPrincipal);
 	TrainOrdersModel arrivesOrder = si.getCurrentOrder(world);
-	StationModel arrivesStation = (StationModel) world.get(KEY.STATIONS,
-		arrivesOrder.getStationNumber().index,
-		arrivesOrder.getStationNumber().principal);
+	StationModel arrivesStation = (StationModel) world.get
+                (arrivesOrder.getStation());
 
 	Point departStationCoords = new Point(departsStation.getStationX(),
 		    departsStation.getStationY());

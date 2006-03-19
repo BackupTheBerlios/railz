@@ -155,7 +155,18 @@ public class WorldView implements World {
         if (k.isPrivate && ! viewer.equals(p))
             return new DummyIterator();
         
-        return world.getIterator(k);
+        return world.getIterator(k, p);
+    }
+
+    public Iterator getObjectKey2Iterator(KEY k) {
+        return world.getObjectKey2Iterator(k);
+    }
+
+    public Iterator getObjectKey2Iterator(KEY k, FreerailsPrincipal p) {
+        if (k.isPrivate && ! viewer.equals(p))
+            return new DummyIterator();
+        
+        return world.getObjectKey2Iterator(k, p);
     }
     
     private static class DummyIterator implements Iterator {

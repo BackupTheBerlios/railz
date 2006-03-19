@@ -20,6 +20,7 @@ package org.railz.move;
 import org.railz.world.player.FreerailsPrincipal;
 import org.railz.world.station.StationModel;
 import org.railz.world.top.KEY;
+import org.railz.world.top.ObjectKey2;
 
 /**
  *
@@ -27,9 +28,9 @@ import org.railz.world.top.KEY;
  *
  * @author lindsal
  */
-final public class ChangeStationMove extends ChangeItemInListMove {
-    public ChangeStationMove(int index, StationModel before, StationModel
-	    after, FreerailsPrincipal p) {
-        super(KEY.STATIONS, index, before, after, p);
+final public class ChangeStationMove extends ChangeObjectMove {
+    public ChangeStationMove(ObjectKey2 key, StationModel before, StationModel
+	    after) {
+        super(key, before, after);
     }
 }

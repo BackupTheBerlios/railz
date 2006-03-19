@@ -63,7 +63,7 @@ public class Tests {
 	ts.addTestSuite(org.railz.move.CompositeMoveTest.class);
 	ts.addTestSuite(org.railz.move.RemoveCargoBundleMoveTest.class);
 	ts.addTestSuite(org.railz.server.DropOffAndPickupCargoMoveGeneratorTest.class);
-	ts.addTestSuite(org.railz.world.top.KEYTest.class);
+	// ts.addTestSuite(org.railz.world.top.KEYTest.class);
 	ts.addTestSuite(org.railz.world.top.NonNullElementsTest.class);
 	ts.addTestSuite(org.railz.world.top.WorldImplTest.class);
 	ts.addTestSuite(org.railz.world.train.IntLineTest.class);

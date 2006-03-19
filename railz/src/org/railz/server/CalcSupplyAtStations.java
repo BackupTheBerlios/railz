@@ -24,6 +24,7 @@
  */
 package org.railz.server;
 
+import java.util.Iterator;
 import java.util.Vector;
 import org.railz.controller.MoveReceiver;
 import org.railz.move.ChangeStationMove;
@@ -66,16 +67,16 @@ public class CalcSupplyAtStations implements WorldListListener {
 	while (i.next()) {
 	    FreerailsPrincipal p = (FreerailsPrincipal) ((Player)
 		    i.getElement()).getPrincipal();
-	    NonNullElements iterator = new NonNullElements(KEY.STATIONS, w, p);
-	    while (iterator.next()) {
-		StationModel stationBefore =
-		    (StationModel)iterator.getElement();
+            Iterator stations = w.getIterator(KEY.STATIONS, p);	    
+	    while (stations.hasNext()) {
+		StationModel stationBefore = (StationModel) stations.next();
 
 		StationModel stationAfter = calculations(stationBefore);
 
 		if (!stationAfter.equals(stationBefore)) {
-		    Move move = new ChangeStationMove(iterator.getIndex(),
-			    stationBefore, stationAfter, p);
+		    Move move = new ChangeStationMove(
+                            new ObjectKey2(KEY.STATIONS, p, stationBefore.getUUID()),
+			    stationBefore, stationAfter);
 		    this.moveReceiver.processMove(move);
 		}
 	    }
@@ -110,29 +111,32 @@ public class CalcSupplyAtStations implements WorldListListener {
     }
 
     public void listUpdated(KEY key, int index, FreerailsPrincipal p) {
-        if (key == KEY.STATIONS) {
-            this.doProcessing();
-        }
+        // ignore
     }
 
     public void itemAdded(KEY key, int index, FreerailsPrincipal p) {
-        if (key == KEY.STATIONS) {
-            this.doProcessing();
-        }
+        // ignore
     }
 
     public void itemRemoved(KEY key, int index, FreerailsPrincipal p) {
-        if (key == KEY.STATIONS) {
+        // ignore
+    }
+
+    public void listUpdated(ObjectKey2 key) {
+        if (key.key.equals(KEY.STATIONS)) {
             this.doProcessing();
         }
     }
 
-    public void listUpdated(ObjectKey2 key) {
-    }
-
     public void itemRemoved(ObjectKey2 key) {
+        if (key.key.equals(KEY.STATIONS)) {
+            this.doProcessing();
+        }
     }
 
     public void itemAdded(ObjectKey2 key) {
+        if (key.key.equals(KEY.STATIONS)) {
+            this.doProcessing();
+        }
     }
 }

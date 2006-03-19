@@ -55,7 +55,7 @@ class DropOffAndPickupCargoMoveGenerator {
     /**
      * Cargo on board the train is unloaded and sold.
      */
-    public void unloadTrain(ObjectKey trainKey, ObjectKey stationKey) {
+    public void unloadTrain(ObjectKey trainKey, ObjectKey2 stationKey) {
 	TrainModel train = (TrainModel)w.get(trainKey.key, trainKey.index,
 		trainKey.principal);
 
@@ -64,8 +64,7 @@ class DropOffAndPickupCargoMoveGenerator {
         // trainBefore = trainBefore.getCopy();
 	// CargoBundle trainAfter = trainBefore.getCopy();
 
-	StationModel station = (StationModel) w.get(stationKey.key,
-		stationKey.index, stationKey.principal);
+	StationModel station = (StationModel) w.get(stationKey);
 	CargoBundle stationBefore = (CargoBundle) w.get(station.getCargoBundle());
 	// stationBefore = stationBefore.getCopy();
 	// CargoBundle stationAfter = stationBefore.getCopy();
@@ -97,7 +96,7 @@ class DropOffAndPickupCargoMoveGenerator {
 			    Player.AUTHORITATIVE);
                     CargoBatch newCargoBatch = new CargoBatch(newCargoType,
                             station.x, station.y, now.getTime(),
-			    stationKey.index);
+			    stationKey);
                     mutableStationCB.addCargo(newCargoBatch, amount);
                 }
 
@@ -108,8 +107,7 @@ class DropOffAndPickupCargoMoveGenerator {
 	AddTransactionMove payment[] =
 	    ProcessCargoAtStationMoveGenerator.processCargo(w,
 		    new CargoBundle(cargoDroppedOff), trainKey.principal, 
-                    stationKey.index,
-		    stationKey.principal);
+                    stationKey);
 
 	ChangeCargoBundleMove changeAtStation = new
 	    ChangeCargoBundleMove(stationBefore, 
@@ -132,15 +130,14 @@ class DropOffAndPickupCargoMoveGenerator {
     /**
      * Sell or dump all cargo which can't fit on the train
      */
-    public void dumpSurplusCargo(ObjectKey trainKey, ObjectKey stationKey) {
+    public void dumpSurplusCargo(ObjectKey trainKey, ObjectKey2 stationKey) {
 	TrainModel train = (TrainModel)w.get(trainKey.key, trainKey.index,
 		trainKey.principal);
 	
 	CargoBundle trainBefore = (CargoBundle) w.get(train.getCargoBundle());
 	MutableCargoBundle mutableTrainCB = new MutableCargoBundle(trainBefore);
 
-	StationModel station = (StationModel) w.get(stationKey.key,
-		stationKey.index, stationKey.principal);	
+	StationModel station = (StationModel) w.get(stationKey);	
 	CargoBundle stationBefore = (CargoBundle) w.get(station.getCargoBundle());	
 	MutableCargoBundle mutableStationCB = new MutableCargoBundle(stationBefore);
 
@@ -168,8 +165,7 @@ class DropOffAndPickupCargoMoveGenerator {
 
 	AddTransactionMove payment[] =
 	    ProcessCargoAtStationMoveGenerator.processCargo(w,
-		    new CargoBundle(cargoDroppedOff), trainKey.principal, stationKey.index,
-		    stationKey.principal);
+		    new CargoBundle(cargoDroppedOff), trainKey.principal, stationKey);
 
 	ChangeCargoBundleMove changeAtStation = new
 	    ChangeCargoBundleMove(stationBefore, 
@@ -187,7 +183,7 @@ class DropOffAndPickupCargoMoveGenerator {
      * @return true if there is enough cargo at this station to load the
      * train, false otherwise.
      */
-    public boolean checkCargoAtStation(ObjectKey trainKey, ObjectKey stationKey)
+    public boolean checkCargoAtStation(ObjectKey trainKey, ObjectKey2 stationKey)
     {
 	TrainModel tm = (TrainModel) w.get(trainKey.key, trainKey.index,
 		trainKey.principal);
@@ -199,8 +195,7 @@ class DropOffAndPickupCargoMoveGenerator {
 	if (! tom.getWaitUntilFull())
 	    return true;
 
-	StationModel sm = (StationModel) w.get(stationKey.key,
-		stationKey.index, stationKey.principal);
+	StationModel sm = (StationModel) w.get(stationKey);
 	
 	CargoBundle stationBundle = (CargoBundle) w.get(sm.getCargoBundle());
 	
@@ -219,15 +214,14 @@ class DropOffAndPickupCargoMoveGenerator {
      * Load the train with as much cargo as is available and will fit on the
      * train.
      */
-    public void loadTrain(ObjectKey trainKey, ObjectKey stationKey) {
+    public void loadTrain(ObjectKey trainKey, ObjectKey2 stationKey) {
 	TrainModel train = (TrainModel)w.get(trainKey.key, trainKey.index,
 		trainKey.principal);
 	
 	CargoBundle trainBefore = (CargoBundle) w.get(train.getCargoBundle());	
 	MutableCargoBundle mutableTrainCB = new MutableCargoBundle(trainBefore);
 
-	StationModel station = (StationModel) w.get(stationKey.key,
-		stationKey.index, stationKey.principal);	
+	StationModel station = (StationModel) w.get(stationKey);	
 	CargoBundle stationBefore = (CargoBundle) w.get(station.getCargoBundle());	
 	MutableCargoBundle mutableStationCB = 
                 new MutableCargoBundle(stationBefore);
@@ -304,12 +298,11 @@ class DropOffAndPickupCargoMoveGenerator {
      */
     private void transferCargoToStation(int cargoType, int amountToTransfer,
 	    MutableCargoBundle from, MutableCargoBundle to, MutableCargoBundle droppedOff,
-	    ObjectKey stationKey) {
+	    ObjectKey2 stationKey) {
 	if (0 == amountToTransfer)
 	    return;
 
-	StationModel station = (StationModel) w.get(KEY.STATIONS,
-		stationKey.index, stationKey.principal);
+	StationModel station = (StationModel) w.get(stationKey);
 	Iterator batches = from.cargoBatchIterator();
 	int amountTransferedSoFar = 0;
 	DemandAtStation demand = station.getDemand();
@@ -344,7 +337,7 @@ class DropOffAndPickupCargoMoveGenerator {
 			    Player.AUTHORITATIVE);
                     CargoBatch newCargoBatch = new CargoBatch(newCargoType,
                             station.x, station.y, now.getTime(),
-			    stationKey.index);
+			    stationKey);
                     to.addCargo(newCargoBatch, amountOfThisBatchToTransfer);
                 } else {
 		    // cargo is neither demanded nor converted, so leave it at

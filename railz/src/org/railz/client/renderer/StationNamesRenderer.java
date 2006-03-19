@@ -30,6 +30,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
+import java.util.Iterator;
 
 import org.railz.client.common.Painter;
 import org.railz.world.player.FreerailsPrincipal;
@@ -79,10 +80,10 @@ public class StationNamesRenderer implements Painter {
 	while (i.next()) {
 	    FreerailsPrincipal p = (FreerailsPrincipal) ((Player)
 		    i.getElement()).getPrincipal();
-	    WorldIterator wi = new NonNullElements(KEY.STATIONS, w, p);
+            Iterator wi = w.getIterator(KEY.STATIONS, p);	    
 
-	    while (wi.next()) { //loop over non null stations
-		tempStation = (StationModel)wi.getElement();
+	    while (wi.hasNext()) { //loop over non null stations
+		tempStation = (StationModel) wi.next();
 
 		stationName = tempStation.getStationName();
 		positionX = (tempStation.getStationX() *

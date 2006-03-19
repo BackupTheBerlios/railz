@@ -58,15 +58,15 @@ public class AddStationMove extends CompositeMove {
         ObjectKey2 cargoBundleKey = new ObjectKey2(KEY.CARGO_BUNDLES, 
                 Player.NOBODY, cb.getUUID());
         Move addCargoBundleMove = new AddCargoBundleMove(cargoBundleKey,
-                cb);
-        int stationNumber = w.size(KEY.STATIONS, owner);
+                cb);        
 	GameTime now = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
         StationModel station = new StationModel(p.x, p.y, stationName,
 		w.size(KEY.CARGO_TYPES, Player.AUTHORITATIVE),
 		cargoBundleKey, now);
 
-        Move addStation = new AddItemToListMove(KEY.STATIONS, stationNumber,
-                station, owner);
+        ObjectKey2 stationKey = new ObjectKey2(KEY.STATIONS, owner, 
+                station.getUUID());
+        Move addStation = new AddObjectMove(stationKey, station);
 	BuildingTile oldBuilding = w.getTile(p).getBuildingTile();
 	BuildingTile newBuilding = new BuildingTile(buildingType);
 	ChangeBuildingMove cbm = new ChangeBuildingMove(p, oldBuilding,

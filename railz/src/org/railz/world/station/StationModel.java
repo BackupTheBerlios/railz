@@ -21,14 +21,15 @@ import java.util.*;
 
 import org.railz.world.common.*;
 import org.railz.world.top.ObjectKey2;
+import org.railz.world.top.UUID;
 /**
  * This class represents a station.
  *
  * @author Luke
  *
  */
-public class StationModel implements FreerailsSerializable {
-    static final long serialVersionUID = 5866243529680687773L;
+public class StationModel implements WorldObject {
+    static final long serialVersionUID = 5866243529680687774L;
 
     public final int x;
     public final int y;
@@ -39,6 +40,7 @@ public class StationModel implements FreerailsSerializable {
     private final ObjectKey2 cargoBundle;
     private final GameTime creationDate;
     private int[] improvements;
+    private final UUID uuid;
 
     /** What this station is building. */
     private ProductionAtEngineShop production;
@@ -54,6 +56,7 @@ public class StationModel implements FreerailsSerializable {
 
     public StationModel(int x, int y, String stationName,
         int numberOfCargoTypes, ObjectKey2 cargoBundle, GameTime now) {
+        uuid = new UUID();
         this.name = stationName;
         this.x = x;
         this.y = y;
@@ -102,6 +105,7 @@ public class StationModel implements FreerailsSerializable {
     }
 
     public StationModel(StationModel s) {
+        uuid = s.uuid;
 	x = s.x;
 	y = s.y;
 	name = s.name;
@@ -123,11 +127,16 @@ public class StationModel implements FreerailsSerializable {
         return cargoBundle;
     }
 
+    public int hashCode() {
+        return uuid.hashCode();
+    }
+    
     public boolean equals(Object o) {
         if (o instanceof StationModel) {
             StationModel test = (StationModel)o;
 
-	    if (cargoBundle.equals(test.cargoBundle) &&
+	    if (uuid.equals(test.uuid) &&
+                    cargoBundle.equals(test.cargoBundle) &&
 		    x == test.x &&
 		    y == test.y &&
 		    demand.equals(test.demand) &&
@@ -173,7 +182,8 @@ public class StationModel implements FreerailsSerializable {
     }
 
     public String toString() {
-	String s = "StationModel: x=" + x + ", y=" + y + ", name=" + name +
+	String s = "StationModel: " + uuid.toString() + ", x=" + x + ", y=" + 
+                y + ", name=" + name +
 	    ", supply=" + supply + ", demand=" + demand + ", converted=" +
 	    converted + ", cargoBundle=" + cargoBundle +
 	    ", creationDate=" + creationDate + ", improvements=(";
@@ -182,5 +192,9 @@ public class StationModel implements FreerailsSerializable {
 
 	s += ")";
 	return s;
+    }
+    
+    public UUID getUUID() {
+        return uuid;
     }
 }

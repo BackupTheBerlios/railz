@@ -19,12 +19,14 @@ package org.railz.controller;
 import java.util.ArrayList;
 import org.railz.move.AddItemToListMove;
 import org.railz.move.ChangeItemInListMove;
+import org.railz.move.ObjectMove;
 import org.railz.move.RemoveItemFromListMove;
 import org.railz.move.CompositeMove;
 import org.railz.move.Move;
 import org.railz.move.UndoneMove;
 import org.railz.world.player.FreerailsPrincipal;
 import org.railz.world.top.KEY;
+import org.railz.world.top.ObjectKey2;
 import org.railz.world.top.WorldListListener;
 
 
@@ -121,7 +123,16 @@ final public class MoveChainFork implements MoveReceiver {
             } else if (move instanceof RemoveItemFromListMove) {
                 RemoveItemFromListMove mm = (RemoveItemFromListMove)move;
                 sendItemRemoved(mm.getKey(), mm.getIndex(), mm.getPrincipal());
-            } else if (move instanceof UndoneMove) {
+            } else if (move instanceof ObjectMove) {
+                ObjectMove om = (ObjectMove) move;
+                if (om.getBefore() == null) {
+                    sendObjectAdded(om.getKeyAfter());
+                } else if (om.getAfter() == null) {
+                    sendObjectRemoved(om.getKeyBefore());
+                } else {
+                    sendObjectChanged(om.getKeyBefore());
+                }
+            } else if (move instanceof UndoneMove) {            
                 Move m = ((UndoneMove)move).getUndoneMove();
 
                 if (m instanceof AddItemToListMove) {
@@ -141,6 +152,28 @@ final public class MoveChainFork implements MoveReceiver {
         }
     }
 
+    private void sendObjectAdded(ObjectKey2 key) {
+        for (int i = 0; i < listListeners.size(); i++) {
+            WorldListListener l = (WorldListListener)listListeners.get(i);
+            l.itemAdded(key);
+        }        
+    }
+    
+    private void sendObjectRemoved(ObjectKey2 key) {
+        for (int i = 0; i < listListeners.size(); i++) {
+            WorldListListener l = (WorldListListener)listListeners.get(i);
+            l.itemRemoved(key);
+        }
+        
+    }
+    
+    private void sendObjectChanged(ObjectKey2 key) {
+        for (int i = 0; i < listListeners.size(); i++) {
+            WorldListListener l = (WorldListListener)listListeners.get(i);
+            l.listUpdated(key);
+        }        
+    }
+    
     private void sendItemAdded(KEY key, int index, FreerailsPrincipal p) {
         for (int i = 0; i < listListeners.size(); i++) {
             WorldListListener l = (WorldListListener)listListeners.get(i);

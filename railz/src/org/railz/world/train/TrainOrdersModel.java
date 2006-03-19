@@ -26,6 +26,7 @@ import java.util.Arrays;
 
 import org.railz.world.common.FreerailsSerializable;
 import org.railz.world.top.ObjectKey;
+import org.railz.world.top.ObjectKey2;
 
 /**
  * This class encapsulates the orders for a train at a particular stop on its
@@ -33,7 +34,7 @@ import org.railz.world.top.ObjectKey;
  * @author  Luke
  */
 public class TrainOrdersModel implements FreerailsSerializable {
-    static final long serialVersionUID = 2414702987622334721L;
+    static final long serialVersionUID = 2414702987622334722L;
 
     /**
      * The maximum number of wagons that a train may consist of
@@ -53,7 +54,7 @@ public class TrainOrdersModel implements FreerailsSerializable {
     /**
      * The station at this stop
      */
-    public final ObjectKey station;
+    public final ObjectKey2 station;
 
     /**
      * Whether cargo should be loaded at this stop
@@ -68,7 +69,7 @@ public class TrainOrdersModel implements FreerailsSerializable {
     /**
      *  Creates a new instance of TrainOrders
      */
-    public TrainOrdersModel(ObjectKey station, int[] newConsist, boolean wait,
+    public TrainOrdersModel(ObjectKey2 station, int[] newConsist, boolean wait,
 	    boolean loadTrain, boolean unloadTrain) {
 	assert newConsist != null;
         //If there are no wagons, set wait = false.
@@ -85,7 +86,7 @@ public class TrainOrdersModel implements FreerailsSerializable {
         return this.consist;
     }
 
-    public ObjectKey getStationNumber() {
+    public ObjectKey2 getStation() {
         return station;
     }
 
@@ -121,8 +122,8 @@ public class TrainOrdersModel implements FreerailsSerializable {
 
     public String toString() {
 	String s = "";
-	s = "waitUntilFull=" + waitUntilFull + ", stationIndex=" + 
-	    station.index + ", loadTrain=" + loadTrain + 
+	s = "waitUntilFull=" + waitUntilFull + ", station=" + 
+	    station.toString() + ", loadTrain=" + loadTrain + 
 	    ", unloadTrain=" + unloadTrain + ", consist=(";
 	for (int i = 0; i < consist.length; i++)  {
 	    if (i > 0) {

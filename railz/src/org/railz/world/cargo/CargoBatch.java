@@ -18,6 +18,7 @@
 package org.railz.world.cargo;
 
 import org.railz.world.common.FreerailsSerializable;
+import org.railz.world.top.ObjectKey2;
 
 
 /** This class represents a cargo batch (cargo of the same batch is cargo of the same type
@@ -29,10 +30,10 @@ public class CargoBatch implements FreerailsSerializable {
     private final int cargoType;
     private final int sourceX;
     private final int sourceY;
-    private final int stationOfOrigin;
-    private final long timeCreated;
+    private final ObjectKey2 stationOfOrigin;
+    private final long timeCreated;    
 
-    public CargoBatch(int type, int x, int y, long time, int stationOfOrigin) {
+    public CargoBatch(int type, int x, int y, long time, ObjectKey2 stationOfOrigin) {
         cargoType = type;
         sourceX = x;
         sourceY = y;
@@ -40,7 +41,7 @@ public class CargoBatch implements FreerailsSerializable {
         this.stationOfOrigin = stationOfOrigin;
     }
 
-    public int getStationOfOrigin() {
+    public ObjectKey2 getStationOfOrigin() {
         return stationOfOrigin;
     }
 
@@ -68,7 +69,7 @@ public class CargoBatch implements FreerailsSerializable {
                     test.getSourceX() == this.sourceX &&
                     test.sourceY == this.sourceY &&
                     test.timeCreated == this.timeCreated &&
-                    test.stationOfOrigin == this.stationOfOrigin) {
+                    this.stationOfOrigin.equals(test.stationOfOrigin)) {
                 return true;
             } else {
                 return false;
@@ -82,10 +83,11 @@ public class CargoBatch implements FreerailsSerializable {
         int result = 17;
         result = 37 * result + this.cargoType;
         result = 37 * result + this.sourceX;
-        result = 37 * result + this.sourceY;
-        result = 37 * result + this.stationOfOrigin;
+        result = 37 * result + this.sourceY;        
         result = 37 * result +
             (int)(this.timeCreated ^ (this.timeCreated >>> 32));
+        if (stationOfOrigin != null) 
+            result ^= stationOfOrigin.hashCode();
 
         return result;
     }

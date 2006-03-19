@@ -56,14 +56,14 @@ public class CompositeMoveTest extends AbstractMoveTestCase {
 
     public void testMove() {
         Move[] moves = new Move[4];
-        moves[0] = new AddItemToListMove(KEY.STATIONS, 0, station1,
-		testPlayer.getPrincipal());
-        moves[1] = new AddItemToListMove(KEY.STATIONS, 1, station2,
-		testPlayer.getPrincipal());
-        moves[2] = new AddItemToListMove(KEY.STATIONS, 2, station3,
-		testPlayer.getPrincipal());
-        moves[3] = new AddItemToListMove(KEY.STATIONS, 3, station4,
-		testPlayer.getPrincipal());
+        moves[0] = new AddObjectMove(new ObjectKey2(KEY.STATIONS, 
+                testPlayer.getPrincipal(), station1.getUUID()), station1);
+        moves[1] = new AddObjectMove(new ObjectKey2(KEY.STATIONS, 
+                testPlayer.getPrincipal(), station2.getUUID()), station2);
+        moves[2] = new AddObjectMove(new ObjectKey2(KEY.STATIONS, 
+                testPlayer.getPrincipal(), station3.getUUID()), station3);
+        moves[3] = new AddObjectMove(new ObjectKey2(KEY.STATIONS, 
+                testPlayer.getPrincipal(), station4.getUUID()), station4);
 
         Move compositeMove = new CompositeMove(moves);
         assertEqualsSurvivesSerialisation(compositeMove);

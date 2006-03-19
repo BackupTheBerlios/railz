@@ -32,6 +32,7 @@ import org.railz.world.common.GameTime;
 import org.railz.world.station.StationModel;
 import org.railz.world.top.KEY;
 import org.railz.world.top.ITEM;
+import org.railz.world.top.ObjectKey2;
 import org.railz.world.top.ReadOnlyWorld;
 import org.railz.world.train.*;
 import org.railz.world.player.FreerailsPrincipal;
@@ -45,14 +46,11 @@ import org.railz.world.player.Player;
 public class ProcessCargoAtStationMoveGenerator {
     /**
      * @param tp owner of the train
-     * @param sp owner of the station
      */
     public static AddTransactionMove[] processCargo(ReadOnlyWorld w,
-	CargoBundle cargoBundle, FreerailsPrincipal tp, int stationID,
-	FreerailsPrincipal sp) {
+	CargoBundle cargoBundle, FreerailsPrincipal tp, ObjectKey2 stationKey) {
 	CargoPaymentCalculator cpc = new CargoPaymentCalculator(w);
-	StationModel thisStation = (StationModel)w.get(KEY.STATIONS, stationID,
-		sp);
+	StationModel thisStation = (StationModel)w.get(stationKey);
 
 	GameTime now = (GameTime) w.get(ITEM.TIME, Player.AUTHORITATIVE);
 	Transaction[] t = cpc.calculatePayment(cargoBundle,

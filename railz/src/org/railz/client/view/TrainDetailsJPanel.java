@@ -205,9 +205,8 @@ public class TrainDetailsJPanel extends javax.swing.JPanel implements
 	    ScheduleIterator si = train.getScheduleIterator();
 	    TrainOrdersModel tom = si.getCurrentOrder(w);
 	    if (tom != null) {
-		ObjectKey ok = tom.getStationNumber();
-		StationModel station = (StationModel)
-		    w.get(ok.key, ok.index, ok.principal);
+		ObjectKey2 ok = tom.getStation();
+		StationModel station = (StationModel) w.get(ok);
 		destination = station.getStationName();
 	    }
 	    priority = train.getPriority();

@@ -20,6 +20,7 @@ package org.railz.client.model;
 import java.util.GregorianCalendar;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.util.Iterator;
 
 import org.railz.controller.MoveReceiver;
 import org.railz.move.*;
@@ -81,7 +82,6 @@ class UserMessageGenerator implements MoveReceiver {
 		    world, Player.AUTHORITATIVE);
 
 	    int trainNumber = -1;
-	    int statonNumber = -1;
 	    String stationName = Resources.get("No station");
 
 	    while (trains.next()) {
@@ -97,14 +97,11 @@ class UserMessageGenerator implements MoveReceiver {
 	    while (players.next()) {
 		FreerailsPrincipal p = (FreerailsPrincipal)
 		    ((Player) players.getElement()).getPrincipal();
-		NonNullElements stations = new NonNullElements(KEY.STATIONS,
-			world, p);
-		while (stations.next()) {
-		    StationModel station = (StationModel)stations
-			.getElement();
+		Iterator stations = world.getIterator(KEY.STATIONS, p);
+		while (stations.hasNext()) {
+		    StationModel station = (StationModel)stations.next();
 
 		    if (station.getCargoBundle().equals(stationCargoBundle)) {
-			statonNumber = stations.getRowNumber();
 			stationName = station.getStationName();
 			break;
 		    }

@@ -24,6 +24,7 @@
 package org.railz.client.view;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import javax.swing.*;
@@ -44,6 +45,7 @@ import org.railz.world.station.ProductionAtEngineShop;
 import org.railz.world.station.StationModel;
 import org.railz.world.top.KEY;
 import org.railz.world.top.NonNullElements;
+import org.railz.world.top.ObjectKey2;
 import org.railz.world.top.ReadOnlyWorld;
 import org.railz.world.top.WorldIterator;
 import org.railz.world.track.FreerailsTile;
@@ -150,11 +152,10 @@ public class DialogueBoxController {
         selectWagons.setup(modelRoot, new ActionListener() {
             
             public void actionPerformed(ActionEvent arg0) {
-		WorldIterator wi = new NonNullElements(KEY.STATIONS, finalROW,
-		    modelRoot.getPlayerPrincipal());
-                if (wi.next()) {
+                Iterator wi = finalROW.getIterator(KEY.STATIONS, modelRoot.getPlayerPrincipal());
+                if (wi.hasNext()) {
                     
-                    StationModel station = (StationModel) wi.getElement();
+                    StationModel station = (StationModel) wi.next();
                     
                     ProductionAtEngineShop before = station.getProduction();
                     int engineType = selectEngine.getEngineType();
@@ -163,7 +164,8 @@ public class DialogueBoxController {
                     new ProductionAtEngineShop(engineType, wagonTypes);
                     
                     Move m = new ChangeProductionAtEngineShopMove
-		    (before, after, wi.getIndex(),
+		    (before, after, new ObjectKey2(KEY.STATIONS, 
+                            modelRoot.getPlayerPrincipal(), station.getUUID()),
 		     modelRoot.getPlayerPrincipal());
                     moveReceiver.processMove(m);
                 }
@@ -194,11 +196,9 @@ public class DialogueBoxController {
     }
     
     public void showSelectEngine() {
-	WorldIterator wi = new NonNullElements(KEY.STATIONS, world,
-		modelRoot.getPlayerPrincipal());
-        if (!wi.next()) {
+        if (world.size(KEY.STATIONS, modelRoot.getPlayerPrincipal()) < 2) {
             modelRoot.getUserMessageLogger().println("Can't" +
-            " build train since there are no stations");
+            " build train since you need at least 2 stations");
         } else {
 	    //Set up select engine dialogue.
 	    selectEngine = new SelectEngineJPanel();
@@ -249,12 +249,12 @@ public class DialogueBoxController {
 	showContent(terrainInfo);
     }
     
-    public void showStationInfo(int stationNumber) {
+    public void showStationInfo(ObjectKey2 stationKey) {
         try {
-            stationInfo.setStation(stationNumber);
+            stationInfo.setStation(stationKey);
             showContent(stationInfo);
         } catch (NoSuchElementException e) {
-            System.err.println("Station " + stationNumber + " does not exist!");
+            System.err.println("Station " + stationKey + " does not exist!");
         }
     }
     
@@ -394,13 +394,14 @@ public class DialogueBoxController {
 	    BuildingType bType = (BuildingType) world.get(KEY.BUILDING_TYPES,
 		    tile.getTrackRule(), Player.AUTHORITATIVE);
 	    if (bType.getCategory() == BuildingType.CATEGORY_STATION) {
-		for (int i = 0; i < world.size(KEY.STATIONS,
-			    modelRoot.getPlayerPrincipal()); i++) {
+                Iterator i = world.getIterator
+                        (KEY.STATIONS, modelRoot.getPlayerPrincipal());
+                while (i.hasNext()) {
 		    StationModel station =
-			(StationModel) world.get(KEY.STATIONS, i,
-						 modelRoot.getPlayerPrincipal());
-		    if (null != station && station.x == x && station.y == y) {
-			this.showStationInfo(i);
+			(StationModel) i.next();
+		    if (station.x == x && station.y == y) {
+			this.showStationInfo(new ObjectKey2(KEY.STATIONS,
+                                modelRoot.getPlayerPrincipal(), station.getUUID()));
 			return;
 		    }
 		}

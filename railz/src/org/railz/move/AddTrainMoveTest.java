@@ -43,7 +43,7 @@ public class AddTrainMoveTest extends AbstractMoveTestCase {
 		now);
 
 	TrainOrdersModel orders = new TrainOrdersModel(new
-		ObjectKey(KEY.STATIONS, testPlayer.getPrincipal(), 0),
+		ObjectKey2(KEY.STATIONS, testPlayer.getPrincipal(), new UUID()),
 		new int[] {1, 2, 3}, true, true, true);
 	
         ImmutableSchedule schedule = new ImmutableSchedule

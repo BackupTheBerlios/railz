@@ -138,7 +138,7 @@ class TrainController {
 	}
     }
 
-    private ObjectKey getStationKey(ObjectKey trainKey, TrainModel tm) {
+    private ObjectKey2 getStationKey(ObjectKey trainKey, TrainModel tm) {
 	GameTime t = (GameTime) world.get(ITEM.TIME, Player.AUTHORITATIVE);
 	/* get the details of the station the train is at */
 	Point point = new Point();
@@ -147,14 +147,14 @@ class TrainController {
 	FreerailsPrincipal sp = null;
 	NonNullElements j = new NonNullElements(KEY.PLAYERS, world,
 		Player.AUTHORITATIVE);
-	NonNullElements i = null;
+	Iterator i = null;
 	boolean flag = false;
-	StationModel sm;
+	StationModel sm = null;
 	while (j.next() && ! flag) {
 	    sp = ((Player) j.getElement()).getPrincipal();
-	    i = new NonNullElements(KEY.STATIONS, world, sp);
-	    while (i.next()) {
-		sm = (StationModel) i.getElement();
+	    i = world.getIterator(KEY.STATIONS, sp);
+	    while (i.hasNext()) {
+		sm = (StationModel) i.next();
 		if (sm.getStationX() == point.x &&
 			sm.getStationY() == point.y) {
 		    flag = true;
@@ -163,7 +163,7 @@ class TrainController {
 	    }
 	}
 	if (flag)
-	    return new ObjectKey(KEY.STATIONS, sp, i.getIndex());
+	    return new ObjectKey2(KEY.STATIONS, sp, sm.getUUID());
 
 	return null;
     }
@@ -171,7 +171,7 @@ class TrainController {
     private void unloadTrain(int trainIndex, FreerailsPrincipal p,
 	    TrainModel tm) {
 	ObjectKey trainKey = new ObjectKey(KEY.TRAINS, p, trainIndex);
-	ObjectKey stationKey = getStationKey(trainKey, tm);
+	ObjectKey2 stationKey = getStationKey(trainKey, tm);
 	if (stationKey != null)
 	    dopucmg.unloadTrain(trainKey, stationKey);
 
@@ -181,7 +181,7 @@ class TrainController {
     private void loadTrain(TrainModel tm, FreerailsPrincipal p,
 	    int trainIndex) {
 	ObjectKey trainKey = new ObjectKey(KEY.TRAINS, p, trainIndex);
-	ObjectKey stationKey = getStationKey(trainKey, tm);
+	ObjectKey2 stationKey = getStationKey(trainKey, tm);
 
 	/* only load the train if there is sufficient cargo at the station */
 	if (stationKey != null &&
@@ -199,7 +199,7 @@ class TrainController {
 	TrainModel tm = (TrainModel) world.get(trainKey.key, trainKey.index,
 		trainKey.principal);
 
-	ObjectKey stationKey = getStationKey(trainKey, tm);
+	ObjectKey2 stationKey = getStationKey(trainKey, tm);
 	if (stationKey != null) {
 	    ScheduleIterator si = tm.getScheduleIterator();
 	    TrainOrdersModel tom = si.getCurrentOrder(world);
@@ -212,8 +212,7 @@ class TrainController {
 	    dopucmg.dumpSurplusCargo(trainKey, stationKey);
 
 	    // check to see if there is a water tower
-	    StationModel sm = (StationModel) world.get(KEY.STATIONS,
-		    stationKey.index, stationKey.principal);
+	    StationModel sm = (StationModel) world.get(stationKey);
 	    if (sm.hasImprovement(WorldConstants.get().SI_WATER_TOWER)) {
 		Point head = new Point();
 		GameTime now = (GameTime) world.get(ITEM.TIME,
@@ -458,9 +457,9 @@ class TrainController {
 	if (tom == null)
 	    return null;
 
-	ObjectKey stationKey = tom.getStationNumber();
+	ObjectKey2 stationKey = tom.getStation();
 	StationModel station = (StationModel) world.get
-	    (stationKey.key, stationKey.index, stationKey.principal);
+	    (stationKey);
 	Point p = new Point(station.getStationX(), station.getStationY());
 	return TrackTile.tileCoordsToDeltas(p);
     }

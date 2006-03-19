@@ -377,8 +377,14 @@ public class WorldImpl implements World {
             KEY key = KEY.getKey(i);
 
             if (key.shared != true) {
-                while (lists[i].size() <= index) {
-                    lists[i].add(new ArrayList());
+                if (key.usesObjectKey2) {
+                    while (playerObjects[i].size() <= index) {
+                        playerObjects[i].add(new HashMap());
+                    }                    
+                } else {
+                    while (lists[i].size() <= index) {
+                        lists[i].add(new ArrayList());
+                    }
                 }
             }
         }
@@ -422,6 +428,20 @@ public class WorldImpl implements World {
                 .get(getPlayerIndex(p))).values().iterator());
     }        
     
+    public Iterator getObjectKey2Iterator(KEY k, FreerailsPrincipal p) {
+        if (k.shared)
+            return getObjectKey2Iterator(k);
+        
+        return new WorldObjectKey2Iterator(k, p,
+                ((HashMap) playerObjects[k.getKeyNumber()]
+                .get(getPlayerIndex(p))).keySet().iterator());
+    }
+    
+    public Iterator getObjectKey2Iterator(KEY k) {
+        return new WorldObjectKey2Iterator
+                (k, null, sharedObjects[k.getKeyNumber()].keySet().iterator());        
+    }
+    
     /** Enforces read-only semantics on an iterator */
     private static class WorldIteratorImpl implements Iterator {
         private Iterator i;
@@ -441,5 +461,26 @@ public class WorldImpl implements World {
         public Object next() {
             return i.next();
         }                
+    }
+    
+    private static class WorldObjectKey2Iterator extends WorldIteratorImpl {
+        private final KEY key;
+        
+        private final FreerailsPrincipal principal;
+        
+        public WorldObjectKey2Iterator(KEY k, FreerailsPrincipal p, Iterator i) {
+            super(i);
+            key = k;
+            if (p != null) {
+                principal = p;
+            } else {
+                principal = Player.NOBODY;
+            }
+        }
+        
+        public Object next() {
+            return new ObjectKey2(key, principal, 
+                    ((UUID) super.next()));
+        }
     }
 }

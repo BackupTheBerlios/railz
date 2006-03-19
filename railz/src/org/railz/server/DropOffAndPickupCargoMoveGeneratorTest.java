@@ -53,14 +53,14 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
     private MoveReceiver moveReceiver;
     Logger logger = Logger.getLogger("global");
     
-    private final CargoBatch cargoType0FromStation2 = new CargoBatch(0, 0, 0,
-            0, 2);
-    private final CargoBatch cargoType1FromStation2 = new CargoBatch(1, 0, 0,
-            0, 2);
-    private final CargoBatch cargoType0FromStation0 = new CargoBatch(0, 0, 0,
-            0, 0);
+    private CargoBatch cargoType0FromStation2 = null;
+    private CargoBatch cargoType1FromStation2 = null;
+    private CargoBatch cargoType0FromStation0 = null;
     private CargoBundle emptyCargoBundle;
 
+    private ObjectKey2 station0Key = null;
+    private ObjectKey2 station2Key = null;
+    
     private Player testPlayer = new Player ("test player", (new Player ("test"
 		    + " player")).getPublicKey(), 0);
 
@@ -101,13 +101,32 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
         ObjectKey2 stationCBKey = new ObjectKey2(KEY.CARGO_BUNDLES, Player.NOBODY,
                 stationCB.getUUID());
         w.set(stationCBKey, stationCB);
+        
         String stationName = "Station 1";
 	GameTime now = (GameTime) w.get(ITEM.TIME, Player.NOBODY);
         StationModel station = new StationModel(x, y, stationName,
 		w.size(KEY.CARGO_TYPES, Player.NOBODY),
 		stationCBKey, now);
-        w.add(KEY.STATIONS, station, testPlayer.getPrincipal());
+        station0Key = new ObjectKey2(KEY.STATIONS, testPlayer.getPrincipal(), 
+                station.getUUID());
+        w.set(station0Key, station);
 
+        cargoType0FromStation0 = new CargoBatch(0, 0, 0, 0, station0Key);
+        
+        CargoBundle station2cb = new CargoBundle();
+        ObjectKey2 station2cbKey = new ObjectKey2(KEY.CARGO_BUNDLES, 
+                Player.NOBODY, station2cb.getUUID());
+        w.set(station2cbKey, station2cb);        
+        StationModel station2 = new StationModel(0, 0, "Station 2",
+                w.size(KEY.CARGO_TYPES, Player.NOBODY),
+                station2cbKey, now);
+        station2Key = new ObjectKey2(KEY.STATIONS, testPlayer.getPrincipal(),
+                station2.getUUID());        
+        w.set(station2Key, station2);
+        
+        cargoType1FromStation2 = new CargoBatch(1, 0, 0, 0, station2Key);
+        cargoType0FromStation2 = new CargoBatch(0, 0, 0, 0, station2Key);
+        
         //Set up train
         CargoBundle trainCB = new CargoBundle();
         ObjectKey2 trainCBKey = new ObjectKey2(KEY.CARGO_BUNDLES, Player.NOBODY,
@@ -143,8 +162,7 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
         cargoBundleWith2CarloadsOfCargo0.setAmount(cargoType0FromStation2, 80);
 
         //Get the station from the world object.
-	StationModel station = (StationModel)w.get(KEY.STATIONS, 0,
-		testPlayer.getPrincipal());
+	StationModel station = (StationModel)w.get(station0Key);
 
         CargoBundle emptyTrainCargoBundle = emptyCargoBundle(getCargoOnTrain());
         CargoBundle emptyStationCargoBundle = emptyCargoBundle(getCargoAtStation());
@@ -204,8 +222,7 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
         setCargoAtStation(this.cargoType0FromStation0, 110);
 
         //Check that station does not demand cargo type 0.
-	StationModel station = (StationModel)w.get(KEY.STATIONS, 0,
-		testPlayer.getPrincipal());
+	StationModel station = (StationModel)w.get(station0Key);
         assertFalse(station.getDemand().isCargoDemanded(0));
 
         //Stop at station.
@@ -224,13 +241,12 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
      */
     public void testDropOffCargo() {
         //Set the station to demand cargo type 0.
-	StationModel station = (StationModel)w.get(KEY.STATIONS, 0,
-		testPlayer.getPrincipal());
+	StationModel station = (StationModel)w.get(station0Key);
         DemandAtStation demand = new DemandAtStation(new boolean[] {
                     true, false, false, false
                 });
         station = new StationModel(station, demand);
-        w.set(KEY.STATIONS, 0, station, testPlayer.getPrincipal());
+        w.set(station0Key, station);
 
         //Check that the station demadns what we think it does.		
         assertTrue("The station should demand cargo type 0.",
@@ -310,13 +326,12 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
         setCargoAtStation(this.cargoType0FromStation0, 200);
 
         //Set station to demand cargo 0.
-	StationModel station = (StationModel)w.get(KEY.STATIONS, 0,
-		testPlayer.getPrincipal());
+	StationModel station = (StationModel)w.get(station0Key);
         DemandAtStation demand = new DemandAtStation(new boolean[] {
                     true, false, false, false
                 });
         station = new StationModel(station, demand);
-        w.set(KEY.STATIONS, 0, station, testPlayer.getPrincipal());
+        w.set(station0Key, station);
 
         assertTrue(station.getDemand().isCargoDemanded(0));
         stopAtStation();
@@ -341,18 +356,16 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
     private void stopAtStation() {
 	ObjectKey trainKey = new ObjectKey(KEY.TRAINS,
 		testPlayer.getPrincipal(), 0);
-	ObjectKey stationKey = new ObjectKey(KEY.STATIONS,
-		testPlayer.getPrincipal(), 0);
 
         DropOffAndPickupCargoMoveGenerator moveGenerator = new
 	    DropOffAndPickupCargoMoveGenerator(w, moveReceiver);
-	moveGenerator.unloadTrain(trainKey, stationKey);
-	moveGenerator.dumpSurplusCargo(trainKey, stationKey);
-	moveGenerator.loadTrain(trainKey, stationKey);
+	moveGenerator.unloadTrain(trainKey, station0Key);
+	moveGenerator.dumpSurplusCargo(trainKey, station0Key);
+	moveGenerator.loadTrain(trainKey, station0Key);
     }
 
     private void setCargoAtStation(CargoBatch batch, int amount) {
-        StationModel sm = (StationModel) w.get(KEY.STATIONS, 0, testPlayer.getPrincipal()); 
+        StationModel sm = (StationModel) w.get(station0Key); 
         CargoBundle cb = (CargoBundle) w.get(sm.getCargoBundle());
         MutableCargoBundle mcb = new MutableCargoBundle(cb);
         mcb.setAmount(batch, amount);
@@ -370,8 +383,7 @@ public class DropOffAndPickupCargoMoveGeneratorTest extends TestCase {
 
     /** Retrieves the cargo bundle that is waiting at the station from the world object.*/
     private CargoBundle getCargoAtStation() {
-	StationModel station = (StationModel)w.get(KEY.STATIONS, 0,
-		testPlayer.getPrincipal());
+	StationModel station = (StationModel)w.get(station0Key);
         CargoBundle cargoAtStation = (CargoBundle)w.get(station.getCargoBundle());
 
         return cargoAtStation;

@@ -20,6 +20,7 @@ package org.railz.client.view;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import javax.swing.ImageIcon;
@@ -36,6 +37,7 @@ import org.railz.util.*;
 import org.railz.world.cargo.CargoType;
 import org.railz.world.common.*;
 import org.railz.world.player.*;
+import org.railz.world.station.StationModel;
 import org.railz.world.top.*;
 import org.railz.world.train.*;
 
@@ -248,10 +250,15 @@ WorldListListener {
 	Schedule s = (Schedule) w.get(KEY.TRAIN_SCHEDULES,
 		tm.getScheduleIterator().getScheduleKey().index,
 	       	tm.getScheduleIterator().getScheduleKey().principal);
-        TrainOrdersModel order = new TrainOrdersModel
-	    (new ObjectKey(KEY.STATIONS, modelRoot.getPlayerPrincipal(), 0),
-	     consist, false, true, true);
-        sendAddStationMove(s.getNumOrders(), order);
+        Iterator stations = w.getIterator(KEY.STATIONS, modelRoot.getPlayerPrincipal());
+        if (stations.hasNext()) {
+            StationModel sm = (StationModel) stations.next();
+            ObjectKey2 stationKey = new ObjectKey2(KEY.STATIONS, modelRoot.getPlayerPrincipal(),
+                    sm.getUUID());
+            TrainOrdersModel order = new TrainOrdersModel
+                (stationKey, consist, false, true, true);
+            sendAddStationMove(s.getNumOrders(), order);
+        }
     }//GEN-LAST:event_addStationJButtonActionPerformed
     
     private void removeStationJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeStationJMenuItemActionPerformed
@@ -337,7 +344,7 @@ WorldListListener {
         //This actionListener is fired by the select station popup when a stion is selected.
         ActionListener actionListener =  new ActionListener(){
             public void actionPerformed(ActionEvent evt) {
-                setStationNumber(selectStationJPanel.getSelectedStationID());
+                setStationNumber(selectStationJPanel.getSelectedStationKey());
 		if(selectStationDialog != null) {
 		    selectStationDialog.setVisible(false);
 		    selectStationDialog = null;
@@ -396,13 +403,12 @@ WorldListListener {
         return new MutableSchedule(immutableSchedule);
     }
     
-    private void setStationNumber(int stationIndex){
+    private void setStationNumber(ObjectKey2 stationKey){
         TrainOrdersModel oldOrders, newOrders;
         MutableSchedule s = getSchedule();
         int orderNumber = this.orders.getSelectedIndex();
         oldOrders = s.getOrder(orderNumber);
-	newOrders = new TrainOrdersModel(new ObjectKey(KEY.STATIONS,
-		    modelRoot.getPlayerPrincipal(), stationIndex),
+	newOrders = new TrainOrdersModel(stationKey,
 		oldOrders.getConsist(), oldOrders.getWaitUntilFull(),
 		oldOrders.loadTrain, oldOrders.unloadTrain);
         sendUpdateStationMove(orderNumber, newOrders);
@@ -413,7 +419,7 @@ WorldListListener {
         MutableSchedule s = getSchedule();
         int orderNumber = this.orders.getSelectedIndex();
         oldOrders = s.getOrder(orderNumber);
-	newOrders = new TrainOrdersModel(oldOrders.getStationNumber(),
+	newOrders = new TrainOrdersModel(oldOrders.getStation(),
 		oldOrders.consist, b, oldOrders.loadTrain,
 		oldOrders.unloadTrain);
         sendUpdateStationMove(orderNumber, newOrders);
@@ -496,7 +502,7 @@ WorldListListener {
 		TrainOrdersModel oldOrder = ((TrainOrdersListElement)
 		       	listModel.getElementAt(wagonSelectionOrderNo)).order;
 		TrainOrdersModel tom = new TrainOrdersModel
-		    (oldOrder.getStationNumber(), wagons,
+		    (oldOrder.getStation(), wagons,
 		     oldOrder.getWaitUntilFull(), oldOrder.loadTrain,
 		     oldOrder.unloadTrain);
 		Move m = AddRemoveScheduleStationMove.generateChangeMove

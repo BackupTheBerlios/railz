@@ -123,7 +123,8 @@ final public class ChangeTrackPieceMove implements TrackMove, MapUpdateMove {
 		int terrainCategory = tt.getTerrainCategory();
 
 		return MoveStatus.moveFailed("Can't build " + thisTrackType +
-			" on " + terrainCategory);
+			" on " + ((TerrainType) w.get
+                        (KEY.TERRAIN_TYPES, terrainCategory, Player.NOBODY)).getDisplayName());
 	    }
 	    BuildingTile bTile = currentTile.getBuildingTile();
 	    if (bTile != null) {

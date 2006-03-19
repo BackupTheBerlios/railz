@@ -25,7 +25,10 @@ import org.railz.world.cargo.CargoBatch;
 import org.railz.world.cargo.CargoBundle;
 import org.railz.world.cargo.CargoBundle;
 import org.railz.world.cargo.MutableCargoBundle;
+import org.railz.world.common.GameTime;
 import org.railz.world.player.*;
+import org.railz.world.station.StationModel;
+import org.railz.world.top.ITEM;
 import org.railz.world.top.KEY;
 import org.railz.world.top.ObjectKey2;
 
@@ -35,12 +38,29 @@ import org.railz.world.top.ObjectKey2;
  *
  */
 public class ChangeCargoBundleMoveTest extends AbstractMoveTestCase {
+    ObjectKey2 stationKey = null;
+    
+    public void setUp() {
+        super.setUp();
+        CargoBundle cb = new CargoBundle();
+        ObjectKey2 cbKey = new ObjectKey2(KEY.CARGO_BUNDLES, Player.NOBODY, 
+                cb.getUUID());
+        getWorld().set(cbKey, cb);
+        StationModel sm =  new StationModel(0, 0, "Test station",
+                getWorld().size(KEY.CARGO_TYPES, Player.AUTHORITATIVE),
+                cbKey,
+                (GameTime) getWorld().get(ITEM.TIME, Player.AUTHORITATIVE));        
+        stationKey = new ObjectKey2(KEY.STATIONS, testPlayer.getPrincipal(), 
+                sm.getUUID());
+        getWorld().set(stationKey, sm);        
+    }
+    
     public void testMove() {
         MutableCargoBundle m1 = new MutableCargoBundle();
-        m1.setAmount(new CargoBatch(1, 2, 3, 4, 0), 5);
+        m1.setAmount(new CargoBatch(1, 2, 3, 4, stationKey), 5);
         CargoBundle before = new CargoBundle(m1);
         MutableCargoBundle m2 = new MutableCargoBundle(before);                
-        m2.setAmount(new CargoBatch(1, 2, 3, 4, 0), 8);
+        m2.setAmount(new CargoBatch(1, 2, 3, 4, stationKey), 8);
         CargoBundle after = new CargoBundle(m2);
 
         ObjectKey2 key = new ObjectKey2(KEY.CARGO_BUNDLES, Player.NOBODY, before.getUUID());

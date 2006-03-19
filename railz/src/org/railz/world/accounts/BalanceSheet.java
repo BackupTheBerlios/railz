@@ -21,6 +21,7 @@
 package org.railz.world.accounts;
 
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 
 import org.railz.world.common.*;
 import org.railz.world.player.*;
@@ -149,9 +150,9 @@ public class BalanceSheet implements FreerailsSerializable {
 	    }
 	}
 	StationModelViewer smv = new StationModelViewer(w);
-	i = new NonNullElements(KEY.STATIONS, w, p);
-	while (i.next()) {
-	    smv.setStationModel((StationModel) i.getElement());
+	Iterator it = w.getIterator(KEY.STATIONS, p);
+	while (it.hasNext()) {
+	    smv.setStationModel((StationModel) it.next());
 	    property += smv.getBookValue();
 	}
 	long trackMaintenance = 0;

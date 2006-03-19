@@ -25,6 +25,7 @@ import org.railz.client.top.*;
 import org.railz.controller.*;
 import org.railz.move.*;
 import org.railz.world.common.*;
+import org.railz.world.top.ObjectKey2;
 /**
  * A factory for generating the required moves to lay tracks and purchase an
  * engine. 
@@ -116,7 +117,7 @@ final class RouteBuilderMoveFactory {
     }
 
     private void addBuildStationImprovementMove(ArrayList moves, 
-            int stationId) {
+            ObjectKey2 stationKey) {
     }
     
     private void addBuildStationImprovementMoves(ArrayList moves) {

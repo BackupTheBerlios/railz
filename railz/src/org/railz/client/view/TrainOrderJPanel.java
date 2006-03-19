@@ -126,9 +126,8 @@ public class TrainOrderJPanel extends javax.swing.JPanel {
     public void update(TrainOrdersListModel.TrainOrdersListElement
 	    trainOrders, boolean isSelected, int index) {
         //Set station name
-        int stationNumber = trainOrders.order.station.index;
-	StationModel station = (StationModel)w.get(KEY.STATIONS, stationNumber,
-		modelRoot.getPlayerPrincipal());
+        ObjectKey2 stationKey = trainOrders.order.station;
+	StationModel station = (StationModel)w.get(stationKey);
         String stationName = station.getStationName();
         this.stationNameJLabel.setText(stationName);
         
